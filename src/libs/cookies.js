@@ -12,14 +12,14 @@ const cookies = {
       expires: 1
     }
     Object.assign(currentCookieSetting, cookieSetting)
-    Cookies.set(`ioms-${process.env.VUE_APP_VERSION}-${name}`, value, currentCookieSetting)
+    Cookies.set(`ioms-${name}`, value, currentCookieSetting)
   },
   /**
    * @description 拿到 cookie 值
    * @param {String} name cookie name
    */
   get: name => {
-    return Cookies.get(`ioms-${process.env.VUE_APP_VERSION}-${name}`)
+    return Cookies.get(`ioms-${name}`)
   },
   /**
    * @description 拿到 cookie 全部的值
@@ -33,7 +33,7 @@ const cookies = {
    * @param {String} name cookie name
    */
   remove: name => {
-    return Cookies.remove(`ioms-${process.env.VUE_APP_VERSION}-${name}`)
+    return Cookies.remove(`ioms-${name}`)
   }
 }
 

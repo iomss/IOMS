@@ -1,22 +1,17 @@
+<!--右侧上方导航-->
 <template>
   <div class="navbar">
-    <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
-
+    <hamburger id="hamburger-container" :is-active="!sidebarStatus" class="hamburger-container" @toggleClick="toggleSideBar" />
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
-
     <div class="right-menu">
-      <template v-if="device!=='mobile'">
-        <screenfull id="screenfull" class="right-menu-item hover-effect" />
-      </template>
-
-      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
+      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="hover">
         <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+          <img src="https://avatars3.githubusercontent.com/u/20103991?s=460&v=4" class="user-avatar">
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item>
-            <span style="display:block;" @click="logout">Log Out</span>
+            <span style="display:block;" @click="logout">退出</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -25,30 +20,25 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import Breadcrumb from '@/components/Breadcrumb'
-import Hamburger from '@/components/Hamburger'
-import Screenfull from '@/components/Screenfull'
+import Breadcrumb from '@/components/Breadcrumb' // 面包屑导航
+import Hamburger from '@/components/Hamburger' // 左侧导航展开收缩按钮
 
 export default {
   components: {
     Breadcrumb,
-    Hamburger,
-    Screenfull
+    Hamburger
   },
-  computed: {
-    ...mapGetters([
-      'sidebar',
-      'avatar',
-      'device'
-    ])
+  data() {
+    return {
+      sidebarStatus: false
+    }
   },
   methods: {
     toggleSideBar() {
-      this.$store.dispatch('app/toggleSideBar')
+      this.$cookie.set('sidebarStatus', !this.sidebarStatus)
+      this.sidebarStatus = !this.sidebarStatus
     },
     async logout() {
-      await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     }
   }

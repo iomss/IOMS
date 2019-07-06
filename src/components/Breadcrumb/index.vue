@@ -1,3 +1,4 @@
+<!--面包屑导航-->
 <template>
   <el-breadcrumb class="app-breadcrumb" separator="/">
     <transition-group name="breadcrumb">
@@ -20,6 +21,7 @@ export default {
   },
   watch: {
     $route(route) {
+      // 监听路由改变，更新面包屑导航
       // if you go to the redirect page, do not update the breadcrumbs
       if (route.path.startsWith('/redirect/')) {
         return
@@ -31,23 +33,25 @@ export default {
     this.getBreadcrumb()
   },
   methods: {
+    // 获取面包屑导航
     getBreadcrumb() {
       // only show routes with meta.title
       let matched = this.$route.matched.filter(item => item.meta && item.meta.title)
       const first = matched[0]
 
-      if (!this.isDashboard(first)) {
-        matched = [{ path: '/dashboard', meta: { title: 'Dashboard' }}].concat(matched)
+      if (!this.isHome(first)) {
+        matched = [{ path: '/index', meta: { title: '首页' }}].concat(matched)
       }
 
       this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
     },
-    isDashboard(route) {
+    // 判断是否为首页
+    isHome(route) {
       const name = route && route.name
       if (!name) {
         return false
       }
-      return name.trim().toLocaleLowerCase() === 'Dashboard'.toLocaleLowerCase()
+      return name.trim().toLocaleLowerCase() === '首页'.toLocaleLowerCase()
     },
     pathCompile(path) {
       // To solve this problem https://github.com/PanJiaChen/vue-element-admin/issues/561

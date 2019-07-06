@@ -1,3 +1,4 @@
+<!--标签页-->
 <template>
   <div id="tags-view-container" class="tags-view-container">
     <scroll-pane ref="scrollPane" class="tags-view-wrapper">
@@ -7,10 +8,10 @@
       </router-link>
     </scroll-pane>
     <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
-      <li @click="refreshSelectedTag(selectedTag)">Refresh</li>
-      <li v-if="!(selectedTag.meta&&selectedTag.meta.affix)" @click="closeSelectedTag(selectedTag)">Close</li>
-      <li @click="closeOthersTags">Close Others</li>
-      <li @click="closeAllTags(selectedTag)">Close All</li>
+      <li @click="refreshSelectedTag(selectedTag)">刷新</li>
+      <li v-if="!(selectedTag.meta&&selectedTag.meta.affix)" @click="closeSelectedTag(selectedTag)">关闭</li>
+      <li @click="closeOthersTags">关闭其他</li>
+      <li @click="closeAllTags(selectedTag)">关闭全部</li>
     </ul>
   </div>
 </template>
@@ -56,9 +57,11 @@ export default {
     this.addTags()
   },
   methods: {
+    // 打开标签页
     isActive(route) {
       return route.path === this.$route.path
     },
+    // 过滤标签是否也存在
     filterAffixTags(routes, basePath = '/') {
       let tags = []
       routes.forEach(route => {
@@ -80,6 +83,7 @@ export default {
       })
       return tags
     },
+    // 初始化标签
     initTags() {
       const affixTags = this.affixTags = this.filterAffixTags(this.routes)
       for (const tag of affixTags) {
@@ -89,6 +93,7 @@ export default {
         }
       }
     },
+    // 添加标签
     addTags() {
       const { name } = this.$route
       if (name) {
@@ -96,6 +101,7 @@ export default {
       }
       return false
     },
+    // 移除标签
     moveToCurrentTag() {
       const tags = this.$refs.tag
       this.$nextTick(() => {
@@ -111,6 +117,7 @@ export default {
         }
       })
     },
+    // 刷新选择标签页
     refreshSelectedTag(view) {
       this.$store.dispatch('tagsView/delCachedView', view).then(() => {
         const { fullPath } = view
@@ -121,6 +128,7 @@ export default {
         })
       })
     },
+    // 关闭选中标签页
     closeSelectedTag(view) {
       this.$store.dispatch('tagsView/delView', view).then(({ visitedViews }) => {
         if (this.isActive(view)) {
@@ -128,12 +136,14 @@ export default {
         }
       })
     },
+    // 关闭其他标签页
     closeOthersTags() {
       this.$router.push(this.selectedTag)
       this.$store.dispatch('tagsView/delOthersViews', this.selectedTag).then(() => {
         this.moveToCurrentTag()
       })
     },
+    // 关闭全部标签页
     closeAllTags(view) {
       this.$store.dispatch('tagsView/delAllViews').then(({ visitedViews }) => {
         if (this.affixTags.some(tag => tag.path === view.path)) {
@@ -142,6 +152,7 @@ export default {
         this.toLastView(visitedViews, view)
       })
     },
+    // 前往后一个标签页
     toLastView(visitedViews, view) {
       const latestView = visitedViews.slice(-1)[0]
       if (latestView) {
@@ -149,7 +160,7 @@ export default {
       } else {
         // now the default is to redirect to the home page if there is no tags-view,
         // you can adjust it according to your needs.
-        if (view.name === 'Dashboard') {
+        if (view.name === '首页') {
           // to reload home page
           this.$router.replace({ path: '/redirect' + view.fullPath })
         } else {
@@ -157,6 +168,7 @@ export default {
         }
       }
     },
+    // 打开菜单
     openMenu(tag, e) {
       const menuMinWidth = 105
       const offsetLeft = this.$el.getBoundingClientRect().left // container margin left
@@ -174,6 +186,7 @@ export default {
       this.visible = true
       this.selectedTag = tag
     },
+    // 关闭菜单
     closeMenu() {
       this.visible = false
     }
