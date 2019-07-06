@@ -1,10 +1,10 @@
-<!--右侧上方导航-->
 <template>
   <div class="navbar">
-    <hamburger id="hamburger-container" :is-active="!sidebarStatus" class="hamburger-container" @toggleClick="toggleSideBar" />
+    <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
     <div class="right-menu">
-      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="hover">
+
+      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
           <img src="https://avatars3.githubusercontent.com/u/20103991?s=460&v=4" class="user-avatar">
           <i class="el-icon-caret-bottom" />
@@ -20,25 +20,28 @@
 </template>
 
 <script>
-import Breadcrumb from '@/components/Breadcrumb' // 面包屑导航
-import Hamburger from '@/components/Hamburger' // 左侧导航展开收缩按钮
+import { mapGetters } from 'vuex'
+import Breadcrumb from '@/components/Breadcrumb'
+import Hamburger from '@/components/Hamburger'
 
 export default {
   components: {
     Breadcrumb,
     Hamburger
   },
-  data() {
-    return {
-      sidebarStatus: false
-    }
+  computed: {
+    ...mapGetters([
+      'sidebar',
+      'avatar',
+      'device'
+    ])
   },
   methods: {
     toggleSideBar() {
-      this.$cookie.set('sidebarStatus', !this.sidebarStatus)
-      this.sidebarStatus = !this.sidebarStatus
+      this.$store.dispatch('app/toggleSideBar')
     },
     async logout() {
+      await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     }
   }
