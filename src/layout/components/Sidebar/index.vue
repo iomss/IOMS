@@ -13,7 +13,7 @@
 import Logo from './Logo'
 // import SidebarItem from './SidebarItem'
 import variables from '@/styles/variables.scss'
-import { router } from '@/libs/getRouter'
+import router from '@/libs/getRouter'
 
 export default {
   components: { Logo },
