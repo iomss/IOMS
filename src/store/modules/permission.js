@@ -1,3 +1,4 @@
+// 根据权限生成对应路由，用作菜单展示
 import { asyncRoutes, constantRoutes } from '@/router'
 
 /**

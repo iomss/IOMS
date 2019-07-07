@@ -56,6 +56,9 @@ export default {
         if (valid) {
           this.$axios.post('/api/login').then(res => {
             console.log(res)
+            this.$cookie.set('accessToken', res.data.token)
+            this.$cookie.set('roles', res.data.roles)
+            this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
           })
         } else {
           console.log('error submit!!')

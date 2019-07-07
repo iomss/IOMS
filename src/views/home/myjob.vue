@@ -1,13 +1,13 @@
 <template>
   <div>
-    index
+    myjob
   </div>
 </template>
 
 <script>
 
 export default {
-  name: 'Index',
+  name: 'Myjob',
   data() {
     return {
     }
