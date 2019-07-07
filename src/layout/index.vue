@@ -1,5 +1,6 @@
 <template>
   <div :class="classObj" class="app-wrapper">
+    <!--非桌面浏览器下侧边栏收缩 ⬇️-->
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
     <sidebar class="sidebar-container" />
     <div :class="{hasTagsView:needTagsView}" class="main-container">

@@ -1,39 +1,40 @@
-import Cookies from 'js-cookie'
+import cookie from '@/libs/cookies' // libs/cookies‘
 
 const state = {
+  // 导航侧边栏
   sidebar: {
-    opened: Cookies.get('sidebarStatus') ? !!+Cookies.get('sidebarStatus') : true,
-    withoutAnimation: false
+    opened: cookie.get('sidebarStatus') ? !!+cookie.get('sidebarStatus') : true, // 是否展开  true|false
+    withoutAnimation: false // 侧边栏收缩展开动画效果 true|false
   },
-  device: 'desktop',
-  size: Cookies.get('size') || 'medium'
+  device: 'desktop' // 设备
 }
 
 const mutations = {
+  // store 方法
   TOGGLE_SIDEBAR: state => {
+    // 切换sidebar 状态
     state.sidebar.opened = !state.sidebar.opened
     state.sidebar.withoutAnimation = false
     if (state.sidebar.opened) {
-      Cookies.set('sidebarStatus', 1)
+      cookie.set('sidebarStatus', 1)
     } else {
-      Cookies.set('sidebarStatus', 0)
+      cookie.set('sidebarStatus', 0)
     }
   },
   CLOSE_SIDEBAR: (state, withoutAnimation) => {
-    Cookies.set('sidebarStatus', 0)
+    // 关闭sidebar
+    cookie.set('sidebarStatus', 0)
     state.sidebar.opened = false
     state.sidebar.withoutAnimation = withoutAnimation
   },
   TOGGLE_DEVICE: (state, device) => {
+    // 切换设备
     state.device = device
-  },
-  SET_SIZE: (state, size) => {
-    state.size = size
-    Cookies.set('size', size)
   }
 }
 
 const actions = {
+  // 行为改变store 数据时调用的方法
   toggleSideBar({ commit }) {
     commit('TOGGLE_SIDEBAR')
   },
@@ -42,9 +43,6 @@ const actions = {
   },
   toggleDevice({ commit }, device) {
     commit('TOGGLE_DEVICE', device)
-  },
-  setSize({ commit }, size) {
-    commit('SET_SIZE', size)
   }
 }
 
