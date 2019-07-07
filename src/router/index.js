@@ -19,7 +19,7 @@ import Layout from '@/layout'
  * redirect: noRedirect           if set noRedirect will no redirect in the breadcrumb
  * name:'router-name'             the name is used by <keep-alive> (must set!!!)
  * meta : {
-    roles: ['admin','editor']    control the page roles (you can set multiple roles)
+    roles: ['admin','editor']     所需权限   control the page roles (you can set multiple roles)
     title: 'title'               the name show in sidebar and breadcrumb (recommend set)
     icon: 'svg-name'             the icon show in the sidebar
     noCache: true                if set true, the page will no be cached(default is false)
@@ -48,16 +48,19 @@ export const constantRoutes = [
   },
   {
     path: '/login',
+    name: 'login',
     component: () => import('@/views/login/index'),
     hidden: true
   },
   {
     path: '/404',
+    name: '404',
     component: () => import('@/views/error-page/404'),
     hidden: true
   },
   {
     path: '/401',
+    name: '401',
     component: () => import('@/views/error-page/401'),
     hidden: true
   },
@@ -81,7 +84,7 @@ export const asyncRoutes = [
   // 404 page must be placed at the end !!!
   {
     path: '/assets',
-    name: '资产管理',
+    name: 'assets',
     meta: {
       title: '资产管理',
       icon: 'fa fa-home'
@@ -91,10 +94,11 @@ export const asyncRoutes = [
     children: [
       {
         path: 'list',
-        name: '管理列表',
+        name: 'assets-list',
         meta: {
-          title: '管理列表',
-          icon: 'fa fa-home'
+          title: '资产列表',
+          icon: 'fa fa-home',
+          roles: ['delete']
         },
         component: () => import('@/views/assets/list')
       }
@@ -102,7 +106,7 @@ export const asyncRoutes = [
   },
   {
     path: '/sparepPart',
-    name: '备品备件',
+    name: 'sparepPart',
     meta: {
       title: '备品备件',
       icon: 'fa fa-home'
@@ -112,18 +116,19 @@ export const asyncRoutes = [
     children: [
       {
         path: 'list',
-        name: '管理列表',
+        name: 'sparepPart-list',
         component: () => import('@/views/sparepPart/list'),
         meta: {
-          title: '管理列表',
-          icon: 'fa fa-home'
+          title: '备件列表',
+          icon: 'fa fa-home',
+          roles: ['show']
         }
       }
     ]
   },
   {
     path: '/maintenance',
-    name: '运维管理',
+    name: 'maintenance',
     meta: {
       title: '运维管理',
       icon: 'fa fa-home'
@@ -133,11 +138,12 @@ export const asyncRoutes = [
     children: [
       {
         path: 'list',
-        name: '工单查询',
+        name: 'maintenance-list',
         component: () => import('@/views/maintenance/list'),
         meta: {
           title: '工单查询',
-          icon: 'fa fa-home'
+          icon: 'fa fa-home',
+          roles: ['edit']
         }
       }
     ]

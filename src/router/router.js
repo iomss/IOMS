@@ -1,3 +1,4 @@
+// 路由拦截器
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
@@ -17,6 +18,13 @@ const router = new VueRouter({
   mode: 'history',
   routes
 })
+// 判断权限是否匹配
+function hasRoles(routes, roles) {
+  const needroles = routes.meta.roles // Array
+  return roles.includes(needroles[0])
+}
+
+const whiteList = ['/login', '/auth-redirect', '/401', '/404', '/index'] // no roles whitelist
 
 /**
  * 路由拦截
@@ -25,28 +33,45 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   // 进度条
   NProgress.start()
-  // 验证当前路由所有的匹配中是否需要有登录验证的
-  if (to.matched.some(r => r.meta.auth)) {
-    // 这里暂时将cookie里是否存有token作为验证是否登录的条件
-    // 请根据自身业务需要修改
-    const token = cookies.get('accessToken')
-    if (token && token !== 'undefined') {
+
+  const token = cookies.get('accessToken') // 通过cookie获取登录凭证token
+  const roles = cookies.get('roles').split(',') // 通过cookie 获取权限 roles
+  // 根据token roles whiteList判断是否需要检查权限  判断是否已存在token  是否已获取到当前登录用户权限  此页面路由是否需要检查权限
+  const needCheckRoles = token && roles.length >= 1 && whiteList.indexOf(to.path) === -1
+  if (needCheckRoles) {
+    if (hasRoles(to, roles)) {
       next()
     } else {
-      // 没有登录的时候跳转到登录界面
-      // 携带上登陆成功之后需要跳转的页面完整路径
+      next({
+        name: '401',
+        query: {
+          redirect: to.fullPath
+        }
+      })
+    }
+  } else {
+    if (!token) {
+      // 没有token前往登录
       next({
         name: 'login',
         query: {
           redirect: to.fullPath
         }
       })
-      // https://github.com/d2-projects/d2-admin/issues/138
-      NProgress.done()
+    } else if (to.meta.noCheckRoles) {
+      // 不需要检查权限直接前往
+      next()
+    } else if (roles.length < 1) {
+      // 权限长度小于1 ,没有获取到权限 前往401
+      next({
+        name: '401',
+        query: {
+          redirect: to.fullPath
+        }
+      })
+    } else {
+      next()
     }
-  } else {
-    // 不需要身份校验 直接通过
-    next()
   }
 })
 

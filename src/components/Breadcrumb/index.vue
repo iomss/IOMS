@@ -36,7 +36,6 @@ export default {
     // 获取面包屑导航x
     getBreadcrumb() {
       // only show routes with meta.title
-      debugger
       let matched = this.$route.matched.filter(item => item.meta && item.meta.title)
       const first = matched[0]
 
