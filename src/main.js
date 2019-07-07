@@ -11,7 +11,7 @@ import '@/styles/index.scss' // global css
 
 import App from './App'
 import store from './store'
-import router from './router'
+import router from './router/router'
 
 // 字体图标引入
 import '@fortawesome/fontawesome-free/css/all.css'

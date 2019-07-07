@@ -33,14 +33,15 @@ export default {
     this.getBreadcrumb()
   },
   methods: {
-    // 获取面包屑导航
+    // 获取面包屑导航x
     getBreadcrumb() {
       // only show routes with meta.title
+      debugger
       let matched = this.$route.matched.filter(item => item.meta && item.meta.title)
       const first = matched[0]
 
       if (!this.isHome(first)) {
-        matched = [{ path: '/index', meta: { title: '首页' }}].concat(matched)
+        matched = [{ path: '/index', meta: { title: '首页' }}].concat(matched, !!matched.parent)
       }
 
       this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)

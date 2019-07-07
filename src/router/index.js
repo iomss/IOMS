@@ -1,7 +1,7 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+// import Vue from 'vue'
+// import Router from 'vue-router'
 
-Vue.use(Router)
+// Vue.use(Router)
 
 /* Layout */
 import Layout from '@/layout'
@@ -79,22 +79,86 @@ export const constantRoutes = [
 export const asyncRoutes = [
   /** when your routing map is too long, you can split it into small modules **/
   // 404 page must be placed at the end !!!
+  {
+    path: '/assets',
+    name: '资产管理',
+    meta: {
+      title: '资产管理',
+      icon: 'fa fa-home'
+    },
+    component: Layout,
+    redirect: '/assets/list',
+    children: [
+      {
+        path: 'list',
+        name: '管理列表',
+        meta: {
+          title: '管理列表',
+          icon: 'fa fa-home'
+        },
+        component: () => import('@/views/assets/list')
+      }
+    ]
+  },
+  {
+    path: '/sparepPart',
+    name: '备品备件',
+    meta: {
+      title: '备品备件',
+      icon: 'fa fa-home'
+    },
+    component: Layout,
+    redirect: '/sparepPart/list',
+    children: [
+      {
+        path: 'list',
+        name: '管理列表',
+        component: () => import('@/views/sparepPart/list'),
+        meta: {
+          title: '管理列表',
+          icon: 'fa fa-home'
+        }
+      }
+    ]
+  },
+  {
+    path: '/maintenance',
+    name: '运维管理',
+    meta: {
+      title: '运维管理',
+      icon: 'fa fa-home'
+    },
+    component: Layout,
+    redirect: '/maintenance/list',
+    children: [
+      {
+        path: 'list',
+        name: '工单查询',
+        component: () => import('@/views/maintenance/list'),
+        meta: {
+          title: '工单查询',
+          icon: 'fa fa-home'
+        }
+      }
+    ]
+  },
   { path: '*', redirect: '/404', hidden: true }
 ]
 
-const createRouter = () =>
-  new Router({
-    // mode: 'history', // require service support
-    scrollBehavior: () => ({ y: 0 }),
-    routes: constantRoutes
-  })
+// const createRouter = () =>
+//   new Router({
+//     // mode: 'history', // require service support
+//     scrollBehavior: () => ({ y: 0 }),
+//     routes: constantRoutes
+//   })
 
-const router = createRouter()
+// const router = createRouter()
 
-// Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
-export function resetRouter() {
-  const newRouter = createRouter()
-  router.matcher = newRouter.matcher // reset router
-}
+// // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
+// export function resetRouter() {
+//   const newRouter = createRouter()
+//   router.matcher = newRouter.matcher // reset router
+// }
 
-export default router
+const routers = [...constantRoutes, ...asyncRoutes]
+export default routers
