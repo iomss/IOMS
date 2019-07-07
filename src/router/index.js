@@ -37,8 +37,9 @@ import Layout from '@/layout'
 export const constantRoutes = [
   {
     path: '/redirect',
+    name: 'redirect',
+    meta: { title: 'redirect', hidden: true },
     component: Layout,
-    hidden: true,
     children: [
       {
         path: '/redirect/:path*',
@@ -49,31 +50,42 @@ export const constantRoutes = [
   {
     path: '/login',
     name: 'login',
+    meta: { title: '登录', hidden: true },
     component: () => import('@/views/login/index'),
     hidden: true
   },
   {
     path: '/404',
     name: '404',
+    meta: { title: '404', hidden: true },
     component: () => import('@/views/error-page/404'),
     hidden: true
   },
   {
     path: '/401',
     name: '401',
+    meta: { title: '401', hidden: true },
     component: () => import('@/views/error-page/401'),
     hidden: true
   },
   {
     path: '/',
+    name: '/',
+    meta: { title: '首页', icon: 'fa fa-home' },
     component: Layout,
     redirect: '/index',
     children: [
       {
         path: 'index',
         component: () => import('@/views/home/index'),
-        name: '首页',
-        meta: { title: '首页', icon: 'fa fa-home', affix: true }
+        name: 'index',
+        meta: { title: '状态概览', icon: 'fa fa-home', affix: true }
+      },
+      {
+        path: 'myjob',
+        component: () => import('@/views/home/myjob'),
+        name: 'myjob',
+        meta: { title: '我的工作', icon: 'fa fa-home', affix: true }
       }
     ]
   }
@@ -148,7 +160,7 @@ export const asyncRoutes = [
       }
     ]
   },
-  { path: '*', redirect: '/404', hidden: true }
+  { path: '*', name: '*', meta: { title: '*', hidden: true }, redirect: '/404', hidden: true }
 ]
 
 // const createRouter = () =>

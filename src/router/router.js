@@ -24,7 +24,7 @@ function hasRoles(routes, roles) {
   return roles.includes(needroles[0])
 }
 
-const whiteList = ['/login', '/auth-redirect', '/401', '/404', '/index'] // no roles whitelist
+const whiteList = ['/login', '/auth-redirect', '/401', '/404', '/index', '/myjob'] // no roles whitelist
 
 /**
  * 路由拦截

@@ -40,14 +40,14 @@ export default {
       const first = matched[0]
 
       if (!this.isHome(first)) {
-        matched = [{ path: '/index', meta: { title: '首页' }}].concat(matched, !!matched.parent)
+        matched = [{ path: '/index', meta: { title: '首页' }}].concat(matched)
       }
 
       this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
     },
     // 判断是否为首页
     isHome(route) {
-      const name = route && route.name
+      const name = route && route.meta.title
       if (!name) {
         return false
       }
