@@ -107,6 +107,28 @@ export const asyncRoutes = [
           roles: ['show']
         },
         component: () => import('@/views/assets/list')
+      },
+      {
+        path: '/Info/:id',
+        name: 'assets-Info',
+        meta: {
+          title: '资产详情',
+          icon: 'fa fa-home',
+          roles: ['show'],
+          fullPath: '/assets/Info'
+        },
+        component: () => import('@/views/assets/Info')
+      },
+      {
+        path: 'Create',
+        name: 'assets-Create',
+        meta: {
+          title: '新增资产',
+          icon: 'fa fa-home',
+          roles: ['show'],
+          fullPath: '/assets/Create'
+        },
+        component: () => import('@/views/assets/Create')
       }
     ]
   },
@@ -209,7 +231,7 @@ export const asyncRoutes = [
           title: '清单列表',
           icon: 'fa fa-home',
           roles: ['show'],
-          fullPath: 'Inventory/List'
+          fullPath: '/Inventory/List'
         },
         component: () => import('@/views/Inventory/List')
       },
@@ -220,7 +242,7 @@ export const asyncRoutes = [
           title: '清单详情',
           icon: 'fa fa-home',
           roles: ['show'],
-          fullPath: 'Inventory/Info'
+          fullPath: '/Inventory/Info'
         },
         component: () => import('@/views/Inventory/Info')
       },
@@ -231,7 +253,7 @@ export const asyncRoutes = [
           title: '生成清单详情',
           icon: 'fa fa-home',
           roles: ['show'],
-          fullPath: 'Inventory/selectList'
+          fullPath: '/Inventory/selectList'
         },
         component: () => import('@/views/Inventory/selectList')
       }
