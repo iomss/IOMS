@@ -294,10 +294,45 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/Workorder',
+    name: 'Workorder',
+    meta: {
+      title: '我的工作',
+      icon: 'fa fa-home',
+      fullPath: '/Workorder'
+    },
+    component: Layout,
+    redirect: '/Workorder/list',
+    children: [
+      {
+        path: 'list',
+        name: 'Workorder-list',
+        component: () => import('@/views/Workorder/list'),
+        meta: {
+          title: '备件列表',
+          icon: 'fa fa-home',
+          roles: ['show'],
+          fullPath: '/Workorder/list'
+        }
+      },
+      {
+        path: 'deallist',
+        name: 'Workorder-deallist',
+        component: () => import('@/views/Workorder/deallist'),
+        meta: {
+          title: '备件列表',
+          icon: 'fa fa-home',
+          roles: ['show'],
+          fullPath: '/Workorder/deallist'
+        }
+      }
+    ]
+  },
+  {
     path: '/maintenance',
     name: 'maintenance',
     meta: {
-      title: '运维管理',
+      title: '维护维修',
       icon: 'fa fa-home',
       fullPath: '/maintenance'
     },
@@ -309,10 +344,32 @@ export const asyncRoutes = [
         name: 'maintenance-list',
         component: () => import('@/views/maintenance/list'),
         meta: {
-          title: '工单查询',
+          title: '工单列表',
           icon: 'fa fa-home',
-          roles: ['edit'],
+          roles: ['show'],
           fullPath: '/maintenance/list'
+        }
+      },
+      {
+        path: 'assetslist',
+        name: 'maintenance-assetslist',
+        component: () => import('@/views/maintenance/assetslist'),
+        meta: {
+          title: '工单资产列表',
+          icon: 'fa fa-home',
+          roles: ['show'],
+          fullPath: '/maintenance/assetslist'
+        }
+      },
+      {
+        path: 'createerror',
+        name: 'maintenance-createerror',
+        component: () => import('@/views/maintenance/createerror'),
+        meta: {
+          title: '资产列表报修',
+          icon: 'fa fa-home',
+          roles: ['show'],
+          fullPath: '/maintenance/createerror'
         }
       }
     ]
