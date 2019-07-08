@@ -229,7 +229,8 @@ export const asyncRoutes = [
     name: 'Inventory',
     meta: {
       title: '清单管理',
-      icon: 'fa fa-home'
+      icon: 'fa fa-home',
+      fullPath: '/Inventory'
     },
     component: Layout,
     redirect: '/Inventory/list',
@@ -252,7 +253,8 @@ export const asyncRoutes = [
           title: '清单详情',
           icon: 'fa fa-home',
           roles: ['show'],
-          fullPath: '/Inventory/Info'
+          fullPath: '/Inventory/Info',
+          hidden: true
         },
         component: () => import('@/views/Inventory/Info')
       },
