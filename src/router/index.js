@@ -193,6 +193,51 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/Inventory',
+    name: 'Inventory',
+    meta: {
+      title: '清单管理',
+      icon: 'fa fa-home'
+    },
+    component: Layout,
+    redirect: '/Inventory/list',
+    children: [
+      {
+        path: 'list',
+        name: 'Inventory-list',
+        meta: {
+          title: '清单列表',
+          icon: 'fa fa-home',
+          roles: ['show'],
+          fullPath: 'Inventory/List'
+        },
+        component: () => import('@/views/Inventory/List')
+      },
+      {
+        path: 'Info/:id',
+        name: 'Inventory-Info',
+        meta: {
+          title: '清单详情',
+          icon: 'fa fa-home',
+          roles: ['show'],
+          fullPath: 'Inventory/Info'
+        },
+        component: () => import('@/views/Inventory/Info')
+      },
+      {
+        path: 'selectList',
+        name: 'Inventory-selectList',
+        meta: {
+          title: '生成清单详情',
+          icon: 'fa fa-home',
+          roles: ['show'],
+          fullPath: 'Inventory/selectList'
+        },
+        component: () => import('@/views/Inventory/selectList')
+      }
+    ]
+  },
+  {
     path: '/sparepPart',
     name: 'sparepPart',
     meta: {
