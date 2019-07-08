@@ -18,17 +18,16 @@
 import { mapGetters } from 'vuex'
 import Logo from './Logo'
 import routers from '@/router'
-
 export default {
   components: { Logo },
   data() {
     return {
-      routers: routers
+      routers: routers,
+      roles: this.$cookie.get('roles')
     }
   },
   computed: {
     ...mapGetters([
-      'permission_routes',
       'sidebar'
     ]),
     activeMenu() {
@@ -48,12 +47,10 @@ export default {
     },
     getRouter() {
       const showRouter = []
-      debugger
       this.routers.forEach(item => {
+        item.meta.hidden ? '' : item.children ? item.children = item.children.filter(x => !x.meta.hidden && this.roles.includes(x.meta.roles)) : ''
         item.meta.hidden ? '' : showRouter.push(item)
-        item.meta.hidden ? '' : item.children.filter(items => !items.meta.hidden)
       })
-      console.log(showRouter)
       return showRouter
     }
   }
