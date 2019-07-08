@@ -7,11 +7,9 @@
       </el-menu> -->
 
       <el-menu default-active="" class="menu" router :collapse="isCollapse" background-color="#304156" text-color="#fff" active-text-color="#409eff">
-        <el-submenu v-for="item in getRouter" :key="item.path" :index="item.path">
-          <!-- <i :class="item.meta.icon" />
-          <span slot="title">{{ item.meta.title }}</span> -->
+        <el-submenu v-for="(item,index) in getRouter" :key="index" :index="item.meta.fullPath">
           <span slot="title"><i :class="item.meta.icon" style="margin-right:5px;font-size:16px;margin-top:-5px;" />{{ item.meta.title }}</span>
-          <el-menu-item v-for="items in item.children" :key="items.path" :index="items.path">
+          <el-menu-item v-for="(items,indexs) in item.children" :key="indexs" :index="items.meta.fullPath">
             <span slot="title"><i :class="items.meta.icon" style="margin-right:5px;font-size:16px;margin-top:-5px;" />{{ items.meta.title }}</span>
           </el-menu-item>
         </el-submenu>
