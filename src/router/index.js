@@ -104,9 +104,91 @@ export const asyncRoutes = [
         meta: {
           title: '资产列表',
           icon: 'fa fa-home',
-          roles: ['delete']
+          roles: ['show']
         },
         component: () => import('@/views/assets/list')
+      }
+    ]
+  },
+  {
+    path: '/Assetsetting',
+    name: 'Assetsetting',
+    meta: {
+      title: '资产设置',
+      icon: 'fa fa-home'
+    },
+    component: Layout,
+    redirect: '/Assetsetting/equipmentType',
+    children: [
+      {
+        path: 'brandModel',
+        name: 'Assetsetting-brandModel',
+        meta: {
+          title: '品牌型号',
+          icon: 'fa fa-home',
+          roles: ['show']
+        },
+        component: () => import('@/views/Assetsetting/brandModel')
+      },
+      {
+        path: 'equipmentPosition',
+        name: 'Assetsetting-equipmentPosition',
+        meta: {
+          title: '设备位置',
+          icon: 'fa fa-home',
+          roles: ['show']
+        },
+        component: () => import('@/views/Assetsetting/equipmentPosition')
+      },
+      {
+        path: 'equipmentSource',
+        name: 'Assetsetting-equipmentSource',
+        meta: {
+          title: '设备来源',
+          icon: 'fa fa-home',
+          roles: ['show']
+        },
+        component: () => import('@/views/Assetsetting/equipmentSource')
+      },
+      {
+        path: 'equipmentType',
+        name: 'Assetsetting-equipmentType',
+        meta: {
+          title: '设备种类',
+          icon: 'fa fa-home',
+          roles: ['show']
+        },
+        component: () => import('@/views/Assetsetting/equipmentType')
+      },
+      {
+        path: 'systemOwner',
+        name: 'Assetsetting-systemOwner',
+        meta: {
+          title: '所属系统',
+          icon: 'fa fa-home',
+          roles: ['show']
+        },
+        component: () => import('@/views/Assetsetting/systemOwner')
+      },
+      {
+        path: 'systemIntegrate',
+        name: 'Assetsetting-systemIntegrate',
+        meta: {
+          title: '系统集成商',
+          icon: 'fa fa-home',
+          roles: ['show']
+        },
+        component: () => import('@/views/Assetsetting/systemIntegrate')
+      },
+      {
+        path: 'positionType',
+        name: 'Assetsetting-positionType',
+        meta: {
+          title: '位置类型',
+          icon: 'fa fa-home',
+          roles: ['show']
+        },
+        component: () => import('@/views/Assetsetting/positionType')
       }
     ]
   },

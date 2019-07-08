@@ -101,9 +101,7 @@
               <el-table-column prop="tips" label="购置年份" width="90" />
               <el-table-column prop="tips" label="资产原值" width="90" />
               <el-table-column prop="tips" label="增加方式" width="90" />
-              <el-table-column prop="tips" label="集成商">
-                width="130"
-              </el-table-column>
+              <el-table-column prop="tips" label="集成商" width="130" />
               <el-table-column prop="tips" label="录入人" width="80" />
               <el-table-column prop="tips" label="更新时间" width="90" />
               <el-table-column label="操作" width="100">
