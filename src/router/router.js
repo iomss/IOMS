@@ -18,14 +18,15 @@ const router = new VueRouter({
   mode: 'history',
   routes
 })
+
 // 判断权限是否匹配
 function hasRoles(routes, roles) {
   const needroles = routes.meta.roles // Array
   return roles.includes(needroles[0])
 }
 
-const whiteList = ['/login', '/auth-redirect', '/401', '/404', '/index', '/myjob'] // no roles whitelist
-
+const noRoleWhiteList = ['/login', '/401', '/404', '/index', '/myjob'] // 不需要权限
+const noLoginWhitdList = ['/login', '/404', '/401'] // 不需要登录
 /**
  * 路由拦截
  * 权限验证
@@ -35,43 +36,50 @@ router.beforeEach((to, from, next) => {
   NProgress.start()
 
   const token = cookies.get('accessToken') // 通过cookie获取登录凭证token
-  const roles = cookies.get('roles').split(',') // 通过cookie 获取权限 roles
-  // 根据token roles whiteList判断是否需要检查权限  判断是否已存在token  是否已获取到当前登录用户权限  此页面路由是否需要检查权限
-  const needCheckRoles = token && roles.length >= 1 && whiteList.indexOf(to.path) === -1
-  if (needCheckRoles) {
-    if (hasRoles(to, roles)) {
-      next()
-    } else {
-      next({
-        name: '401',
-        query: {
-          redirect: to.fullPath
+  const roles = cookies.get('roles') ? cookies.get('roles').split(',') : [] // 通过cookie 获取权限 roles
+
+  const needCheckRoles = roles.length >= 1 && noRoleWhiteList.indexOf(to.path) === -1 // 判断是否需要权限 true 需要 false 不需要
+
+  const needLogin = noLoginWhitdList.indexOf(to.path) === -1 // 判断是否需要登录 false 需要 true 不需要
+
+  // 判断前往路径是否需要登录
+  if (needLogin) {
+    // 需要登录
+    // 根据token是否存在判断是否已登录
+    if (token) {
+      // 存在
+      // 判断是否需要权限
+      if (needCheckRoles) {
+        // 需要权限
+        // 判断是否存在相关权限
+        if (hasRoles(to, roles)) {
+          // 存在直接前往
+          next()
+        } else {
+          // 不存在前往401
+          next({
+            name: '401',
+            query: {
+              redirect: to.fullPath
+            }
+          })
         }
-      })
-    }
-  } else {
-    if (!token) {
-      // 没有token前往登录
+      } else {
+        // 不需要权限直接前往
+        next()
+      }
+    } else {
+      // 不存在跳转登录
       next({
         name: 'login',
         query: {
           redirect: to.fullPath
         }
       })
-    } else if (to.meta.noCheckRoles) {
-      // 不需要检查权限直接前往
-      next()
-    } else if (roles.length < 1) {
-      // 权限长度小于1 ,没有获取到权限 前往401
-      next({
-        name: '401',
-        query: {
-          redirect: to.fullPath
-        }
-      })
-    } else {
-      next()
     }
+  } else {
+    // 不需要登录
+    next()
   }
 })
 
