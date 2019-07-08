@@ -51,7 +51,7 @@ export default {
         item.meta.hidden ? '' : item.children ? item.children = item.children.filter(x => !x.meta.hidden && this.roles.includes(x.meta.roles)) : ''
         item.meta.hidden ? '' : showRouter.push(item)
       })
-      return showRouter
+      return showRouter.filter(item => item.children.length !== 0)
     }
   }
 }
