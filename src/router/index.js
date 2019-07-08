@@ -74,13 +74,13 @@ export const constantRoutes = [
         path: 'index',
         component: () => import('@/views/home/index'),
         name: 'index',
-        meta: { title: '状态概览', icon: 'fa fa-home', fullPath: '/index', affix: true }
+        meta: { title: '状态概览', icon: 'fa fa-home', fullPath: '/index', roles: [], affix: true }
       },
       {
         path: 'myjob',
         component: () => import('@/views/home/myjob'),
         name: 'myjob',
-        meta: { title: '我的工作', icon: 'fa fa-home', fullPath: '/myjob', affix: true }
+        meta: { title: '我的工作', icon: 'fa fa-home', fullPath: '/myjob', roles: [], affix: true }
       }
     ]
   }
