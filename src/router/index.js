@@ -66,7 +66,7 @@ export const constantRoutes = [
   {
     path: '/',
     name: '/',
-    meta: { title: '首页', icon: 'fa fa-home' },
+    meta: { title: '首页', icon: 'fa fa-home', fullPath: '/' },
     component: Layout,
     redirect: '/index',
     children: [
@@ -74,13 +74,13 @@ export const constantRoutes = [
         path: 'index',
         component: () => import('@/views/home/index'),
         name: 'index',
-        meta: { title: '状态概览', icon: 'fa fa-home', affix: true }
+        meta: { title: '状态概览', icon: 'fa fa-home', fullPath: '/index', affix: true }
       },
       {
         path: 'myjob',
         component: () => import('@/views/home/myjob'),
         name: 'myjob',
-        meta: { title: '我的工作', icon: 'fa fa-home', affix: true }
+        meta: { title: '我的工作', icon: 'fa fa-home', fullPath: '/myjob', affix: true }
       }
     ]
   }
@@ -93,7 +93,8 @@ export const asyncRoutes = [
     name: 'assets',
     meta: {
       title: '资产管理',
-      icon: 'fa fa-home'
+      icon: 'fa fa-home',
+      fullPath: '/assets'
     },
     component: Layout,
     redirect: '/assets/list',
@@ -104,7 +105,8 @@ export const asyncRoutes = [
         meta: {
           title: '资产列表',
           icon: 'fa fa-home',
-          roles: ['show']
+          roles: ['show'],
+          fullPath: '/assets/list'
         },
         component: () => import('@/views/assets/list')
       }
@@ -115,7 +117,8 @@ export const asyncRoutes = [
     name: 'Assetsetting',
     meta: {
       title: '资产设置',
-      icon: 'fa fa-home'
+      icon: 'fa fa-home',
+      fullPath: '/Assetsetting'
     },
     component: Layout,
     redirect: '/Assetsetting/equipmentType',
@@ -126,7 +129,8 @@ export const asyncRoutes = [
         meta: {
           title: '品牌型号',
           icon: 'fa fa-home',
-          roles: ['show']
+          roles: ['show'],
+          fullPath: '/Assetsetting/brandModel'
         },
         component: () => import('@/views/Assetsetting/brandModel')
       },
@@ -136,7 +140,8 @@ export const asyncRoutes = [
         meta: {
           title: '设备位置',
           icon: 'fa fa-home',
-          roles: ['show']
+          roles: ['show'],
+          fullPath: '/Assetsetting/equipmentPosition'
         },
         component: () => import('@/views/Assetsetting/equipmentPosition')
       },
@@ -146,7 +151,8 @@ export const asyncRoutes = [
         meta: {
           title: '设备来源',
           icon: 'fa fa-home',
-          roles: ['show']
+          roles: ['show'],
+          fullPath: '/Assetsetting/equipmentSource'
         },
         component: () => import('@/views/Assetsetting/equipmentSource')
       },
@@ -156,7 +162,8 @@ export const asyncRoutes = [
         meta: {
           title: '设备种类',
           icon: 'fa fa-home',
-          roles: ['show']
+          roles: ['show'],
+          fullPath: '/Assetsetting/equipmentType'
         },
         component: () => import('@/views/Assetsetting/equipmentType')
       },
@@ -166,7 +173,8 @@ export const asyncRoutes = [
         meta: {
           title: '所属系统',
           icon: 'fa fa-home',
-          roles: ['show']
+          roles: ['show'],
+          fullPath: '/Assetsetting/systemOwner'
         },
         component: () => import('@/views/Assetsetting/systemOwner')
       },
@@ -176,7 +184,8 @@ export const asyncRoutes = [
         meta: {
           title: '系统集成商',
           icon: 'fa fa-home',
-          roles: ['show']
+          roles: ['show'],
+          fullPath: '/Assetsetting/systemIntegrate'
         },
         component: () => import('@/views/Assetsetting/systemIntegrate')
       },
@@ -186,7 +195,8 @@ export const asyncRoutes = [
         meta: {
           title: '位置类型',
           icon: 'fa fa-home',
-          roles: ['show']
+          roles: ['show'],
+          fullPath: '/Assetsetting/positionType'
         },
         component: () => import('@/views/Assetsetting/positionType')
       }
@@ -197,7 +207,8 @@ export const asyncRoutes = [
     name: 'sparepPart',
     meta: {
       title: '备品备件',
-      icon: 'fa fa-home'
+      icon: 'fa fa-home',
+      fullPath: '/sparepPart'
     },
     component: Layout,
     redirect: '/sparepPart/list',
@@ -209,7 +220,8 @@ export const asyncRoutes = [
         meta: {
           title: '备件列表',
           icon: 'fa fa-home',
-          roles: ['show']
+          roles: ['show'],
+          fullPath: '/sparepPart/list'
         }
       }
     ]
@@ -219,7 +231,8 @@ export const asyncRoutes = [
     name: 'maintenance',
     meta: {
       title: '运维管理',
-      icon: 'fa fa-home'
+      icon: 'fa fa-home',
+      fullPath: '/maintenance'
     },
     component: Layout,
     redirect: '/maintenance/list',
@@ -231,7 +244,8 @@ export const asyncRoutes = [
         meta: {
           title: '工单查询',
           icon: 'fa fa-home',
-          roles: ['edit']
+          roles: ['edit'],
+          fullPath: '/maintenance/list'
         }
       }
     ]
