@@ -1,4 +1,4 @@
-<!-- 工单报修-资产列表页面 -->
+<!-- 值班人员-工单报修-资产列表页面 -->
 <template>
   <div>
     <el-row>
@@ -48,20 +48,6 @@ export default {
   },
   data() {
     return {
-      formSearchShow: false,
-      removeQuestionVisible: false,
-      formSearch: {
-        unit: '',
-        position: '',
-        sort: '',
-        owner: '',
-        starttime: '',
-        endtime: '',
-        source: '',
-        age: '',
-        brand: '',
-        Model: ''
-      },
       tableData: [],
       multipleSelection: '', // 表单选中行id
       removeData: null
@@ -81,7 +67,9 @@ export default {
     },
     showerror(data) { // 列表单行报修方法
       console.log(data)
-      // 跳转报修录入数据页面createerror
+      this.$router.push({
+        name: 'WatchmanDispatch'
+      })
     }
   }
 }

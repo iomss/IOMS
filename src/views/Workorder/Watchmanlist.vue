@@ -1,11 +1,11 @@
-<!-- 我的工作页面 -->
+<!-- 值班员工作页面 -->
 <template>
   <div>
     <el-row>
       <el-col>
         <div class="panel">
           <div class="header">
-            <h4>我的工作</h4>
+            <h4>值班员-我的工作</h4>
           </div>
           <div class="content">
             <el-table :data="tableData" stripe border style="width: 100%" @selection-change="handleSelectionChange">
@@ -30,8 +30,12 @@
               <el-table-column prop="tips" label="维修员" width="90" />
               <el-table-column prop="tips" label="状态" width="90" />
               <el-table-column prop="tips" label="附加状态" width="130" />
+              <el-table-column prop="tips" label="代维状态" width="130" />
+              <el-table-column prop="tips" label="报修等级" width="130" />
+              <el-table-column prop="tips" label="更新时间" width="130" />
               <el-table-column label="操作" width="100">
                 <template slot-scope="scope">
+                  <!-- 工单可派单可取消（未接单） -->
                   <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="success" @click="showInfo(scope.row)">详情</el-button>
                   <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="primary" @click="UpdateStage(scope.row)">编辑</el-button>
                 </template>
@@ -51,13 +55,6 @@ export default {
   },
   data() {
     return {
-      formSearch: {
-        unit: '',
-        position: '',
-        sort: '',
-        owner: '',
-        starttime: ''
-      },
       tableData: [],
       multipleSelection: '' // 表单选中行
     }
@@ -72,10 +69,10 @@ export default {
       this.multipleSelection = val
     },
     showInfo(val) { // 点击详情按钮
-      this.$router.push('/Asset/Info' + val)
+      // this.$router.push('/Asset/Info' + val)
     },
     UpdateStage(val) { // 点击编辑按钮
-      this.$router.push('/Asset/Info' + val)
+      // this.$router.push('/Asset/Info' + val)
     }
   }
 }
