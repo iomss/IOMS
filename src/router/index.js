@@ -403,6 +403,17 @@ export const asyncRoutes = [
       }
     },
     {
+      path: 'MaintainerChangeOrder',
+      name: 'Workorder-MaintainerChangeOrder',
+      component: () => import('@/views/Workorder/MaintainerChangeOrder'),
+      meta: {
+        title: '维修工程师转单',
+        icon: 'fa fa-home',
+        roles: ['show'],
+        fullPath: '/Workorder/MaintainerChangeOrder'
+      }
+    },
+    {
       path: 'AcceptorOperate',
       name: 'Workorder-AcceptorOperate',
       component: () => import('@/views/Workorder/AcceptorOperate'),
