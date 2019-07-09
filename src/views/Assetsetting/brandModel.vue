@@ -16,9 +16,10 @@
           <div class="content">
             <el-table :data="tableDataBrand" stripe border style="width: 100%" @selection-change="handleSelectionChangeBrand">
               <el-table-column type="selection" width="40" />
-              <el-table-column prop="id" label="序号" width="1-0" />
-              <el-table-column label="品牌名称" width="150" />
+              <el-table-column prop="id" label="序号" width="100" />
+              <el-table-column prop="name" label="品牌名称" width="150" />
             </el-table>
+            <pagination v-show="totalBrand>0" :total="totalBrand" :page.sync="pageBrand" @pagination="getListBrand" />
             <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeQuestionVisibleBrand" width="220px">
               <span>您确定要删除此条数据？</span>
               <span slot="footer" class="dialog-footer">
@@ -54,9 +55,10 @@
           <div class="content">
             <el-table :data="tableDataModel" stripe border style="width: 100%" @selection-change="handleSelectionChangeModel">
               <el-table-column type="selection" width="40" />
-              <el-table-column prop="id" label="序号" width="1-0" />
-              <el-table-column label="型号名称" width="150" />
+              <el-table-column prop="id" label="序号" width="100" />
+              <el-table-column prop="name" label="型号名称" width="150" />
             </el-table>
+            <pagination v-show="totalModel>0" :total="totalModel" :page.sync="pageBrand" @pagination="getListModel" />
             <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeQuestionVisibleModel" width="220px">
               <span>您确定要删除此条数据？</span>
               <span slot="footer" class="dialog-footer">
@@ -82,10 +84,10 @@
   </div>
 </template>
 <script>
-// import page from '@/components/page.vue'
+import pagination from '@/components/Pagination/index.vue'
 export default {
   components: {
-    // page
+    pagination
   },
   data() {
     return {
@@ -98,8 +100,11 @@ export default {
       changeActiveVisibleModel: false, // 添加弹出框隐藏
       titleModel: '添加型号名称', // 型号弹框标题
       formSearchModel: {// 弹框表单数据
-        type: ''
+        id: '',
+        name: ''
       },
+      totalBrand: 0, // 品牌总数量
+      pageBrand: 1, // 品牌第几页
       // brand数据
       removeDataBrand: null, // 当前表单所选删除行
       tableDataBrand: [], // 全部数据
@@ -109,8 +114,11 @@ export default {
       changeActiveVisibleBrand: false, // 添加弹出框隐藏
       titleBrand: '添加品牌名称', // 品牌弹框标题
       formSearchBrand: {// 弹框表单数据
-        type: ''
-      }
+        id: '',
+        name: ''
+      },
+      totalModel: 0, // 型号总数量
+      pageModel: 1 // 型号第几页
     }
   },
   computed: {},
@@ -121,13 +129,14 @@ export default {
   },
   methods: {
     GetDataBrand() {
-      // this.$axios.get('http://114.243.152.180:7788/api/Meta/Type').then(response => {
-      //   if (response.data.success) {
-      //     this.tableDataBrand = response.data.result
-      //   } else {
-      //     this.$message.error(response.data.message)
-      //   }
-      // })
+      this.$axios.get('/api/Meta/Brand').then(response => {
+        this.tableDataBrand = response.data
+        this.totalBrand = response.totalCount
+        this.pageBrand = response.pageCount
+      })
+    },
+    getListBrand() { // 品牌切换page方法
+
     },
     searchBrand() {
       // 全局查询方法
@@ -145,10 +154,13 @@ export default {
     updateBrand() {
       // 修改方法
       if (this.multipleSelectionBrand === '') {
-        this.$message.error('请至少选择一条数据')
+        this.$message.error('请选择一条数据')
+      } else if (this.multipleSelectionBrand.length !== 1) {
+        this.$message.error('请选择一条数据')
       } else {
         this.titleBrand = '编辑品牌名称'
         this.changeActiveVisibleBrand = true// 显示弹框
+        this.formSearchBrand = this.multipleSelectionBrand[0]
       }
     },
     deletBrand(row) {
@@ -175,18 +187,20 @@ export default {
     },
     handleSelectionChangeBrand(val) {
       this.multipleSelectionBrand = val
+      console.log(val[0])
     },
     //
     // Model所有方法
     //
     GetDataModel() {
-      // this.$axios.get('http://114.243.152.180:7788/api/Meta/Type').then(response => {
-      //   if (response.data.success) {
-      //     this.tableDataModel = response.data.result
-      //   } else {
-      //     this.$message.error(response.data.message)
-      //   }
-      // })
+      this.$axios.get('/api/Meta/Model').then(response => {
+        this.tableDataModel = response.data
+        this.totalModel = response.totalCount
+        this.pageModel = response.pageCount
+      })
+    },
+    getListModel() { // 型号切换page方法
+
     },
     searchModel() {
       // 全局查询方法
@@ -204,10 +218,13 @@ export default {
     updateModel() {
       // 修改方法
       if (this.multipleSelectionModel === '') {
-        this.$message.error('请至少选择一条数据')
+        this.$message.error('请选择一条数据')
+      } else if (this.multipleSelectionModel.length !== 1) {
+        this.$message.error('请选择一条数据')
       } else {
-        this.titleModel = '编辑型号名称'
+        this.titleModel = '编辑品牌名称'
         this.changeActiveVisibleModel = true// 显示弹框
+        this.formSearchModel = this.multipleSelectionModel[0]
       }
     },
     deletModel(row) {
