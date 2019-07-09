@@ -140,7 +140,8 @@ export const asyncRoutes = [
         title: '资产详情',
         icon: 'fa fa-home',
         roles: ['show'],
-        fullPath: '/assets/Info'
+        fullPath: '/assets/Info',
+        hidden: true
       },
       component: () => import('@/views/assets/Info')
     },
@@ -380,14 +381,36 @@ export const asyncRoutes = [
       }
     },
     {
-      path: 'MaintainerReceipt',
-      name: 'Workorder-MaintainerReceipt',
-      component: () => import('@/views/Workorder/MaintainerReceipt'),
+      path: 'MaintainerAddRecord',
+      name: 'Workorder-MaintainerAddRecord',
+      component: () => import('@/views/Workorder/MaintainerAddRecord'),
       meta: {
         title: '维修工程师添加维修记录',
         icon: 'fa fa-home',
         roles: ['show'],
+        fullPath: '/Workorder/MaintainerAddRecord'
+      }
+    },
+    {
+      path: 'MaintainerReceipt',
+      name: 'Workorder-MaintainerReceipt',
+      component: () => import('@/views/Workorder/MaintainerReceipt'),
+      meta: {
+        title: '维修工程师接单',
+        icon: 'fa fa-home',
+        roles: ['show'],
         fullPath: '/Workorder/MaintainerReceipt'
+      }
+    },
+    {
+      path: 'MaintainerChangeOrder',
+      name: 'Workorder-MaintainerChangeOrder',
+      component: () => import('@/views/Workorder/MaintainerChangeOrder'),
+      meta: {
+        title: '维修工程师转单',
+        icon: 'fa fa-home',
+        roles: ['show'],
+        fullPath: '/Workorder/MaintainerChangeOrder'
       }
     },
     {

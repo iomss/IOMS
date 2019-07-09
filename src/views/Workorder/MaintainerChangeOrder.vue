@@ -1,11 +1,11 @@
-<!-- 维修工程师接单页面 -->
+<!-- 维修工程师转单页面 -->
 <template>
   <div>
     <el-row>
       <el-col>
         <div class="panel">
           <div class="header">
-            <h4>维修单详情</h4>
+            <h4>维修转单详情</h4>
             <div class="Infodata">
               <ul>
                 <li><span>维修单编号:</span><b>{{ InfoData }}</b></li>
@@ -22,14 +22,22 @@
                 <li><span>报修时间:</span><b>{{ InfoData }}</b></li>
                 <li><span>派工次数:</span><b>{{ InfoData }}</b></li>
                 <li><span>维修次数:</span><b>{{ InfoData }}</b></li>
+                <li>
+                  <el-form ref="form" :model="formSearch" label-width="120px">
+                    <el-form-item label="派工:">
+                      <el-select v-model="formSearch.owner" clearable placeholder="派工" size="small">
+                        <el-option key="1" label="启用" value="true" />
+                        <el-option key="2" label="禁用" value="false" />
+                      </el-select>
+                    </el-form-item>
+                  </el-form>
+                </li>
               </ul>
             </div>
           </div>
         </div>
         <div class="content">
-          <el-button type="primary" size="small" @click="reciptwork()">接受</el-button>
-          <el-button type="primary" size="small" @click="backworke()">退回</el-button>
-          <el-button type="primary" size="small" @click="historywork()">历史详情</el-button>
+          <el-button type="primary" size="small" @click="partwork()">分配工单</el-button>
           <el-button type="primary" size="small" @click="processrecord()">过程记录</el-button>
           <el-button type="danger" size="small" @click="closework()">关闭</el-button>
         </div>
@@ -44,7 +52,8 @@ export default {
   },
   data() {
     return {
-      InfoData: []
+      InfoData: [],
+      formSearch: {}
     }
   },
   computed: {},
@@ -56,13 +65,7 @@ export default {
     getdata() {
       // 获取维修详情数据
     },
-    reciptwork(val) { // 点击接受按钮
-      // this.$router.push('/Asset/Info' + val)
-    },
-    backworke(val) { // 点击退回按钮
-      // this.$router.push('/Asset/Info' + val)
-    },
-    historywork() { // 点击历史详情
+    partwork() { // 分配工单
 
     },
     processrecord() { // 点击过程记录
@@ -83,12 +86,9 @@ export default {
       list-style: none;
       width: 100%;
       padding-left: 10px;
-      border-top: 1px solid #999;
       li {
         width: 49%;
         display: inline-block;
-        border-bottom: 1px solid #999;
-        border-right: 1px solid #999;
         span {
           display: inline-block;
           font-size: 16px;
@@ -105,25 +105,7 @@ export default {
   }
 }
 .content {
-  margin-top: 30px;
-  .el-table th,
-  .el-table td {
-    padding: 5px;
-  }
-  .el-form-item {
-    width: 49%;
-    display: inline-block;
-    .el-select {
-      width: 100%;
-    }
-    .el-date-editor {
-      width: 100%;
-    }
-  }
-  .form_total {
-    width: 100%;
-    text-align: center;
-    margin-top: 30px;
-  }
+  width: 100%;
+  text-align: center;
 }
 </style>

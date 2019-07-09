@@ -34,6 +34,8 @@
               </el-dropdown>
             </div>
             <div class="toolsrt">
+              <el-input v-model="searchMessage" placeholder="全局查询" size="small" />
+              <el-button type="primary" size="small" @click="searchData()">查询</el-button>
               <el-button type="primary" plain size="small" @click="formSearchShow = !formSearchShow">高级搜索</el-button>
             </div>
             <el-card v-if="formSearchShow" class="search" :body-style="{ padding: '20px' }">
@@ -88,20 +90,20 @@
                   <span v-for="(item,index) in scope.row.answer" :key="index" style="margin-right:8px;">{{ item===1?"A":item===2?"B":item===3?"C":"D" }}</span>
                 </template>
               </el-table-column>
-              <el-table-column prop="detail" label="资产编码" width="90" />
+              <el-table-column prop="code " label="资产编码" width="90" />
               <el-table-column prop="questionType" label="资产类别" width="90" />
               <el-table-column prop="year" label="资产名称" width="90" />
-              <el-table-column prop="number" label="品牌" width="70" />
-              <el-table-column prop="recommendedTime" label="型号" width="100" />
-              <el-table-column prop="globalCorrectRate" label="所属系统" width="100" />
+              <el-table-column prop="brand" label="品牌" width="70" />
+              <el-table-column prop="model" label="型号" width="100" />
+              <el-table-column prop="system" label="所属系统" width="100" />
               <el-table-column prop="level" label="所属子系统" width="120" />
-              <el-table-column prop="analysis" label="安装位置" width="90" />
+              <el-table-column prop="position" label="安装位置" width="90" />
               <el-table-column prop="tips" label="投用时间" width="90" />
-              <el-table-column prop="tips" label="交工时间" width="90" />
-              <el-table-column prop="tips" label="购置年份" width="90" />
-              <el-table-column prop="tips" label="资产原值" width="90" />
-              <el-table-column prop="tips" label="增加方式" width="90" />
-              <el-table-column prop="tips" label="集成商" width="130" />
+              <el-table-column prop="handoverDate" label="交工时间" width="90" />
+              <el-table-column prop="purchaseYear" label="购置年份" width="90" />
+              <el-table-column prop="original" label="资产原值" width="90" />
+              <el-table-column prop="source" label="增加方式" width="90" />
+              <el-table-column prop="si" label="集成商" width="130" />
               <el-table-column prop="tips" label="录入人" width="80" />
               <el-table-column prop="tips" label="更新时间" width="90" />
               <el-table-column label="操作" width="100">
@@ -149,15 +151,25 @@ export default {
       },
       tableData: [],
       multipleSelection: '', // 表单选中行
-      removeData: null
+      removeData: null,
+      searchMessage: '', // 全局搜索的值
+      total: 0,
+      page: 0
     }
   },
   computed: {},
   mounted() {
     // this.initData(1)
-    // this.getOptionsYears()
+    this.getAllData()
   },
   methods: {
+    getAllData() {
+      this.$axios.get('/api/Assets').then(response => {
+        this.tableData = response.data
+        this.total = response.totalCount
+        this.page = response.pageCount
+      })
+    },
     create() { // 新增资产
       this.$router.push('/Asset/Create')
     },
@@ -172,6 +184,9 @@ export default {
     },
     export() { // 导出方法
 
+    },
+    searchData() {
+      // 全局查询方法
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
@@ -209,7 +224,7 @@ export default {
   height: 64px;
 }
 .select {
-  width: 40%;
+  width: 30%;
   display: inline-block;
 }
 .tools {
@@ -217,9 +232,13 @@ export default {
   display: inline-block;
 }
 .toolsrt {
-  width: 20%;
+  width: 30%;
   display: inline-block;
   text-align: right;
+  .el-input {
+    display: inline-block;
+    width: 200px;
+  }
 }
 .search {
   width: 450px;
