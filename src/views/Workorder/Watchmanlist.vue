@@ -6,6 +6,14 @@
         <div class="panel">
           <div class="header">
             <h4>值班员-我的工作</h4>
+            <div class="select">
+              <el-button type="primary" size="small" @click="selectstate()">新建报修单</el-button>
+              <el-button type="danger" size="small" @click="deletedata()">删除</el-button>
+            </div>
+            <div class="toolsrt">
+              <el-input v-model="searchMessage" placeholder="请输入查询内容" size="small" />
+              <el-button type="primary" size="small" @click="searchData()">查询</el-button>
+            </div>
           </div>
           <div class="content">
             <el-table :data="tableData" stripe border style="width: 100%" @selection-change="handleSelectionChange">
@@ -73,6 +81,12 @@ export default {
     },
     UpdateStage(val) { // 点击编辑按钮
       // this.$router.push('/Asset/Info' + val)
+    },
+    deletedata() { // 删除报修单
+
+    },
+    searchData() { // 查询工单
+
     }
   }
 }
@@ -80,6 +94,22 @@ export default {
 <style lang='scss' scoped>
 .header {
   width: 100%;
+  .select {
+    margin: 10px 0px;
+    width: 49%;
+    display: inline-block;
+    .el-form {
+      width: 200px;
+    }
+  }
+  .toolsrt {
+    width: 50%;
+    display: inline-block;
+    .el-input {
+      display: inline-block;
+      width: 200px;
+    }
+  }
 }
 .content {
   margin-top: 30px;

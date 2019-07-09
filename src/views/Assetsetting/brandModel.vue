@@ -7,7 +7,7 @@
           <div class="header">
             <div class="search">
               <el-input v-model="searchMessageBrand" placeholder="全局查询" size="small" />
-              <el-button type="primary" size="small" @click="searchbBand()">查询</el-button>
+              <el-button type="primary" size="small" @click="searchBrand()">查询</el-button>
               <el-button type="success" size="small" @click="addBrand()">添加</el-button>
               <el-button type="warning" size="small" @click="updateBrand()">修改</el-button>
               <el-button type="danger" size="small" @click="deletBrand()">删除</el-button>

@@ -8,10 +8,19 @@
       <el-col :span="18">
         <div class="panel">
           <div class="header">
-            <h4>资产列表</h4>
+            <div class="tools">
+              <el-button type="primary" size="small" @click="showerror()">报修</el-button>
+            </div>
             <div class="select">
-              <el-button type="primary" plain size="small" @click="selectstate(0)">硬件</el-button>
-              <el-button type="primary" plain size="small" @click="selectstate(1)">软件</el-button>
+              <el-select v-model="formSearch.unit" clearable placeholder="所属系统" size="small">
+                <el-option key="0" label="全部" value="0" />
+                <el-option key="1" label="单选" value="1" />
+                <el-option key="2" label="多选" value="2" />
+              </el-select>
+            </div>
+            <div class="toolsrt">
+              <el-input v-model="searchMessage" placeholder="请输入查询内容" size="small" />
+              <el-button type="primary" size="small" @click="searchData()">查询</el-button>
             </div>
             <div class="content">
               <el-table :data="tableData" stripe border style="width: 100%" @selection-change="handleSelectionChange">
@@ -22,11 +31,13 @@
                     <span v-for="(item,index) in scope.row.answer" :key="index" style="margin-right:8px;">{{ item===1?"A":item===2?"B":item===3?"C":"D" }}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="detail" label="设备名称" width="90" />
-                <el-table-column prop="questionType" label="品牌" width="90" />
-                <el-table-column prop="year" label="型号" width="90" />
-                <el-table-column prop="number" label="位置" width="70" />
-                <el-table-column prop="recommendedTime" label="维修次数" width="100" />
+                <el-table-column prop="detail" label="资产编码" width="90" />
+                <el-table-column prop="questionType" label="资产名称" width="90" />
+                <el-table-column prop="year" label="品牌" width="90" />
+                <el-table-column prop="number" label="型号" width="70" />
+                <el-table-column prop="number" label="所属系统" width="70" />
+                <el-table-column prop="number" label="安装位置" width="70" />
+                <el-table-column prop="recommendedTime" label="报修次数" width="100" />
                 <el-table-column label="操作" width="100">
                   <template slot-scope="scope">
                     <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="success" @click="showerror(scope.row)">报修</el-button>
@@ -50,7 +61,9 @@ export default {
     return {
       tableData: [],
       multipleSelection: '', // 表单选中行id
-      removeData: null
+      removeData: null,
+      formSearch: {}, // 筛选所属系统数据
+      searchMessage: '' // 查询内容
     }
   },
   computed: {},
@@ -59,8 +72,8 @@ export default {
     // this.getOptionsYears()
   },
   methods: {
-    selectstate(val) { // 硬件软件按钮筛选
-      console.log(val)
+    searchData() {
+      // 全局查询方法
     },
     handleSelectionChange(val) { // 表单选中行
       this.multipleSelection = val
@@ -78,37 +91,27 @@ export default {
 .header {
   width: 100%;
 }
-.select {
-  width: 40%;
-  display: inline-block;
-}
 .tools {
-  width: 30%;
+  margin-top: 20px;
+}
+.select {
+  margin: 10px 0px;
+  width: 49%;
   display: inline-block;
+  .el-select {
+    width: 200px;
+  }
 }
 .toolsrt {
-  width: 20%;
+  width: 50%;
   display: inline-block;
   text-align: right;
-}
-.search {
-  width: 450px;
-  position: absolute;
-  right: 0;
-  z-index: 4;
   .el-input {
     display: inline-block;
-    width: 49%;
-  }
-  .el-select {
-    margin-bottom: 5px;
-    .el-input {
-      width: 100%;
-    }
+    width: 200px;
   }
 }
 .content {
-  margin-top: 30px;
   .el-table th,
   .el-table td {
     padding: 5px;
