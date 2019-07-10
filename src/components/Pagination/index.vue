@@ -65,13 +65,13 @@ export default {
     }
   },
   methods: {
-    // 页码改变
+    // 条数改变
     handleSizeChange(val) {
       this.$emit('pagination', { page: this.currentPage, limit: val })
     },
-    // 展示条数改变
+    // 页码改变
     handleCurrentChange(val) {
-      this.$emit('pagination', { page: 1, limit: this.pageSize })
+      this.$emit('pagination', { page: val, limit: this.pageSize })
     }
   }
 }
