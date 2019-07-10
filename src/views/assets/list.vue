@@ -85,27 +85,27 @@
             <el-table :data="tableData" stripe border style="width: 100%" @selection-change="handleSelectionChange">
               <el-table-column type="selection" width="40" />
               <el-table-column prop="id" label="序号" width="60" />
-              <el-table-column label="状态" width="80">
+              <el-table-column prop="state" label="状态" width="80">
                 <template slot-scope="scope">
-                  <span v-for="(item,index) in scope.row.answer" :key="index" style="margin-right:8px;">{{ item===1?"A":item===2?"B":item===3?"C":"D" }}</span>
+                  {{ scope.row.state===0?"A":scope.row.state===0?"B":"C" }}
                 </template>
               </el-table-column>
               <el-table-column prop="code " label="资产编码" width="90" />
-              <el-table-column prop="questionType" label="资产类别" width="90" />
-              <el-table-column prop="year" label="资产名称" width="90" />
-              <el-table-column prop="brand" label="品牌" width="70" />
-              <el-table-column prop="model" label="型号" width="100" />
-              <el-table-column prop="system" label="所属系统" width="100" />
-              <el-table-column prop="level" label="所属子系统" width="120" />
+              <el-table-column prop="equimentType.name" label="资产类别" width="90" />
+              <el-table-column prop="equipment.name" label="资产名称" width="90" />
+              <el-table-column prop="brand.name" label="品牌" width="70" />
+              <el-table-column prop="model.name" label="型号" width="100" />
+              <el-table-column prop="parentSystem" label="所属系统" width="100" />
+              <el-table-column prop="system.name" label="所属子系统" width="120" />
               <el-table-column prop="position" label="安装位置" width="90" />
-              <el-table-column prop="tips" label="投用时间" width="90" />
+              <el-table-column prop="enableTime" label="投用时间" width="90" />
               <el-table-column prop="handoverDate" label="交工时间" width="90" />
               <el-table-column prop="purchaseYear" label="购置年份" width="90" />
               <el-table-column prop="original" label="资产原值" width="90" />
               <el-table-column prop="source" label="增加方式" width="90" />
-              <el-table-column prop="si" label="集成商" width="130" />
-              <el-table-column prop="tips" label="录入人" width="80" />
-              <el-table-column prop="tips" label="更新时间" width="90" />
+              <el-table-column prop="si.name" label="集成商" width="130" />
+              <el-table-column prop="recordUser" label="录入人" width="80" />
+              <el-table-column prop="lastUpdateTime" label="更新时间" width="90" />
               <el-table-column label="操作" width="100">
                 <template slot-scope="scope">
                   <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="success" @click="showInfo(scope.row)">详情</el-button>
@@ -114,6 +114,7 @@
                 </template>
               </el-table-column>
             </el-table>
+            <pagination v-show="total>0" :total="total" :page.sync="page" @pagination="getList" />
             <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeQuestionVisible" width="220px">
               <span>您确定要删除此条数据？</span>
               <span slot="footer" class="dialog-footer">
@@ -214,6 +215,9 @@ export default {
       //     _this.$message.error(response.data.error.message)
       //   }
       // })
+    },
+    getList() { // page事件
+
     }
   }
 }
