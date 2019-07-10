@@ -19,7 +19,7 @@
               <el-table-column prop="id" label="序号" width="100" />
               <el-table-column prop="name" label="品牌名称" width="150" />
             </el-table>
-            <pagination v-show="brandTotalCount>0" :total="brandTotalCount" :page.sync="brandFormSearce.pageSize" :limit.sync="brandFormSearce.pageIndex" @pagination="getBrandPage" />
+            <pagination v-show="brandTotalCount>0" :total="brandTotalCount" :page.sync="brandFormSearce.pageIndex" :limit.sync="brandFormSearce.pageSize" @pagination="getBrandPage" />
 
             <el-dialog :title="brandFormTitle" :visible.sync="brandFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="brandFormClose">
               <el-form ref="brandForm" :model="brandForm" :rules="brandFormRules" label-width="120px">
@@ -61,7 +61,7 @@
               <el-table-column prop="id" label="序号" width="100" />
               <el-table-column prop="name" label="型号名称" width="150" />
             </el-table>
-            <pagination v-show="metaModelTotalCount>0" :total="metaModelTotalCount" :page.sync="metaModelFormSearch.pageSize" :limit.sync="metaModelFormSearch.pageIndex" @pagination="getMetaModelPage" />
+            <pagination v-show="metaModelTotalCount>0" :total="metaModelTotalCount" :page.sync="metaModelFormSearch.pageIndex" :limit.sync="metaModelFormSearch.pageSize" @pagination="getMetaModelPage" />
 
             <el-dialog :title="metaModelFormTitle" :visible.sync="metaModelFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="metaModelFormClose">
               <el-form ref="metaModelForm" :model="metaModelForm" :rules="metaModelFormRules" label-width="120px">
