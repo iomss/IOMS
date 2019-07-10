@@ -71,7 +71,7 @@ export default {
     },
     // 展示条数改变
     handleCurrentChange(val) {
-      this.$emit('pagination', { page: val, limit: this.pageSize })
+      this.$emit('pagination', { page: 1, limit: this.pageSize })
     }
   }
 }
