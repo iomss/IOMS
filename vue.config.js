@@ -40,16 +40,16 @@ module.exports = {
         pathRewrite: {
           '^/api': '/api'
         }
-      },
-      '/easymock': {
-        target: process.env.VUE_APP_API_Easy_Mock,
-        ws: true,
-        bypass: function(req, res, proxyOptions) {},
-        changeOrigin: true,
-        pathRewrite: {
-          '^/easymock': ''
-        }
       }
+      // '/easymock': {
+      //   target: process.env.VUE_APP_API_Easy_Mock,
+      //   ws: true,
+      //   bypass: function(req, res, proxyOptions) {},
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     '^/easymock': ''
+      //   }
+      // }
     }
   },
   configureWebpack: {

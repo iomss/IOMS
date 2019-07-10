@@ -1,9 +1,7 @@
 # 所有环境默认
-
+NODE_ENV=
 # 页面 title 前缀
-VUE_APP_TITLE=D2Admin
+VUE_APP_TITLE=ioms
 
 # 网络请求公用地址
 VUE_APP_API=  
-
-VUE_APP_API_Easy_Mock=

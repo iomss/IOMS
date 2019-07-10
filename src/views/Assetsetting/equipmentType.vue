@@ -6,35 +6,41 @@
         <div class="panel">
           <div class="header">
             <div class="search">
-              <el-input v-model="searchMessage" placeholder="全局查询" size="small" />
-              <el-button type="primary" size="small" @click="searchdata()">查询</el-button>
+              <el-input v-model="tableDataSearch.text" placeholder="全局查询" size="small" />
+              <el-button type="primary" size="small" @click="getData()">查询</el-button>
               <el-button type="success" size="small" @click="adddata()">添加</el-button>
               <el-button type="warning" size="small" @click="updatedata()">修改</el-button>
               <el-button type="danger" size="small" @click="deletdata()">删除</el-button>
             </div>
           </div>
+          <!--表格-->
           <div class="content">
             <el-table :data="tableData" stripe border style="width: 100%" @selection-change="handleSelectionChange">
               <el-table-column type="selection" width="40" />
-              <el-table-column prop="id" label="序号" width="1-0" />
-              <el-table-column label="设备种类" width="150" />
+              <el-table-column prop="id" label="序号" />
+              <el-table-column prop="name" label="设备种类" />
             </el-table>
+            <!--分页-->
+            <pagination v-show="totalCount>0" :total="totalCount" :page.sync="formSearch.pageSize" :limit.sync="formSearch.pageIndex" @pagination="getPage" />
+            <!--添加、修改-->
+            <el-dialog :title="title" :visible.sync="equipmentTypeFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="equipmentTypeFormClose">
+              <el-form ref="equipmentTypeForm" :model="equipmentTypeForm" :rules="equipmentTypeFormRules" label-width="120px">
+                <el-form-item label="设备种类" prop="name">
+                  <el-input v-model="equipmentTypeForm.name" placeholder="设备种类" size="small" />
+                </el-form-item>
+              </el-form>
+              <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="equipmentTypeFormVisible=false">关闭</el-button>
+                <el-button type="primary" @click="subimtequipmentTypeForm()">提交</el-button>
+              </span>
+            </el-dialog>
+
+            <!--删除-->
             <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeQuestionVisible" width="220px">
               <span>您确定要删除此条数据？</span>
               <span slot="footer" class="dialog-footer">
                 <el-button @click="removeQuestionVisible = false">取 消</el-button>
                 <el-button type="primary" @click="removeQuestion">确 定</el-button>
-              </span>
-            </el-dialog>
-            <el-dialog :title="title" :visible.sync="changeActiveVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px">
-              <el-form ref="form" :model="formSearch" label-width="120px">
-                <el-form-item label="设备种类">
-                  <el-input v-model="formSearch.type" placeholder="设备种类" size="small" />
-                </el-form-item>
-              </el-form>
-              <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="changeActiveVisible=false">关闭</el-button>
-                <el-button type="primary" @click="createData()">提交更改</el-button>
               </span>
             </el-dialog>
           </div>
@@ -44,20 +50,42 @@
   </div>
 </template>
 <script>
-// import page from '@/components/page.vue'
+import Pagination from '@/components/Pagination'
 export default {
   components: {
-    // page
+    Pagination
   },
   data() {
     return {
-      removeData: null, // 当前表单所选删除行
       tableData: [], // 全部数据
+      tableDataSearch: {
+        text: '', // 搜索文本
+        pageSize: 20, // 展示条数
+        pageIndex: 1// 页码
+      },
+      totalCount: 0, // 数据总条数
+      equipmentTypeFormVisible: false,
+      // 设备种类添加编辑
+      equipmentTypeForm: {
+        id: undefined, // id 添加时为 undefined
+        name: ''// 名称
+      },
+      equipmentTypeFormRules: {
+        name: [
+          {
+            required: true,
+            message: '设备类型名称不可为空',
+            trigger: 'blur'
+          }
+        ]
+      },
+      title: '添加设备种类', // 弹框标题
+
+      removeData: null, // 当前表单所选删除行
       removeQuestionVisible: false, // 删除弹框隐藏
       searchMessage: '', // 全局搜索的值
       multipleSelection: '', // 当前表单所选行val
       changeActiveVisible: false, // 添加弹出框隐藏
-      title: '添加设备种类', // 弹框标题
       formSearch: {// 弹框表单数据
         type: ''
       }
@@ -65,32 +93,50 @@ export default {
   },
   computed: {},
   mounted() {
-    this.GetData()
-    // this.getOptionsYears()
+    this.getData()
   },
   methods: {
-    GetData() {
-      // this.$axios.get('http://114.243.152.180:7788/api/Meta/Type').then(response => {
-      //   if (response.data.success) {
-      //     this.tableData = response.data.result
-      //   } else {
-      //     this.$message.error(response.data.message)
-      //   }
-      // })
+    // 获取数据
+    getData() {
+      // 搜索框内容不为空 页码跳转至第一页
+      if (this.tableDataSearch.text !== '') {
+        this.tableDataSearch.pageIndex = 1
+      }
+      this.$axios.get('/api/Meta/PositionType', { params: this.tableDataSearch }).then(res => {
+        this.tableData = res.data
+        this.totalCount = res.totalCount
+      })
     },
-    searchdata() {
-      // 全局查询方法
+    // 分页
+    getPage(val) {
+      // 展示条数
+      this.tableDataSearch.pageSize = val.limit
+      // 页码
+      this.tableDataSearch.pageIndex = val.page
+      // 调用获取数据
+      this.getData()
     },
     adddata() {
       // 添加方法
-      this.changeActiveVisible = true// 显示弹框
+      this.equipmentTypeFormVisible = true// 显示弹框
       this.title = '添加设备种类'
     },
-    createData() {
-      // 添加弹出框点确认方法
-      this.changeActiveVisible = false
-      // ajax
+    // 添加、编辑设备种类表单提交方法
+    subimtequipmentTypeForm() {
+      this.$refs.equipmentTypeForm.validate(valid => {
+        if (valid) {
+          this.$axios.post('/', this.equipmentTypeForm).then(res => {
+            this.getData()
+            this.removeQuestionVisible = false
+          })
+        }
+      })
     },
+    // 添加、编辑设备种类表单关闭重置
+    equipmentTypeFormClose() {
+      this.$refs.equipmentTypeForm.resetFields()
+    },
+
     updatedata() {
       // 修改方法
       if (this.multipleSelection === '') {
