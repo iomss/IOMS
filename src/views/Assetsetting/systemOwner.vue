@@ -135,10 +135,6 @@ export default {
       this.$refs.systemForm.resetFields()
     },
     // //////////////////////////////////////////////////
-    searchdata() {
-      // 全局查询方法
-    },
-
     updatedata() {
       // 修改方法
       if (this.multipleSelection === '') {

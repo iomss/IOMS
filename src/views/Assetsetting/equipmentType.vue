@@ -21,7 +21,7 @@
               <el-table-column prop="name" label="设备种类" />
             </el-table>
             <!--分页-->
-            <pagination v-show="totalCount>0" :total="totalCount" :page.sync="formSearch.pageSize" :limit.sync="formSearch.pageIndex" @pagination="getPage" />
+            <pagination v-show="totalCount>0" :total="totalCount" :page.sync="tableDataSearch.pageIndex" :limit.sync="tableDataSearch.pageSize" @pagination="getPage" />
             <!--添加、修改-->
             <el-dialog :title="title" :visible.sync="equipmentTypeFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="equipmentTypeFormClose">
               <el-form ref="equipmentTypeForm" :model="equipmentTypeForm" :rules="equipmentTypeFormRules" label-width="120px">
@@ -136,7 +136,7 @@ export default {
     equipmentTypeFormClose() {
       this.$refs.equipmentTypeForm.resetFields()
     },
-
+    // /////////////////////////////////////
     updatedata() {
       // 修改方法
       if (this.multipleSelection === '') {

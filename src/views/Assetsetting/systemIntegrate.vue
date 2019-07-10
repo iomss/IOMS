@@ -19,6 +19,7 @@
               <el-table-column prop="id" label="序号" />
               <el-table-column prop="name" label="系统集成商名称" />
             </el-table>
+            <pagination v-show="SITotalCount>0" :total="SITotalCount" :page.sync="SIFormSearce.pageIndex" :limit.sync="SIFormSearce.pageSize" @pagination="getSIPage" />
 
             <el-dialog :title="SIFormTitle" :visible.sync="SIFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="SIFormClose">
               <el-form ref="SIForm" :model="SIForm" :rules="SIFormRules" label-width="120px">
@@ -46,10 +47,11 @@
   </div>
 </template>
 <script>
-// import page from '@/components/page.vue'
+import pagination from '@/components/Pagination/index.vue'
+
 export default {
   components: {
-    // page
+    pagination
   },
   data() {
     return {
@@ -130,24 +132,6 @@ export default {
     },
     // ////////////////////////////////////////////
 
-    GetData() {
-      this.$axios.get('http://114.243.152.180:7788/api/Meta/PositionType').then(response => {
-        if (response.data.success) {
-          this.tableData = response.data.result
-        } else {
-          this.$message.error(response.data.message)
-        }
-      })
-    },
-    searchdata() {
-      // 全局查询方法
-    },
-
-    createData() {
-      // 添加弹出框点确认方法
-      this.changeActiveVisible = false
-      // ajax
-    },
     updatedata() {
       // 修改方法
       if (this.multipleSelection === '') {

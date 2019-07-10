@@ -90,7 +90,6 @@ export default {
   computed: {},
   mounted() {
     this.getData()
-    // this.getOptionsYears()
   },
   methods: {
     // 获取数据

@@ -6,19 +6,33 @@
         <div class="panel">
           <div class="header">
             <div class="search">
-              <el-input v-model="searchMessage" placeholder="全局查询" size="small" />
-              <el-button type="primary" size="small" @click="searchdata()">查询</el-button>
+              <el-input v-model="positionTypeFormSearce.text" placeholder="全局查询" size="small" />
+              <el-button type="primary" size="small" @click="getData()">查询</el-button>
               <el-button type="success" size="small" @click="adddata()">添加</el-button>
               <el-button type="warning" size="small" @click="updatedata()">修改</el-button>
               <el-button type="danger" size="small" @click="deletdata()">删除</el-button>
             </div>
           </div>
           <div class="content">
-            <el-table :data="tableData" stripe border style="width: 100%" @selection-change="handleSelectionChange">
+            <el-table :data="positionTypeData" stripe border style="width: 100%" @selection-change="handleSelectionChange">
               <el-table-column type="selection" width="40" />
-              <el-table-column prop="id" label="序号" width="100" />
-              <el-table-column label="位置类型名称" width="200" />
+              <el-table-column prop="id" label="序号" />
+              <el-table-column prop="name" label="位置类型名称" />
             </el-table>
+            <pagination v-show="positionTypeTotalCount>0" :total="positionTypeTotalCount" :page.sync="positionTypeFormSearce.pageIndex" :limit.sync="positionTypeFormSearce.pageSize" @pagination="getpositionTypePage" />
+
+            <el-dialog :title="positionTypeFormTitle" :visible.sync="positionTypeFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="positionTypeFormClose">
+              <el-form ref="positionTypeForm" :model="positionTypeForm" :rules="positionTypeFormRules" label-width="120px">
+                <el-form-item label="位置类型">
+                  <el-input v-model="positionTypeForm.name" placeholder="位置类型" size="small" />
+                </el-form-item>
+              </el-form>
+              <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="positionTypeForm=false">关闭</el-button>
+                <el-button type="primary" @click="submitData()">提交</el-button>
+              </span>
+            </el-dialog>
+
             <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeQuestionVisible" width="220px">
               <span>您确定要删除此条数据？</span>
               <span slot="footer" class="dialog-footer">
@@ -26,32 +40,41 @@
                 <el-button type="primary" @click="removeQuestion">确 定</el-button>
               </span>
             </el-dialog>
-            <el-dialog :title="title" :visible.sync="changeActiveVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px">
-              <el-form ref="form" :model="formSearch" label-width="120px">
-                <el-form-item label="位置类型">
-                  <el-input v-model="formSearch.type" placeholder="位置类型" size="small" />
-                </el-form-item>
-              </el-form>
-              <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="changeActiveVisible=false">关闭</el-button>
-                <el-button type="primary" @click="createData()">提交更改</el-button>
-              </span>
-            </el-dialog>
           </div>
         </div>
-        <!-- <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" /> -->
       </el-col>
     </el-row>
   </div>
 </template>
 <script>
-// import pagination from '@/components/Pagination/index'
+import pagination from '@/components/Pagination/index.vue'
 export default {
   components: {
-    // pagination
+    pagination
   },
   data() {
     return {
+      positionTypeData: [], // 品牌数据
+      positionTypeFormSearce: {
+        text: '',
+        pageSize: 20,
+        pageIndex: 1
+      },
+      positionTypeTotalCount: 0, // 品牌总条数
+      positionTypeFormTitle: '添加设备集成商', // 品牌表单表头
+      positionTypeFormVisible: false,
+      positionTypeForm: {
+        id: undefined,
+        name: ''
+      },
+      positionTypeFormRules: {
+        name: {
+          required: true,
+          message: '添加位置类型不可为空',
+          trigger: 'blur'
+        }
+      },
+      // /////////////////////////
       removeData: null, // 当前表单所选删除行
       tableData: [], // 全部数据
       removeQuestionVisible: false, // 删除弹框隐藏
@@ -66,32 +89,48 @@ export default {
   },
   computed: {},
   mounted() {
-    this.GetData()
-    // this.getOptionsYears()
+    this.getData()
   },
   methods: {
-    GetData() {
-      // this.$axios.get('http://114.243.152.180:7788/api/Meta/PositionType').then(response => {
-      //   if (response.data.success) {
-      //     this.tableData = response.data.result
-      //   } else {
-      //     this.$message.error(response.data.message)
-      //   }
-      // })
+    // 获取数据
+    getData() {
+      this.$axios.get('/api/Meta/PositionType', { params: this.positionTypeFormSearce }).then(res => {
+        this.positionTypeData = res.data
+        this.positionTypeTotalCount = res.totalCount
+      })
     },
-    searchdata() {
-      // 全局查询方法
+    // 分页
+    getpositionTypePage(val) {
+      // 展示条数
+      this.positionTypeFormSearce.pageSize = val.limit
+      // 页码
+      this.positionTypeFormSearce.pageIndex = val.page
+      // 调用获取数据
+      this.getData()
     },
+    // 添加
     adddata() {
-      // 添加方法
-      this.changeActiveVisible = true// 显示弹框
-      this.title = '添加位置类型'
+      this.positionTypeFormVisible = true// 显示弹框
+      this.positionTypeFormTitle = '添加位置类型'
     },
-    createData() {
+    // 提交表单
+    submitData() {
       // 添加弹出框点确认方法
-      this.changeActiveVisible = false
-      // ajax
+      this.$refs.positionTypeForm.validate(valid => {
+        if (valid) {
+          this.$axios.post('/', this.positionTypeForm).then(res => {
+            this.getpositionTypeData()
+            this.positionTypeFormVisible = false
+          })
+        }
+      })
     },
+    // 表单关闭重置
+    positionTypeFormClose() {
+      this.$refs.positionTypeForm.resetFields()
+    },
+    // ////////////////////////////////////////////
+
     updatedata() {
       // 修改方法
       if (this.multipleSelection === '') {

@@ -53,15 +53,18 @@ export default {
 
     login() {
       this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          this.$axios.post('/api/login').then(res => {
-            this.$cookie.set('accessToken', res.data.token)
-            this.$cookie.set('roles', res.data.roles)
-            this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
-          })
-        } else {
-          return false
-        }
+        this.$cookie.set('accessToken', 'saknfgsagfhasfkasfsfgksajhfshagfjasgdf')
+        this.$cookie.set('roles', 'show')
+        this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+        // if (valid) {
+        //   this.$axios.post('/api/login').then(res => {
+        //     this.$cookie.set('accessToken', res.data.token)
+        //     this.$cookie.set('roles', res.data.roles)
+        //     this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+        //   })
+        // } else {
+        //   return false
+        // }
       })
     }
 
