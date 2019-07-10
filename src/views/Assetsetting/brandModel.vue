@@ -6,20 +6,33 @@
         <div class="panel">
           <div class="header">
             <div class="search">
-              <el-input v-model="searchMessageBrand" placeholder="全局查询" size="small" />
-              <el-button type="primary" size="small" @click="searchBrand()">查询</el-button>
+              <el-input v-model="brandFormSearce.text" placeholder="全局查询" size="small" />
+              <el-button type="primary" size="small" @click="getBrandData()">查询</el-button>
               <el-button type="success" size="small" @click="addBrand()">添加</el-button>
               <el-button type="warning" size="small" @click="updateBrand()">修改</el-button>
               <el-button type="danger" size="small" @click="deletBrand()">删除</el-button>
             </div>
           </div>
           <div class="content">
-            <el-table :data="tableDataBrand" stripe border style="width: 100%" @selection-change="handleSelectionChangeBrand">
+            <el-table :data="brandData" stripe border style="width: 100%" @selection-change="handleSelectionChangeBrand">
               <el-table-column type="selection" width="40" />
               <el-table-column prop="id" label="序号" width="100" />
               <el-table-column prop="name" label="品牌名称" width="150" />
             </el-table>
-            <pagination v-show="totalBrand>0" :total="totalBrand" :page.sync="pageBrand" @pagination="getListBrand" />
+            <pagination v-show="brandTotalCount>0" :total="brandTotalCount" :page.sync="brandFormSearce.pageSize" :limit.sync="brandFormSearce.pageIndex" @pagination="getBrandPage" />
+
+            <el-dialog :title="brandFormTitle" :visible.sync="brandFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="brandFormClose">
+              <el-form ref="brandForm" :model="brandForm" :rules="brandFormRules" label-width="120px">
+                <el-form-item label="品牌名称" prop="name">
+                  <el-input v-model="brandForm.name" placeholder="品牌名称" size="small" />
+                </el-form-item>
+              </el-form>
+              <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="brandFormVisible=false">关闭</el-button>
+                <el-button type="primary" @click="submitBrand()">提交</el-button>
+              </span>
+            </el-dialog>
+
             <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeQuestionVisibleBrand" width="220px">
               <span>您确定要删除此条数据？</span>
               <span slot="footer" class="dialog-footer">
@@ -27,17 +40,7 @@
                 <el-button type="primary" @click="removeQuestionBrand">确 定</el-button>
               </span>
             </el-dialog>
-            <el-dialog :title="titleBrand" :visible.sync="changeActiveVisibleBrand" :close-on-press-escape="false" :close-on-click-modal="false" width="450px">
-              <el-form ref="form" :model="formSearchBrand" label-width="120px">
-                <el-form-item label="品牌名称">
-                  <el-input v-model="formSearchBrand.type" placeholder="品牌名称" size="small" />
-                </el-form-item>
-              </el-form>
-              <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="changeActiveVisibleBrand=false">关闭</el-button>
-                <el-button type="primary" @click="createBrand()">提交更改</el-button>
-              </span>
-            </el-dialog>
+
           </div>
         </div>
       </el-col>
@@ -45,36 +48,38 @@
         <div class="panel">
           <div class="header">
             <div class="search">
-              <el-input v-model="searchMessageModel" placeholder="全局查询" size="small" />
-              <el-button type="primary" size="small" @click="searchModel()">查询</el-button>
-              <el-button type="success" size="small" @click="addModel()">添加</el-button>
+              <el-input v-model="metaModelFormSearch.text" placeholder="全局查询" size="small" />
+              <el-button type="primary" size="small" @click="getMetaModelData()">查询</el-button>
+              <el-button type="success" size="small" @click="addMetaModel()">添加</el-button>
               <el-button type="warning" size="small" @click="updateModel()">修改</el-button>
               <el-button type="danger" size="small" @click="deletModel()">删除</el-button>
             </div>
           </div>
           <div class="content">
-            <el-table :data="tableDataModel" stripe border style="width: 100%" @selection-change="handleSelectionChangeModel">
+            <el-table :data="metaModelData" stripe border style="width: 100%" @selection-change="handleSelectionChangeModel">
               <el-table-column type="selection" width="40" />
               <el-table-column prop="id" label="序号" width="100" />
               <el-table-column prop="name" label="型号名称" width="150" />
             </el-table>
-            <pagination v-show="totalModel>0" :total="totalModel" :page.sync="pageBrand" @pagination="getListModel" />
+            <pagination v-show="metaModelTotalCount>0" :total="metaModelTotalCount" :page.sync="metaModelFormSearch.pageSize" :limit.sync="metaModelFormSearch.pageIndex" @pagination="getMetaModelPage" />
+
+            <el-dialog :title="metaModelFormTitle" :visible.sync="metaModelFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="metaModelFormClose">
+              <el-form ref="metaModelForm" :model="metaModelForm" :rules="metaModelFormRules" label-width="120px">
+                <el-form-item label="型号名称" prop="name">
+                  <el-input v-model="metaModelForm.name" placeholder="型号名称" size="small" />
+                </el-form-item>
+              </el-form>
+              <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="metaModelFormVisible=false">关闭</el-button>
+                <el-button type="primary" @click="submitMetaModel()">提交</el-button>
+              </span>
+            </el-dialog>
+
             <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeQuestionVisibleModel" width="220px">
               <span>您确定要删除此条数据？</span>
               <span slot="footer" class="dialog-footer">
                 <el-button @click="removeQuestionVisibleModel = false">取 消</el-button>
                 <el-button type="primary" @click="removeQuestionModel">确 定</el-button>
-              </span>
-            </el-dialog>
-            <el-dialog :title="titleModel" :visible.sync="changeActiveVisibleModel" :close-on-press-escape="false" :close-on-click-modal="false" width="450px">
-              <el-form ref="form" :model="formSearchModel" label-width="120px">
-                <el-form-item label="型号名称">
-                  <el-input v-model="formSearchModel.type" placeholder="型号名称" size="small" />
-                </el-form-item>
-              </el-form>
-              <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="changeActiveVisibleModel=false">关闭</el-button>
-                <el-button type="primary" @click="createModel()">提交更改</el-button>
               </span>
             </el-dialog>
           </div>
@@ -91,6 +96,50 @@ export default {
   },
   data() {
     return {
+      // 品牌
+      brandData: [], // 品牌数据
+      brandFormSearce: {
+        text: '',
+        pageSize: 20,
+        pageIndex: 1
+      },
+      brandTotalCount: 0, // 品牌总条数
+      brandFormTitle: '添加品牌', // 品牌表单表头
+      brandFormVisible: false,
+      brandForm: {
+        id: undefined,
+        name: ''
+      },
+      brandFormRules: {
+        name: {
+          required: true,
+          message: '品牌名称不可为空',
+          trigger: 'blur'
+        }
+      },
+      // 型号
+      metaModelData: [], // 型号数据
+      metaModelFormSearch: {
+        text: '',
+        pageSize: 20,
+        pageIndex: 1
+      },
+      metaModelTotalCount: 0, // 型号总条数
+      metaModelFormTitle: '添加型号',
+      metaModelFormVisible: false,
+      metaModelForm: {
+        id: undefined,
+        brandId: null,
+        name: ''
+      },
+      metaModelFormRules: {
+        name: {
+          required: true,
+          message: '型号名称不可为空',
+          trigger: 'blur'
+        }
+      },
+      // ///////////////////////////////////////////////
       // Model数据
       removeDataModel: null, // 当前表单所选删除行
       tableDataModel: [], // 全部数据
@@ -107,7 +156,7 @@ export default {
       pageBrand: 1, // 品牌第几页
       // brand数据
       removeDataBrand: null, // 当前表单所选删除行
-      tableDataBrand: [], // 全部数据
+      // tableDataBrand: [], // 全部数据
       removeQuestionVisibleBrand: false, // 删除弹框隐藏
       searchMessageBrand: '', // 全局搜索的值
       multipleSelectionBrand: '', // 当前表单所选行val
@@ -121,36 +170,88 @@ export default {
       pageModel: 1 // 型号第几页
     }
   },
-  computed: {},
   mounted() {
-    this.GetDataBrand()
-    this.GetDataModel()
-    // this.getOptionsYears()
+    this.getBrandData()
+    this.getMetaModelData()
   },
   methods: {
-    GetDataBrand() {
-      this.$axios.get('/api/Meta/Brand').then(response => {
-        this.tableDataBrand = response.data
-        this.totalBrand = response.totalCount
-        this.pageBrand = response.pageCount
+    // 品牌
+    // 获取品牌信息
+    getBrandData() {
+      this.$axios.get('/api/Meta/Brand', { params: this.brandFormSearce }).then(res => {
+        this.brandData = res.data
+        this.brandTotalCount = res.totalCount
       })
     },
-    getListBrand() { // 品牌切换page方法
-
-    },
-    searchBrand() {
-      // 全局查询方法
+    // 品牌分页
+    getBrandPage(val) {
+      // 展示条数
+      this.brandFormSearce.pageSize = val.limit
+      // 页码
+      this.brandFormSearce.pageIndex = val.page
+      // 调用获取数据
+      this.getBrandData()
     },
     addBrand() {
       // 添加方法
-      this.changeActiveVisibleBrand = true// 显示弹框
-      this.titleBrand = '添加品牌名称'
+      this.brandFormVisible = true// 显示弹框
+      this.brandFormTitle = '添加品牌名称'
     },
-    createBrand() {
-      // 添加弹出框点确认方法
-      this.changeActiveVisibleBrand = false
-      // ajax
+    // 品牌表单提交
+    submitBrand() {
+      this.$refs.brandForm.validate(valid => {
+        if (valid) {
+          this.$axios.post('/', this.brandForm).then(res => {
+            this.getBrandData()
+            this.brandFormVisible = false
+          })
+        }
+      })
     },
+    // 品牌表单关闭重置
+    brandFormClose() {
+      this.$refs.brandForm.resetFields()
+    },
+    // 型号
+    getMetaModelData() {
+      this.$axios.get('/api/Meta/Model', { params: this.metaModelFormSearch }).then(res => {
+        this.metaModelData = res.data
+        this.metaModelTotalCount = res.totalCount
+      })
+    },
+    // 型号分页
+    getMetaModelPage(val) {
+      // 展示条数
+      this.metaModelFormSearch.pageSize = val.limit
+      // 页码
+      this.metaModelFormSearch.pageIndex = val.page
+      // 调用获取数据
+      this.getMetaModelData()
+    },
+    addMetaModel() {
+      // 添加方法
+      this.metaModelFormVisible = true// 显示弹框
+      this.metaModelFormTitle = '添加型号名称'
+    },
+    // 型号表单提交
+    submitMetaModel() {
+      this.$refs.metaModelForm.validate(valid => {
+        if (valid) {
+          this.$axios.post('/', this.metaModelForm).then(res => {
+            this.getBrandData()
+            this.metaModelFormVisible = false
+          })
+        }
+      })
+    },
+    // 型号表单关闭重置
+    metaModelFormClose() {
+      this.$refs.metaModelForm.resetFields()
+    },
+    // ////////////////////////////////
+    getListBrand() { // 品牌切换page方法
+    },
+
     updateBrand() {
       // 修改方法
       if (this.multipleSelectionBrand === '') {
@@ -189,32 +290,10 @@ export default {
       this.multipleSelectionBrand = val
       console.log(val[0])
     },
-    //
-    // Model所有方法
-    //
-    GetDataModel() {
-      this.$axios.get('/api/Meta/Model').then(response => {
-        this.tableDataModel = response.data
-        this.totalModel = response.totalCount
-        this.pageModel = response.pageCount
-      })
-    },
     getListModel() { // 型号切换page方法
 
     },
-    searchModel() {
-      // 全局查询方法
-    },
-    addModel() {
-      // 添加方法
-      this.changeActiveVisibleModel = true// 显示弹框
-      this.titleModel = '添加型号名称'
-    },
-    createModel() {
-      // 添加弹出框点确认方法
-      this.changeActiveVisibleModel = false
-      // ajax
-    },
+
     updateModel() {
       // 修改方法
       if (this.multipleSelectionModel === '') {
