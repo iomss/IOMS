@@ -49,7 +49,7 @@ axios.create({
   timeout: 5000 // 请求超时时间
 })
 
-const ajaxUrl = process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'testing' ? process.env.VUE_APP_API : undefined
+const ajaxUrl = process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging' ? process.env.VUE_APP_API : undefined
 axios.defaults.baseURL = ajaxUrl
 // axios 配置
 axios.defaults.timeout = 5000
