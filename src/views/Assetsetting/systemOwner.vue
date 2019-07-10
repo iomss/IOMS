@@ -14,12 +14,30 @@
             </div>
           </div>
           <div class="content">
-            <el-table :data="tableData" stripe border style="width: 100%" @selection-change="handleSelectionChange">
+            <el-table :data="systemData" stripe border style="width: 100%" @selection-change="handleSelectionChange">
               <el-table-column type="selection" width="40" />
-              <el-table-column prop="id" label="序号" width="1-0" />
-              <el-table-column prop="" label="所属系统" width="150" />
-              <el-table-column prop="" label="上级系统" width="150" />
+              <el-table-column prop="id" label="序号" />
+              <el-table-column prop="name" label="所属系统" />
+              <el-table-column prop="parentId" label="上级系统" />
             </el-table>
+
+            <pagination v-show="systemTotalCount>0" :total="systemTotalCount" :page.sync="systemFormSearch.pageIndex" :limit.sync="systemFormSearch.pageSize" @pagination="getSystemPage" />
+
+            <el-dialog :title="systemFormTitle" :visible.sync="systemFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="systemFormClose">
+              <el-form ref="systemForm" :model="systemForm" :rules="systemFormRules" label-width="120px">
+                <el-form-item label="所属系统" prop="name">
+                  <el-input v-model="systemForm.name" placeholder="所属系统" size="small" />
+                </el-form-item>
+                <el-form-item label="上级系统" prop="parentId">
+                  <el-input v-model="systemForm.parentId" placeholder="上级系统" size="small" />
+                </el-form-item>
+              </el-form>
+              <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="systemFormVisible=false">关闭</el-button>
+                <el-button type="primary" @click="submitData()">提交更改</el-button>
+              </span>
+            </el-dialog>
+
             <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeQuestionVisible" width="220px">
               <span>您确定要删除此条数据？</span>
               <span slot="footer" class="dialog-footer">
@@ -27,20 +45,7 @@
                 <el-button type="primary" @click="removeQuestion">确 定</el-button>
               </span>
             </el-dialog>
-            <el-dialog :title="title" :visible.sync="changeActiveVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px">
-              <el-form ref="form" :model="formSearch" label-width="120px">
-                <el-form-item label="所属系统">
-                  <el-input v-model="formSearch.type" placeholder="所属系统" size="small" />
-                </el-form-item>
-                <el-form-item label="上级系统">
-                  <el-input v-model="formSearch.type" placeholder="上级系统" size="small" />
-                </el-form-item>
-              </el-form>
-              <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="changeActiveVisible=false">关闭</el-button>
-                <el-button type="primary" @click="createData()">提交更改</el-button>
-              </span>
-            </el-dialog>
+
           </div>
         </div>
       </el-col>
@@ -48,15 +53,37 @@
   </div>
 </template>
 <script>
-// import page from '@/components/page.vue'
+import pagination from '@/components/Pagination/index.vue'
+
 export default {
   components: {
-    // page
+    pagination
   },
   data() {
     return {
+      systemData: [], // 全部数据
+      systemFormSearch: {
+        text: '',
+        pageSize: 20,
+        pageIndex: 1
+      },
+      systemTotalCount: 0,
+      systemFormTitle: '',
+      systemFormVisible: false,
+      systemForm: {
+        id: undefined,
+        parentId: null,
+        name: ''
+      },
+      systemFormRules: {
+        name: {
+          required: true,
+          message: '所属系统不可为空',
+          trigger: 'blur'
+        }
+      },
+      // /////////////////////////////////////
       removeData: null, // 当前表单所选删除行
-      tableData: [], // 全部数据
       removeQuestionVisible: false, // 删除弹框隐藏
       searchMessage: '', // 全局搜索的值
       multipleSelection: '', // 当前表单所选行val
@@ -69,32 +96,49 @@ export default {
   },
   computed: {},
   mounted() {
-    this.GetData()
-    // this.getOptionsYears()
+    this.getData()
   },
   methods: {
-    GetData() {
-      // this.$axios.get('http://114.243.152.180:7788/api/Meta/Type').then(response => {
-      //   if (response.data.success) {
-      //     this.tableData = response.data.result
-      //   } else {
-      //     this.$message.error(response.data.message)
-      //   }
-      // })
+    getData() {
+      this.$axios.get('/api/Meta/System').then(res => {
+        this.systemData = res.data
+        this.systemTotalCount = res.totalCount
+      })
     },
-    searchdata() {
-      // 全局查询方法
+    // 分页
+    getSystemPage(val) {
+      // 展示条数
+      this.systemFormSearch.pageSize = val.limit
+      // 页码
+      this.systemFormSearch.pageIndex = val.page
+      // 调用获取数据
+      this.getData()
     },
     adddata() {
       // 添加方法
-      this.changeActiveVisible = true// 显示弹框
-      this.title = '添加所属系统'
+      this.systemFormVisible = true// 显示弹框
+      this.systemFormTitle = '添加所属系统'
     },
-    createData() {
+    submitData() {
       // 添加弹出框点确认方法
-      this.changeActiveVisible = false
-      // ajax
+      this.$refs.systemForm.validate(valid => {
+        if (valid) {
+          this.$axios.post('/', this.systemForm).then(res => {
+            this.systemData()
+            this.systemFormVisible = false
+          })
+        }
+      })
     },
+    // 型号表单关闭重置
+    systemFormClose() {
+      this.$refs.systemForm.resetFields()
+    },
+    // //////////////////////////////////////////////////
+    searchdata() {
+      // 全局查询方法
+    },
+
     updatedata() {
       // 修改方法
       if (this.multipleSelection === '') {
