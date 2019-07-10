@@ -6,35 +6,37 @@
         <div class="panel">
           <div class="header">
             <div class="search">
-              <el-input v-model="searchMessage" placeholder="全局查询" size="small" />
-              <el-button type="primary" size="small" @click="searchdata()">查询</el-button>
+              <el-input v-model="SIFormSearce.text" placeholder="全局查询" size="small" />
+              <el-button type="primary" size="small" @click="getData()">查询</el-button>
               <el-button type="success" size="small" @click="adddata()">添加</el-button>
               <el-button type="warning" size="small" @click="updatedata()">修改</el-button>
               <el-button type="danger" size="small" @click="deletdata()">删除</el-button>
             </div>
           </div>
           <div class="content">
-            <el-table :data="tableData" stripe border style="width: 100%" @selection-change="handleSelectionChange">
+            <el-table :data="SIData" stripe border style="width: 100%" @selection-change="handleSelectionChange">
               <el-table-column type="selection" width="40" />
-              <el-table-column prop="id" label="序号" width="100" />
-              <el-table-column label="系统集成商名称" width="200" />
+              <el-table-column prop="id" label="序号" />
+              <el-table-column prop="name" label="系统集成商名称" />
             </el-table>
+
+            <el-dialog :title="SIFormTitle" :visible.sync="SIFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="SIFormClose">
+              <el-form ref="SIForm" :model="SIForm" :rules="SIFormRules" label-width="120px">
+                <el-form-item label="系统集成商" prop="name">
+                  <el-input v-model="SIForm.name" placeholder="系统集成商" size="small" />
+                </el-form-item>
+              </el-form>
+              <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="SIFormVisible=false">关闭</el-button>
+                <el-button type="primary" @click="submitData()">提交更改</el-button>
+              </span>
+            </el-dialog>
+
             <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeQuestionVisible" width="220px">
               <span>您确定要删除此条数据？</span>
               <span slot="footer" class="dialog-footer">
                 <el-button @click="removeQuestionVisible = false">取 消</el-button>
                 <el-button type="primary" @click="removeQuestion">确 定</el-button>
-              </span>
-            </el-dialog>
-            <el-dialog :title="title" :visible.sync="changeActiveVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px">
-              <el-form ref="form" :model="formSearch" label-width="120px">
-                <el-form-item label="系统集成商">
-                  <el-input v-model="formSearch.type" placeholder="系统集成商" size="small" />
-                </el-form-item>
-              </el-form>
-              <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="changeActiveVisible=false">关闭</el-button>
-                <el-button type="primary" @click="createData()">提交更改</el-button>
               </span>
             </el-dialog>
           </div>
@@ -51,6 +53,27 @@ export default {
   },
   data() {
     return {
+      SIData: [], // 品牌数据
+      SIFormSearce: {
+        text: '',
+        pageSize: 20,
+        pageIndex: 1
+      },
+      SITotalCount: 0, // 品牌总条数
+      SIFormTitle: '添加设备集成商', // 品牌表单表头
+      SIFormVisible: false,
+      SIForm: {
+        id: undefined,
+        name: ''
+      },
+      SIFormRules: {
+        name: {
+          required: true,
+          message: '设备集成商不可为空',
+          trigger: 'blur'
+        }
+      },
+      // ////////////////////
       removeData: null, // 当前表单所选删除行
       tableData: [], // 全部数据
       removeQuestionVisible: false, // 删除弹框隐藏
@@ -65,10 +88,48 @@ export default {
   },
   computed: {},
   mounted() {
-    this.GetData()
-    // this.getOptionsYears()
+    this.getData()
   },
   methods: {
+    // 获取数据
+    getData() {
+      this.$axios.get('/api/Meta/SI', { params: this.SIFormSearce }).then(res => {
+        this.SIData = res.data
+        this.SITotalCount = res.totalCount
+      })
+    },
+    // 分页
+    getSIPage(val) {
+      // 展示条数
+      this.SIFormSearce.pageSize = val.limit
+      // 页码
+      this.SIFormSearce.pageIndex = val.page
+      // 调用获取数据
+      this.getData()
+    },
+    // 添加
+    adddata() {
+      this.SIFormVisible = true// 显示弹框
+      this.SIFormTitle = '添加设备集成商'
+    },
+    // 提交表单
+    submitData() {
+      // 添加弹出框点确认方法
+      this.$refs.SIForm.validate(valid => {
+        if (valid) {
+          this.$axios.post('/', this.SIForm).then(res => {
+            this.getSIData()
+            this.SIFormVisible = false
+          })
+        }
+      })
+    },
+    // 表单关闭重置
+    SIFormClose() {
+      this.$refs.SIForm.resetFields()
+    },
+    // ////////////////////////////////////////////
+
     GetData() {
       this.$axios.get('http://114.243.152.180:7788/api/Meta/PositionType').then(response => {
         if (response.data.success) {
@@ -81,11 +142,7 @@ export default {
     searchdata() {
       // 全局查询方法
     },
-    adddata() {
-      // 添加方法
-      this.changeActiveVisible = true// 显示弹框
-      this.title = '添加系统集成商'
-    },
+
     createData() {
       // 添加弹出框点确认方法
       this.changeActiveVisible = false
