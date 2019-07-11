@@ -21,14 +21,9 @@ import cookie from './libs/cookies'
 
 // 引入axios
 import axios from './libs/axios'
-/**
- * If you don't want to use mock-server
- * you want to use MockJs for mock api
- * you can execute: mockXHR()
- *
- * Currently MockJs will be used in the production environment,
- * please remove it before going online! ! !
- */
+
+// vue treeSelect 样式引入
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
 Vue.use(Element)
 
