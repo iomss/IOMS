@@ -37,7 +37,11 @@
             <el-table-column prop="position" label="设备位置" width="200" />
             <el-table-column prop="tips" label="设备种类" width="90" />
             <el-table-column prop="assetCode" label="设备编码" width="100" />
-            <el-table-column prop="equipmentFault" label="故障类型" width="100" />
+            <el-table-column prop="equipmentFault" label="故障类型" width="100">
+              <template slot-scope="scope">
+                {{ scope.row.equipmentFault.name }}
+              </template>
+            </el-table-column>
             <el-table-column prop="description" label="故障描述" width="200" />
             <el-table-column prop="failureTime" label="故障时间" width="120" />
             <el-table-column prop="reporterName" label="报修人" width="90" />
@@ -53,7 +57,9 @@
             <el-table-column label="操作" width="100">
               <template slot-scope="scope">
                 <!-- 工单可验收 -->
-                <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="success" @click="showInfo(scope.row)">详情</el-button>
+                <a :href="'/Workorder/AcceptorOperate/'+scope.row.id">
+                  <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="success">详情</el-button>
+                </a>
                 <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="primary" @click="UpdateStage(scope.row)">编辑</el-button>
               </template>
             </el-table-column>
@@ -77,7 +83,6 @@ export default {
       multipleSelection: '', // 表单选中行
       formSearch: {}, // 工单状态数据
       tableDataSearch: {
-        text: '', // 搜索文本
         pageSize: 20, // 展示条数
         pageIndex: 1// 页码
       },
@@ -90,12 +95,7 @@ export default {
   },
   methods: {
     getData() { // 获取数据
-      console.log(this.tableDataSearch.text)
-      // 搜索框内容不为空 页码跳转至第一页
-      if (this.tableDataSearch.text !== '') {
-        this.tableDataSearch.pageIndex = 1
-      }
-      this.$axios.get('/api/RepairOrder', { params: this.tableDataSearch }).then(res => {
+      this.$axios.get('/api/RepairRecord', { params: this.tableDataSearch }).then(res => {
         this.tableData = res.data
         this.totalCount = res.totalCount
       })

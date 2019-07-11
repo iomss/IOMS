@@ -138,10 +138,16 @@ export default {
   },
   computed: {},
   mounted() {
+    this.getDataInfo()
     // this.initData(1)
     // this.getOptionsYears()
   },
   methods: {
+    getDataInfo() {
+      this.$axios.get('/api/RepairRecord/' + this.$route.params.id).then(res => {
+        console.log(res)
+      })
+    },
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
