@@ -23,12 +23,12 @@
 
             <el-dialog :title="positionTypeFormTitle" :visible.sync="positionTypeFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="positionTypeFormClose">
               <el-form ref="positionTypeForm" :model="positionTypeForm" :rules="positionTypeFormRules" label-width="120px">
-                <el-form-item label="位置类型">
+                <el-form-item label="位置类型" prop="name">
                   <el-input v-model="positionTypeForm.name" placeholder="位置类型" size="small" />
                 </el-form-item>
               </el-form>
               <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="positionTypeForm=false">关闭</el-button>
+                <el-button type="primary" @click="positionTypeFormVisible=false">关闭</el-button>
                 <el-button type="primary" @click="submitData()">提交</el-button>
               </span>
             </el-dialog>
@@ -54,14 +54,14 @@ export default {
   },
   data() {
     return {
-      positionTypeData: [], // 品牌数据
+      positionTypeData: [], // 数据
       positionTypeFormSearce: {
         text: '',
         pageSize: 20,
         pageIndex: 1
       },
-      positionTypeTotalCount: 0, // 品牌总条数
-      positionTypeFormTitle: '添加设备集成商', // 品牌表单表头
+      positionTypeTotalCount: 0, // 总条数
+      positionTypeFormTitle: '添加设备集成商', // 表单表头
       positionTypeFormVisible: false,
       positionTypeForm: {
         id: undefined,
@@ -70,7 +70,7 @@ export default {
       positionTypeFormRules: {
         name: {
           required: true,
-          message: '添加位置类型不可为空',
+          message: '位置类型不可为空',
           trigger: 'blur'
         }
       },
@@ -87,7 +87,6 @@ export default {
       }
     }
   },
-  computed: {},
   mounted() {
     this.getData()
   },

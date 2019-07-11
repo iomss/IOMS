@@ -80,6 +80,7 @@ export default {
         ]
       },
       title: '添加设备种类', // 弹框标题
+      // ////////////////////////////////////
 
       removeData: null, // 当前表单所选删除行
       removeQuestionVisible: false, // 删除弹框隐藏
@@ -98,10 +99,6 @@ export default {
   methods: {
     // 获取数据
     getData() {
-      // 搜索框内容不为空 页码跳转至第一页
-      if (this.tableDataSearch.text !== '') {
-        this.tableDataSearch.pageIndex = 1
-      }
       this.$axios.get('/api/Meta/PositionType', { params: this.tableDataSearch }).then(res => {
         this.tableData = res.data
         this.totalCount = res.totalCount
