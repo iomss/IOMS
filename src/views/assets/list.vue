@@ -12,6 +12,7 @@
               <el-button type="primary" plain size="small" @click="selectstate(2)">闲置资产</el-button>
               <el-button type="primary" plain size="small" @click="selectstate(3)">报废资产</el-button>
             </div>
+            <!--导入导出-->
             <div class="tools">
               <el-button type="primary" @click="create()">新增资产</el-button>
               <el-dropdown>
@@ -34,10 +35,11 @@
               </el-dropdown>
             </div>
             <div class="toolsrt">
-              <el-input v-model="searchMessage" placeholder="全局查询" size="small" />
-              <el-button type="primary" size="small" @click="searchData()">查询</el-button>
+              <el-input v-model="tableDataSearch.text" placeholder="全局查询" size="small" />
+              <el-button type="primary" size="small" @click="getData()">查询</el-button>
               <el-button type="primary" plain size="small" @click="formSearchShow = !formSearchShow">高级搜索</el-button>
             </div>
+            <!--高级搜索表单-->
             <el-card v-if="formSearchShow" class="search" :body-style="{ padding: '20px' }">
               <el-form ref="form" :model="formSearch" label-width="90px">
                 <el-select v-model="formSearch.unit" clearable placeholder="使用单位" size="small">
@@ -81,6 +83,7 @@
               </el-form>
             </el-card>
           </div>
+          <!--表格-->
           <div class="content">
             <el-table :data="tableData" stripe border style="width: 100%" @selection-change="handleSelectionChange">
               <el-table-column type="selection" width="40" />
@@ -114,7 +117,9 @@
                 </template>
               </el-table-column>
             </el-table>
-            <pagination v-show="total>0" :total="total" :page.sync="page" @pagination="getList" />
+            <!--分页-->
+            <pagination v-show="totalCount>0" :total="totalCount" :page.sync="formSearch.pageSize" :limit.sync="formSearch.pageIndex" @pagination="getPage" />
+            <!--删除-->
             <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeQuestionVisible" width="220px">
               <span>您确定要删除此条数据？</span>
               <span slot="footer" class="dialog-footer">
@@ -129,15 +134,15 @@
   </div>
 </template>
 <script>
-// import page from '@/components/page.vue'
+import pagination from '@/components/Pagination'
 export default {
   components: {
-    // page
+    pagination
   },
   data() {
     return {
-      formSearchShow: false,
-      removeQuestionVisible: false,
+      formSearchShow: false, // 高级搜索弹框隐藏
+      removeQuestionVisible: false, // 删除弹框隐藏
       formSearch: {
         unit: '',
         position: '',
@@ -150,29 +155,35 @@ export default {
         brand: '',
         Model: ''
       },
-      tableData: [],
+      tableData: [], // 表格数据
       multipleSelection: '', // 表单选中行
-      removeData: null,
-      searchMessage: '', // 全局搜索的值
-      total: 0,
-      page: 0
+      removeData: null, // 当前表单所选删除行
+      tableDataSearch: {
+        text: '', // 搜索文本
+        pageSize: 20, // 展示条数
+        pageIndex: 1// 页码
+      },
+      totalCount: 0 // 数据总条数
     }
   },
   computed: {},
   mounted() {
-    // this.initData(1)
-    this.getAllData()
+    this.getData()
   },
   methods: {
-    getAllData() {
-      this.$axios.get('/api/Assets').then(response => {
-        this.tableData = response.data
-        this.total = response.totalCount
-        this.page = response.pageCount
+    getData() { // 获取数据
+      console.log(this.tableDataSearch.text)
+      // 搜索框内容不为空 页码跳转至第一页
+      if (this.tableDataSearch.text !== '') {
+        this.tableDataSearch.pageIndex = 1
+      }
+      this.$axios.get('/api/Assets', { params: this.tableDataSearch }).then(res => {
+        this.tableData = res.data
+        this.totalCount = res.totalCount
       })
     },
     create() { // 新增资产
-      this.$router.push('/Asset/Create')
+      this.$router.push('/assets/Create')
     },
     selectstate(data) { // 按状态筛选资产
       console.log(data)
@@ -193,10 +204,11 @@ export default {
       this.multipleSelection = val
     },
     showInfo(val) { // 点击详情按钮
-      this.$router.push('/Asset/Info' + val)
+      this.$router.push('/assets/Info/' + val.id)
     },
     UpdateStage(val) { // 点击编辑按钮
-      this.$router.push('/Asset/Info' + val)
+      console.log(val.id)
+      this.$router.push('/assets/Info/' + val.id)
     },
     deleteManage(row) {
       this.removeData = row
@@ -216,8 +228,13 @@ export default {
       //   }
       // })
     },
-    getList() { // page事件
-
+    getPage(val) { // page事件
+      // 展示条数
+      this.tableDataSearch.pageSize = val.limit
+      // 页码
+      this.tableDataSearch.pageIndex = val.page
+      // 调用获取数据
+      this.getData()
     }
   }
 }
