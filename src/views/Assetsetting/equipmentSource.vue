@@ -56,7 +56,7 @@ export default {
   },
   data() {
     return {
-      sourceData: [], // 来源数据
+      sourceData: [], // 数据
       sourceFormSearch: {
         text: '',
         pageSize: 20,

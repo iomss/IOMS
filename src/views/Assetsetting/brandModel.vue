@@ -97,14 +97,14 @@ export default {
   data() {
     return {
       // 品牌
-      brandData: [], // 品牌数据
+      brandData: [], // 数据
       brandFormSearce: {
         text: '',
         pageSize: 20,
         pageIndex: 1
       },
-      brandTotalCount: 0, // 品牌总条数
-      brandFormTitle: '添加品牌', // 品牌表单表头
+      brandTotalCount: 0, // 总条数
+      brandFormTitle: '添加品牌', // 表单表头
       brandFormVisible: false,
       brandForm: {
         id: undefined,
@@ -118,13 +118,13 @@ export default {
         }
       },
       // 型号
-      metaModelData: [], // 型号数据
+      metaModelData: [], // 数据
       metaModelFormSearch: {
         text: '',
         pageSize: 20,
         pageIndex: 1
       },
-      metaModelTotalCount: 0, // 型号总条数
+      metaModelTotalCount: 0, // 总条数
       metaModelFormTitle: '添加型号',
       metaModelFormVisible: false,
       metaModelForm: {

@@ -55,14 +55,14 @@ export default {
   },
   data() {
     return {
-      SIData: [], // 品牌数据
+      SIData: [], // 数据
       SIFormSearce: {
         text: '',
         pageSize: 20,
         pageIndex: 1
       },
-      SITotalCount: 0, // 品牌总条数
-      SIFormTitle: '添加设备集成商', // 品牌表单表头
+      SITotalCount: 0, // 总条数
+      SIFormTitle: '添加设备集成商', // 表单表头
       SIFormVisible: false,
       SIForm: {
         id: undefined,
