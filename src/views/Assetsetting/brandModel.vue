@@ -10,12 +10,18 @@
               <el-button type="primary" size="small" @click="getBrandData()">查询</el-button>
               <el-button type="success" size="small" @click="addBrand()">添加</el-button>
               <el-button type="warning" size="small" @click="updateBrand()">修改</el-button>
-              <el-button type="danger" size="small" @click="deletBrand()">删除</el-button>
+              <el-button type="danger" size="small" @click="deleteBrand()">删除</el-button>
             </div>
           </div>
           <div class="content">
             <el-table :data="brandData" stripe border style="width: 100%" @selection-change="handleSelectionChangeBrand">
               <el-table-column type="selection" width="40" />
+              <el-table-column label="操作" width="100">
+                <template slot-scope="scope">
+                  <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="primary" @click="updateBrand(scope.row)">编辑</el-button>
+                  <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="danger" @click="deleteBrand(scope.row)">删除</el-button>
+                </template>
+              </el-table-column>
               <el-table-column prop="id" label="序号" width="100" />
               <el-table-column prop="name" label="品牌名称" width="150" />
             </el-table>
@@ -33,14 +39,13 @@
               </span>
             </el-dialog>
 
-            <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeQuestionVisibleBrand" width="220px">
+            <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="brandDeleteModelVisible" width="220px">
               <span>您确定要删除此条数据？</span>
               <span slot="footer" class="dialog-footer">
-                <el-button @click="removeQuestionVisibleBrand = false">取 消</el-button>
-                <el-button type="primary" @click="removeQuestionBrand">确 定</el-button>
+                <el-button @click="brandDeleteModelVisible = false">取 消</el-button>
+                <el-button type="primary" @click="submitDeleteBrand">确 定</el-button>
               </span>
             </el-dialog>
-
           </div>
         </div>
       </el-col>
@@ -58,6 +63,12 @@
           <div class="content">
             <el-table :data="metaModelData" stripe border style="width: 100%" @selection-change="handleSelectionChangeModel">
               <el-table-column type="selection" width="40" />
+              <el-table-column label="操作" width="100">
+                <template slot-scope="scope">
+                  <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="primary" @click="updateModel(scope.row)">编辑</el-button>
+                  <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="danger" @click="deleteModel(scope.row)">删除</el-button>
+                </template>
+              </el-table-column>
               <el-table-column prop="id" label="序号" width="100" />
               <el-table-column prop="name" label="型号名称" width="150" />
             </el-table>
@@ -75,11 +86,11 @@
               </span>
             </el-dialog>
 
-            <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeQuestionVisibleModel" width="220px">
+            <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="modelDeleteModelVisible" width="220px">
               <span>您确定要删除此条数据？</span>
               <span slot="footer" class="dialog-footer">
-                <el-button @click="removeQuestionVisibleModel = false">取 消</el-button>
-                <el-button type="primary" @click="removeQuestionModel">确 定</el-button>
+                <el-button @click="modelDeleteModelVisible = false">取 消</el-button>
+                <el-button type="primary" @click="submitDeleteModel">确 定</el-button>
               </span>
             </el-dialog>
           </div>
@@ -117,6 +128,9 @@ export default {
           trigger: 'blur'
         }
       },
+      brandDeleteModelVisible: false,
+      brandDeleteDataId: null,
+      multipleSelectionBrand: [],
       // 型号
       metaModelData: [], // 数据
       metaModelFormSearch: {
@@ -139,35 +153,9 @@ export default {
           trigger: 'blur'
         }
       },
-      // ///////////////////////////////////////////////
-      // Model数据
-      removeDataModel: null, // 当前表单所选删除行
-      tableDataModel: [], // 全部数据
-      removeQuestionVisibleModel: false, // 删除弹框隐藏
-      searchMessageModel: '', // 全局搜索的值
-      multipleSelectionModel: '', // 当前表单所选行val
-      changeActiveVisibleModel: false, // 添加弹出框隐藏
-      titleModel: '添加型号名称', // 型号弹框标题
-      formSearchModel: {// 弹框表单数据
-        id: '',
-        name: ''
-      },
-      totalBrand: 0, // 品牌总数量
-      pageBrand: 1, // 品牌第几页
-      // brand数据
-      removeDataBrand: null, // 当前表单所选删除行
-      // tableDataBrand: [], // 全部数据
-      removeQuestionVisibleBrand: false, // 删除弹框隐藏
-      searchMessageBrand: '', // 全局搜索的值
-      multipleSelectionBrand: '', // 当前表单所选行val
-      changeActiveVisibleBrand: false, // 添加弹出框隐藏
-      titleBrand: '添加品牌名称', // 品牌弹框标题
-      formSearchBrand: {// 弹框表单数据
-        id: '',
-        name: ''
-      },
-      totalModel: 0, // 型号总数量
-      pageModel: 1 // 型号第几页
+      modelDeleteModelVisible: false,
+      modelDeleteDataId: null,
+      multipleSelectionModel: []
     }
   },
   mounted() {
@@ -197,14 +185,40 @@ export default {
       this.brandFormVisible = true// 显示弹框
       this.brandFormTitle = '添加品牌名称'
     },
+    updateBrand(row) {
+      debugger
+      if (row === undefined) {
+        this.brandFormTitle = '编辑品牌名称'
+        if (this.multipleSelectionBrand.length !== 1) {
+          this.$message.error('请选择一项品牌数据进行操作')
+        } else {
+          this.brandFormVisible = true
+          this.brandForm.id = this.multipleSelectionBrand[0].id
+          this.brandForm.name = this.multipleSelectionBrand[0].name
+        }
+      } else {
+        this.brandFormVisible = true
+        this.brandForm.id = row.id
+        this.brandForm.name = row.name
+      }
+    },
     // 品牌表单提交
     submitBrand() {
       this.$refs.brandForm.validate(valid => {
         if (valid) {
-          this.$axios.post('/', this.brandForm).then(res => {
-            this.getBrandData()
-            this.brandFormVisible = false
-          })
+          if (this.brandForm.id === undefined) {
+            this.$axios.post('/api/Meta/Brand', this.brandForm).then(res => {
+              this.getBrandData()
+              this.$message.success('品牌添加成功')
+              this.brandFormVisible = false
+            })
+          } else {
+            this.$axios.put('/api/Meta/Brand', this.brandForm).then(res => {
+              this.getBrandData()
+              this.$message.success('品牌修改成功')
+              this.brandFormVisible = false
+            })
+          }
         }
       })
     },
@@ -212,6 +226,33 @@ export default {
     brandFormClose() {
       this.$refs.brandForm.resetFields()
     },
+    // 删除品牌
+    deleteBrand(row) {
+      if (row === undefined) {
+        if (this.multipleSelectionBrand.length !== 1) {
+          this.$message.error('请选择一项品牌数据进行操作')
+        } else {
+          this.brandDeleteModelVisible = true
+          this.brandDeleteDataId = this.multipleSelectionBrand[0].id
+        }
+      } else {
+        this.brandDeleteModelVisible = true
+        this.brandDeleteDataId = row.id
+      }
+    },
+    // 提交删除品牌
+    submitDeleteBrand() {
+      this.$axios.delete('/api/Meta/Brand/' + this.brandDeleteDataId).then(res => {
+        this.getBrandData()
+        this.$message.success('品牌删除成功')
+        this.brandDeleteModelVisible = false
+      })
+    },
+    // 品牌表单多选数据
+    handleSelectionChangeBrand(val) {
+      this.multipleSelectionBrand = val
+    },
+    /** ***************************************************************************************************************************************** */
     // 型号
     getMetaModelData() {
       this.$axios.get('/api/Meta/Model', { params: this.metaModelFormSearch }).then(res => {
@@ -233,14 +274,29 @@ export default {
       this.metaModelFormVisible = true// 显示弹框
       this.metaModelFormTitle = '添加型号名称'
     },
+    updateModel(row) {
+      this.metaModelFormVisible = true
+      this.metaModelFormTitle = '编辑型号名称'
+      this.metaModelForm.id = row.id
+      this.metaModelForm.name = row.name
+    },
     // 型号表单提交
     submitMetaModel() {
       this.$refs.metaModelForm.validate(valid => {
         if (valid) {
-          this.$axios.post('/', this.metaModelForm).then(res => {
-            this.getBrandData()
-            this.metaModelFormVisible = false
-          })
+          if (this.metaModelForm.id === undefined) {
+            this.$axios.post('/api/Meta/Model', this.metaModelForm).then(res => {
+              this.getBrandData()
+              this.$message.success('型号添加成功')
+              this.metaModelFormVisible = false
+            })
+          } else {
+            this.$axios.put('/api/Meta/Model', this.metaModelForm).then(res => {
+              this.getBrandData()
+              this.$message.success('型号编辑成功')
+              this.metaModelFormVisible = false
+            })
+          }
         }
       })
     },
@@ -248,89 +304,33 @@ export default {
     metaModelFormClose() {
       this.$refs.metaModelForm.resetFields()
     },
-    // ////////////////////////////////
-    getListBrand() { // 品牌切换page方法
-    },
-
-    updateBrand() {
-      // 修改方法
-      if (this.multipleSelectionBrand === '') {
-        this.$message.error('请选择一条数据')
-      } else if (this.multipleSelectionBrand.length !== 1) {
-        this.$message.error('请选择一条数据')
+    // 删除品牌
+    deleteModel(row) {
+      if (row === undefined) {
+        if (this.multipleSelectionModel.length !== 1) {
+          this.$message.error('请选择一项型号数据进行操作')
+        } else {
+          this.modelDeleteModelVisible = true
+          this.modelDeleteDataId = this.multipleSelectionModel[0].id
+        }
       } else {
-        this.titleBrand = '编辑品牌名称'
-        this.changeActiveVisibleBrand = true// 显示弹框
-        this.formSearchBrand = this.multipleSelectionBrand[0]
+        this.modelDeleteModelVisible = true
+        this.modelDeleteDataId = row.id
       }
     },
-    deletBrand(row) {
-      if (this.multipleSelectionBrand === '') {
-        this.$message.error('请至少选择一条数据')
-      } else {
-        this.removeDataBrand = row
-        this.removeQuestionVisibleBrand = true
-      }
+    // 提交删除品牌
+    submitDeleteModel() {
+      this.$axios.delete('/api/Meta/Model/' + this.brandDeleteDataId).then(res => {
+        this.getBrandData()
+        this.$message.success('型号删除成功')
+        this.brandDeleteModelVisible = false
+      })
     },
-    // 删除试题
-    removeQuestionBrand() {
-      // let _this = this
-      // this.$ajax.delete('/api/services/app/Question/DeleteClozeQuestion?Id=' + this.removeData.id).then(response => {
-      //   if (response.data.success) {
-      //     let index = _this.tableData.indexOf(_this.removeData)
-      //     _this.tableData.splice(index, 1)
-      //     _this.$message.success('删除成功')
-      //     _this.removeQuestionVisible = false
-      //   } else {
-      //     _this.$message.error(response.data.error.message)
-      //   }
-      // })
-    },
-    handleSelectionChangeBrand(val) {
-      this.multipleSelectionBrand = val
-      console.log(val[0])
-    },
-    getListModel() { // 型号切换page方法
-
-    },
-
-    updateModel() {
-      // 修改方法
-      if (this.multipleSelectionModel === '') {
-        this.$message.error('请选择一条数据')
-      } else if (this.multipleSelectionModel.length !== 1) {
-        this.$message.error('请选择一条数据')
-      } else {
-        this.titleModel = '编辑品牌名称'
-        this.changeActiveVisibleModel = true// 显示弹框
-        this.formSearchModel = this.multipleSelectionModel[0]
-      }
-    },
-    deletModel(row) {
-      if (this.multipleSelectionModel === '') {
-        this.$message.error('请至少选择一条数据')
-      } else {
-        this.removeDataModel = row
-        this.removeQuestionVisibleModel = true
-      }
-    },
-    // 删除试题
-    removeQuestionModel() {
-      // let _this = this
-      // this.$ajax.delete('/api/services/app/Question/DeleteClozeQuestion?Id=' + this.removeData.id).then(response => {
-      //   if (response.data.success) {
-      //     let index = _this.tableData.indexOf(_this.removeData)
-      //     _this.tableData.splice(index, 1)
-      //     _this.$message.success('删除成功')
-      //     _this.removeQuestionVisible = false
-      //   } else {
-      //     _this.$message.error(response.data.error.message)
-      //   }
-      // })
-    },
+    // 型号table 多选数据
     handleSelectionChangeModel(val) {
       this.multipleSelectionModel = val
     }
+    // ////////////////////////////////
   }
 }
 </script>
