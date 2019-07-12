@@ -2,11 +2,15 @@
   <div :class="{'has-logo':showLogo}">
     <logo v-if="showLogo" :collapse="isCollapse" />
     <el-scrollbar wrap-class="scrollbar-wrapper">
-      <el-menu default-active="" class="menu" router :collapse="isCollapse" background-color="#304156" text-color="#fff" active-text-color="#409eff">
-        <el-submenu v-for="(item,index) in getRouter" :key="index" :index="item.meta.fullPath">
-          <span slot="title"><i :class="item.meta.icon" style="margin-right:5px;font-size:16px;margin-top:-5px;" />{{ item.meta.title }}</span>
+      <el-menu :default-active="getActiveMenu" class="el-menu-vertical-demo menu" router :collapse="isCollapse" background-color="#304156" text-color="#fff" active-text-color="#409eff">
+        <el-submenu v-for="(item,index) in getRouter" :key="index" :index="item.meta.fullPath" :class="isCollapse? 'menu_shrink':''">
+          <template slot="title">
+            <i :class="item.meta.icon" />
+            <span slot="title">{{ item.meta.title }}</span>
+          </template>
           <el-menu-item v-for="(items,indexs) in item.children" :key="indexs" :index="items.meta.fullPath">
-            <span slot="title"><i :class="items.meta.icon" style="margin-right:5px;font-size:16px;margin-top:-5px;" />{{ items.meta.title }}</span>
+            <i :class="items.meta.icon" />
+            <span slot="title">{{ items.meta.title }}</span>
           </el-menu-item>
         </el-submenu>
       </el-menu>
@@ -52,11 +56,20 @@ export default {
         item.meta.hidden ? '' : showRouter.push(item)
       })
       return showRouter.filter(item => item.children.length !== 0)
+    },
+    getActiveMenu() {
+      return this.$route.meta.fullPath
     }
   }
 }
 </script>
 
-<style lang="sass">
-
+<style lang="scss">
+/*导航菜单收缩状态*/
+.menu_shrink {
+  .el-submenu__title {
+    font-size: 18px;
+    text-align: center;
+  }
+}
 </style>

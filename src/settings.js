@@ -1,5 +1,5 @@
 module.exports = {
-  title: 'IOMS',
+  title: '运维服务管理平台 ',
 
   /**
    * @type {boolean} true | false

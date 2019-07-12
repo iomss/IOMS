@@ -6,7 +6,7 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-const name = defaultSettings.title || 'IOMS' // page title
+const name = defaultSettings.title || '运维服务管理平台' // page title
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
