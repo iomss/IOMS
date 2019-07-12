@@ -204,6 +204,7 @@ export default {
       this.multipleSelection = val
     },
     showInfo(val) { // 点击详情按钮
+      console.log('/assets/Info/' + val.id)
       this.$router.push('/assets/Info/' + val.id)
     },
     UpdateStage(val) { // 点击编辑按钮
@@ -216,17 +217,17 @@ export default {
     },
     // 删除试题
     removeQuestion() {
-      // let _this = this
-      // this.$ajax.delete('/api/services/app/Question/DeleteClozeQuestion?Id=' + this.removeData.id).then(response => {
-      //   if (response.data.success) {
-      //     let index = _this.tableData.indexOf(_this.removeData)
-      //     _this.tableData.splice(index, 1)
-      //     _this.$message.success('删除成功')
-      //     _this.removeQuestionVisible = false
-      //   } else {
-      //     _this.$message.error(response.data.error.message)
-      //   }
-      // })
+      const _this = this
+      this.$axios.delete('/api/Assets/?Id=' + this.removeData.id).then(response => {
+        if (response.data.success) {
+          const index = _this.tableData.indexOf(_this.removeData)
+          _this.tableData.splice(index, 1)
+          _this.$message.success('删除成功')
+          _this.removeQuestionVisible = false
+        } else {
+          _this.$message.error(response.data.error.message)
+        }
+      })
     },
     getPage(val) { // page事件
       // 展示条数

@@ -134,13 +134,13 @@ export const asyncRoutes = [
       component: () => import('@/views/assets/list')
     },
     {
-      path: '/Info/:id',
+      path: 'Info/:id',
       name: 'assets-Info',
       meta: {
-        title: '资产详情',
+        title: '资产明细',
         icon: 'fa fa-home',
         roles: ['show'],
-        fullPath: '/assets/Info/',
+        fullPath: '/assets/Info',
         hidden: true
       },
       component: () => import('@/views/assets/Info')

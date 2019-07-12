@@ -3,7 +3,7 @@
   <div>
     <el-row>
       <el-col :span="6">
-        tree
+        <treeselect v-model="treeselect" :multiple="true" :options="treeData" />
       </el-col>
       <el-col :span="18">
         <div class="panel">
@@ -52,14 +52,16 @@
   </div>
 </template>
 <script>
-// import page from '@/components/page.vue'
+import Treeselect from '@riophae/vue-treeselect'
 export default {
   components: {
-    // page
+    Treeselect
   },
   data() {
     return {
       tableData: [],
+      treeData: [],
+      treeselect: '',
       multipleSelection: '', // 表单选中行id
       removeData: null,
       formSearch: {}, // 筛选所属系统数据
@@ -68,10 +70,15 @@ export default {
   },
   computed: {},
   mounted() {
-    // this.initData(1)
-    // this.getOptionsYears()
+    this.getData()
   },
   methods: {
+    // 获取数据
+    getData() {
+      this.$axios.get('/api/Meta/Position', { params: this.positionFormSearce }).then(res => {
+        this.treeData = res.data
+      })
+    },
     searchData() {
       // 全局查询方法
     },
