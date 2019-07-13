@@ -187,7 +187,6 @@ export default {
       this.brandFormTitle = '添加品牌名称'
     },
     updateBrand(row) {
-      debugger
       if (row === undefined) {
         this.brandFormTitle = '编辑品牌名称'
         if (this.multipleSelectionBrand.length !== 1) {
