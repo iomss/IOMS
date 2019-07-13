@@ -83,7 +83,7 @@
               <el-input v-model="formSearch.user" placeholder="当前登录账号" size="small" />
             </el-form-item>
             <el-form-item label="维修人员">
-              <el-input v-model="formSearch.user" placeholder="维修人员" size="small" />
+              <el-input v-model="formSearch.assist" placeholder="维修人员" size="small" />
             </el-form-item>
             <el-form-item class="form_total">
               <el-button type="primary" size="small" icon="el-icon-search" @click="initData()">提交</el-button>

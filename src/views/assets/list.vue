@@ -93,9 +93,9 @@
                   {{ scope.row.state===0?"A":scope.row.state===0?"B":"C" }}
                 </template>
               </el-table-column>
-              <el-table-column prop="code " label="资产编码" width="90" />
-              <el-table-column prop="equimentType.name" label="资产类别" width="90" />
-              <el-table-column prop="equipment.name" label="资产名称" width="90" />
+              <el-table-column prop="code" label="资产编码" width="90" />
+              <el-table-column prop="equipment.equimentType.name" label="资产类别" width="90" />
+              <el-table-column prop="alias" label="资产名称" width="90" />
               <el-table-column prop="brand.name" label="品牌" width="70" />
               <el-table-column prop="model.name" label="型号" width="100" />
               <el-table-column prop="parentSystem" label="所属系统" width="100" />
@@ -105,7 +105,7 @@
               <el-table-column prop="handoverDate" label="交工时间" width="90" />
               <el-table-column prop="purchaseYear" label="购置年份" width="90" />
               <el-table-column prop="original" label="资产原值" width="90" />
-              <el-table-column prop="source" label="增加方式" width="90" />
+              <el-table-column prop="source.name" label="增加方式" width="90" />
               <el-table-column prop="si.name" label="集成商" width="130" />
               <el-table-column prop="recordUser" label="录入人" width="80" />
               <el-table-column prop="lastUpdateTime" label="更新时间" width="90" />
@@ -144,16 +144,21 @@ export default {
       formSearchShow: false, // 高级搜索弹框隐藏
       removeQuestionVisible: false, // 删除弹框隐藏
       formSearch: {
-        unit: '',
-        position: '',
-        sort: '',
-        owner: '',
-        starttime: '',
-        endtime: '',
-        source: '',
-        age: '',
+        code: '',
+        equimentType: '',
+        alias: '',
         brand: '',
-        Model: ''
+        model: '',
+        parentSystem: '',
+        system: '',
+        position: '',
+        enableTime: '',
+        handoverDate: '',
+        purchaseYear: '',
+        original: '',
+        source: '',
+        recordUser: '',
+        lastUpdateTime: ''
       },
       tableData: [], // 表格数据
       multipleSelection: '', // 表单选中行
@@ -246,15 +251,18 @@ export default {
   height: 64px;
 }
 .select {
-  width: 30%;
+  width: 33%;
   display: inline-block;
+  .el-button {
+    margin-left: 0px;
+  }
 }
 .tools {
-  width: 30%;
+  width: 33%;
   display: inline-block;
 }
 .toolsrt {
-  width: 30%;
+  width: 33%;
   display: inline-block;
   text-align: right;
   .el-input {
