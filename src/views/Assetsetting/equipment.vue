@@ -17,6 +17,7 @@
             <el-table :data="equipmentData" stripe border style="width: 100%" @selection-change="handleSelectionChangeEquipment">
               <el-table-column type="selection" width="40" />
               <el-table-column prop="id" label="序号" />
+              <el-table-column prop="equimentTypeId" label="设备类型" />
               <el-table-column prop="name" label="设备名称" />
             </el-table>
             <pagination v-show="equipmentTotalCount>0" :total="equipmentTotalCount" :page.sync="equipmentFormSearch.pageNumber" :limit.sync="equipmentFormSearch.pageSize" @pagination="getequipmentPage" />
@@ -132,11 +133,13 @@ export default {
           this.equipmentFormVisible = true
           this.equipmentForm.id = this.multipleSelectionEquipment[0].id
           this.equipmentForm.name = this.multipleSelectionEquipment[0].name
+          this.equipmentForm.equimentTypeId = this.multipleSelectionEquipment[0].equimentTypeId
         }
       } else {
         this.equipmentFormVisible = true
         this.equipmentForm.id = row.id
         this.equipmentForm.name = row.name
+        this.equipmentForm.equimentTypeId = row.equimentTypeId
       }
     },
     // 品牌表单提交
