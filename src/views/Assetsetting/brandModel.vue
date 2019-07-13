@@ -131,6 +131,7 @@ export default {
       brandDeleteModelVisible: false,
       brandDeleteDataId: null,
       multipleSelectionBrand: [],
+      /** **************************************************************************************************************************** */
       // 型号
       metaModelData: [], // 数据
       metaModelFormSearch: {
@@ -207,13 +208,13 @@ export default {
       this.$refs.brandForm.validate(valid => {
         if (valid) {
           if (this.brandForm.id === undefined) {
-            this.$axios.post('/api/Meta/Brand', this.brandForm).then(res => {
+            this.$axios.post('/api/Meta/Brand/' + this.brandForm.id, this.brandForm).then(res => {
               this.getBrandData()
               this.$message.success('品牌添加成功')
               this.brandFormVisible = false
             })
           } else {
-            this.$axios.put('/api/Meta/Brand', this.brandForm).then(res => {
+            this.$axios.put('/api/Meta/Brand/' + this.brandForm.id, this.brandForm).then(res => {
               this.getBrandData()
               this.$message.success('品牌修改成功')
               this.brandFormVisible = false
@@ -285,13 +286,13 @@ export default {
       this.$refs.metaModelForm.validate(valid => {
         if (valid) {
           if (this.metaModelForm.id === undefined) {
-            this.$axios.post('/api/Meta/Model', this.metaModelForm).then(res => {
+            this.$axios.post('/api/Meta/Model/' + this.metaModelForm.id, this.metaModelForm).then(res => {
               this.getBrandData()
               this.$message.success('型号添加成功')
               this.metaModelFormVisible = false
             })
           } else {
-            this.$axios.put('/api/Meta/Model', this.metaModelForm).then(res => {
+            this.$axios.put('/api/Meta/Model/' + this.metaModelForm.id, this.metaModelForm).then(res => {
               this.getBrandData()
               this.$message.success('型号编辑成功')
               this.metaModelFormVisible = false
@@ -330,7 +331,6 @@ export default {
     handleSelectionChangeModel(val) {
       this.multipleSelectionModel = val
     }
-    // ////////////////////////////////
   }
 }
 </script>
