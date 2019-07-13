@@ -21,25 +21,23 @@
               <el-table-column prop="id" label="序号" width="60" />
               <el-table-column label="操作" width="80">
                 <template slot-scope="scope">
-                  <span v-for="(item,index) in scope.row.answer" :key="index" style="margin-right:8px;">{{ item===1?"A":item===2?"B":item===3?"C":"D" }}</span>
+                  <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="primary" @click="deleteStage(scope.row)">删除</el-button>
                 </template>
               </el-table-column>
               <el-table-column prop="tips" label="维修单编号" width="120" />
-              <el-table-column prop="position" label="设备位置" width="200" />
-              <el-table-column prop="tips" label="设备种类" width="90" />
+              <el-table-column prop="position.name" label="设备位置" width="200" />
+              <el-table-column prop="equipment.equimentType.name" label="设备种类" width="90" />
               <el-table-column prop="assetCode" label="设备编码" width="100" />
-              <el-table-column prop="equipmentFault" label="故障类型" width="100" />
+              <el-table-column prop="equipmentFault.name" label="故障类型" width="100" />
               <el-table-column prop="description" label="故障描述" width="200" />
               <el-table-column prop="failureTime" label="故障时间" width="120" />
               <el-table-column prop="reporterName" label="报修人" width="90" />
               <el-table-column prop="reportTime" label="报修时间" width="90" />
-              <el-table-column prop="recordUser" label="录入人" width="90" />
+              <el-table-column prop="recordUser.name" label="录入人" width="90" />
               <el-table-column prop="recordTime" label="录入时间" width="90" />
               <el-table-column prop="repairUser" label="维修员" width="90" />
-              <el-table-column prop="orderState" label="状态" width="90" />
-              <el-table-column prop="tips" label="附加状态" width="130" />
-              <el-table-column prop="tips" label="代维状态" width="130" />
-              <el-table-column prop="tips" label="报修等级" width="130" />
+              <el-table-column prop="orderState" label="状态" width="130" />
+              <el-table-column prop="repairLevel.name" label="报修等级" width="130" />
               <el-table-column prop="tips" label="更新时间" width="130" />
               <el-table-column label="操作" width="100">
                 <template slot-scope="scope">
@@ -99,6 +97,9 @@ export default {
       this.tableDataSearch.pageNumber = val.page
       // 调用获取数据
       this.getData()
+    },
+    selectstate() {
+      this.$router.push('/maintenance/WatchmanAssetslist')
     },
     handleSelectionChange(val) {
       this.multipleSelection = val

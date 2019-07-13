@@ -12,11 +12,11 @@
                 <li><span>设备位置:</span><b>{{ InfoData }}</b></li>
                 <li><span>设备种类:</span><b>{{ InfoData }}</b></li>
                 <li><span>设备编码:</span><b>{{ InfoData }}</b></li>
-                <li><span>设备类型:</span><b>{{ InfoData }}</b></li>
+                <li><span>故障类型:</span><b>{{ InfoData }}</b></li>
                 <li><span>故障时间:</span><b>{{ InfoData }}</b></li>
-                <li><span>设备描述:</span><b>{{ InfoData }}</b></li>
+                <li><span>故障描述:</span><b>{{ InfoData }}</b></li>
                 <li><span>录入人:</span><b>{{ InfoData }}</b></li>
-                <li><span>报修级别:</span><b>{{ InfoData }}</b></li>
+                <li><span>报修级别:</span><b>{{ InfoData.repairLevel }}</b></li>
                 <!-- <li><span>代维状态:</span><b>{{ InfoData }}</b></li> -->
                 <li><span>报修人:</span><b>{{ InfoData }}</b></li>
                 <li><span>报修时间:</span><b>{{ InfoData }}</b></li>
@@ -55,6 +55,9 @@ export default {
   methods: {
     getdata() {
       // 获取维修详情数据
+      this.$axios.get('/api/RepairOrder/1').then(res => {
+        this.InfoData = res.data
+      })
     },
     reciptwork(val) { // 点击接受按钮
       // this.$router.push('/Asset/Info' + val)

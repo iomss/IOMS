@@ -27,8 +27,8 @@
                   <el-option v-for="item in typeData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
-              <el-form-item label="资产名称" prop="name">
-                <el-input v-model="formData.name" placeholder="资产名称" size="small" />
+              <el-form-item label="资产名称" prop="alias">
+                <el-input v-model="formData.alias" placeholder="资产名称" size="small" />
               </el-form-item>
               <el-form-item label="投用时间" prop="enableTime">
                 <el-date-picker v-model="formData.enableTime" type="date" placeholder="投用时间" />
@@ -57,8 +57,8 @@
               <el-form-item label="工程名称" prop="engineering">
                 <el-input v-model="formData.engineering" placeholder="工程名称" size="small" />
               </el-form-item>
-              <el-form-item label="使用年限" prop="useyear">
-                <el-input v-model="formData.useyear" placeholder="使用年限" size="small" />
+              <el-form-item label="使用年限" prop="ratedLife">
+                <el-input v-model="formData.ratedLife" placeholder="使用年限" size="small" />
               </el-form-item>
               <el-form-item label="缺陷责任期" prop="liabilityPeriod">
                 <el-input v-model="formData.liabilityPeriod" placeholder="缺陷责任期" size="small" />
@@ -68,9 +68,6 @@
                   <el-option key="1" label="已发布" value="true" />
                   <el-option key="2" label="未发布" value="false" />
                 </el-select>
-              </el-form-item>
-              <el-form-item label="使用单位" prop="useUnit">
-                <el-input v-model="formData.user" placeholder="使用单位" size="small" />
               </el-form-item>
               <el-form-item label="资产原值" prop="original">
                 <el-input v-model="formData.original" placeholder="资产原值" size="small" />
@@ -129,6 +126,7 @@ export default {
         position: '',
         system: '',
         enableTime: '',
+        alias: '',
         brand: '',
         model: '',
         source: '',
