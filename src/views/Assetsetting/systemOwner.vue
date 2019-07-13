@@ -21,7 +21,7 @@
               <el-table-column prop="parentId" label="上级系统" />
             </el-table>
 
-            <pagination v-show="systemTotalCount>0" :total="systemTotalCount" :page.sync="systemFormSearch.pageIndex" :limit.sync="systemFormSearch.pageSize" @pagination="getSystemPage" />
+            <pagination v-show="systemTotalCount>0" :total="systemTotalCount" :page.sync="systemFormSearch.pageNumber" :limit.sync="systemFormSearch.pageSize" @pagination="getSystemPage" />
 
             <el-dialog :title="systemFormTitle" :visible.sync="systemFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="systemFormClose">
               <el-form ref="systemForm" :model="systemForm" :rules="systemFormRules" label-width="120px">
@@ -65,7 +65,7 @@ export default {
       systemFormSearch: {
         text: '',
         pageSize: 20,
-        pageIndex: 1
+        pageNumber: 1
       },
       systemTotalCount: 0,
       systemFormTitle: '',
@@ -110,7 +110,7 @@ export default {
       // 展示条数
       this.systemFormSearch.pageSize = val.limit
       // 页码
-      this.systemFormSearch.pageIndex = val.page
+      this.systemFormSearch.pageNumber = val.page
       // 调用获取数据
       this.getData()
     },

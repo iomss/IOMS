@@ -19,7 +19,7 @@
               <el-table-column prop="id" label="序号" />
               <el-table-column prop="name" label="位置类型名称" />
             </el-table>
-            <pagination v-show="positionTypeTotalCount>0" :total="positionTypeTotalCount" :page.sync="positionTypeFormSearce.pageIndex" :limit.sync="positionTypeFormSearce.pageSize" @pagination="getpositionTypePage" />
+            <pagination v-show="positionTypeTotalCount>0" :total="positionTypeTotalCount" :page.sync="positionTypeFormSearce.pageNumber" :limit.sync="positionTypeFormSearce.pageSize" @pagination="getpositionTypePage" />
 
             <el-dialog :title="positionTypeFormTitle" :visible.sync="positionTypeFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="positionTypeFormClose">
               <el-form ref="positionTypeForm" :model="positionTypeForm" :rules="positionTypeFormRules" label-width="120px">
@@ -58,7 +58,7 @@ export default {
       positionTypeFormSearce: {
         text: '',
         pageSize: 20,
-        pageIndex: 1
+        pageNumber: 1
       },
       positionTypeTotalCount: 0, // 总条数
       positionTypeFormTitle: '添加设备集成商', // 表单表头
@@ -103,7 +103,7 @@ export default {
       // 展示条数
       this.positionTypeFormSearce.pageSize = val.limit
       // 页码
-      this.positionTypeFormSearce.pageIndex = val.page
+      this.positionTypeFormSearce.pageNumber = val.page
       // 调用获取数据
       this.getData()
     },

@@ -77,7 +77,7 @@
                 <el-input v-model="formSearch.brand" placeholder="品牌" size="small" />
                 <el-input v-model="formSearch.Model" placeholder="型号" size="small" />
                 <el-form-item style="margin-bottom:0">
-                  <el-button type="primary" size="small" icon="el-icon-search" @click="initData(formSearch.PageIndex)">查询</el-button>
+                  <el-button type="primary" size="small" icon="el-icon-search" @click="initData(formSearch.pageNumber)">查询</el-button>
                   <el-button size="small" icon="el-icon-close" @click="formSearchShow=false">取消</el-button>
                 </el-form-item>
               </el-form>
@@ -118,7 +118,7 @@
               </el-table-column>
             </el-table>
             <!--分页-->
-            <pagination v-show="totalCount>0" :total="totalCount" :page.sync="formSearch.pageSize" :limit.sync="formSearch.pageIndex" @pagination="getPage" />
+            <pagination v-show="totalCount>0" :total="totalCount" :page.sync="formSearch.pageSize" :limit.sync="formSearch.pageNumber" @pagination="getPage" />
             <!--删除-->
             <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeQuestionVisible" width="220px">
               <span>您确定要删除此条数据？</span>
@@ -161,7 +161,7 @@ export default {
       tableDataSearch: {
         text: '', // 搜索文本
         pageSize: 20, // 展示条数
-        pageIndex: 1// 页码
+        pageNumber: 1// 页码
       },
       totalCount: 0 // 数据总条数
     }
@@ -175,7 +175,7 @@ export default {
       console.log(this.tableDataSearch.text)
       // 搜索框内容不为空 页码跳转至第一页
       if (this.tableDataSearch.text !== '') {
-        this.tableDataSearch.pageIndex = 1
+        this.tableDataSearch.pageNumber = 1
       }
       this.$axios.get('/api/Assets', { params: this.tableDataSearch }).then(res => {
         this.tableData = res.data
@@ -233,7 +233,7 @@ export default {
       // 展示条数
       this.tableDataSearch.pageSize = val.limit
       // 页码
-      this.tableDataSearch.pageIndex = val.page
+      this.tableDataSearch.pageNumber = val.page
       // 调用获取数据
       this.getData()
     }

@@ -65,7 +65,7 @@
             </el-table-column>
           </el-table>
           <!--分页-->
-          <pagination v-show="totalCount>0" :total="totalCount" :page.sync="tableDataSearch.pageSize" :limit.sync="tableDataSearch.pageIndex" @pagination="getPage" />
+          <pagination v-show="totalCount>0" :total="totalCount" :page.sync="tableDataSearch.pageSize" :limit.sync="tableDataSearch.pageNumber" @pagination="getPage" />
         </div>
       </el-col>
     </el-row>
@@ -84,7 +84,7 @@ export default {
       formSearch: {}, // 工单状态数据
       tableDataSearch: {
         pageSize: 20, // 展示条数
-        pageIndex: 1// 页码
+        pageNumber: 1// 页码
       },
       totalCount: 0 // 数据总条数
     }
@@ -104,7 +104,7 @@ export default {
       // 展示条数
       this.tableDataSearch.pageSize = val.limit
       // 页码
-      this.tableDataSearch.pageIndex = val.page
+      this.tableDataSearch.pageNumber = val.page
       // 调用获取数据
       this.getData()
     },

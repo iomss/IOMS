@@ -25,7 +25,7 @@
               <el-table-column prop="id" label="序号" width="100" />
               <el-table-column prop="name" label="品牌名称" width="150" />
             </el-table>
-            <pagination v-show="brandTotalCount>0" :total="brandTotalCount" :page.sync="brandFormSearce.pageIndex" :limit.sync="brandFormSearce.pageSize" @pagination="getBrandPage" />
+            <pagination v-show="brandTotalCount>0" :total="brandTotalCount" :page.sync="brandFormSearce.pageNumber" :limit.sync="brandFormSearce.pageSize" @pagination="getBrandPage" />
 
             <el-dialog :title="brandFormTitle" :visible.sync="brandFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="brandFormClose">
               <el-form ref="brandForm" :model="brandForm" :rules="brandFormRules" label-width="120px">
@@ -72,7 +72,7 @@
               <el-table-column prop="id" label="序号" width="100" />
               <el-table-column prop="name" label="型号名称" width="150" />
             </el-table>
-            <pagination v-show="metaModelTotalCount>0" :total="metaModelTotalCount" :page.sync="metaModelFormSearch.pageIndex" :limit.sync="metaModelFormSearch.pageSize" @pagination="getMetaModelPage" />
+            <pagination v-show="metaModelTotalCount>0" :total="metaModelTotalCount" :page.sync="metaModelFormSearch.pageNumber" :limit.sync="metaModelFormSearch.pageSize" @pagination="getMetaModelPage" />
 
             <el-dialog :title="metaModelFormTitle" :visible.sync="metaModelFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="metaModelFormClose">
               <el-form ref="metaModelForm" :model="metaModelForm" :rules="metaModelFormRules" label-width="120px">
@@ -112,7 +112,7 @@ export default {
       brandFormSearce: {
         text: '',
         pageSize: 20,
-        pageIndex: 1
+        pageNumber: 1
       },
       brandTotalCount: 0, // 总条数
       brandFormTitle: '添加品牌', // 表单表头
@@ -137,7 +137,7 @@ export default {
       metaModelFormSearch: {
         text: '',
         pageSize: 20,
-        pageIndex: 1
+        pageNumber: 1
       },
       metaModelTotalCount: 0, // 总条数
       metaModelFormTitle: '添加型号',
@@ -177,7 +177,7 @@ export default {
       // 展示条数
       this.brandFormSearce.pageSize = val.limit
       // 页码
-      this.brandFormSearce.pageIndex = val.page
+      this.brandFormSearce.pageNumber = val.page
       // 调用获取数据
       this.getBrandData()
     },
@@ -208,7 +208,7 @@ export default {
       this.$refs.brandForm.validate(valid => {
         if (valid) {
           if (this.brandForm.id === undefined) {
-            this.$axios.post('/api/Meta/Brand/' + this.brandForm.id, this.brandForm).then(res => {
+            this.$axios.post('/api/Meta/Brand', this.brandForm).then(res => {
               this.getBrandData()
               this.$message.success('品牌添加成功')
               this.brandFormVisible = false
@@ -266,7 +266,7 @@ export default {
       // 展示条数
       this.metaModelFormSearch.pageSize = val.limit
       // 页码
-      this.metaModelFormSearch.pageIndex = val.page
+      this.metaModelFormSearch.pageNumber = val.page
       // 调用获取数据
       this.getMetaModelData()
     },
@@ -286,7 +286,7 @@ export default {
       this.$refs.metaModelForm.validate(valid => {
         if (valid) {
           if (this.metaModelForm.id === undefined) {
-            this.$axios.post('/api/Meta/Model/' + this.metaModelForm.id, this.metaModelForm).then(res => {
+            this.$axios.post('/api/Meta/Model', this.metaModelForm).then(res => {
               this.getBrandData()
               this.$message.success('型号添加成功')
               this.metaModelFormVisible = false

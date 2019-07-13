@@ -19,7 +19,7 @@
               <el-table-column prop="id" label="序号" />
               <el-table-column prop="name" label="系统集成商名称" />
             </el-table>
-            <pagination v-show="SITotalCount>0" :total="SITotalCount" :page.sync="SIFormSearce.pageIndex" :limit.sync="SIFormSearce.pageSize" @pagination="getSIPage" />
+            <pagination v-show="SITotalCount>0" :total="SITotalCount" :page.sync="SIFormSearce.pageNumber" :limit.sync="SIFormSearce.pageSize" @pagination="getSIPage" />
 
             <el-dialog :title="SIFormTitle" :visible.sync="SIFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="SIFormClose">
               <el-form ref="SIForm" :model="SIForm" :rules="SIFormRules" label-width="120px">
@@ -59,7 +59,7 @@ export default {
       SIFormSearce: {
         text: '',
         pageSize: 20,
-        pageIndex: 1
+        pageNumber: 1
       },
       SITotalCount: 0, // 总条数
       SIFormTitle: '添加设备集成商', // 表单表头
@@ -105,7 +105,7 @@ export default {
       // 展示条数
       this.SIFormSearce.pageSize = val.limit
       // 页码
-      this.SIFormSearce.pageIndex = val.page
+      this.SIFormSearce.pageNumber = val.page
       // 调用获取数据
       this.getData()
     },

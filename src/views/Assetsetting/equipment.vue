@@ -1,4 +1,4 @@
-<!-- 设备位置页面 -->
+<!-- 设备页面 -->
 <template>
   <div>
     <el-row>
@@ -6,7 +6,7 @@
         <div class="panel">
           <div class="header">
             <div class="search">
-              <el-input v-model="positionFormSearce.text" placeholder="全局查询" size="small" />
+              <el-input v-model="equipmentFormSearch.text" placeholder="全局查询" size="small" />
               <el-button type="primary" size="small" @click="getData()">查询</el-button>
               <el-button type="success" size="small" @click="adddata()">添加</el-button>
               <el-button type="warning" size="small" @click="updatedata()">修改</el-button>
@@ -14,30 +14,22 @@
             </div>
           </div>
           <div class="content">
-            <el-table :data="positionData" stripe border style="width: 100%" @selection-change="handleSelectionChange">
+            <el-table :data="equipmentData" stripe border style="width: 100%" @selection-change="handleSelectionChange">
               <el-table-column type="selection" width="40" />
               <el-table-column prop="id" label="序号" />
-              <el-table-column prop="name" label="设备位置" />
-              <el-table-column prop="" label="上级位置" />
-              <el-table-column prop="" label="位置类型" />
+              <el-table-column prop="name" label="设备名称" />
             </el-table>
-            <pagination v-show="positionTotalCount>0" :total="positionTotalCount" :page.sync="positionFormSearce.pageNumber" :limit.sync="positionFormSearce.pageSize" @pagination="getpositionPage" />
+            <pagination v-show="equipmentTotalCount>0" :total="equipmentTotalCount" :page.sync="equipmentFormSearch.pageNumber" :limit.sync="equipmentFormSearch.pageSize" @pagination="getequipmentPage" />
 
-            <el-dialog :title="positionFormTitle" :visible.sync="positionFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="positionFormClose">
-              <el-form ref="positionForm" :model="positionForm" :rules="positionFormRules" label-width="120px">
-                <el-form-item label="设备位置" prop="name">
-                  <el-input v-model="positionForm.name" placeholder="设备位置" size="small" />
-                </el-form-item>
-                <el-form-item label="上级位置">
-                  <el-input v-model="formSearch.type" placeholder="上级位置" size="small" />
-                </el-form-item>
-                <el-form-item label="位置类型">
-                  <el-input v-model="formSearch.type" placeholder="位置类型" size="small" />
+            <el-dialog :title="equipmentFormTitle" :visible.sync="equipmentFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="equipmentFormClose">
+              <el-form ref="equipmentForm" :model="equipmentForm" :rules="equipmentFormRules" label-width="120px">
+                <el-form-item label="设备" prop="name">
+                  <el-input v-model="equipmentForm.name" placeholder="设备" size="small" />
                 </el-form-item>
               </el-form>
               <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="positionFormVisible=false">关闭</el-button>
-                <el-button type="primary" @click="submitData()">提交更改</el-button>
+                <el-button type="primary" @click="equipmentFormVisible=false">关闭</el-button>
+                <el-button type="primary" @click="submitData()">提交</el-button>
               </span>
             </el-dialog>
 
@@ -48,6 +40,7 @@
                 <el-button type="primary" @click="removeQuestion">确 定</el-button>
               </span>
             </el-dialog>
+
           </div>
         </div>
       </el-col>
@@ -56,104 +49,94 @@
 </template>
 <script>
 import pagination from '@/components/Pagination/index.vue'
+
 export default {
   components: {
     pagination
   },
   data() {
     return {
-      positionData: [], // 数据
-      positionFormSearce: {
+      equipmentData: [], // 数据
+      equipmentFormSearch: {
         text: '',
         pageSize: 20,
         pageNumber: 1
       },
-      positionTotalCount: 0, // 总条数
-      positionFormTitle: '添加设备集成商', // 表单表头
-      positionFormVisible: false,
-      positionForm: {
+      equipmentTotalCount: 0,
+      equipmentFormTitle: '',
+      equipmentFormVisible: false,
+      equipmentForm: {
         id: undefined,
         name: ''
       },
-      positionFormRules: {
+      equipmentFormRules: {
         name: {
           required: true,
-          message: '位置名称不可为空',
+          message: '设备名称不可为空',
           trigger: 'blur'
         }
       },
-      // /////////////////////////////////////
+      // //////////////////////////
       removeData: null, // 当前表单所选删除行
       tableData: [], // 全部数据
       removeQuestionVisible: false, // 删除弹框隐藏
       searchMessage: '', // 全局搜索的值
       multipleSelection: '', // 当前表单所选行val
       changeActiveVisible: false, // 添加弹出框隐藏
-      title: '添加所属系统', // 弹框标题
-      formSearch: {// 弹框表单数据
-        type: ''
-      }
+      title: '添加设备' // 弹框标题
+
     }
   },
   computed: {},
   mounted() {
     this.getData()
-    // this.getOptionsYears()
   },
   methods: {
     // 获取数据
     getData() {
-      this.$axios.get('/api/Meta/Position', { params: this.positionFormSearce }).then(res => {
-        this.positionData = res.data
-        this.positionTotalCount = res.totalCount
+      this.$axios.get('/api/Meta/equipment', { params: this.equipmentFormSearch }).then(res => {
+        this.equipmentData = res.data
+        this.equipmentTotalCount = res.totalCount
       })
     },
     // 分页
-    getpositionPage(val) {
+    getequipmentPage(val) {
       // 展示条数
-      this.positionFormSearce.pageSize = val.limit
+      this.equipmentFormSearch.pageSize = val.limit
       // 页码
-      this.positionFormSearce.pageNumber = val.page
+      this.equipmentFormSearch.pageNumber = val.page
       // 调用获取数据
       this.getData()
     },
     // 添加
     adddata() {
-      this.positionFormVisible = true// 显示弹框
-      this.positionFormTitle = '添加位置类型'
+      this.equipmentFormVisible = true// 显示弹框
+      this.equipmentFormTitle = '添加设备'
     },
     // 提交表单
     submitData() {
       // 添加弹出框点确认方法
-      this.$refs.positionForm.validate(valid => {
+      this.$refs.equipmentForm.validate(valid => {
         if (valid) {
-          this.$axios.post('/', this.positionForm).then(res => {
-            this.getpositionData()
-            this.positionFormVisible = false
+          this.$axios.post('/', this.equipmentForm).then(res => {
+            this.getBrandData()
+            this.equipmentFormVisible = false
           })
         }
       })
     },
     // 表单关闭重置
-    positionFormClose() {
-      this.$refs.positionForm.resetFields()
+    equipmentFormClose() {
+      this.$refs.equipmentForm.resetFields()
     },
-    // ////////////////////////////////
-    searchdata() {
-      // 全局查询方法
-    },
+    // ///////////////////////////////
 
-    createData() {
-      // 添加弹出框点确认方法
-      this.changeActiveVisible = false
-      // ajax
-    },
     updatedata() {
       // 修改方法
       if (this.multipleSelection === '') {
         this.$message.error('请至少选择一条数据')
       } else {
-        this.title = '编辑所属系统'
+        this.title = '编辑设备'
         this.changeActiveVisible = true// 显示弹框
       }
     },

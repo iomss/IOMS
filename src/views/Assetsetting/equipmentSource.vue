@@ -19,7 +19,7 @@
               <el-table-column prop="id" label="序号" />
               <el-table-column prop="name" label="设备来源名称" />
             </el-table>
-            <pagination v-show="sourceTotalCount>0" :total="sourceTotalCount" :page.sync="sourceFormSearch.pageIndex" :limit.sync="sourceFormSearch.pageSize" @pagination="getSourcePage" />
+            <pagination v-show="sourceTotalCount>0" :total="sourceTotalCount" :page.sync="sourceFormSearch.pageNumber" :limit.sync="sourceFormSearch.pageSize" @pagination="getSourcePage" />
 
             <el-dialog :title="sourceFormTitle" :visible.sync="sourceFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="sourceFormClose">
               <el-form ref="sourceForm" :model="sourceForm" :rules="sourceFormRules" label-width="120px">
@@ -60,7 +60,7 @@ export default {
       sourceFormSearch: {
         text: '',
         pageSize: 20,
-        pageIndex: 1
+        pageNumber: 1
       },
       sourceTotalCount: 0,
       sourceFormTitle: '',
@@ -104,7 +104,7 @@ export default {
       // 展示条数
       this.sourceFormSearch.pageSize = val.limit
       // 页码
-      this.sourceFormSearch.pageIndex = val.page
+      this.sourceFormSearch.pageNumber = val.page
       // 调用获取数据
       this.getData()
     },

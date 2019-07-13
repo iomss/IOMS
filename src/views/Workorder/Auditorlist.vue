@@ -58,7 +58,7 @@
               </el-table-column>
             </el-table>
             <!--分页-->
-            <pagination v-show="totalCount>0" :total="totalCount" :page.sync="tableDataSearch.pageSize" :limit.sync="tableDataSearch.pageIndex" @pagination="getPage" />
+            <pagination v-show="totalCount>0" :total="totalCount" :page.sync="tableDataSearch.pageSize" :limit.sync="tableDataSearch.pageNumber" @pagination="getPage" />
           </div>
         </div>
       </el-col>
@@ -79,7 +79,7 @@ export default {
       tableDataSearch: {
         text: '', // 搜索文本
         pageSize: 20, // 展示条数
-        pageIndex: 1// 页码
+        pageNumber: 1// 页码
       },
       totalCount: 0 // 数据总条数
     }
@@ -93,7 +93,7 @@ export default {
       console.log(this.tableDataSearch.text)
       // 搜索框内容不为空 页码跳转至第一页
       if (this.tableDataSearch.text !== '') {
-        this.tableDataSearch.pageIndex = 1
+        this.tableDataSearch.pageNumber = 1
       }
       this.$axios.get('/api/RepairOrder', { params: this.tableDataSearch }).then(res => {
         this.tableData = res.data
@@ -104,7 +104,7 @@ export default {
       // 展示条数
       this.tableDataSearch.pageSize = val.limit
       // 页码
-      this.tableDataSearch.pageIndex = val.page
+      this.tableDataSearch.pageNumber = val.page
       // 调用获取数据
       this.getData()
     },

@@ -21,7 +21,7 @@
               <el-table-column prop="name" label="设备种类" />
             </el-table>
             <!--分页-->
-            <pagination v-show="totalCount>0" :total="totalCount" :page.sync="tableDataSearch.pageIndex" :limit.sync="tableDataSearch.pageSize" @pagination="getPage" />
+            <pagination v-show="totalCount>0" :total="totalCount" :page.sync="tableDataSearch.pageNumber" :limit.sync="tableDataSearch.pageSize" @pagination="getPage" />
             <!--添加、修改-->
             <el-dialog :title="title" :visible.sync="equipmentTypeFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="equipmentTypeFormClose">
               <el-form ref="equipmentTypeForm" :model="equipmentTypeForm" :rules="equipmentTypeFormRules" label-width="120px">
@@ -61,7 +61,7 @@ export default {
       tableDataSearch: {
         text: '', // 搜索文本
         pageSize: 20, // 展示条数
-        pageIndex: 1// 页码
+        pageNumber: 1// 页码
       },
       totalCount: 0, // 数据总条数
       equipmentTypeFormVisible: false,
@@ -109,7 +109,7 @@ export default {
       // 展示条数
       this.tableDataSearch.pageSize = val.limit
       // 页码
-      this.tableDataSearch.pageIndex = val.page
+      this.tableDataSearch.pageNumber = val.page
       // 调用获取数据
       this.getData()
     },
