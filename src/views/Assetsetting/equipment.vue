@@ -9,12 +9,12 @@
               <el-input v-model="equipmentFormSearch.text" placeholder="全局查询" size="small" />
               <el-button type="primary" size="small" @click="getData()">查询</el-button>
               <el-button type="success" size="small" @click="adddata()">添加</el-button>
-              <el-button type="warning" size="small" @click="updatedata()">修改</el-button>
-              <el-button type="danger" size="small" @click="deletdata()">删除</el-button>
+              <el-button type="warning" size="small" @click="updateEquipment()">修改</el-button>
+              <el-button type="danger" size="small" @click="deleteequipment()">删除</el-button>
             </div>
           </div>
           <div class="content">
-            <el-table :data="equipmentData" stripe border style="width: 100%" @selection-change="handleSelectionChange">
+            <el-table :data="equipmentData" stripe border style="width: 100%" @selection-change="handleSelectionChangeEquipment">
               <el-table-column type="selection" width="40" />
               <el-table-column prop="id" label="序号" />
               <el-table-column prop="name" label="设备名称" />
@@ -23,21 +23,26 @@
 
             <el-dialog :title="equipmentFormTitle" :visible.sync="equipmentFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="equipmentFormClose">
               <el-form ref="equipmentForm" :model="equipmentForm" :rules="equipmentFormRules" label-width="120px">
+                <el-form-item label="设备类型" prop="equimentTypeId">
+                  <el-select v-model="equipmentForm.equimentTypeId" filterable placeholder="请选择">
+                    <el-option v-for="item in equipmentTypeData" :key="item.id" :label="item.name" :value="item.id" />
+                  </el-select>
+                </el-form-item>
                 <el-form-item label="设备" prop="name">
                   <el-input v-model="equipmentForm.name" placeholder="设备" size="small" />
                 </el-form-item>
               </el-form>
               <span slot="footer" class="dialog-footer">
                 <el-button type="primary" @click="equipmentFormVisible=false">关闭</el-button>
-                <el-button type="primary" @click="submitData()">提交</el-button>
+                <el-button type="primary" @click="submitEquipment()">提交</el-button>
               </span>
             </el-dialog>
 
-            <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeQuestionVisible" width="220px">
+            <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="equipmentDeleteModelVisible" width="220px">
               <span>您确定要删除此条数据？</span>
               <span slot="footer" class="dialog-footer">
-                <el-button @click="removeQuestionVisible = false">取 消</el-button>
-                <el-button type="primary" @click="removeQuestion">确 定</el-button>
+                <el-button @click="equipmentDeleteModelVisible = false">取 消</el-button>
+                <el-button type="primary" @click="submitDeleteequipment">确 定</el-button>
               </span>
             </el-dialog>
 
@@ -57,6 +62,7 @@ export default {
   data() {
     return {
       equipmentData: [], // 数据
+      equipmentTypeData: [], // 设备类型
       equipmentFormSearch: {
         text: '',
         pageSize: 20,
@@ -67,24 +73,24 @@ export default {
       equipmentFormVisible: false,
       equipmentForm: {
         id: undefined,
+        equimentTypeId: undefined,
         name: ''
       },
       equipmentFormRules: {
+        equimentTypeId: {
+          required: true,
+          message: '设备类型不可为空',
+          trigger: 'change'
+        },
         name: {
           required: true,
           message: '设备名称不可为空',
           trigger: 'blur'
         }
       },
-      // //////////////////////////
-      removeData: null, // 当前表单所选删除行
-      tableData: [], // 全部数据
-      removeQuestionVisible: false, // 删除弹框隐藏
-      searchMessage: '', // 全局搜索的值
-      multipleSelection: '', // 当前表单所选行val
-      changeActiveVisible: false, // 添加弹出框隐藏
-      title: '添加设备' // 弹框标题
-
+      equipmentDeleteModelVisible: false,
+      equipmentDeleteDataId: null,
+      multipleSelectionEquipment: []
     }
   },
   computed: {},
@@ -97,6 +103,9 @@ export default {
       this.$axios.get('/api/Meta/equipment', { params: this.equipmentFormSearch }).then(res => {
         this.equipmentData = res.data
         this.equipmentTotalCount = res.totalCount
+      })
+      this.$axios.get('/api/Meta/Type', { params: { pageSize: 9999, pageNumber: 1 }}).then(res => {
+        this.equipmentTypeData = res.data
       })
     },
     // 分页
@@ -113,57 +122,72 @@ export default {
       this.equipmentFormVisible = true// 显示弹框
       this.equipmentFormTitle = '添加设备'
     },
-    // 提交表单
-    submitData() {
-      // 添加弹出框点确认方法
+
+    updateEquipment(row) {
+      if (row === undefined) {
+        this.equipmentFormTitle = '编辑设备'
+        if (this.multipleSelectionEquipment.length !== 1) {
+          this.$message.error('请选择一项数据进行操作')
+        } else {
+          this.equipmentFormVisible = true
+          this.equipmentForm.id = this.multipleSelectionEquipment[0].id
+          this.equipmentForm.name = this.multipleSelectionEquipment[0].name
+        }
+      } else {
+        this.equipmentFormVisible = true
+        this.equipmentForm.id = row.id
+        this.equipmentForm.name = row.name
+      }
+    },
+    // 品牌表单提交
+    submitEquipment() {
       this.$refs.equipmentForm.validate(valid => {
         if (valid) {
-          this.$axios.post('/', this.equipmentForm).then(res => {
-            this.getBrandData()
-            this.equipmentFormVisible = false
-          })
+          if (this.equipmentForm.id === undefined) {
+            this.$axios.post('/api/Meta/Equipment', this.equipmentForm).then(res => {
+              this.getData()
+              this.$message.success('设备添加成功')
+              this.equipmentFormVisible = false
+            })
+          } else {
+            this.$axios.put('/api/Meta/Equipment/' + this.equipmentForm.id, this.equipmentForm).then(res => {
+              this.getData()
+              this.$message.success('设备修改成功')
+              this.equipmentFormVisible = false
+            })
+          }
         }
       })
     },
-    // 表单关闭重置
+    // 品牌表单关闭重置
     equipmentFormClose() {
       this.$refs.equipmentForm.resetFields()
     },
-    // ///////////////////////////////
-
-    updatedata() {
-      // 修改方法
-      if (this.multipleSelection === '') {
-        this.$message.error('请至少选择一条数据')
+    // 删除品牌
+    deleteequipment(row) {
+      if (row === undefined) {
+        if (this.multipleSelectionEquipment.length !== 1) {
+          this.$message.error('请选择一项数据进行操作')
+        } else {
+          this.equipmentDeleteModelVisible = true
+          this.equipmentDeleteDataId = this.multipleSelectionEquipment[0].id
+        }
       } else {
-        this.title = '编辑设备'
-        this.changeActiveVisible = true// 显示弹框
+        this.equipmentDeleteModelVisible = true
+        this.equipmentDeleteDataId = row.id
       }
     },
-    deletdata(row) {
-      if (this.multipleSelection === '') {
-        this.$message.error('请至少选择一条数据')
-      } else {
-        this.removeData = row
-        this.removeQuestionVisible = true
-      }
+    // 提交删除品牌
+    submitDeleteequipment() {
+      this.$axios.delete('/api/Meta/equipment/' + this.equipmentDeleteDataId).then(res => {
+        this.getData()
+        this.$message.success('设备删除成功')
+        this.equipmentDeleteModelVisible = false
+      })
     },
-    // 删除试题
-    removeQuestion() {
-      // let _this = this
-      // this.$ajax.delete('/api/services/app/Question/DeleteClozeQuestion?Id=' + this.removeData.id).then(response => {
-      //   if (response.data.success) {
-      //     let index = _this.tableData.indexOf(_this.removeData)
-      //     _this.tableData.splice(index, 1)
-      //     _this.$message.success('删除成功')
-      //     _this.removeQuestionVisible = false
-      //   } else {
-      //     _this.$message.error(response.data.error.message)
-      //   }
-      // })
-    },
-    handleSelectionChange(val) {
-      this.multipleSelection = val
+    // 品牌表单多选数据
+    handleSelectionChangeEquipment(val) {
+      this.multipleSelectionEquipment = val
     }
   }
 }
