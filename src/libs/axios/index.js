@@ -101,6 +101,7 @@ axios.interceptors.response.use(
   },
   error => {
     if (error && error.response) {
+      debugger
       switch (error.response.status) {
         case 400:
           error.message = '请求错误'
@@ -118,7 +119,7 @@ axios.interceptors.response.use(
           error.message = '请求超时'
           break
         case 500:
-          error.message = '服务器内部错误'
+          error.message = `服务器内部错误： ${error.response.data.message}`
           break
         case 501:
           error.message = '服务未实现'
