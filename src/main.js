@@ -22,6 +22,8 @@ import cookie from './libs/cookies'
 // 引入axios
 import axios from './libs/axios'
 
+// 引入jquery ajax 模块
+import { ajax } from 'jquery'
 // vue treeSelect 样式引入
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
@@ -34,7 +36,7 @@ Vue.prototype.$cookie = cookie
 
 // 将 axios 挂载到vue 属性中
 Vue.prototype.$axios = axios
-
+Vue.prototype.$ajax = ajax
 new Vue({
   el: '#app',
   router,

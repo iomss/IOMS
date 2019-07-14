@@ -24,7 +24,8 @@ function errorLog(error) {
 }
 
 const token = {
-  accessToken: cookies.get('accessToken'),
+  accessTokenType: cookies.get('token_type'),
+  accessToken: cookies.get('access_token'),
   encryptedAccessToken: cookies.get('encryptedAccessToken'),
   expireInSeconds: cookies.get('expireInSeconds'),
   tokenSetTime: cookies.get('tokenSetTime'),
@@ -39,7 +40,7 @@ const token = {
   },
   getToken() {
     this.refreshToken()
-    return this.accessToken
+    return this.accessTokenType + ' ' + this.accessToken
   }
 }
 
@@ -56,12 +57,13 @@ axios.defaults.timeout = 5000
 // 请求拦截器
 axios.interceptors.request.use(
   config => {
+    debugger
     // 根据相关情况修改默认url地址
     const url = config.url
     config.baseURL = url.indexOf('/easymock') !== -1 ? (process.env.NODE_ENV !== 'development' ? process.env.VUE_APP_API_Easy_Mock : '/') : process.env.NODE_ENV !== 'development' ? process.env.VUE_APP_API : '/'
 
     // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
-    config.headers['X-Token'] = token.getToken()
+    config.headers['Authorization'] = token.getToken()
     return config
   },
   error => {

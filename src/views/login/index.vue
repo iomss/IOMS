@@ -26,14 +26,14 @@
 </template>
 
 <script>
-
 export default {
   name: 'Login',
   data() {
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        grant_type: 'password',
+        username: '',
+        password: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur' }],
@@ -52,19 +52,29 @@ export default {
   methods: {
 
     login() {
+      const _this = this
       this.$refs.loginForm.validate(valid => {
-        this.$cookie.set('accessToken', 'saknfgsagfhasfkasfsfgksajhfshagfjasgdf')
-        this.$cookie.set('roles', 'show')
-        this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
-        // if (valid) {
-        //   this.$axios.post('/api/login').then(res => {
-        //     this.$cookie.set('accessToken', res.data.token)
-        //     this.$cookie.set('roles', res.data.roles)
-        //     this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
-        //   })
-        // } else {
-        //   return false
-        // }
+        if (valid) {
+          this.$ajax({
+            type: 'POST',
+            url: process.env.VUE_APP_API + '/oauth/token',
+            data: this.loginForm,
+            success: (res) => {
+              _this.$message.success('登录成功')
+              for (const item in res) {
+                _this.$cookie.set(item, res[item])
+              }
+              _this.$cookie.set('tokenSetTime', new Date().getTime())
+              _this.$cookie.set('roles', 'show')
+              _this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+            },
+            error: (err) => {
+              this.$message.error(err.responseJSON.error_description)
+            }
+          })
+        } else {
+          return false
+        }
       })
     }
 

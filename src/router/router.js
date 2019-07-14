@@ -35,7 +35,7 @@ router.beforeEach((to, from, next) => {
   // 进度条
   NProgress.start()
 
-  const token = cookies.get('accessToken') // 通过cookie获取登录凭证token
+  const token = cookies.get('access_token') // 通过cookie获取登录凭证token
   const roles = cookies.get('roles') ? cookies.get('roles').split(',') : [] // 通过cookie 获取权限 roles
 
   const needCheckRoles = roles.length >= 1 && noRoleWhiteList.indexOf(to.path) === -1 // 判断是否需要权限 true 需要 false 不需要
