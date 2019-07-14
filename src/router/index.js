@@ -241,15 +241,15 @@ export const asyncRoutes = [
         component: () => import('@/views/Meta/System')
       },
       {
-        path: 'systemIntegrate',
-        name: 'Meta-systemIntegrate',
+        path: 'SI',
+        name: 'Meta-SI',
         meta: {
-          title: '系统集成商',
+          title: '设备集成商',
           icon: 'fa fa-home',
           roles: ['show'],
-          fullPath: '/Meta/systemIntegrate'
+          fullPath: '/Meta/SI'
         },
-        component: () => import('@/views/Meta/systemIntegrate')
+        component: () => import('@/views/Meta/SI')
       },
       {
         path: 'positionType',
