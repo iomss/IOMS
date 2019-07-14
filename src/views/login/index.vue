@@ -115,11 +115,14 @@ export default {
             data: this.loginForm,
             success: (res) => {
               _this.$message.success('登录成功')
+              // cookie 中写入相关登录凭证
               for (const item in res) {
                 _this.$cookie.set(item, res[item])
               }
               _this.$cookie.set('tokenSetTime', new Date().getTime())
+              // 获取用户数据
               _this.$axios.get('/api/Account/LoginInfo').then(res => {
+                // cookie 中写入相关用户数据
                 for (const item in res) {
                   _this.$cookie.set(item, res[item])
                 }

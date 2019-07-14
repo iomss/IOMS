@@ -19,7 +19,7 @@
               <el-button size="small">修改密码</el-button>
               <el-button size="small">修改信息</el-button>
             </el-button-group>
-            <el-button size="small" style="float:right">注销</el-button>
+            <el-button size="small" style="float:right" @click="logout">注销</el-button>
           </div>
         </div>
         <div slot="reference" style="margin-right:20px;cursor:pointer;">
@@ -58,8 +58,10 @@ export default {
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },
-    async logout() {
-      await this.$store.dispatch('user/logout')
+    logout() {
+      document.cookie.match(/[^ =;]+(?=\=)/g).forEach(item => {
+        this.$cookie.remove(item.replace('ioms-', ''))
+      })
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     }
   }
