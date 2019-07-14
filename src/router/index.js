@@ -164,103 +164,103 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/Assetsetting',
-    name: 'Assetsetting',
+    path: '/Meta',
+    name: 'Meta',
     meta: {
       title: '资产设置',
       icon: 'fa fa-home',
-      fullPath: '/Assetsetting'
+      fullPath: '/Meta'
     },
     component: Layout,
-    redirect: '/Assetsetting/equipmentType',
+    redirect: '/Meta/Type',
     children: [
       {
         path: 'brandModel',
-        name: 'Assetsetting-brandModel',
+        name: 'Meta-brandModel',
         meta: {
           title: '品牌型号',
           icon: 'fa fa-home',
           roles: ['show'],
-          fullPath: '/Assetsetting/brandModel'
+          fullPath: '/Meta/brandModel'
         },
-        component: () => import('@/views/Assetsetting/brandModel')
+        component: () => import('@/views/Meta/brandModel')
       },
       {
-        path: 'equipmentType',
-        name: 'Assetsetting-equipmentType',
+        path: 'Type',
+        name: 'Meta-Type',
         meta: {
-          title: '设备种类',
+          title: '设备类型',
           icon: 'fa fa-home',
           roles: ['show'],
-          fullPath: '/Assetsetting/equipmentType'
+          fullPath: '/Meta/Type'
         },
-        component: () => import('@/views/Assetsetting/equipmentType')
+        component: () => import('@/views/Meta/Type')
       },
       {
-        path: 'equipmentPosition',
-        name: 'Assetsetting-equipmentPosition',
+        path: 'Position',
+        name: 'Meta-Position',
         meta: {
           title: '设备位置',
           icon: 'fa fa-home',
           roles: ['show'],
-          fullPath: '/Assetsetting/equipmentPosition'
+          fullPath: '/Meta/Position'
         },
-        component: () => import('@/views/Assetsetting/equipmentPosition')
+        component: () => import('@/views/Meta/Position')
       },
       {
-        path: 'equipmentSource',
-        name: 'Assetsetting-equipmentSource',
+        path: 'Source',
+        name: 'Meta-Source',
         meta: {
           title: '设备来源',
           icon: 'fa fa-home',
           roles: ['show'],
-          fullPath: '/Assetsetting/equipmentSource'
+          fullPath: '/Meta/Source'
         },
-        component: () => import('@/views/Assetsetting/equipmentSource')
+        component: () => import('@/views/Meta/Source')
       },
       {
-        path: 'equipment',
-        name: 'Assetsetting-equipment',
+        path: 'Equipment',
+        name: 'Meta-Equipment',
         meta: {
           title: '设备管理',
           icon: 'fa fa-home',
           roles: ['show'],
-          fullPath: '/Assetsetting/equipment'
+          fullPath: '/Meta/Equipment'
         },
-        component: () => import('@/views/Assetsetting/equipment')
+        component: () => import('@/views/Meta/Equipment')
       },
       {
-        path: 'systemOwner',
-        name: 'Assetsetting-systemOwner',
+        path: 'System',
+        name: 'Meta-System',
         meta: {
-          title: '所属系统',
+          title: '设备系统',
           icon: 'fa fa-home',
           roles: ['show'],
-          fullPath: '/Assetsetting/systemOwner'
+          fullPath: '/Meta/System'
         },
-        component: () => import('@/views/Assetsetting/systemOwner')
+        component: () => import('@/views/Meta/System')
       },
       {
         path: 'systemIntegrate',
-        name: 'Assetsetting-systemIntegrate',
+        name: 'Meta-systemIntegrate',
         meta: {
           title: '系统集成商',
           icon: 'fa fa-home',
           roles: ['show'],
-          fullPath: '/Assetsetting/systemIntegrate'
+          fullPath: '/Meta/systemIntegrate'
         },
-        component: () => import('@/views/Assetsetting/systemIntegrate')
+        component: () => import('@/views/Meta/systemIntegrate')
       },
       {
         path: 'positionType',
-        name: 'Assetsetting-positionType',
+        name: 'Meta-positionType',
         meta: {
           title: '位置类型',
           icon: 'fa fa-home',
           roles: ['show'],
-          fullPath: '/Assetsetting/positionType'
+          fullPath: '/Meta/positionType'
         },
-        component: () => import('@/views/Assetsetting/positionType')
+        component: () => import('@/views/Meta/positionType')
       }
     ]
   },
