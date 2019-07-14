@@ -106,7 +106,7 @@ axios.interceptors.response.use(
     if (error && error.response) {
       switch (error.response.status) {
         case 400:
-          error.message = '请求错误'
+          error.message = `请求错误: ${error.response.data.message}`
           break
         case 401:
           error.message = '未授权，请登录'
