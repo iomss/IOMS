@@ -119,8 +119,18 @@ export default {
                 _this.$cookie.set(item, res[item])
               }
               _this.$cookie.set('tokenSetTime', new Date().getTime())
-              _this.$cookie.set('roles', 'show')
-              _this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+              _this.$axios.get('/api/Account/LoginInfo').then(res => {
+                for (const item in res) {
+                  _this.$cookie.set(item, res[item])
+                }
+                const roles = []
+                res.claims.forEach(item => {
+                  roles.push(item.key)
+                })
+                roles.push('show')
+                _this.$cookie.set('roles', roles.toString())
+                _this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+              })
             },
             error: (err) => {
               this.$message.error(err.responseJSON.error_description)

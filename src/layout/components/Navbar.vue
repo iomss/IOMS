@@ -6,8 +6,8 @@
       <el-popover placement="bottom" width="280" trigger="click">
         <div>
           <div style="height:175px;background:#2e8cff47;text-align:center;padding-top:20px;">
-            <img src="https://avatars3.githubusercontent.com/u/20103991?s=460&v=4" style="width:90px;height:90px;border-radius:50%;">
-            <h2 style="margin:0">12312</h2>
+            <img :src="Logo" style="width:90px;height:90px;border-radius:50%;">
+            <h2 style="margin:0">{{ userName }}</h2>
           </div>
           <div style="padding:15px 0;display:flex;text-align:center">
             <div style="width:49%;padding:0 10px;">青海省高等级公路建设管理局</div>
@@ -23,18 +23,9 @@
           </div>
         </div>
         <div slot="reference" style="margin-right:20px;cursor:pointer;">
-          <img src="https://avatars3.githubusercontent.com/u/20103991?s=460&v=4" style="width:40px;height:40px;border-radius:50%;float:left;margin:5px;">12312
+          <img :src="Logo" style="width:40px;height:40px;border-radius:50%;float:left;margin:5px;">{{ userName }}
         </div>
-        <!-- <el-button slot="reference">click 激活</el-button> -->
       </el-popover>
-      <!-- <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
-
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item>
-            <span style="display:block;" @click="logout">退出</span>
-          </el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown> -->
     </div>
   </div>
 </template>
@@ -43,11 +34,18 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
+import Logo from '@/assets/user.png'
 
 export default {
   components: {
     Breadcrumb,
     Hamburger
+  },
+  data() {
+    return {
+      Logo: Logo,
+      userName: this.$cookie.get('userName')
+    }
   },
   computed: {
     ...mapGetters([
