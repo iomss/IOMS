@@ -263,6 +263,17 @@ export const asyncRoutes = [
         component: () => import('@/views/Meta/positionType')
       },
       {
+        path: 'position',
+        name: 'Meta-position',
+        meta: {
+          title: '位置管理',
+          icon: 'fa fa-home',
+          roles: ['show'],
+          fullPath: '/Meta/position'
+        },
+        component: () => import('@/views/Meta/Position')
+      },
+      {
         path: 'Fault',
         name: 'Meta-Fault',
         meta: {
