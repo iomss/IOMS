@@ -49,19 +49,20 @@
           </div>
         </div>
       </el-col>
+      <!------------------------------------------------------------------------------------------------------------------------------->
       <el-col :span="12">
         <div class="panel">
           <div class="header">
             <div class="search">
-              <el-input v-model="metaModelFormSearch.text" placeholder="全局查询" size="small" />
-              <el-button type="primary" size="small" @click="getMetaModelData()">查询</el-button>
-              <el-button type="success" size="small" @click="addMetaModel()">添加</el-button>
+              <el-input v-model="modelFormSearch.text" placeholder="全局查询" size="small" />
+              <el-button type="primary" size="small" @click="getModelData()">查询</el-button>
+              <el-button type="success" size="small" @click="addModel()">添加</el-button>
               <el-button type="warning" size="small" @click="updateModel()">修改</el-button>
-              <el-button type="danger" size="small" @click="deletModel()">删除</el-button>
+              <el-button type="danger" size="small" @click="deleteModel()">删除</el-button>
             </div>
           </div>
           <div class="content">
-            <el-table :data="metaModelData" stripe border style="width: 100%" @selection-change="handleSelectionChangeModel">
+            <el-table :data="modelData" stripe border style="width: 100%" @selection-change="handleSelectionChangeModel">
               <el-table-column type="selection" width="40" />
               <el-table-column label="操作" width="100">
                 <template slot-scope="scope">
@@ -72,17 +73,17 @@
               <el-table-column prop="id" label="序号" width="100" />
               <el-table-column prop="name" label="型号名称" width="150" />
             </el-table>
-            <pagination v-show="metaModelTotalCount>0" :total="metaModelTotalCount" :page.sync="metaModelFormSearch.pageNumber" :limit.sync="metaModelFormSearch.pageSize" @pagination="getMetaModelPage" />
+            <pagination v-show="modelTotalCount>0" :total="modelTotalCount" :page.sync="modelFormSearch.pageNumber" :limit.sync="modelFormSearch.pageSize" @pagination="getModelPage" />
 
-            <el-dialog :title="metaModelFormTitle" :visible.sync="metaModelFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="metaModelFormClose">
-              <el-form ref="metaModelForm" :model="metaModelForm" :rules="metaModelFormRules" label-width="120px">
+            <el-dialog :title="modelFormTitle" :visible.sync="modelFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="modelFormClose">
+              <el-form ref="modelForm" :model="modelForm" :rules="modelFormRules" label-width="120px">
                 <el-form-item label="型号名称" prop="name">
-                  <el-input v-model="metaModelForm.name" placeholder="型号名称" size="small" />
+                  <el-input v-model="modelForm.name" placeholder="型号名称" size="small" />
                 </el-form-item>
               </el-form>
               <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="metaModelFormVisible=false">关闭</el-button>
-                <el-button type="primary" @click="submitMetaModel()">提交</el-button>
+                <el-button type="primary" @click="modelFormVisible=false">关闭</el-button>
+                <el-button type="primary" @click="submitModel()">提交</el-button>
               </span>
             </el-dialog>
 
@@ -133,21 +134,21 @@ export default {
       multipleSelectionBrand: [],
       /** **************************************************************************************************************************** */
       // 型号
-      metaModelData: [], // 数据
-      metaModelFormSearch: {
+      modelData: [], // 数据
+      modelFormSearch: {
         text: '',
         pageSize: 20,
         pageNumber: 1
       },
-      metaModelTotalCount: 0, // 总条数
-      metaModelFormTitle: '添加型号',
-      metaModelFormVisible: false,
-      metaModelForm: {
+      modelTotalCount: 0, // 总条数
+      modelFormTitle: '添加型号',
+      modelFormVisible: false,
+      modelForm: {
         id: undefined,
         brandId: null,
         name: ''
       },
-      metaModelFormRules: {
+      modelFormRules: {
         name: {
           required: true,
           message: '型号名称不可为空',
@@ -161,7 +162,7 @@ export default {
   },
   mounted() {
     this.getBrandData()
-    this.getMetaModelData()
+    this.getModelData()
   },
   methods: {
     // 品牌
@@ -254,55 +255,55 @@ export default {
     },
     /** ***************************************************************************************************************************************** */
     // 型号
-    getMetaModelData() {
-      this.$axios.get('/api/Meta/Model', { params: this.metaModelFormSearch }).then(res => {
-        this.metaModelData = res.data
-        this.metaModelTotalCount = res.totalCount
+    getModelData() {
+      this.$axios.get('/api/Meta/Model', { params: this.modelFormSearch }).then(res => {
+        this.modelData = res.data
+        this.modelTotalCount = res.totalCount
       })
     },
     // 型号分页
-    getMetaModelPage(val) {
+    getModelPage(val) {
       // 展示条数
-      this.metaModelFormSearch.pageSize = val.limit
+      this.modelFormSearch.pageSize = val.limit
       // 页码
-      this.metaModelFormSearch.pageNumber = val.page
+      this.modelFormSearch.pageNumber = val.page
       // 调用获取数据
-      this.getMetaModelData()
+      this.getModelData()
     },
-    addMetaModel() {
+    addModel() {
       // 添加方法
-      this.metaModelFormVisible = true// 显示弹框
-      this.metaModelFormTitle = '添加型号名称'
+      this.modelFormVisible = true// 显示弹框
+      this.modelFormTitle = '添加型号名称'
     },
     updateModel(row) {
-      this.metaModelFormVisible = true
-      this.metaModelFormTitle = '编辑型号名称'
-      this.metaModelForm.id = row.id
-      this.metaModelForm.name = row.name
+      this.modelFormVisible = true
+      this.modelFormTitle = '编辑型号名称'
+      this.modelForm.id = row.id
+      this.modelForm.name = row.name
     },
     // 型号表单提交
-    submitMetaModel() {
-      this.$refs.metaModelForm.validate(valid => {
+    submitModel() {
+      this.$refs.modelForm.validate(valid => {
         if (valid) {
-          if (this.metaModelForm.id === undefined) {
-            this.$axios.post('/api/Meta/Model', this.metaModelForm).then(res => {
-              this.getBrandData()
+          if (this.modelForm.id === undefined) {
+            this.$axios.post('/api/Meta/Model', this.modelForm).then(res => {
+              this.getModelData()
               this.$message.success('型号添加成功')
-              this.metaModelFormVisible = false
+              this.modelFormVisible = false
             })
           } else {
-            this.$axios.put('/api/Meta/Model/' + this.metaModelForm.id, this.metaModelForm).then(res => {
-              this.getBrandData()
+            this.$axios.put('/api/Meta/Model/' + this.modelForm.id, this.modelForm).then(res => {
+              this.getModelData()
               this.$message.success('型号编辑成功')
-              this.metaModelFormVisible = false
+              this.modelFormVisible = false
             })
           }
         }
       })
     },
     // 型号表单关闭重置
-    metaModelFormClose() {
-      this.$refs.metaModelForm.resetFields()
+    modelFormClose() {
+      this.$refs.modelForm.resetFields()
     },
     // 删除品牌
     deleteModel(row) {
@@ -321,7 +322,7 @@ export default {
     // 提交删除品牌
     submitDeleteModel() {
       this.$axios.delete('/api/Meta/Model/' + this.brandDeleteDataId).then(res => {
-        this.getBrandData()
+        this.getModelData()
         this.$message.success('型号删除成功')
         this.brandDeleteModelVisible = false
       })
