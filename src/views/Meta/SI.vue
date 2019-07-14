@@ -110,6 +110,7 @@ export default {
     adddata() {
       this.SIFormVisible = true// 显示弹框
       this.SIFormTitle = '添加设备集成商'
+      this.SIForm.id = undefined
     },
     updateSI(row) {
       if (row === undefined) {

@@ -126,6 +126,7 @@ export default {
     adddata() {
       this.equipmentFormVisible = true// 显示弹框
       this.equipmentFormTitle = '添加设备'
+      this.equipmentForm.id = undefined
     },
 
     updateEquipment(row) {

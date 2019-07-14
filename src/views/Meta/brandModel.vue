@@ -186,6 +186,7 @@ export default {
       // 添加方法
       this.brandFormVisible = true// 显示弹框
       this.brandFormTitle = '添加品牌名称'
+      this.brandForm.id = undefined
     },
     updateBrand(row) {
       if (row === undefined) {
@@ -274,6 +275,7 @@ export default {
       // 添加方法
       this.modelFormVisible = true// 显示弹框
       this.modelFormTitle = '添加型号名称'
+      this.modelForm.id = undefined
     },
     updateModel(row) {
       this.modelFormVisible = true

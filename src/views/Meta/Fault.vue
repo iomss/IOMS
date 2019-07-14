@@ -106,6 +106,7 @@ export default {
     adddata() {
       this.FaultFormVisible = true// 显示弹框
       this.FaultFormTitle = '添加故障'
+      this.FaultForm.id = undefined
     },
     // 表单关闭重置
     FaultFormClose() {

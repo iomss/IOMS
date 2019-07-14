@@ -4,13 +4,13 @@
 
 ```
 npm包还原
-npm install 
+npm install
 ```
 
 ```
 项目运行
 npm run dev
-npm run server
+npm run serve
 ```
 
 ```
@@ -29,7 +29,7 @@ npm run build:prod
 IIS 管理器需要安装 urlrewrite2 组件
 ```
 
-并添加  web.config  配置
+并添加 web.config 配置
 
 ```
 <?xml version="1.0" encoding="UTF-8"?>
@@ -51,16 +51,16 @@ IIS 管理器需要安装 urlrewrite2 组件
 </configuration>
 ```
 
-## IOMS项目本地运行相关环境配置
+## IOMS 项目本地运行相关环境配置
 
-安装  NODE
+安装 NODE
 
 ```
       NODE
       NPM
 ```
 
-查看  node 及 npm 版本
+查看 node 及 npm 版本
 
 ```
     node -v
@@ -72,10 +72,10 @@ Npm 相关配置
 ```
   查看 npm 相关配置
   npm config list
-  
+
   npm 源镜像地址切换为 taobao
   npm config set registry http://registry.npm.taobao.org
-  
+
   npm 切换为源镜像地址
   npm config set registry http://registry.npm.org
 ```
