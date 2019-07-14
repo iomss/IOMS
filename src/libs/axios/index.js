@@ -57,7 +57,6 @@ axios.defaults.timeout = 5000
 // 请求拦截器
 axios.interceptors.request.use(
   config => {
-    debugger
     // 根据相关情况修改默认url地址
     const url = config.url
     config.baseURL = url.indexOf('/easymock') !== -1 ? (process.env.NODE_ENV !== 'development' ? process.env.VUE_APP_API_Easy_Mock : '/') : process.env.NODE_ENV !== 'development' ? process.env.VUE_APP_API : '/'
