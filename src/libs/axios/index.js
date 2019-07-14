@@ -23,15 +23,14 @@ function errorLog(error) {
   })
 }
 
+const encryptedAccessToken = cookies.get('encryptedAccessToken')
+const expireInSeconds = cookies.get('expireInSeconds')
+const tokenSetTime = cookies.get('tokenSetTime')
 const token = {
-  accessTokenType: cookies.get('token_type'),
-  accessToken: cookies.get('access_token'),
-  encryptedAccessToken: cookies.get('encryptedAccessToken'),
-  expireInSeconds: cookies.get('expireInSeconds'),
-  tokenSetTime: cookies.get('tokenSetTime'),
   refreshToken() {
     const nowTime = new Date().getTime()
-    if (nowTime - parseInt(this.tokenSetTime) / 1000 > parseInt(this.expireInSeconds) - 500) {
+    if (nowTime - parseInt(tokenSetTime) / 1000 > parseInt(expireInSeconds) - 500) {
+      console.log(encryptedAccessToken)
       // 进行刷新token相关操作
       // axios.post('').then((res:any) => {
       //   console.log(res)
@@ -39,8 +38,7 @@ const token = {
     }
   },
   getToken() {
-    this.refreshToken()
-    return this.accessTokenType + ' ' + this.accessToken
+    return cookies.get('token_type') + ' ' + cookies.get('access_token')
   }
 }
 
