@@ -49,10 +49,10 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="购置年份" prop="purchaseYear">
-                <el-date-picker v-model="formData.purchaseYear" type="month" placeholder="购置年份" />
+                <el-input v-model="formData.purchaseYear" placeholder="购置年份" size="small" />
               </el-form-item>
               <el-form-item label="交工时间" prop="handoverDate">
-                <el-date-picker v-model="formData.handoverDate" type="date" placeholder="交工时间" />
+                <el-date-picker v-model="formData.handoverDate" type="month" placeholder="交工时间" />
               </el-form-item>
               <el-form-item label="工程名称" prop="engineering">
                 <el-input v-model="formData.engineering" placeholder="工程名称" size="small" />
@@ -65,8 +65,7 @@
               </el-form-item>
               <el-form-item label="产权单位" prop="propertyUnit">
                 <el-select v-model="formData.propertyUnit" clearable placeholder="产权单位" size="small">
-                  <el-option key="1" label="已发布" value="true" />
-                  <el-option key="2" label="未发布" value="false" />
+                  <el-option v-for="item in unitData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
               <el-form-item label="资产原值" prop="original">
@@ -83,10 +82,9 @@
               <el-form-item label="备注" class="form_mid" prop="Remarks">
                 <el-input v-model="formData.Remarks" type="textarea" :rows="2" placeholder="请输入内容" />
               </el-form-item>
-              <el-form-item label="照片" class="form_mid" />
+              <el-form-item label="照片" class="form_mid" prop="img" />
               <el-form-item label="自定义属性">
                 <el-input v-model="formData.Model" placeholder="使用单位" size="small" />
-
               </el-form-item>
               <el-form-item class="form_total">
                 <el-button type="primary" size="small" icon="el-icon-search" @click="create()">保存</el-button>
@@ -122,9 +120,10 @@ export default {
         liabilityPeriod: '',
         propertyUnit: '',
         original: '',
-        uint: ''
+        uint: '',
+        img: ''
       },
-      unitData: [], // 使用单位数据
+      unitData: [], // 使用单位同产权单位数据
       positionData: [], // 安装位置数据
       systemData: [], // 所属系统数据
       typeData: [], // 资产类别数据
@@ -193,7 +192,6 @@ export default {
       this.$axios.get('/api/Meta/Source').then(res => {
         this.sourceData = res.data
       })
-      // 获取产权单位
     },
     create() { // 新增资产/api/Assets
       console.log(this)

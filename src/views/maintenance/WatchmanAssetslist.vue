@@ -3,7 +3,10 @@
   <div>
     <el-row>
       <el-col :span="6">
-        <treeselect v-model="treeselect" :multiple="true" :options="treeData" />
+        <treeselect v-model="treeselect" :multiple="true" :options="treeData" placeholder="设备位置" search-nested>
+          <div slot="value-label" slot-scope="{ node }">{{ node.raw.name }}</div>
+          <label slot="option-label" slot-scope="{ node }">{{ node.raw.name }}</label>
+        </treeselect>
       </el-col>
       <el-col :span="18">
         <div class="panel">
@@ -31,12 +34,12 @@
                     <span v-for="(item,index) in scope.row.answer" :key="index" style="margin-right:8px;">{{ item===1?"A":item===2?"B":item===3?"C":"D" }}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="detail" label="资产编码" width="90" />
-                <el-table-column prop="questionType" label="资产名称" width="90" />
-                <el-table-column prop="year" label="品牌" width="90" />
-                <el-table-column prop="number" label="型号" width="70" />
-                <el-table-column prop="number" label="所属系统" width="70" />
-                <el-table-column prop="number" label="安装位置" width="70" />
+                <el-table-column prop="code" label="资产编码" width="90" />
+                <el-table-column prop="alas" label="资产名称" width="90" />
+                <el-table-column prop="brand" label="品牌" width="90" />
+                <el-table-column prop="model" label="型号" width="70" />
+                <el-table-column prop="system" label="所属系统" width="70" />
+                <el-table-column prop="position" label="安装位置" width="70" />
                 <el-table-column prop="recommendedTime" label="报修次数" width="100" />
                 <el-table-column label="操作" width="100">
                   <template slot-scope="scope">
@@ -61,7 +64,7 @@ export default {
     return {
       tableData: [],
       treeData: [],
-      treeselect: '',
+      treeselect: null,
       multipleSelection: '', // 表单选中行id
       removeData: null,
       formSearch: {}, // 筛选所属系统数据
@@ -70,13 +73,21 @@ export default {
   },
   computed: {},
   mounted() {
-    this.getData()
+    this.getTree()
   },
   methods: {
     // 获取数据
-    getData() {
-      this.$axios.get('/api/Meta/Position', { params: this.positionFormSearce }).then(res => {
-        this.treeData = res.data
+    getTree() {
+      this.$axios.get('/api/tree/position').then(res => {
+        this.treeData = res
+        console.log(this.treeData)
+      })
+      this.getData()
+    },
+    getData() { // 获取右侧列表数据
+      this.$axios.get('/api/Assets').then(res => {
+        this.tableData = res.data
+        console.log(this.tableData)
       })
     },
     searchData() {
