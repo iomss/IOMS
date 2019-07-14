@@ -8,18 +8,18 @@
             <h4>维修单详情</h4>
             <div class="Infodata">
               <ul>
-                <li><span>维修单编号:</span><b>{{ InfoData }}</b></li>
+                <li><span>维修单编号:</span><b>1234567</b></li>
                 <li><span>设备位置:</span><b>{{ InfoData }}</b></li>
-                <li><span>设备种类:</span><b>{{ InfoData }}</b></li>
-                <li><span>设备编码:</span><b>{{ InfoData }}</b></li>
-                <li><span>故障类型:</span><b>{{ InfoData }}</b></li>
-                <li><span>故障时间:</span><b>{{ InfoData }}</b></li>
-                <li><span>故障描述:</span><b>{{ InfoData }}</b></li>
-                <li><span>录入人:</span><b>{{ InfoData }}</b></li>
+                <li><span>设备种类:</span><b>{{ InfoData.equimentType }}</b></li>
+                <li><span>设备编码:</span><b>{{ InfoData.assetCode }}</b></li>
+                <li><span>故障类型:</span><b>{{ InfoData.equipmentFault }}</b></li>
+                <li><span>故障时间:</span><b>{{ InfoData.failureTime }}</b></li>
+                <li><span>故障描述:</span><b>{{ InfoData.description }}</b></li>
+                <li><span>录入人:</span><b>{{ InfoData.recordUser }}</b></li>
                 <li><span>报修级别:</span><b>{{ InfoData.repairLevel }}</b></li>
                 <!-- <li><span>代维状态:</span><b>{{ InfoData }}</b></li> -->
-                <li><span>报修人:</span><b>{{ InfoData }}</b></li>
-                <li><span>报修时间:</span><b>{{ InfoData }}</b></li>
+                <li><span>报修人:</span><b>{{ InfoData.reporterName }}</b></li>
+                <li><span>报修时间:</span><b>{{ InfoData.reportTime }}</b></li>
                 <li><span>派工次数:</span><b>{{ InfoData }}</b></li>
                 <li><span>维修次数:</span><b>{{ InfoData }}</b></li>
               </ul>
