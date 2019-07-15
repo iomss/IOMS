@@ -90,7 +90,7 @@
               <el-table-column prop="id" label="序号" width="60" />
               <el-table-column prop="state" label="状态" width="80">
                 <template slot-scope="scope">
-                  {{ scope.row.state===0?"A":scope.row.state===0?"B":"C" }}
+                  {{ scope.row.state==='Normal'?"正常":scope.row.state==='Using'?"使用中":"故障" }}
                 </template>
               </el-table-column>
               <el-table-column prop="code" label="资产编码" width="90" />
@@ -100,7 +100,7 @@
               <el-table-column prop="model.name" label="型号" width="100" />
               <el-table-column prop="parentSystem" label="所属系统" width="100" />
               <el-table-column prop="system.name" label="所属子系统" width="120" />
-              <el-table-column prop="position" label="安装位置" width="90" />
+              <el-table-column prop="position.name" label="安装位置" width="90" />
               <el-table-column prop="enableTime" label="投用时间" width="90" />
               <el-table-column prop="handoverDate" label="交工时间" width="90" />
               <el-table-column prop="purchaseYear" label="购置年份" width="90" />
@@ -111,7 +111,6 @@
               <el-table-column prop="lastUpdateTime" label="更新时间" width="90" />
               <el-table-column label="操作" width="100">
                 <template slot-scope="scope">
-                  <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="success" @click="showInfo(scope.row)">详情</el-button>
                   <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="primary" @click="UpdateStage(scope.row)">编辑</el-button>
                   <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="danger" @click="deleteManage(scope.row)">删除</el-button>
                 </template>
@@ -207,10 +206,6 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
-    },
-    showInfo(val) { // 点击详情按钮
-      console.log('/assets/Info/' + val.id)
-      this.$router.push('/assets/Info/' + val.id)
     },
     UpdateStage(val) { // 点击编辑按钮
       console.log(val.id)
