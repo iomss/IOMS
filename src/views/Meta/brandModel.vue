@@ -72,6 +72,7 @@
               </el-table-column>
               <el-table-column prop="id" label="序号" width="100" />
               <el-table-column prop="name" label="型号名称" width="150" />
+              <el-table-column prop="brandName" label="品牌" width="150" />
             </el-table>
             <pagination v-show="modelTotalCount>0" :total="modelTotalCount" :page.sync="modelFormSearch.pageNumber" :limit.sync="modelFormSearch.pageSize" @pagination="getModelPage" />
 
@@ -79,6 +80,11 @@
               <el-form ref="modelForm" :model="modelForm" :rules="modelFormRules" label-width="120px">
                 <el-form-item label="型号名称" prop="name">
                   <el-input v-model="modelForm.name" placeholder="型号名称" size="small" />
+                </el-form-item>
+                <el-form-item label="品牌" prop="brandId">
+                  <el-select v-model="modelForm.brandId" filterable placeholder="请选择">
+                    <el-option v-for="item in brandData" :key="item.id" :label="item.name" :value="item.id" />
+                  </el-select>
                 </el-form-item>
               </el-form>
               <span slot="footer" class="dialog-footer">
@@ -152,6 +158,11 @@ export default {
         name: {
           required: true,
           message: '型号名称不可为空',
+          trigger: 'blur'
+        },
+        brandId: {
+          required: true,
+          message: '所属型号不可为空',
           trigger: 'blur'
         }
       },
@@ -276,12 +287,25 @@ export default {
       this.modelFormVisible = true// 显示弹框
       this.modelFormTitle = '添加型号名称'
       this.modelForm.id = undefined
+      this.modelForm.brandId = undefined
     },
     updateModel(row) {
-      this.modelFormVisible = true
-      this.modelFormTitle = '编辑型号名称'
-      this.modelForm.id = row.id
-      this.modelForm.name = row.name
+      if (row === undefined) {
+        this.modelFormTitle = '编辑品牌名称'
+        if (this.multipleSelectionModel.length !== 1) {
+          this.$message.error('请选择一项品牌数据进行操作')
+        } else {
+          this.modelFormVisible = true
+          this.modelForm.id = this.multipleSelectionModel[0].id
+          this.modelForm.name = this.multipleSelectionModel[0].name
+          this.modelForm.brandId = this.multipleSelectionModel[0].brandId
+        }
+      } else {
+        this.brandFormVisible = true
+        this.brandForm.id = row.id
+        this.brandForm.name = row.name
+        this.brandForm.brandId = row.brandId
+      }
     },
     // 型号表单提交
     submitModel() {
