@@ -283,6 +283,17 @@ export const asyncRoutes = [
           fullPath: '/Meta/Fault'
         },
         component: () => import('@/views/Meta/Fault')
+      },
+      {
+        path: 'RepairLevel',
+        name: 'Meta-RepairLevel',
+        meta: {
+          title: '维修等级管理',
+          icon: 'fa fa-home',
+          roles: ['show'],
+          fullPath: '/Meta/RepairLevel'
+        },
+        component: () => import('@/views/Meta/RepairLevel')
       }
     ]
   },
