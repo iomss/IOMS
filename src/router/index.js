@@ -180,7 +180,7 @@ export const asyncRoutes = [
         meta: {
           title: '品牌型号',
           icon: 'fa fa-home',
-          roles: ['show'],
+          roles: ['ManageMeta'],
           fullPath: '/Meta/brandModel'
         },
         component: () => import('@/views/Meta/brandModel')
@@ -191,7 +191,7 @@ export const asyncRoutes = [
         meta: {
           title: '设备类型',
           icon: 'fa fa-home',
-          roles: ['show'],
+          roles: ['ManageMeta'],
           fullPath: '/Meta/Type'
         },
         component: () => import('@/views/Meta/Type')
@@ -202,7 +202,7 @@ export const asyncRoutes = [
         meta: {
           title: '设备位置',
           icon: 'fa fa-home',
-          roles: ['show'],
+          roles: ['ManageMeta'],
           fullPath: '/Meta/Position'
         },
         component: () => import('@/views/Meta/Position')
@@ -213,7 +213,7 @@ export const asyncRoutes = [
         meta: {
           title: '设备来源',
           icon: 'fa fa-home',
-          roles: ['show'],
+          roles: ['ManageMeta'],
           fullPath: '/Meta/Source'
         },
         component: () => import('@/views/Meta/Source')
@@ -224,7 +224,7 @@ export const asyncRoutes = [
         meta: {
           title: '设备管理',
           icon: 'fa fa-home',
-          roles: ['show'],
+          roles: ['ManageMeta'],
           fullPath: '/Meta/Equipment'
         },
         component: () => import('@/views/Meta/Equipment')
@@ -235,7 +235,7 @@ export const asyncRoutes = [
         meta: {
           title: '设备系统',
           icon: 'fa fa-home',
-          roles: ['show'],
+          roles: ['ManageMeta'],
           fullPath: '/Meta/System'
         },
         component: () => import('@/views/Meta/System')
@@ -246,7 +246,7 @@ export const asyncRoutes = [
         meta: {
           title: '设备集成商',
           icon: 'fa fa-home',
-          roles: ['show'],
+          roles: ['ManageMeta'],
           fullPath: '/Meta/SI'
         },
         component: () => import('@/views/Meta/SI')
@@ -257,7 +257,7 @@ export const asyncRoutes = [
         meta: {
           title: '位置类型',
           icon: 'fa fa-home',
-          roles: ['show'],
+          roles: ['ManageMeta'],
           fullPath: '/Meta/positionType'
         },
         component: () => import('@/views/Meta/positionType')
@@ -268,7 +268,7 @@ export const asyncRoutes = [
         meta: {
           title: '位置管理',
           icon: 'fa fa-home',
-          roles: ['show'],
+          roles: ['ManageMeta'],
           fullPath: '/Meta/position'
         },
         component: () => import('@/views/Meta/Position')
@@ -279,7 +279,7 @@ export const asyncRoutes = [
         meta: {
           title: '故障管理',
           icon: 'fa fa-home',
-          roles: ['show'],
+          roles: ['ManageMeta'],
           fullPath: '/Meta/Fault'
         },
         component: () => import('@/views/Meta/Fault')
@@ -290,7 +290,7 @@ export const asyncRoutes = [
         meta: {
           title: '维修等级管理',
           icon: 'fa fa-home',
-          roles: ['show'],
+          roles: ['ManageMeta'],
           fullPath: '/Meta/RepairLevel'
         },
         component: () => import('@/views/Meta/RepairLevel')
@@ -301,10 +301,32 @@ export const asyncRoutes = [
         meta: {
           title: '部门管理',
           icon: 'fa fa-home',
-          roles: ['show'],
+          roles: ['ManageUnit'],
           fullPath: '/Meta/Unit'
         },
         component: () => import('@/views/Meta/Unit')
+      },
+      {
+        path: 'Role',
+        name: 'Meta-Role',
+        meta: {
+          title: '角色管理',
+          icon: 'fa fa-home',
+          roles: ['ManageRole'],
+          fullPath: '/Meta/Role'
+        },
+        component: () => import('@/views/Meta/Role')
+      },
+      {
+        path: 'Claims',
+        name: 'Meta-Claims',
+        meta: {
+          title: '权限列表',
+          icon: 'fa fa-home',
+          roles: ['show'],
+          fullPath: '/Meta/Claims'
+        },
+        component: () => import('@/views/Meta/Claims')
       }
     ]
   },
@@ -326,6 +348,7 @@ export const asyncRoutes = [
           title: '清单列表',
           icon: 'fa fa-home',
           roles: ['show'],
+          hidden: true,
           fullPath: '/Inventory/List'
         },
         component: () => import('@/views/Inventory/List')
@@ -337,8 +360,8 @@ export const asyncRoutes = [
           title: '清单详情',
           icon: 'fa fa-home',
           roles: ['show'],
-          fullPath: '/Inventory/Info',
-          hidden: true
+          hidden: true,
+          fullPath: '/Inventory/Info'
         },
         component: () => import('@/views/Inventory/Info')
       },
@@ -349,6 +372,7 @@ export const asyncRoutes = [
           title: '生成清单详情',
           icon: 'fa fa-home',
           roles: ['show'],
+          hidden: true,
           fullPath: '/Inventory/selectList'
         },
         component: () => import('@/views/Inventory/selectList')
@@ -466,7 +490,7 @@ export const asyncRoutes = [
         meta: {
           title: '验收人员工作列表',
           icon: 'fa fa-home',
-          roles: ['show'],
+          roles: ['CheckRepairRecord'],
           fullPath: '/Workorder/Acceptorlist'
         }
       },
@@ -477,7 +501,7 @@ export const asyncRoutes = [
         meta: {
           title: '验收人员验收',
           icon: 'fa fa-home',
-          roles: ['show'],
+          roles: ['CheckRepairRecord'],
           hidden: true,
           fullPath: '/Workorder/AcceptorOperate'
         }
@@ -489,7 +513,7 @@ export const asyncRoutes = [
         meta: {
           title: '审核人员工作列表',
           icon: 'fa fa-home',
-          roles: ['show'],
+          roles: ['ReviewRepairRecord'],
           fullPath: '/Workorder/Auditorlist'
         }
       },
@@ -500,7 +524,7 @@ export const asyncRoutes = [
         meta: {
           title: '审核人员审核',
           icon: 'fa fa-home',
-          roles: ['show'],
+          roles: ['ReviewRepairRecord'],
           hidden: true,
           fullPath: '/Workorder/AuditorOperate'
         }
