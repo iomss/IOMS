@@ -215,18 +215,13 @@ export default {
       this.removeData = row
       this.removeQuestionVisible = true
     },
-    // 删除试题
+    // 删除
     removeQuestion() {
       const _this = this
       this.$axios.delete('/api/Assets/?Id=' + this.removeData.id).then(response => {
-        if (response.data.success) {
-          const index = _this.tableData.indexOf(_this.removeData)
-          _this.tableData.splice(index, 1)
-          _this.$message.success('删除成功')
-          _this.removeQuestionVisible = false
-        } else {
-          _this.$message.error(response.data.error.message)
-        }
+        _this.$message.success('删除成功')
+        _this.removeQuestionVisible = false
+        this.getData()
       })
     },
     getPage(val) { // page事件

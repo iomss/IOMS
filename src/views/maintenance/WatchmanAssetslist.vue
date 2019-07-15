@@ -3,10 +3,8 @@
   <div>
     <el-row>
       <el-col :span="6">
-        <treeselect v-model="treeselect" :multiple="true" :options="treeData" placeholder="设备位置" search-nested>
-          <div slot="value-label" slot-scope="{ node }">{{ node.raw.name }}</div>
-          <label slot="option-label" slot-scope="{ node }">{{ node.raw.name }}</label>
-        </treeselect>
+        <h4>设备位置</h4>
+        <el-tree ref="TreeData" :data="treeData" show-checkbox node-key="id" :props="defaultProps" @check-change="handleCheckChange" />
       </el-col>
       <el-col :span="18">
         <div class="panel">
@@ -15,35 +13,33 @@
               <el-button type="primary" size="small" @click="showerror()">报修</el-button>
             </div>
             <div class="select">
-              <el-select v-model="formSearch.unit" clearable placeholder="所属系统" size="small">
-                <el-option key="0" label="全部" value="0" />
-                <el-option key="1" label="单选" value="1" />
-                <el-option key="2" label="多选" value="2" />
+              <el-select v-model="tableDataSearch.systemId" clearable placeholder="所属系统" size="small">
+                <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </div>
             <div class="toolsrt">
-              <el-input v-model="searchMessage" placeholder="请输入查询内容" size="small" />
-              <el-button type="primary" size="small" @click="searchData()">查询</el-button>
+              <el-input v-model="tableDataSearch.text" placeholder="请输入查询内容" size="small" />
+              <el-button type="primary" size="small" @click="getData()">查询</el-button>
             </div>
             <div class="content">
               <el-table :data="tableData" stripe border style="width: 100%" @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="40" />
                 <el-table-column prop="id" label="序号" width="60" />
-                <el-table-column label="状态" width="80">
+                <el-table-column prop="state" label="状态" width="80">
                   <template slot-scope="scope">
-                    <span v-for="(item,index) in scope.row.answer" :key="index" style="margin-right:8px;">{{ item===1?"A":item===2?"B":item===3?"C":"D" }}</span>
+                    {{ scope.row.state==='Normal'?"正常":scope.row.state==='Using'?"使用中":"故障" }}
                   </template>
                 </el-table-column>
-                <el-table-column prop="code" label="资产编码" width="90" />
-                <el-table-column prop="alas" label="资产名称" width="90" />
-                <el-table-column prop="brand" label="品牌" width="90" />
-                <el-table-column prop="model" label="型号" width="70" />
-                <el-table-column prop="system" label="所属系统" width="70" />
-                <el-table-column prop="position" label="安装位置" width="70" />
+                <el-table-column prop="code" label="资产编码" width="150" />
+                <el-table-column prop="alias" label="资产名称" width="100" />
+                <el-table-column prop="brand.name" label="品牌" width="100" />
+                <el-table-column prop="model.name" label="型号" width="100" />
+                <el-table-column prop="system.name" label="所属系统" width="100" />
+                <el-table-column prop="position.name" label="安装位置" width="150" />
                 <el-table-column prop="recommendedTime" label="报修次数" width="100" />
                 <el-table-column label="操作" width="100">
                   <template slot-scope="scope">
-                    <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="success" @click="showerror(scope.row)">报修</el-button>
+                    <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="primary" @click="showerror(scope.row)">报修</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -55,10 +51,8 @@
   </div>
 </template>
 <script>
-import Treeselect from '@riophae/vue-treeselect'
 export default {
   components: {
-    Treeselect
   },
   data() {
     return {
@@ -68,14 +62,33 @@ export default {
       multipleSelection: '', // 表单选中行id
       removeData: null,
       formSearch: {}, // 筛选所属系统数据
-      searchMessage: '' // 查询内容
+      searchMessage: '', // 查询内容
+      defaultProps: {
+        children: 'children',
+        label: 'name'
+      },
+      tableDataSearch: {
+        text: '', // 搜索文本
+        pageSize: 20, // 展示条数
+        pageNumber: 1, // 页码
+        positionIds: '', // 树选中值
+        systemId: ''// 所属系统选中值
+      },
+      totalCount: 0, // 数据总条数
+      systemData: []// 所属系统数据
     }
   },
   computed: {},
   mounted() {
     this.getTree()
+    this.getselect()
   },
   methods: {
+    getselect() {
+      this.$axios.get('/api/Meta/System').then(res => {
+        this.systemData = res.data
+      })
+    },
     // 获取数据
     getTree() {
       this.$axios.get('/api/tree/position').then(res => {
@@ -85,9 +98,13 @@ export default {
       this.getData()
     },
     getData() { // 获取右侧列表数据
-      this.$axios.get('/api/Assets').then(res => {
+      // 搜索框内容不为空 页码跳转至第一页
+      if (this.tableDataSearch.text !== '') {
+        this.tableDataSearch.pageNumber = 1
+      }
+      this.$axios.get('/api/Assets', { params: this.tableDataSearch }).then(res => {
         this.tableData = res.data
-        console.log(this.tableData)
+        this.totalCount = res.totalCount
       })
     },
     searchData() {
@@ -98,9 +115,19 @@ export default {
     },
     showerror(data) { // 列表单行报修方法
       console.log(data)
-      this.$router.push({
-        name: 'WatchmanDispatch'
-      })
+      this.$router.push('/maintenance/WatchmanDispatch/' + data.id)
+    },
+    handleCheckChange(data, checked, indeterminate) {
+      /* 主要通过checked进行判断 */
+      if (checked) {
+        const arr = [data.id]
+        this.$refs.TreeData.setCheckedKeys(arr)// 饿了么树变单选
+        this.tableDataSearch.positionIds = data.id
+        // 请求筛选右侧
+        this.$axios.get('/api/Assets', { params: this.tableDataSearch }).then(res => {
+          this.tableData = res.data
+        })
+      }
     }
   }
 }
