@@ -7,44 +7,49 @@
           <div class="content">
             <h4>新增资产</h4>
             <el-form ref="formData" :model="formData" :rules="formDatarules" label-width="90px">
-              <el-form-item label="使用单位" prop="useUnit">
-                <el-select v-model="formData.useUnit" filterable placeholder="使用单位" size="small">
+              <el-form-item label="使用单位" prop="useUnitId">
+                <el-select v-model="formData.useUnitId" filterable placeholder="使用单位" size="small">
                   <el-option v-for="item in unitData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
-              <el-form-item label="安装位置" prop="position">
-                <el-select v-model="formData.position" filterable placeholder="安装位置" size="small">
+              <el-form-item label="安装位置" prop="positionId">
+                <el-select v-model="formData.positionId" filterable placeholder="安装位置" size="small">
                   <el-option v-for="item in positionData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
-              <el-form-item label="所属系统" prop="system">
-                <el-select v-model="formData.system" filterable placeholder="所属系统" size="small">
+              <el-form-item label="所属系统" prop="systemId">
+                <el-select v-model="formData.systemId" filterable placeholder="所属系统" size="small">
                   <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
-              <el-form-item label="资产类别" prop="type">
-                <el-select v-model="formData.type" clearable placeholder="资产类别" size="small">
+              <el-form-item label="资产类别" prop="equipmentID">
+                <el-select v-model="formData.equipmentID" clearable placeholder="资产类别" size="small">
                   <el-option v-for="item in typeData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
-              <el-form-item label="资产名称" prop="name">
-                <el-input v-model="formData.name" placeholder="资产名称" size="small" />
+              <el-form-item label="集成商" prop="siId">
+                <el-select v-model="formData.siId" clearable placeholder="设备集成商" size="small">
+                  <el-option v-for="item in siData" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="资产名称" prop="alias">
+                <el-input v-model="formData.alias" placeholder="资产名称" size="small" />
               </el-form-item>
               <el-form-item label="投用时间" prop="enableTime">
                 <el-date-picker v-model="formData.enableTime" type="date" placeholder="投用时间" />
               </el-form-item>
-              <el-form-item label="品牌" prop="brand">
-                <el-select v-model="formData.brand" clearable placeholder="资产类别" size="small">
+              <el-form-item label="品牌" prop="brandId">
+                <el-select v-model="formData.brandId" clearable placeholder="资产类别" size="small">
                   <el-option v-for="item in brandData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
-              <el-form-item label="型号" prop="model">
-                <el-select v-model="formData.model" clearable placeholder="资产类别" size="small">
+              <el-form-item label="型号" prop="modelId">
+                <el-select v-model="formData.modelId" clearable placeholder="资产类别" size="small">
                   <el-option v-for="item in modelData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
-              <el-form-item label="来源" prop="source">
-                <el-select v-model="formData.source" clearable placeholder="来源" size="small">
+              <el-form-item label="来源" prop="sourceId">
+                <el-select v-model="formData.sourceId" clearable placeholder="来源" size="small">
                   <el-option v-for="item in sourceData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
@@ -63,8 +68,8 @@
               <el-form-item label="缺陷责任期" prop="liabilityPeriod">
                 <el-input v-model="formData.liabilityPeriod" placeholder="缺陷责任期" size="small" />
               </el-form-item>
-              <el-form-item label="产权单位" prop="propertyUnit">
-                <el-select v-model="formData.propertyUnit" clearable placeholder="产权单位" size="small">
+              <el-form-item label="产权单位" prop="propertyUnitId">
+                <el-select v-model="formData.propertyUnitId" clearable placeholder="产权单位" size="small">
                   <el-option v-for="item in unitData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
@@ -79,8 +84,8 @@
                   <el-option key="4" label="米" value="false" />
                 </el-select>
               </el-form-item>
-              <el-form-item label="备注" class="form_mid" prop="Remarks">
-                <el-input v-model="formData.Remarks" type="textarea" :rows="2" placeholder="请输入内容" />
+              <el-form-item label="备注" class="form_mid" prop="comment">
+                <el-input v-model="formData.comment" type="textarea" :rows="2" placeholder="请输入内容" />
               </el-form-item>
               <el-form-item label="照片" class="form_mid" prop="img" />
               <el-form-item label="自定义属性">
@@ -106,21 +111,24 @@ export default {
   data() {
     return {
       formData: {
-        useUnit: '',
-        position: '',
-        system: '',
+        useUnitId: '',
+        positionId: '',
+        systemId: '',
+        equipmentID: '',
         enableTime: '',
-        brand: '',
-        model: '',
-        source: '',
+        brandId: '',
+        modelId: '',
+        sourceId: '',
+        siId: '',
         purchaseYear: '',
         ratedLife: '',
         handoverDate: '',
         engineering: '',
         liabilityPeriod: '',
-        propertyUnit: '',
+        propertyUnitId: '',
         original: '',
         uint: '',
+        comment: '',
         img: ''
       },
       unitData: [], // 使用单位同产权单位数据
@@ -130,26 +138,27 @@ export default {
       brandData: [], // 品牌数据
       modelData: [], // 型号数据
       sourceData: [], // 设备来源
+      siData: [], // 集成商来源
       formDatarules: {
-        useUnit: [
+        useUnitId: [
           { required: true, message: '使用单位不可为空', trigger: 'change' }
         ],
-        position: [
+        positionId: [
           { required: true, message: '安装位置不可为空', trigger: 'change' }
         ],
-        system: [
+        systemId: [
           { required: true, message: '所属系统不可为空', trigger: 'change' }
         ],
-        type: [
+        equipmentID: [
           { required: true, message: '资产类别不可为空', trigger: 'change' }
         ],
-        name: [
+        siId: [
           { required: true, message: '资产名称不可为空', trigger: 'change' }
         ],
-        brand: [
+        brandId: [
           { required: true, message: '品牌不可为空', trigger: 'change' }
         ],
-        model: [
+        modelId: [
           { required: true, message: '型号不可为空', trigger: 'change' }
         ],
         enableTime: [
@@ -177,7 +186,7 @@ export default {
         this.systemData = res.data
       })
       // 获取资产类别
-      this.$axios.get('/api/Meta/Type').then(res => {
+      this.$axios.get('/api/Meta/equipment').then(res => {
         this.typeData = res.data
       })
       // 获取品牌
@@ -192,28 +201,24 @@ export default {
       this.$axios.get('/api/Meta/Source').then(res => {
         this.sourceData = res.data
       })
+      // 获取集成商
+      this.$axios.get('/api/Meta/SI').then(res => {
+        this.siData = res.data
+      })
     },
     create() { // 新增资产/api/Assets
       console.log(this)
       this.$refs.formData.validate(valid => {
         if (valid) {
           this.$axios.post('/api/Assets', this.formData).then(response => {
-            if (response.data.success) {
-              this.$router.push('/Asset/List')
-            } else {
-              if (response.data.error.details !== '') {
-                this.$message.error(response.data.error.details)
-              } else {
-                this.$message.error(response.data.error.message)
-              }
-            }
+            this.$router.push('/assets/list')
           })
         }
       })
     },
     cancel() {
       // 跳转资产管理页面
-      this.$router.push('/Asset/List')
+      this.$router.push('/assets/list')
     }
   }
 }
