@@ -43,7 +43,7 @@
               </el-form>
               <span slot="footer" class="dialog-footer">
                 <el-button type="primary" @click="positionFormVisible=false">关闭</el-button>
-                <el-button type="primary" @click="submitPosition()">提交更改</el-button>
+                <el-button type="primary" @click="submitPosition()">提交</el-button>
               </span>
             </el-dialog>
 
@@ -128,7 +128,6 @@ export default {
       if (action === LOAD_CHILDREN_OPTIONS) {
         switch (parentNode.id) {
           case 'success': {
-            debugger
             simulateAsyncOperation(() => {
               parentNode.children = [
                 {
@@ -141,7 +140,6 @@ export default {
             break
           }
           case 'no-children': {
-            debugger
             simulateAsyncOperation(() => {
               parentNode.children = []
               callback()
@@ -149,7 +147,6 @@ export default {
             break
           }
           case 'failure': {
-            debugger
             simulateAsyncOperation(() => {
               callback(new Error('Failed to load options: network error.'))
             })
@@ -199,7 +196,6 @@ export default {
         if (this.multipleSelectionPosition.length !== 1) {
           this.$message.error('请选择一项数据进行操作')
         } else {
-          debugger
           this.positionFormVisible = true
           this.positionForm.id = this.multipleSelectionPosition[0].id
           this.positionForm.name = this.multipleSelectionPosition[0].name
@@ -207,7 +203,6 @@ export default {
           this.positionForm.positionTypeId = this.multipleSelectionPosition[0].positionType.id
         }
       } else {
-        debugger
         this.PositionFormVisible = true
         this.PositionForm.id = row.id
         this.PositionForm.name = row.name
