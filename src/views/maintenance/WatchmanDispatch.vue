@@ -7,42 +7,34 @@
           <div class="header">
             <h4>值班人员派单</h4>
             <div class="select">
-              <el-form ref="form" :model="formSearch" label-width="90px">
-                <el-form-item label="报修位置">
-                  <el-select v-model="formSearch.unit" clearable placeholder="报修位置" size="small">
-                    <el-option key="1" label="单选" value="1" />
-                    <el-option key="2" label="多选" value="2" />
-                  </el-select>
+              <el-form ref="formData" :model="formData" label-width="90px" :rules="formDatarules">
+                <el-form-item label="报修位置" prop="positionId">
+                  {{ formData.equipment }}
                 </el-form-item>
-                <el-form-item label="资产名称">
-                  <el-select v-model="formSearch.position" clearale placeholder="资产名称" size="small">
-                    <el-option key="0" label="0" value="0" />
-                    <el-option key="1" label="1" value="1" />
-                  </el-select>
+                <el-form-item label="资产名称" prop="equipment">
+                  {{ formData.equipment }}
                 </el-form-item>
-                <el-form-item label="故障时间">
-                  <el-date-picker v-model="formSearch.errortime" type="datetime" placeholder="故障时间" />
+                <el-form-item label="故障时间" prop="failureTime">
+                  <el-date-picker v-model="formData.failureTime" type="datetime" placeholder="故障时间" />
                 </el-form-item>
-                <el-form-item label="报修时间">
-                  <el-date-picker v-model="formSearch.errortime" type="datetime" placeholder="报修时间" />
+                <el-form-item label="报修时间" prop="reportTime">
+                  <el-date-picker v-model="formData.reportTime" type="datetime" placeholder="报修时间" />
                 </el-form-item>
-                <el-form-item label="故障类型" class="showtishi">
-                  <el-select v-model="formSearch.source" clearable placeholder="故障类型" size="small">
-                    <el-option key="1" label="已发布" value="true" />
-                    <el-option key="2" label="未发布" value="false" />
+                <el-form-item label="故障类型" class="showtishi" prop="equipmentFaultId">
+                  <el-select v-model="formData.equipmentFaultId" clearable placeholder="故障类型" size="small">
+                    <el-option v-for="item in faultData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                   <i class="fa fa-plus" aria-hidden="true" @click="creatorder()" />
                 </el-form-item>
-                <el-form-item label="报修人">
-                  <el-input v-model="formSearch.Model" placeholder="报修人" size="small" />
+                <el-form-item label="报修人" prop="reporterName">
+                  <el-input v-model="formData.reporterName" placeholder="报修人" size="small" />
                 </el-form-item>
-                <el-form-item label="故障描述" class="total">
-                  <el-input v-model="formSearch.Model" placeholder="故障描述" size="small" />
+                <el-form-item label="故障描述" class="total" prop="description">
+                  <el-input v-model="formData.description" placeholder="故障描述" size="small" />
                 </el-form-item>
-                <el-form-item label="故障级别" class="showtishi">
-                  <el-select v-model="formSearch.source" clearable placeholder="故障级别" size="small">
-                    <el-option key="1" label="已发布" value="true" />
-                    <el-option key="2" label="未发布" value="false" />
+                <el-form-item label="故障级别" class="showtishi" prop="repairLevelId">
+                  <el-select v-model="formData.repairLevelId" clearable placeholder="故障级别" size="small">
+                    <el-option v-for="item in levelData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                   <el-tooltip placement="right">
                     <div slot="content" style="width:300px;">一级故障（重大设备故障）：<br>
@@ -55,10 +47,9 @@
                     <el-button>说明</el-button>
                   </el-tooltip>
                 </el-form-item>
-                <el-form-item label="指定工程师">
-                  <el-select v-model="formSearch.source" clearable placeholder="指定工程师" size="small">
-                    <el-option key="1" label="已发布" value="true" />
-                    <el-option key="2" label="未发布" value="false" />
+                <el-form-item label="指定工程师" prop="repairUserId">
+                  <el-select v-model="formData.repairUserId" clearable placeholder="指定工程师" size="small">
+                    <el-option v-for="item in userData" :key="item.id" :label="item.userName" :value="item.id" />
                   </el-select>
                 </el-form-item>
                 <el-form-item class="total">
@@ -68,21 +59,14 @@
               </el-form>
             </div>
             <el-dialog title="添加故障类型" :visible.sync="changeActiveVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="600px">
-              <el-form ref="form" :model="formadd" label-width="90px">
-                <el-form-item label="所属系统">
-                  <el-select v-model="formadd.source" clearable placeholder="所属系统" size="small">
-                    <el-option key="1" label="已发布" value="true" />
-                    <el-option key="2" label="未发布" value="false" />
+              <el-form ref="formAdd" :model="formAdd" label-width="90px" :rules="formAddrules">
+                <el-form-item label="设备种类" prop="equipmentId" class="total">
+                  <el-select v-model="formAdd.equipmentId" clearable placeholder="设备种类" size="small">
+                    <el-option v-for="item in typeData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
-                <el-form-item label="设备种类">
-                  <el-select v-model="formadd.source" clearable placeholder="设备种类" size="small">
-                    <el-option key="1" label="已发布" value="true" />
-                    <el-option key="2" label="未发布" value="false" />
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="故障名称">
-                  <el-input v-model="formadd.Remarks" type="textarea" placeholder="故障名称" />
+                <el-form-item label="故障名称" prop="name" class="total">
+                  <el-input v-model="formAdd.name" placeholder="故障名称" />
                 </el-form-item>
               </el-form>
               <span slot="footer" class="dialog-footer">
@@ -97,41 +81,123 @@
   </div>
 </template>
 <script>
-// import page from '@/components/page.vue'
 export default {
   components: {
-    // page
   },
   data() {
     return {
       changeActiveVisible: false,
-      formSearch: {},
-      formadd: {}
+      formData: {
+        assetId: '',
+        positionId: '',
+        equipment: '',
+        equipmentId: '',
+        failureTime: '',
+        reportTime: '',
+        equipmentFaultId: '',
+        reporterName: '',
+        description: '',
+        repairLevelId: '',
+        repairUserId: ''
+      },
+      formAdd: {
+        equipmentId: '',
+        name: ''
+      },
+      positionData: [], // 安装位置数据
+      typeData: [], // 设备种类数据
+      faultData: [], // 故障类型数据
+      levelData: [], // 故障级别数据
+      userData: [], // 可指派人员数据
+      formDatarules: {
+        failureTime: [
+          { type: 'date', required: true, message: '请选择故障时间', trigger: 'change' }
+        ],
+        reportTime: [
+          { type: 'date', required: true, message: '请选择报修时间', trigger: 'change' }
+        ]
+      },
+      formAddrules: {
+        equipmentId: [
+          { required: true, message: '设备种类不可为空', trigger: 'change' }
+        ],
+        name: [
+          { required: true, message: '故障名称不可为空', trigger: 'change' }
+        ]
+      }
     }
   },
   computed: {},
   mounted() {
-    // this.initData(1)
-    // this.getOptionsYears()
+    this.getselectData()
+    this.getData()
   },
   methods: {
-    handleChange(val) { // 故障个数点击方法
-      console.log(val)
+    getselectData() { // 获取下拉菜单数据
+      // 获取安装位置
+      this.$axios.get('/api/Meta/Position').then(res => {
+        this.positionData = res.data
+      })
+      // 获取设备种类
+      this.$axios.get('/api/Meta/Equipment').then(res => {
+        this.typeData = res.data
+      })
+      // 获取故障类型
+      this.$axios.get('/api/Meta/Fault').then(res => {
+        this.faultData = res.data
+      })
+      // 获取维修级别
+      this.$axios.get('/api/Meta/RepairLevel').then(res => {
+        this.levelData = res.data
+      })
+      // 获取用户
+      this.$axios.get('/api/User').then(res => {
+        this.userData = res.data
+      })
+    },
+    getData() { // 获取当前数据
+      const _this = this
+      this.formData.assetId = window.location.href.split('/')[window.location.href.split('/').length - 1]
+      this.$axios.get('/api/Assets/' + this.formData.assetId).then(res => {
+        _this.formData.positionId = res.positionId
+        _this.formData.equipment = res.equipment.name
+        _this.formData.equipmentId = res.equipment.id
+        _this.formData.positionId = res.position.id
+      })
     },
     createWorker() { // 提交派单按钮方法
-      // ajax
-      // 页面跳转？派单页
+      this.$refs.formData.validate(valid => {
+        if (valid) {
+          this.$axios.post('/api/RepairOrder', this.formData).then(res => {
+            this.$message.success('录入成功')
+            this.$router.push('/Workorder/Watchmanlist')
+            // 页面跳转个人工作页
+          })
+        }
+      })
     },
     handleSelectionChange(val) { // 表单选中行
       this.multipleSelection = val
     },
     creatorder() { // 创建故障类型
-      this.changeActiveVisible = true
+      this.changeActiveVisible = true// 打开弹框
     },
     creatderrortype() { // 添加故障类型弹框确定方法
-      // 刷新数据
-      // 隐藏弹框
-      this.changeActiveVisible = false
+      console.log(this)
+      this.$refs.formAdd.validate(valid => {
+        if (valid) {
+          // 提交数据
+          this.$axios.post('/api/Meta/Fault', this.formAdd).then(res => {
+            this.faultData = res.data
+          })
+          // 刷新数据
+          this.$axios.get('/api/Meta/Fault').then(res => {
+            this.faultData = res.data
+          })
+          // 隐藏弹框
+          this.changeActiveVisible = false
+        }
+      })
     }
   }
 }

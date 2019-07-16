@@ -12,10 +12,10 @@
               <el-button type="danger" size="small" @click="deletework()">删除</el-button>
             </div>
             <div class="select">
-              <el-select v-model="formSearch.unit" clearable placeholder="工单状态" size="small">
+              <el-select v-model="tableDataSearch.state" clearable placeholder="工单状态" size="small">
                 <el-option key="0" label="全部" value="0" />
-                <el-option key="1" label="单选" value="1" />
-                <el-option key="2" label="多选" value="2" />
+                <el-option key="1" label="已指派" value="1" />
+                <el-option key="2" label="未指派" value="2" />
               </el-select>
             </div>
             <div class="toolsrt">
@@ -30,39 +30,37 @@
             <el-table-column prop="id" label="序号" width="60" />
             <el-table-column label="操作" width="80">
               <template slot-scope="scope">
-                <span v-for="(item,index) in scope.row.answer" :key="index" style="margin-right:8px;">{{ item===1?"A":item===2?"B":item===3?"C":"D" }}</span>
+                <el-button size="mini" type="primary" @click="checkwork(scope.row)">验收</el-button>
               </template>
             </el-table-column>
-            <el-table-column prop="detail" label="维修单编号" width="120" />
-            <el-table-column prop="position" label="设备位置" width="200" />
-            <el-table-column prop="tips" label="设备种类" width="90" />
+            <el-table-column prop="code" label="维修单编号" width="120" />
+            <el-table-column prop="position.name" label="设备位置" width="200" />
+            <el-table-column prop="equipment.equimentType.name" label="设备种类" width="90" />
             <el-table-column prop="assetCode" label="设备编码" width="100" />
-            <el-table-column prop="equipmentFault" label="故障类型" width="100">
-              <template slot-scope="scope">
-                {{ scope.row.equipmentFault.name }}
-              </template>
-            </el-table-column>
+            <el-table-column prop="equipmentFault.name" label="故障类型" width="100" />
             <el-table-column prop="description" label="故障描述" width="200" />
             <el-table-column prop="failureTime" label="故障时间" width="120" />
             <el-table-column prop="reporterName" label="报修人" width="90" />
             <el-table-column prop="reportTime" label="报修时间" width="90" />
-            <el-table-column prop="recordUser" label="录入人" width="90" />
+            <el-table-column prop="recordUser.name" label="录入人" width="90" />
             <el-table-column prop="recordTime" label="录入时间" width="90" />
             <el-table-column prop="repairUser" label="维修员" width="90" />
-            <el-table-column prop="orderState" label="状态" width="90" />
-            <el-table-column prop="tips" label="附加状态" width="130" />
-            <el-table-column prop="tips" label="代维状态" width="130" />
-            <el-table-column prop="tips" label="报修等级" width="130" />
-            <el-table-column prop="tips" label="更新时间" width="130" />
-            <el-table-column label="操作" width="100">
+            <el-table-column prop="orderState" label="状态" width="180">
               <template slot-scope="scope">
-                <!-- 工单可验收 -->
+                {{ scope.row.orderState==="Record"?"记录，等待指派或抢单":scope.row.orderState==='Dispatching'?"已分配给组长，等待分派工程师":scope.row.orderState==='Dispatched'?'已分配给工程师，工程师待确认':scope.row.orderState==='Repair'?'已分配工程师，等待维修':scope.row.orderState==='Suspend'?'暂缓':scope.row.orderState==='Check'?'维修完成待验收':scope.row.orderState==='Review'?'验收完成，待审核':scope.row.orderState==='Done'?'审核完成':'报修单流程被终止' }}
+              </template>
+            </el-table-column>
+            <el-table-column prop="repairLevel.name" label="报修等级" width="130" />
+            <el-table-column prop="lastUpdateTime" label="更新时间" width="130" />
+            <!-- 工单可验收 -->
+            <!-- <el-table-column label="操作" width="100">
+              <template slot-scope="scope">
                 <a :href="'/Workorder/AcceptorOperate/'+scope.row.id">
                   <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="success">详情</el-button>
                 </a>
                 <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="primary" @click="UpdateStage(scope.row)">编辑</el-button>
               </template>
-            </el-table-column>
+            </el-table-column> -->
           </el-table>
           <!--分页-->
           <pagination v-show="totalCount>0" :total="totalCount" :page.sync="tableDataSearch.pageSize" :limit.sync="tableDataSearch.pageNumber" @pagination="getPage" />
@@ -95,7 +93,12 @@ export default {
   },
   methods: {
     getData() { // 获取数据
-      this.$axios.get('/api/RepairRecord', { params: this.tableDataSearch }).then(res => {
+      console.log(this.tableDataSearch.text)
+      // 搜索框内容不为空 页码跳转至第一页
+      if (this.tableDataSearch.text !== '') {
+        this.tableDataSearch.pageNumber = 1
+      }
+      this.$axios.get('/api/RepairOrder', { params: this.tableDataSearch }).then(res => {
         this.tableData = res.data
         this.totalCount = res.totalCount
       })
@@ -111,22 +114,14 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
-    showInfo(val) { // 点击详情按钮
-      // this.$router.push('/Asset/Info' + val)
+    checkwork(data) { // 批量验收按钮
+      console.log(data)
+      this.$router.push('/Workorder/AcceptorOperate/' + data.id)
     },
-    UpdateStage(val) { // 点击编辑按钮
-      // this.$router.push('/Asset/Info' + val)
-    },
-    checkwork() { // 批量验收按钮
-
-    },
-    creatework() { // 新建报修单按钮
-
+    creatework() { // 新建报修单
+      this.$router.push('/maintenance/WatchmanAssetslist')
     },
     deletework() { // 删除按钮
-
-    },
-    searchData() { // 查询
 
     }
   }

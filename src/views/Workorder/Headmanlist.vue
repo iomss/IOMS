@@ -6,40 +6,67 @@
         <div class="panel">
           <div class="header">
             <h4>维修组长-我的工作</h4>
+            <div class="tools">
+              <el-button type="primary" size="small" @click="creatework()">新建报修单</el-button>
+              <el-button type="primary" size="small" @click="changework()">转单</el-button>
+              <el-button type="danger" size="small" @click="deletework()">删除</el-button>
+            </div>
+            <div class="select">
+              <el-select v-model="tableDataSearch.state" clearable placeholder="工单状态" size="small">
+                <el-option key="0" label="全部" value="0" />
+                <el-option key="1" label="已指派" value="1" />
+                <el-option key="2" label="未指派" value="2" />
+              </el-select>
+            </div>
+            <div class="toolsrt">
+              <el-input v-model="tableDataSearch.text" placeholder="请输入查询内容" size="small" />
+              <el-button type="primary" size="small" @click="getData()">查询</el-button>
+            </div>
           </div>
           <div class="content">
             <el-table :data="tableData" stripe border style="width: 100%" @selection-change="handleSelectionChange">
               <el-table-column type="selection" width="40" />
               <el-table-column prop="id" label="序号" width="60" />
-              <el-table-column label="操作" width="80">
+              <el-table-column label="操作" width="200" prop="orderState">
                 <template slot-scope="scope">
-                  <span v-for="(item,index) in scope.row.answer" :key="index" style="margin-right:8px;">{{ item===1?"A":item===2?"B":item===3?"C":"D" }}</span>
+                  <el-button size="mini" type="primary" @click="Receiptwork(scope.row)">接单</el-button>
+                  <el-button size="mini" type="primary" @click="changework(scope.row)">转单</el-button>
+                  <el-button size="mini" type="success" @click="updatework(scope.row)">录入维修记录</el-button>
+                  <el-button size="mini" type="danger" @click="deletework(scope.row)">删除</el-button>
                 </template>
+                <!-- <template slot-scope="scope">
+                  <el-button v-show="scope.row.orderState==='Dispatched'||scope.row.orderState==='Dispatching'" size="mini" type="primary" @click="Receiptwork(scope.row)">接单</el-button>
+                  <el-button v-show="scope.row.orderState==='Dispatching'||scope.row.orderState==='Dispatched'" size="mini" type="primary" @click="changework(scope.row)">转单</el-button>
+                  <el-button v-show="scope.row.orderState==='Repair'" size="mini" type="success" @click="updatework(scope.row)">录入维修记录</el-button>
+                  <el-button v-show="scope.row.orderState==='Record'||scope.row.orderState==='Dispatching'||scope.row.orderState==='Dispatched'" size="mini" type="danger" @click="deletework(scope.row)">删除</el-button>
+                </template> -->
               </el-table-column>
-              <el-table-column prop="detail" label="维修单编号" width="120" />
-              <el-table-column prop="position" label="设备位置" width="200" />
-              <el-table-column prop="tips" label="设备种类" width="90" />
+              <el-table-column prop="code" label="维修单编号" width="120" />
+              <el-table-column prop="position.name" label="设备位置" width="200" />
+              <el-table-column prop="equipment.equimentType.name" label="设备种类" width="90" />
               <el-table-column prop="assetCode" label="设备编码" width="100" />
-              <el-table-column prop="equipmentFault" label="故障类型" width="100" />
+              <el-table-column prop="equipmentFault.name" label="故障类型" width="100" />
               <el-table-column prop="description" label="故障描述" width="200" />
               <el-table-column prop="failureTime" label="故障时间" width="120" />
               <el-table-column prop="reporterName" label="报修人" width="90" />
               <el-table-column prop="reportTime" label="报修时间" width="90" />
-              <el-table-column prop="recordUser" label="录入人" width="90" />
+              <el-table-column prop="recordUser.name" label="录入人" width="90" />
               <el-table-column prop="recordTime" label="录入时间" width="90" />
               <el-table-column prop="repairUser" label="维修员" width="90" />
-              <el-table-column prop="orderState" label="状态" width="90" />
-              <el-table-column prop="tips" label="附加状态" width="130" />
-              <el-table-column prop="tips" label="代维状态" width="130" />
-              <el-table-column prop="tips" label="报修等级" width="130" />
-              <el-table-column prop="tips" label="更新时间" width="130" />
-              <el-table-column label="操作" width="100">
+              <el-table-column prop="orderState" label="状态" width="180">
                 <template slot-scope="scope">
-                  <!-- 工单可派单可录入维修记录 -->
+                  {{ scope.row.orderState==="Record"?"记录，等待指派或抢单":scope.row.orderState==='Dispatching'?"已分配给组长，等待分派工程师":scope.row.orderState==='Dispatched'?'已分配给工程师，工程师待确认':scope.row.orderState==='Repair'?'已分配工程师，等待维修':scope.row.orderState==='Suspend'?'暂缓':scope.row.orderState==='Check'?'维修完成待验收':scope.row.orderState==='Review'?'验收完成，待审核':scope.row.orderState==='Done'?'审核完成':'报修单流程被终止' }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="repairLevel.name" label="报修等级" width="130" />
+              <el-table-column prop="lastUpdateTime" label="更新时间" width="130" />
+              <!-- 工单可派单可录入维修记录 -->
+              <!-- <el-table-column label="操作" width="100">
+                <template slot-scope="scope">
                   <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="success" @click="showInfo(scope.row)">详情</el-button>
                   <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="primary" @click="UpdateStage(scope.row)">编辑</el-button>
                 </template>
-              </el-table-column>
+              </el-table-column> -->
             </el-table>
             <!--分页-->
             <pagination v-show="totalCount>0" :total="totalCount" :page.sync="tableDataSearch.pageSize" :limit.sync="tableDataSearch.pageNumber" @pagination="getPage" />
@@ -63,7 +90,8 @@ export default {
       tableDataSearch: {
         text: '', // 搜索文本
         pageSize: 20, // 展示条数
-        pageNumber: 1// 页码
+        pageNumber: 1, // 页码
+        state: ''// 工单状态
       },
       totalCount: 0 // 数据总条数
     }
@@ -95,11 +123,27 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
-    showInfo(val) { // 点击详情按钮
-      // this.$router.push('/Asset/Info' + val)
+    creatework() { // 新建报修单
+      this.$router.push('/maintenance/WatchmanAssetslist')
     },
-    UpdateStage(val) { // 点击编辑按钮
-      // this.$router.push('/Asset/Info' + val)
+    changework(data) { // 转单
+      console.log(data)
+      if (this.multipleSelection === '') {
+        this.$message.error('请选择一条数据')
+      } else {
+        this.$router.push('/Workorder/MaintainerChangeOrder/' + this.multipleSelection[0].id)
+      }
+    },
+    Receiptwork(data) { // 接单
+      console.log(data)
+      this.$router.push('/Workorder/MaintainerReceipt/' + data.id)
+    },
+    updatework(data) { // 录入维修记录
+      console.log(data)
+      this.$router.push('/Workorder/MaintainerAddRecord/' + data.id)
+    },
+    deletework(data) { // 删除工单
+      console.log(data)
     }
   }
 }
@@ -107,6 +151,26 @@ export default {
 <style lang='scss' scoped>
 .header {
   width: 100%;
+  .tools {
+    margin-top: 20px;
+  }
+  .select {
+    margin: 10px 0px;
+    width: 49%;
+    display: inline-block;
+    .el-select {
+      width: 200px;
+    }
+  }
+  .toolsrt {
+    width: 50%;
+    display: inline-block;
+    text-align: right;
+    .el-input {
+      display: inline-block;
+      width: 200px;
+    }
+  }
 }
 .content {
   .el-table th,

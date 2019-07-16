@@ -6,28 +6,26 @@
         <div class="panel">
           <div class="header">
             <h4>维修转单详情</h4>
-            <div class="Infodata">
+            <div v-if="formData.code!==''" class="formData">
               <ul>
-                <li><span>维修单编号:</span><b>{{ InfoData }}</b></li>
-                <li><span>设备位置:</span><b>{{ InfoData }}</b></li>
-                <li><span>设备种类:</span><b>{{ InfoData }}</b></li>
-                <li><span>设备编码:</span><b>{{ InfoData }}</b></li>
-                <li><span>设备类型:</span><b>{{ InfoData }}</b></li>
-                <li><span>故障时间:</span><b>{{ InfoData }}</b></li>
-                <li><span>设备描述:</span><b>{{ InfoData }}</b></li>
-                <li><span>录入人:</span><b>{{ InfoData }}</b></li>
-                <li><span>报修级别:</span><b>{{ InfoData }}</b></li>
-                <!-- <li><span>代维状态:</span><b>{{ InfoData }}</b></li> -->
-                <li><span>报修人:</span><b>{{ InfoData }}</b></li>
-                <li><span>报修时间:</span><b>{{ InfoData }}</b></li>
-                <li><span>派工次数:</span><b>{{ InfoData }}</b></li>
-                <li><span>维修次数:</span><b>{{ InfoData }}</b></li>
+                <li><span>维修单编号:</span><b>{{ formData.code }}</b></li>
+                <li><span>设备位置:</span><b>{{ formData.position.name }}</b></li>
+                <li><span>设备种类:</span><b>{{ formData.equipment.equimentType.name }}</b></li>
+                <li><span>设备编码:</span><b>{{ formData.assetCode }}</b></li>
+                <li><span>设备类型:</span><b>{{ formData.equipment.name }}</b></li>
+                <li><span>故障时间:</span><b>{{ formData.failureTime }}</b></li>
+                <li><span>设备描述:</span><b>{{ formData.description }}</b></li>
+                <li><span>录入人:</span><b>{{ formData.repairUser.name }}</b></li>
+                <li><span>报修级别:</span><b>{{ formData.equipmentFault.name }}</b></li>
+                <li><span>报修人:</span><b>{{ formData.reporterName }}</b></li>
+                <li><span>报修时间:</span><b>{{ formData.reportTime }}</b></li>
+                <li><span>派工次数:</span><b>{{ formData.dispatchCount }}</b></li>
+                <li><span>维修次数:</span><b>{{ formData.repairCount }}</b></li>
                 <li>
-                  <el-form ref="form" :model="formSearch" label-width="120px">
+                  <el-form ref="form" :model="updateData" label-width="120px">
                     <el-form-item label="派工:">
-                      <el-select v-model="formSearch.owner" clearable placeholder="派工" size="small">
-                        <el-option key="1" label="启用" value="true" />
-                        <el-option key="2" label="禁用" value="false" />
+                      <el-select v-model="updateData.userId" clearable placeholder="派工" size="small">
+                        <el-option v-for="item in userData" :key="item.id" :label="item.userName" :value="item.id" />
                       </el-select>
                     </el-form-item>
                   </el-form>
@@ -52,27 +50,48 @@ export default {
   },
   data() {
     return {
-      InfoData: [],
-      formSearch: {}
+      formData: {
+        assetId: '',
+        code: ''
+      },
+      userData: [], // 用户数据
+      updateData: {
+        id: '',
+        userId: '',
+        dispatchType: 'Transfer'// 转单
+      }
     }
   },
   computed: {},
   mounted() {
-    // this.initData(1)
     this.getdata()
   },
   methods: {
     getdata() {
       // 获取维修详情数据
+      this.formData.assetId = window.location.href.split('/')[window.location.href.split('/').length - 1]
+      this.$axios.get('/api/RepairOrder/' + this.formData.assetId).then(res => {
+        this.formData = res
+        this.updateData.id = res.id
+      })
+      // 获取用户
+      this.$axios.get('/api/User').then(res => {
+        this.userData = res.data
+      })
     },
     partwork() { // 分配工单
-
+      this.$axios.post('/api/RepairOrder/' + this.formData.id + '/Dispatch', this.updateData).then(res => {
+        this.$message.success('工单分配成功')
+        // 跳转个人工作页
+        this.$router.push('/Workorder/Headmanlist')
+      })
     },
     processrecord() { // 点击过程记录
 
     },
     closework() { // 点击关闭
-
+      // 跳转个人工作页
+      this.$router.push('/Workorder/Headmanlist')
     }
   }
 }
@@ -80,7 +99,7 @@ export default {
 <style lang='scss' scoped>
 .header {
   width: 100%;
-  .Infodata {
+  .formData {
     width: 100%;
     ul {
       list-style: none;

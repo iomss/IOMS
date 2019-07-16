@@ -6,22 +6,21 @@
         <div class="panel">
           <div class="header">
             <h4>维修单详情</h4>
-            <div class="Infodata">
+            <div v-if="formData.code!==''" class="Infodata">
               <ul>
-                <li><span>维修单编号:</span><b>1234567</b></li>
-                <li><span>设备位置:</span><b>{{ InfoData }}</b></li>
-                <li><span>设备种类:</span><b>{{ InfoData.equimentType }}</b></li>
-                <li><span>设备编码:</span><b>{{ InfoData.assetCode }}</b></li>
-                <li><span>故障类型:</span><b>{{ InfoData.equipmentFault }}</b></li>
-                <li><span>故障时间:</span><b>{{ InfoData.failureTime }}</b></li>
-                <li><span>故障描述:</span><b>{{ InfoData.description }}</b></li>
-                <li><span>录入人:</span><b>{{ InfoData.recordUser }}</b></li>
-                <li><span>报修级别:</span><b>{{ InfoData.repairLevel }}</b></li>
-                <!-- <li><span>代维状态:</span><b>{{ InfoData }}</b></li> -->
-                <li><span>报修人:</span><b>{{ InfoData.reporterName }}</b></li>
-                <li><span>报修时间:</span><b>{{ InfoData.reportTime }}</b></li>
-                <li><span>派工次数:</span><b>{{ InfoData }}</b></li>
-                <li><span>维修次数:</span><b>{{ InfoData }}</b></li>
+                <li><span>维修单编号:</span><b>{{ formData.code }}</b></li>
+                <li><span>设备位置:</span><b>{{ formData.position.name }}</b></li>
+                <li><span>设备种类:</span><b>{{ formData.equipment.equimentType.name }}</b></li>
+                <li><span>设备编码:</span><b>{{ formData.assetCode }}</b></li>
+                <li><span>设备类型:</span><b>{{ formData.equipment.name }}</b></li>
+                <li><span>故障时间:</span><b>{{ formData.failureTime }}</b></li>
+                <li><span>设备描述:</span><b>{{ formData.description }}</b></li>
+                <li><span>录入人:</span><b>{{ formData.repairUser }}</b></li>
+                <li><span>报修级别:</span><b>{{ formData.equipmentFault.name }}</b></li>
+                <li><span>报修人:</span><b>{{ formData.reporterName }}</b></li>
+                <li><span>报修时间:</span><b>{{ formData.reportTime }}</b></li>
+                <li><span>派工次数:</span><b>{{ formData.dispatchCount }}</b></li>
+                <li><span>维修次数:</span><b>{{ formData.repairCount }}</b></li>
               </ul>
             </div>
           </div>
@@ -44,26 +43,46 @@ export default {
   },
   data() {
     return {
-      InfoData: []
+      formData: {
+        assetId: '',
+        code: ''
+      },
+      updateData: {
+        id: '',
+        userId: '',
+        dispatchType: ''
+      }
     }
   },
   computed: {},
   mounted() {
-    // this.initData(1)
     this.getdata()
   },
   methods: {
     getdata() {
       // 获取维修详情数据
-      this.$axios.get('/api/RepairOrder/1').then(res => {
-        this.InfoData = res.data
+      this.formData.assetId = window.location.href.split('/')[window.location.href.split('/').length - 1]
+      this.$axios.get('/api/RepairOrder/' + this.formData.assetId).then(res => {
+        this.formData = res
+        this.updateData.id = res.id
       })
     },
     reciptwork(val) { // 点击接受按钮
       // this.$router.push('/Asset/Info' + val)
+      this.updateData.dispatchType = 'Taken'// 接单
+      this.$axios.post('/api/RepairOrder/' + this.formData.id + '/Dispatch', this.updateData).then(res => {
+        this.$message.success('工单接单成功')
+        // 跳转个人工作页
+        this.$router.push('/Workorder/Maintainerlist')
+      })
     },
     backworke(val) { // 点击退回按钮
-      // this.$router.push('/Asset/Info' + val)
+      this.updateData.dispatchType = 'return'// 退回
+      this.$axios.post('/api/RepairOrder/' + this.formData.id + '/Dispatch', this.updateData).then(res => {
+        this.$message.success('工单接单成功')
+        // 跳转个人工作页
+        this.$router.push('/Workorder/Maintainerlist')
+      })
     },
     historywork() { // 点击历史详情
 
@@ -72,7 +91,8 @@ export default {
 
     },
     closework() { // 点击关闭
-
+      // 跳转个人工作页
+      this.$router.push('/Workorder/Maintainerlist')
     }
   }
 }
@@ -109,24 +129,6 @@ export default {
 }
 .content {
   margin-top: 30px;
-  .el-table th,
-  .el-table td {
-    padding: 5px;
-  }
-  .el-form-item {
-    width: 49%;
-    display: inline-block;
-    .el-select {
-      width: 100%;
-    }
-    .el-date-editor {
-      width: 100%;
-    }
-  }
-  .form_total {
-    width: 100%;
-    text-align: center;
-    margin-top: 30px;
-  }
+  text-align: center;
 }
 </style>
