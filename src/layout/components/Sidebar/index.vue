@@ -52,6 +52,10 @@ export default {
     getRouter() {
       const showRouter = []
       this.routers.forEach(item => {
+        // let childrenRouter = []
+        // item.meta.hidden ? '' : item.children ? childrenRouter = item.children.filter(x => !x.meta.hidden && this.roles.includes(x.meta.roles)) : ''
+        // console.log(childrenRouter)
+        // item.children = childrenRouter
         item.meta.hidden ? '' : item.children ? item.children = item.children.filter(x => !x.meta.hidden && this.roles.includes(x.meta.roles)) : ''
         item.meta.hidden ? '' : showRouter.push(item)
       })
