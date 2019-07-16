@@ -94,7 +94,7 @@ export const constantRoutes = [
           title: '状态概览',
           icon: 'fa fa-home',
           fullPath: '/index',
-          roles: [],
+          roles: ['EnterSystem'],
           affix: true
         }
       },
@@ -106,7 +106,7 @@ export const constantRoutes = [
           title: '我的工作',
           icon: 'fa fa-home',
           fullPath: '/myjob',
-          roles: [],
+          roles: ['EnterSystem'],
           affix: true
         }
       }
@@ -116,6 +116,7 @@ export const constantRoutes = [
 
 export const asyncRoutes = [
   // 404 page must be placed at the end !!!
+  // 资产相关 权限已调整
   {
     path: '/assets',
     name: 'assets',
@@ -133,7 +134,7 @@ export const asyncRoutes = [
         meta: {
           title: '资产列表',
           icon: 'fa fa-home',
-          roles: ['show'],
+          roles: ['ManageAsset'],
           fullPath: '/assets/list'
         },
         component: () => import('@/views/assets/list')
@@ -144,7 +145,7 @@ export const asyncRoutes = [
         meta: {
           title: '资产明细',
           icon: 'fa fa-home',
-          roles: ['show'],
+          roles: ['ManageAsset'],
           fullPath: '/assets/Info/',
           hidden: true
         },
@@ -156,18 +157,19 @@ export const asyncRoutes = [
         meta: {
           title: '新增资产',
           icon: 'fa fa-home',
-          roles: ['show'],
+          roles: ['ManageAsset'],
           fullPath: '/assets/Create'
         },
         component: () => import('@/views/assets/Create')
       }
     ]
   },
+  // 元数据相关 权限已调整
   {
     path: '/Meta',
     name: 'Meta',
     meta: {
-      title: '资产设置',
+      title: '设置',
       icon: 'fa fa-home',
       fullPath: '/Meta'
     },
@@ -330,6 +332,7 @@ export const asyncRoutes = [
       }
     ]
   },
+  // 清单相关
   {
     path: '/Inventory',
     name: 'Inventory',
@@ -379,6 +382,7 @@ export const asyncRoutes = [
       }
     ]
   },
+  // 备品备件相关
   {
     path: '/sparepPart',
     name: 'sparepPart',
@@ -404,6 +408,7 @@ export const asyncRoutes = [
       }
     ]
   },
+  // 我都工作相关 权限已调整
   {
     path: '/Workorder',
     name: 'Workorder',
@@ -422,7 +427,7 @@ export const asyncRoutes = [
         meta: {
           title: '值班员工作列表',
           icon: 'fa fa-home',
-          roles: ['show'],
+          roles: ['Staff'],
           fullPath: '/Workorder/Watchmanlist'
         }
       },
@@ -433,7 +438,7 @@ export const asyncRoutes = [
         meta: {
           title: '维修组长工作列表',
           icon: 'fa fa-home',
-          roles: ['show'],
+          roles: ['BeingDispatched'],
           fullPath: '/Workorder/Headmanlist'
         }
       },
@@ -444,7 +449,7 @@ export const asyncRoutes = [
         meta: {
           title: '维修工程师接单列表',
           icon: 'fa fa-home',
-          roles: ['show'],
+          roles: ['GradOrder'],
           fullPath: '/Workorder/Maintainerlist'
         }
       },
@@ -455,7 +460,7 @@ export const asyncRoutes = [
         meta: {
           title: '维修工程师添加维修记录',
           icon: 'fa fa-home',
-          roles: ['show'],
+          roles: ['CreateRepairRecord'],
           hidden: true,
           fullPath: '/Workorder/MaintainerAddRecord'
         }
@@ -467,7 +472,7 @@ export const asyncRoutes = [
         meta: {
           title: '维修工程师接单',
           icon: 'fa fa-home',
-          roles: ['show'],
+          roles: ['CreateRepairRecord'],
           hidden: true,
           fullPath: '/Workorder/MaintainerReceipt'
         }
@@ -479,7 +484,7 @@ export const asyncRoutes = [
         meta: {
           title: '维修工程师转单',
           icon: 'fa fa-home',
-          roles: ['show'],
+          roles: ['CreateRepairRecord'],
           hidden: true,
           fullPath: '/Workorder/MaintainerChangeOrder'
         }
@@ -532,6 +537,7 @@ export const asyncRoutes = [
       }
     ]
   },
+  // 维护维修相关 权限已调整
   {
     path: '/maintenance',
     name: 'maintenance',
@@ -550,7 +556,7 @@ export const asyncRoutes = [
         meta: {
           title: '工单资产列表',
           icon: 'fa fa-home',
-          roles: ['show'],
+          roles: ['ManageAsset'],
           fullPath: '/maintenance/WatchmanAssetslist'
         }
       },
@@ -561,7 +567,8 @@ export const asyncRoutes = [
         meta: {
           title: '值班人员派单',
           icon: 'fa fa-home',
-          roles: ['show'],
+          roles: ['Staff'],
+          hidden: true,
           fullPath: '/maintenance/WatchmanDispatch'
         }
       },
@@ -572,12 +579,14 @@ export const asyncRoutes = [
         meta: {
           title: '维修组长派单',
           icon: 'fa fa-home',
-          roles: ['show'],
+          roles: ['BeingDispatched'],
+          hidden: true,
           fullPath: '/maintenance/HeadmanDispatch'
         }
       }
     ]
   },
+  // 用户相关 权限已调整
   {
     path: '/User',
     name: 'User',
@@ -602,6 +611,7 @@ export const asyncRoutes = [
       }
     ]
   },
+  // 404
   {
     path: '*',
     name: '*',
