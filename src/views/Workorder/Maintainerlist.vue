@@ -68,6 +68,14 @@
                 </template>
               </el-table-column> -->
             </el-table>
+            <!-- 删除弹框 -->
+            <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeQuestionVisible" width="220px">
+              <span>您确定要删除此条数据？</span>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="removeQuestionVisible = false">取 消</el-button>
+                <el-button type="primary" @click="removeQuestion">确 定</el-button>
+              </span>
+            </el-dialog>
             <!--分页-->
             <pagination v-show="totalCount>0" :total="totalCount" :page.sync="tableDataSearch.pageSize" :limit.sync="tableDataSearch.pageNumber" @pagination="getPage" />
           </div>
@@ -93,7 +101,9 @@ export default {
         pageNumber: 1, // 页码
         state: ''// 工单状态
       },
-      totalCount: 0 // 数据总条数
+      totalCount: 0, // 数据总条数
+      removeQuestionVisible: false, // 删除提示弹框隐藏
+      removeData: ''// 要删除的行数据
     }
   },
   computed: {},
@@ -143,14 +153,25 @@ export default {
       this.$router.push('/Workorder/MaintainerAddRecord/' + data.id)
     },
     deletework(data) { // 删除工单
-      console.log(data)
+      if (data) {
+        this.removeData = data
+        this.removeQuestionVisible = true
+      } else {
+        if (this.multipleSelection === '') {
+          this.$message.error('请选择一条数据')
+        } else {
+          this.removeQuestionVisible = true
+        }
+      }
+    },
+    removeQuestion() {
+      const _this = this
+      this.$axios.delete('/api/RepairOrder/?Id=' + this.removeData.id).then(response => {
+        _this.$message.success('删除成功')
+        _this.removeQuestionVisible = false
+        this.getData()
+      })
     }
-    // showInfo(val) { // 点击详情按钮
-    //   // this.$router.push('/Asset/Info' + val)
-    // },
-    // UpdateStage(val) { // 点击编辑按钮
-    //   // this.$router.push('/Asset/Info' + val)
-    // }
   }
 }
 </script>

@@ -15,7 +15,7 @@
                 <li><span>设备类型:</span><b>{{ formData.equipment.name }}</b></li>
                 <li><span>故障时间:</span><b>{{ formData.failureTime }}</b></li>
                 <li><span>设备描述:</span><b>{{ formData.description }}</b></li>
-                <li><span>录入人:</span><b>{{ formData.repairUser }}</b></li>
+                <li><span>录入人:</span><b>{{ formData.repairUser.name }}</b></li>
                 <li><span>报修级别:</span><b>{{ formData.equipmentFault.name }}</b></li>
                 <li><span>报修人:</span><b>{{ formData.reporterName }}</b></li>
                 <li><span>报修时间:</span><b>{{ formData.reportTime }}</b></li>
@@ -79,7 +79,7 @@ export default {
     backworke(val) { // 点击退回按钮
       this.updateData.dispatchType = 'return'// 退回
       this.$axios.post('/api/RepairOrder/' + this.formData.id + '/Dispatch', this.updateData).then(res => {
-        this.$message.success('工单接单成功')
+        this.$message.success('工单退回成功')
         // 跳转个人工作页
         this.$router.push('/Workorder/Maintainerlist')
       })
@@ -106,12 +106,9 @@ export default {
       list-style: none;
       width: 100%;
       padding-left: 10px;
-      border-top: 1px solid #999;
       li {
         width: 49%;
         display: inline-block;
-        border-bottom: 1px solid #999;
-        border-right: 1px solid #999;
         span {
           display: inline-block;
           font-size: 16px;

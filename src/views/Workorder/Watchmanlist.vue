@@ -21,7 +21,7 @@
               <el-table-column prop="id" label="序号" width="60" />
               <el-table-column label="操作" width="80">
                 <template slot-scope="scope">
-                  <el-button v-show="scope.row.orderState==='Record'||scope.row.orderState==='Dispatching'||scope.row.orderState==='Dispatched'" size="mini" type="primary" @click="deleteStage(scope.row)">删除</el-button>
+                  <el-button v-show="scope.row.orderState==='Record'||scope.row.orderState==='Dispatching'||scope.row.orderState==='Dispatched'" size="mini" type="primary" @click="deletedata(scope.row)">删除</el-button>
                 </template>
               </el-table-column>
               <el-table-column prop="code" label="维修单编号" width="120" />
@@ -51,6 +51,14 @@
                 </template>
               </el-table-column> -->
             </el-table>
+            <!-- 删除弹框 -->
+            <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeQuestionVisible" width="220px">
+              <span>您确定要删除此条数据？</span>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="removeQuestionVisible = false">取 消</el-button>
+                <el-button type="primary" @click="removeQuestion">确 定</el-button>
+              </span>
+            </el-dialog>
             <!--分页-->
             <pagination v-show="totalCount>0" :total="totalCount" :page.sync="tableDataSearch.pageSize" :limit.sync="tableDataSearch.pageNumber" @pagination="getPage" />
           </div>
@@ -74,7 +82,9 @@ export default {
         pageSize: 20, // 展示条数
         pageNumber: 1// 页码
       },
-      totalCount: 0 // 数据总条数
+      totalCount: 0, // 数据总条数
+      removeQuestionVisible: false, // 删除提示弹框隐藏
+      removeData: ''// 要删除的行数据
     }
   },
   computed: {},
@@ -107,14 +117,25 @@ export default {
     handleSelectionChange(val) { // 表格选中行
       this.multipleSelection = val
     },
-    // showInfo(val) { // 点击详情按钮
-    //   // this.$router.push('/Asset/Info' + val)
-    // },
-    // UpdateStage(val) { // 点击编辑按钮
-    //   // this.$router.push('/Asset/Info' + val)
-    // },
-    deletedata() { // 删除报修单
-
+    deletedata(data) { // 删除报修单
+      if (data) {
+        this.removeData = data
+        this.removeQuestionVisible = true
+      } else {
+        if (this.multipleSelection === '') {
+          this.$message.error('请选择一条数据')
+        } else {
+          this.removeQuestionVisible = true
+        }
+      }
+    },
+    removeQuestion() {
+      const _this = this
+      this.$axios.delete('/api/RepairOrder/?Id=' + this.removeData.id).then(response => {
+        _this.$message.success('删除成功')
+        _this.removeQuestionVisible = false
+        this.getData()
+      })
     }
   }
 }

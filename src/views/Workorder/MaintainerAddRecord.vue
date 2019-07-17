@@ -17,7 +17,7 @@
                 <li><span>设备描述:</span><b>{{ formData.description }}</b></li>
                 <li><span>录入人:</span><b>{{ formData.repairUser }}</b></li>
                 <li><span>报修级别:</span><b>{{ formData.equipmentFault.name }}</b></li>
-                <li><span>代维状态:</span><b>{{ InfoData }}</b></li>
+                <li><span>代维状态:</span><b>{{ formData.reporterName }}</b></li>
                 <li><span>报修人:</span><b>{{ formData.reporterName }}</b></li>
                 <li><span>报修时间:</span><b>{{ formData.reportTime }}</b></li>
                 <li><span>派工次数:</span><b>{{ formData.dispatchCount }}</b></li>
@@ -28,66 +28,127 @@
         </div>
         <div class="content">
           <h4>维修记录</h4>
-          <el-form ref="formSearch" :model="formSearch" label-width="120px" :rules="formSearchrules">
-            <el-form-item label="维修单类型" prop="repairType" class="total">
-              <el-radio-group v-model="formSearch.repairType">
+          <el-form label-width="120px">
+            <el-form-item label="维修单类型" prop="repairType">
+              <el-radio-group v-model="repairType">
                 <el-radio label="Done">维修完毕</el-radio>
-                <!-- <el-radio label="Repeat">重复报修</el-radio> -->
                 <el-radio label="Mistaken">误报</el-radio>
                 <el-radio label="Suspend">暂缓</el-radio>
               </el-radio-group>
             </el-form-item>
+          </el-form>
+          <el-form v-if="repairType=='Done'" ref="formRcorda" :model="formRcorda" label-width="120px" :rules="formRcordarules">
             <el-form-item label="设备种类" prop="equipmentId">
-              <el-select v-model="formSearch.equipmentId" clearable placeholder="设备种类" size="small">
+              <el-select v-model="formRcorda.equipmentId" clearable placeholder="设备种类" size="small" @change="changeEquipment">
                 <el-option v-for="item in equipmentData" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
             <el-form-item label="设备编码" prop="assetCode">
-              <el-select v-model="formSearch.assetCode" clearable placeholder="设备编码" size="small">
-                <el-option key="1" label="已发布" value="true" />
-                <el-option key="2" label="未发布" value="false" />
+              <el-select v-model="formRcorda.assetCode" clearable placeholder="设备编码" size="small">
+                <el-option v-for="item in assetsData" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
             <el-form-item label="故障类型" prop="equipmentFaultId">
-              <el-select v-model="formSearch.equipmentFaultId" clearable placeholder="故障类型" size="small">
+              <el-select v-model="formRcorda.equipmentFaultId" clearable placeholder="故障类型" size="small">
                 <el-option v-for="item in faultData" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
             <el-form-item label="维修级别" prop="repairLevelId">
-              <el-select v-model="formSearch.repairLevelId" clearable placeholder="产权单位" size="small">
+              <el-select v-model="formRcorda.repairLevelId" clearable placeholder="产权单位" size="small">
                 <el-option v-for="item in levelData" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
             <el-form-item label="维修开始时间" prop="startTime">
-              <el-date-picker v-model="formSearch.startTime" type="datetime" placeholder="维修开始时间" />
+              <el-date-picker v-model="formRcorda.startTime" type="datetime" placeholder="维修开始时间" />
             </el-form-item>
             <el-form-item label="维修结束时间" prop="endTime">
-              <el-date-picker v-model="formSearch.endTime" type="datetime" placeholder="维修结束时间" />
+              <el-date-picker v-model="formRcorda.endTime" type="datetime" placeholder="维修结束时间" />
             </el-form-item>
             <el-form-item label="维修过程" prop="description">
-              <el-input v-model="formSearch.description" placeholder="维修过程" size="small" />
+              <el-input v-model="formRcorda.description" placeholder="维修过程" size="small" />
             </el-form-item>
             <el-form-item label="备注" prop="comment">
-              <el-input v-model="formSearch.comment" placeholder="备注" size="small" />
+              <el-input v-model="formRcorda.comment" placeholder="备注" size="small" />
             </el-form-item>
             <el-form-item label="配件名称及数量" prop="spareDescription">
-              <el-input v-model="formSearch.spareDescription" placeholder="配件名称及数量" size="small" />
-            </el-form-item>
-            <el-form-item label="图片" prop="resultImg">
-              <el-button type="primary" plain size="small" @click="addpicture()">添加图片</el-button>
+              <el-input v-model="formRcorda.spareDescription" placeholder="配件名称及数量" size="small" />
             </el-form-item>
             <el-form-item label="维修人" prop="repairerId">
-              <el-select v-model="formSearch.repairerId" clearable placeholder="维修人" size="small">
+              {{ dangqianUser.userName }}
+            </el-form-item>
+            <el-form-item label="维修人员" prop="assist">
+              <el-input v-model="formRcorda.assist" placeholder="维修人员" size="small" />
+            </el-form-item>
+            <el-form-item class="form_total">
+              <el-button type="primary" size="small" @click="updata('a')">提交</el-button>
+              <el-button type="primary" size="small" @click="initData('a')">重置</el-button>
+              <el-button type="primary" size="small" @click="close('a')">关闭</el-button>
+            </el-form-item>
+          </el-form>
+          <el-form v-if="repairType=='Mistaken'" ref="formRcordc" :model="formRcordc" label-width="120px" :rules="formRcordcrules">
+            <!-- <el-form-item label="是否重新派工" prop="repairType">
+              <el-radio-group v-model="formRcordc.repairType" placeholder="是否重新派工">
+                <el-radio label="true">是</el-radio>
+                <el-radio label="false">否</el-radio>
+              </el-radio-group>
+            </el-form-item> -->
+            <el-form-item label="维修人" prop="repairerId">
+              <el-select v-model="formRcordc.repairerId" clearable placeholder="维修人" size="small">
                 <el-option v-for="item in UserData" :key="item.id" :label="item.userName" :value="item.id" />
               </el-select>
             </el-form-item>
-            <el-form-item label="维修人员" prop="assist">
-              <el-input v-model="formSearch.assist" placeholder="维修人员" size="small" />
+            <el-form-item label="备注" prop="comment">
+              <el-input v-model="formRcordc.comment" placeholder="备注" size="small" />
             </el-form-item>
             <el-form-item class="form_total">
-              <el-button type="primary" size="small" @click="updata()">提交</el-button>
-              <el-button type="primary" size="small" @click="initData()">重置</el-button>
-              <el-button type="primary" size="small" @click="close()">关闭</el-button>
+              <el-button type="primary" size="small" @click="updata('c')">提交</el-button>
+              <el-button type="primary" size="small" @click="initData('c')">重置</el-button>
+              <el-button type="primary" size="small" @click="close('c')">关闭</el-button>
+            </el-form-item>
+          </el-form>
+          <el-form v-if="repairType=='Suspend'" ref="formRcordd" :model="formRcordd" label-width="120px" :rules="formRcorddrules">
+            <el-form-item label="设备种类" prop="equipmentId">
+              <el-select v-model="formRcordd.equipmentId" clearable placeholder="设备种类" size="small" @change="changeEquipment">
+                <el-option v-for="item in equipmentData" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="设备编码" prop="assetCode">
+              <el-select v-model="formRcordd.assetCode" clearable placeholder="设备编码" size="small">
+                <el-option v-for="item in assetsData" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="故障类型" prop="equipmentFaultId">
+              <el-select v-model="formRcordd.equipmentFaultId" clearable placeholder="故障类型" size="small">
+                <el-option v-for="item in faultData" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="维修级别" prop="repairLevelId">
+              <el-select v-model="formRcordd.repairLevelId" clearable placeholder="产权单位" size="small">
+                <el-option v-for="item in levelData" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="预计开始时间" prop="startTime">
+              <el-date-picker v-model="formRcordd.startTime" type="datetime" placeholder="维修开始时间" />
+            </el-form-item>
+            <el-form-item label="预计结束时间" prop="endTime">
+              <el-date-picker v-model="formRcordd.endTime" type="datetime" placeholder="维修结束时间" />
+            </el-form-item>
+            <el-form-item label="维修过程" prop="description">
+              <el-input v-model="formRcordd.description" placeholder="维修过程" size="small" />
+            </el-form-item>
+            <el-form-item label="备注" prop="comment">
+              <el-input v-model="formRcordd.comment" placeholder="备注" size="small" />
+            </el-form-item>
+            <el-form-item label="维修人" prop="repairerId">
+              {{ dangqianUser.userName }}
+            </el-form-item>
+            <el-form-item label="维修人员" prop="assist">
+              <el-input v-model="formRcordd.assist" placeholder="维修人员" size="small" />
+            </el-form-item>
+            <el-form-item class="form_total">
+              <el-button type="primary" size="small" @click="updata('d')">提交</el-button>
+              <el-button type="primary" size="small" @click="initData('d')">重置</el-button>
+              <el-button type="primary" size="small" @click="close('d')">关闭</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -101,6 +162,11 @@ export default {
   },
   data() {
     return {
+      dangqianUser: {
+        userName: this.$cookie.get('userName'),
+        id: this.$cookie.get('id')
+      },
+      repairType: 'Done', // 维修单类型
       formData: {
         assetId: '',
         code: ''
@@ -110,7 +176,24 @@ export default {
         userId: '',
         dispatchType: ''
       },
-      formSearch: {
+      formRcorda: {
+        assetCode: '',
+        repairLevelId: '',
+        startTime: '',
+        endTime: '',
+        description: '',
+        comment: '',
+        spareDescription: '',
+        repairerId: '',
+        assist: '',
+        equipmentId: '',
+        equipmentFaultId: ''
+      },
+      formRcordc: {
+        repairerId: '',
+        comment: ''
+      },
+      formRcordd: {
         repairType: '',
         assetCode: '',
         repairLevelId: '',
@@ -129,15 +212,13 @@ export default {
       equipmentData: [], // 设备类别数据
       levelData: [], // 维修等级数据
       UserData: [], // 用户数据
-      formSearchrules: {
+      assetsData: [], // 设备编码数据
+      formRcordarules: {// 维修完成验证规则
         equipmentId: [
           { required: true, message: '设备种类不可为空', trigger: 'change' }
         ],
         assetCode: [
           { required: true, message: '设备编码不可为空', trigger: 'change' }
-        ],
-        equipmentFaultId: [
-          { required: true, message: '故障类型不可为空', trigger: 'change' }
         ],
         repairLevelId: [
           { required: true, message: '维修级别不可为空', trigger: 'change' }
@@ -150,6 +231,31 @@ export default {
         ],
         endTime: [
           { type: 'date', required: true, message: '请选择维修结束时间', trigger: 'change' }
+        ]
+      },
+      formRcordcrules: {// 误报验证规则
+        comment: [
+          { required: true, message: '备注不可为空', trigger: 'change' }
+        ]
+      },
+      formRcorddrules: {// 暂缓验证规则
+        equipmentId: [
+          { required: true, message: '设备种类不可为空', trigger: 'change' }
+        ],
+        assetCode: [
+          { required: true, message: '设备编码不可为空', trigger: 'change' }
+        ],
+        repairLevelId: [
+          { required: true, message: '维修级别不可为空', trigger: 'change' }
+        ],
+        description: [
+          { required: true, message: '维修过程不可为空', trigger: 'change' }
+        ],
+        startTime: [
+          { type: 'date', required: true, message: '请选择预计开始时间', trigger: 'change' }
+        ],
+        endTime: [
+          { type: 'date', required: true, message: '请选择预计结束时间', trigger: 'change' }
         ]
       }
     }
@@ -177,6 +283,10 @@ export default {
       this.$axios.get('/api/User').then(res => {
         this.UserData = res.data
       })
+      // 获取设备编码
+      this.$axios.get('/api/Meta/Assets').then(res => {
+        this.assetsData = res.data
+      })
     },
     getdata() {
       // 获取维修详情数据
@@ -188,17 +298,61 @@ export default {
         this.formSearch.repairername = res.repairUser.name
       })
     },
+    changeEquipment() { // 设备种类筛选设备编码
+      // 获取设备编码
+      this.$axios.get('/api/Meta/Assets?equipmentId=' + this.formRcorda.equipmentId).then(res => {
+        this.assetsData = res.data
+      })
+    },
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
-    updata() { },
-    initData() { //
+    updata(val) { // 表单提交按钮
+      console.log(val)
+      if (val === 'a') {
+        this.$refs.formRcorda.validate(valid => {
+          if (valid) {
+            this.formRcorda.repairType = this.repairType
+            this.formRcorda.repairerId = this.dangqianUser.id
+            this.formRcorda.repairOrderId = window.location.href.split('/')[window.location.href.split('/').length - 1]
+            this.$axios.post('/api/RepairRecord', this.formRcorda).then(response => {
+              // 跳转回个人工作页
+              this.$router.push('/Workorder/Maintainerlist')
+            })
+          }
+        })
+      }
+      if (val === 'c') {
+        this.$refs.formRcordc.validate(valid => {
+          if (valid) {
+            this.formRcordc.repairType = this.repairType
+            this.formRcordc.repairerId = this.dangqianUser.id
+            this.formRcordc.repairOrderId = window.location.href.split('/')[window.location.href.split('/').length - 1]
+            this.$axios.post('/api/RepairRecord', this.formRcordc).then(response => {
+              // 跳转回个人工作页
+              this.$router.push('/Workorder/Maintainerlist')
+            })
+          }
+        })
+      }
+      if (val === 'd') {
+        this.$refs.formRcordd.validate(valid => {
+          if (valid) {
+            this.formRcordd.repairType = this.repairType
+            this.formRcordd.repairerId = this.dangqianUser.id
+            this.formRcordd.repairOrderId = window.location.href.split('/')[window.location.href.split('/').length - 1]
+            this.$axios.post('/api/RepairRecord/', this.formRcordd).then(response => {
+              // 跳转回个人工作页
+              this.$router.push('/Workorder/Maintainerlist')
+            })
+          }
+        })
+      }
+    },
+    initData() { // 重置
 
     },
     close() { // 关闭
-
-    },
-    addpicture() { // 添加图片
 
     }
   }
