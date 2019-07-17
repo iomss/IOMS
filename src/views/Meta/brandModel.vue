@@ -14,8 +14,12 @@
             </div>
           </div>
           <div class="content">
-            <el-table :data="brandData" stripe border style="width: 100%" @selection-change="handleSelectionChangeBrand">
-              <el-table-column type="selection" width="40" />
+            <el-table ref="brandTable" :data="brandData" stripe border style="width: 100%" @selection-change="handleSelectionChangeBrand">
+              <el-table-column type="selection" width="40">
+                <template slot-scope="scope">
+                  <el-radio v-model="brandRadio" :label="scope.row.name" @change.native="getBrandRow(scope.row)">&nbsp;</el-radio>
+                </template>
+              </el-table-column>
               <el-table-column label="操作" width="100">
                 <template slot-scope="scope">
                   <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="primary" @click="updateBrand(scope.row)">编辑</el-button>
@@ -63,7 +67,11 @@
           </div>
           <div class="content">
             <el-table :data="modelData" stripe border style="width: 100%" @selection-change="handleSelectionChangeModel">
-              <el-table-column type="selection" width="40" />
+              <el-table-column type="selection" width="40">
+                <template slot-scope="scope">
+                  <el-radio v-model="modelRadio" :label="scope.row.name" @change.native="getModelRow(scope.row)">&nbsp;</el-radio>
+                </template>
+              </el-table-column>
               <el-table-column label="操作" width="100">
                 <template slot-scope="scope">
                   <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="primary" @click="updateModel(scope.row)">编辑</el-button>
@@ -114,6 +122,7 @@ export default {
   },
   data() {
     return {
+      brandRadio: '', // 品牌 table 单选按钮
       // 品牌
       brandData: [], // 数据
       brandFormSearce: {
@@ -139,9 +148,11 @@ export default {
       brandDeleteDataId: null,
       multipleSelectionBrand: [],
       /** **************************************************************************************************************************** */
+      modelRadio: '', // 型号 table 单选按钮
       // 型号
       modelData: [], // 数据
       modelFormSearch: {
+        brandId: undefined,
         text: '',
         pageSize: 20,
         pageNumber: 1
@@ -265,6 +276,12 @@ export default {
     handleSelectionChangeBrand(val) {
       this.multipleSelectionBrand = val
     },
+    getBrandRow(row) {
+      this.multipleSelectionBrand = []
+      this.multipleSelectionBrand.push(row)
+      this.modelFormSearch.brandId = row.id
+      this.getModelData()
+    },
     /** ***************************************************************************************************************************************** */
     // 型号
     getModelData() {
@@ -356,6 +373,10 @@ export default {
     // 型号table 多选数据
     handleSelectionChangeModel(val) {
       this.multipleSelectionModel = val
+    },
+    getModelRow(row) {
+      this.multipleSelectionModel = []
+      this.multipleSelectionModel.push(row)
     }
   }
 }
