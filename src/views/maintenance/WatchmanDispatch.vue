@@ -27,7 +27,7 @@
                   <i class="fa fa-plus" aria-hidden="true" @click="creatorder()" />
                 </el-form-item>
                 <el-form-item label="报修人" prop="reporterName">
-                  <el-input v-model="formData.reporterName" placeholder="报修人" size="small" />
+                  {{ dangqianUser.userName }}
                 </el-form-item>
                 <el-form-item label="故障描述" class="total" prop="description">
                   <el-input v-model="formData.description" placeholder="故障描述" size="small" />
@@ -86,6 +86,10 @@ export default {
   },
   data() {
     return {
+      dangqianUser: {// 当前登陆用户
+        userName: this.$cookie.get('userName'),
+        id: this.$cookie.get('id')
+      },
       changeActiveVisible: false,
       formData: {
         assetId: '',
@@ -168,6 +172,7 @@ export default {
     createWorker() { // 提交派单按钮方法
       this.$refs.formData.validate(valid => {
         if (valid) {
+          this.formData.reporterName = this.dangqianUser.id
           this.$axios.post('/api/RepairOrder', this.formData).then(res => {
             this.$message.success('录入成功')
             this.$router.push('/Workorder/Watchmanlist')

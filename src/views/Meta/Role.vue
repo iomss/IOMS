@@ -146,12 +146,14 @@ export default {
           this.RoleFormVisible = true
           this.RoleForm.id = this.multipleSelectionRole[0].id
           this.RoleForm.name = this.multipleSelectionRole[0].name
+          this.RoleForm.claims = []
           this.multipleSelectionRole[0].claims.forEach(item => this.RoleForm.claims.push(item.key))
         }
       } else {
         this.RoleFormVisible = true
         this.RoleForm.id = row.id
         this.RoleForm.name = row.name
+        this.RoleForm.claims = []
         row.claims.forEach(item => this.RoleForm.claims.push(item.key))
       }
     },

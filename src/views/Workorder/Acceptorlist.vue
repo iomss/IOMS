@@ -62,6 +62,14 @@
               </template>
             </el-table-column> -->
           </el-table>
+          <!-- 删除弹框 -->
+          <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeQuestionVisible" width="220px">
+            <span>您确定要删除此条数据？</span>
+            <span slot="footer" class="dialog-footer">
+              <el-button @click="removeQuestionVisible = false">取 消</el-button>
+              <el-button type="primary" @click="removeQuestion">确 定</el-button>
+            </span>
+          </el-dialog>
           <!--分页-->
           <pagination v-show="totalCount>0" :total="totalCount" :page.sync="tableDataSearch.pageSize" :limit.sync="tableDataSearch.pageNumber" @pagination="getPage" />
         </div>
@@ -84,7 +92,9 @@ export default {
         pageSize: 20, // 展示条数
         pageNumber: 1// 页码
       },
-      totalCount: 0 // 数据总条数
+      totalCount: 0, // 数据总条数
+      removeQuestionVisible: false, // 删除提示弹框隐藏
+      removeData: ''// 要删除的行数据
     }
   },
   computed: {},
@@ -115,14 +125,39 @@ export default {
       this.multipleSelection = val
     },
     checkwork(data) { // 批量验收按钮
+      if (data) {
+        this.$router.push('/Workorder/AcceptorOperate/' + data.id)
+      } else {
+        if (this.multipleSelection === '') {
+          this.$message.error('请选择一条数据')
+        } else {
+          this.$router.push('/Workorder/AcceptorOperate/' + this.multipleSelection[0].id)
+        }
+      }
       console.log(data)
-      this.$router.push('/Workorder/AcceptorOperate/' + data.id)
     },
     creatework() { // 新建报修单
       this.$router.push('/maintenance/WatchmanAssetslist')
     },
-    deletework() { // 删除按钮
-
+    deletework(data) { // 删除按钮
+      if (data) {
+        this.removeData = data
+        this.removeQuestionVisible = true
+      } else {
+        if (this.multipleSelection === '') {
+          this.$message.error('请选择一条数据')
+        } else {
+          this.removeQuestionVisible = true
+        }
+      }
+    },
+    removeQuestion() {
+      const _this = this
+      this.$axios.delete('/api/RepairOrder/?Id=' + this.removeData.id).then(response => {
+        _this.$message.success('删除成功')
+        _this.removeQuestionVisible = false
+        this.getData()
+      })
     }
   }
 }

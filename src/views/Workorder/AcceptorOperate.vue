@@ -6,7 +6,7 @@
         <div class="panel">
           <div class="header">
             <h4>维修单详情</h4>
-            <div v-if="formData.code!==''" class="Infodata">
+            <div v-show="formData.assetCode!==''" class="Infodata">
               <ul>
                 <li><span>维修单编号:</span><b>{{ formData.code }}</b></li>
                 <li><span>设备位置:</span><b>{{ formData.position.name }}</b></li>
@@ -15,7 +15,7 @@
                 <li><span>故障类型:</span><b>{{ formData.equipment.name }}</b></li>
                 <li><span>故障时间:</span><b>{{ formData.failureTime }}</b></li>
                 <li><span>故障描述:</span><b>{{ formData.description }}</b></li>
-                <li><span>录入人:</span><b>{{ formData.repairUser }}</b></li>
+                <li><span>录入人:</span><b>{{ formData.repairUser.name }}</b></li>
                 <li><span>报修级别:</span><b>{{ formData.equipmentFault.name }}</b></li>
                 <li><span>代维状态:</span><b>{{ formData.reporterName }}</b></li>
                 <li><span>报修人:</span><b>{{ formData.reporterName }}</b></li>
@@ -28,19 +28,19 @@
         </div>
         <div class="content">
           <h4>维修记录</h4>
-          <div v-if="tableData.assetCode!==''" class="Infodata">
-            <ul>
-              <li><span>维修单类型:</span><b>{{ tableData.repairType }}</b></li>
+          <div class="Infodata">
+            <ul v-show="tableData.repairType!==''">
+              <li><span>维修单类型:</span><b>{{ tableData.repairType=='Done'?'维修完成':tableData.repairType=='Repeat'?'重复报修':tableData.repairType=='Mistaken'?'误报':'暂缓' }}</b></li>
               <li><span>设备种类:</span><b>{{ tableData.equipment.equimentType.name }}</b></li>
               <li><span>设备编号:</span><b>{{ tableData.assetCode }}</b></li>
               <li><span>故障类型:</span><b>{{ tableData.equipment.name }}</b></li>
-              <li><span>维修级别:</span><b>{{ tableData.repairLevel }}</b></li>
+              <li><span>维修级别:</span><b>{{ tableData.repairLevel.name }}</b></li>
               <li><span>维修开始时间:</span><b>{{ tableData.startTime }}</b></li>
               <li><span>维修结束时间:</span><b>{{ tableData.endTime }}</b></li>
               <li><span>维修过程:</span><b>{{ tableData.description }}</b></li>
               <li><span>建议:</span><b>null</b></li>
               <li><span>配件名称及数量:</span><b>{{ tableData.spareDescription }}</b></li>
-              <li><span>维修人:</span><b>{{ tableData.repairer }}</b></li>
+              <li><span>维修人:</span><b>{{ tableData.repairer.name }}</b></li>
               <li><span>协助人:</span><b>{{ tableData.assist }}</b></li>
               <li><span>维修结果图片:</span><b>{{ tableData.assist }}</b></li>
               <li><span>现场验收签字:</span><b>{{ tableData.assist }}</b></li>
@@ -49,25 +49,25 @@
         </div>
         <div class="content">
           <h4>验收确认</h4>
-          <div v-if="checkData.assetCode!==''" class="Infodata">
+          <div class="Infodata">
             <el-form ref="checkData" :rules="checkDatarules" :model="checkData" style="width: 50%" label-width="100px">
-              <el-form-item label="验收结果" prop="user">
-                <el-radio-group v-model="checkData.user">
-                  <el-radio :label="3">通过</el-radio>
-                  <el-radio :label="6">不通过</el-radio>
+              <el-form-item label="验收结果" prop="reviewStatus">
+                <el-radio-group v-model="checkData.reviewStatus">
+                  <el-radio label="Applied">通过</el-radio>
+                  <el-radio label="Rejected">不通过</el-radio>
                 </el-radio-group>
               </el-form-item>
-              <el-form-item label="验收意见" prop="user">
-                <el-input v-model="checkData.user" placeholder="验收意见" size="small" />
+              <el-form-item label="验收意见" prop="comment">
+                <el-input v-model="checkData.comment" placeholder="验收意见" size="small" />
               </el-form-item>
               <el-form-item label="验收人" prop="user">
-                <el-input v-model="checkData.user" placeholder="验收人" size="small" />
+                {{ dangqianUser.userName }}
               </el-form-item>
-              <span slot="footer" class="dialog-footer">
+              <el-form-item class="form_total">
                 <el-button type="primary" @click="sureright()">确定</el-button>
                 <el-button type="primary" @click="reset()">重置</el-button>
                 <el-button type="primary" @click="close()">关闭</el-button>
-              </span>
+              </el-form-item>
             </el-form>
           </div>
         </div>
@@ -81,28 +81,44 @@ export default {
   },
   data() {
     return {
-      formSearch: {
-        unit: '',
-        position: '',
-        sort: '',
-        owner: '',
-        starttime: ''
+      dangqianUser: {// 当前登陆用户
+        userName: this.$cookie.get('userName'),
+        id: this.$cookie.get('id')
       },
+      repairRecordId: '', // 维修记录id
       formData: {// 维修单数据
         assetId: '',
-        code: ''
+        code: '',
+        position: '',
+        equipment: {
+          id: '',
+          name: '',
+          equimentType: {
+            id: '',
+            name: ''
+          }
+        },
+        assetCode: '',
+        failureTime: '',
+        description: '',
+        repairUser: '',
+        equipmentFault: '',
+        reporterName: '',
+        reportTime: '',
+        dispatchCount: '',
+        repairCount: ''
       },
       tableData: {// 维修记录数据
         assetId: '',
-        assetCode: ''
+        repairType: ''
       },
-      checkData: {}, // 验收表单数据
+      checkData: {// 验收表单数据
+        reviewStatus: 'Applied',
+        comment: ''
+      },
       checkDatarules: {
-        user: [
+        comment: [
           { required: true, message: '验收意见不可为空', trigger: 'change' }
-        ],
-        positionId: [
-          { required: true, message: '验收人不可为空', trigger: 'change' }
         ]
       }
     }
@@ -117,22 +133,19 @@ export default {
       this.formData.assetId = window.location.href.split('/')[window.location.href.split('/').length - 1]
       this.$axios.get('/api/RepairOrder/' + this.formData.assetId).then(res => {
         this.formData = res
+        this.repairRecordId = res.repairRecordId
+        this.getrecord()
       })
-      // 获取维修记录
-      this.tableData.assetId = window.location.href.split('/')[window.location.href.split('/').length - 1]
-      this.$axios.get('/api/RepairRecord/' + this.tableData.assetId).then(res => {
+    },
+    getrecord() {
+      this.$axios.get('/api/RepairRecord/' + this.repairRecordId).then(res => {
         this.tableData = res
       })
     },
-    handleSelectionChange(val) {
-      this.multipleSelection = val
-    },
-    sureright() { // 弹框中点确认
-      this.changeActiveVisible = false // 关闭弹框
+    sureright() { // 验收确认
       this.$refs.checkData.validate(valid => {
         if (valid) {
-          console.log('hhhhh')
-          this.$axios.post('/api/', this.checkData).then(response => {
+          this.$axios.post('/api/RepairRecord/' + this.repairRecordId + '/Check', this.checkData).then(response => {
             // 跳转回个人工作页
             this.$router.push('/Workorder/Acceptorlist')
           })
@@ -163,7 +176,7 @@ export default {
         display: inline-block;
         font-size: 16px;
         text-align: right;
-        width: 120px;
+        width: 150px;
         padding: 10px;
       }
       b {
@@ -175,7 +188,7 @@ export default {
 }
 .content {
   margin-top: 30px;
-  div {
+  .form_total {
     text-align: center;
   }
 }
