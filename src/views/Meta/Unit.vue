@@ -30,6 +30,9 @@
                 <el-form-item label="上级部门">
                   <treeselect v-model="UnitForm.parentId" :normalizer="normalizer" :options="UnitTreeData" :load-options="loadOptions" placeholder="请选择上级部门" no-results-text="未找到相关数据" />
                 </el-form-item>
+                <el-form-item label="所在位置">
+                  <treeselect v-model="UnitForm.positionId" :normalizer="normalizer" :options="PositionData" :load-options="loadOptions" placeholder="请选择所在位置" no-results-text="未找到相关数据" />
+                </el-form-item>
               </el-form>
               <span slot="footer" class="dialog-footer">
                 <el-button type="primary" @click="UnitFormVisible=false">关闭</el-button>
@@ -73,10 +76,12 @@ export default {
           children: node.children
         }
       },
+      PositionData: [],
       UnitData: [], // 数据
       UnitTreeData: [],
       UnitFormSearce: {
         text: '',
+        positionId: undefined,
         pageSize: 20,
         pageNumber: 1
       },
@@ -86,6 +91,7 @@ export default {
       UnitForm: {
         id: undefined,
         parentId: undefined,
+        positionId: undefined,
         name: ''
       },
       UnitFormRules: {
@@ -147,6 +153,9 @@ export default {
       })
       this.$axios.get('/api/Tree/Unit').then(res => {
         this.UnitTreeData = res
+      })
+      this.$axios.get('/api/Tree/Position').then(res => {
+        this.PositionData = res
       })
     },
     // 分页
