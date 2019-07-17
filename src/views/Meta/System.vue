@@ -7,6 +7,9 @@
           <div class="header">
             <div class="search">
               <el-input v-model="systemFormSearch.text" placeholder="全局查询" size="small" />
+              <el-select v-model="systemFormSearch.parentId" clearable size="small" filterable placeholder="上级系统">
+                <el-option v-for="item in parentSystemData" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
               <el-button type="primary" size="small" @click="getData()">查询</el-button>
               <el-button type="success" size="small" @click="adddata()">添加</el-button>
               <el-button type="warning" size="small" @click="updateSystem()">修改</el-button>
@@ -67,6 +70,7 @@ export default {
       parentSystemData: [],
       systemFormSearch: {
         text: '',
+        parentId: undefined,
         pageSize: 20,
         pageNumber: 1
       },

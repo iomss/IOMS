@@ -7,6 +7,9 @@
           <div class="header">
             <div class="search">
               <el-input v-model="FaultFormSearch.text" placeholder="全局查询" size="small" />
+              <el-select v-model="FaultFormSearch.equipmentId" clearable placeholder="选择相关设备">
+                <el-option v-for="item in Equipment" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
               <el-button type="primary" size="small" @click="getData()">查询</el-button>
               <el-button type="success" size="small" @click="adddata()">添加</el-button>
               <el-button type="warning" size="small" @click="updateFault()">修改</el-button>
