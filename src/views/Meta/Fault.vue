@@ -18,6 +18,7 @@
               <el-table-column type="selection" width="40" />
               <el-table-column prop="id" label="序号" />
               <el-table-column prop="name" label="故障名称" />
+              <el-table-column prop="equipmentName" label="相关设备名称" />
             </el-table>
             <pagination v-show="FaultTotalCount>0" :total="FaultTotalCount" :page.sync="FaultFormSearch.pageNumber" :limit.sync="FaultFormSearch.pageSize" @pagination="getFaultPage" />
 
@@ -25,6 +26,11 @@
               <el-form ref="FaultForm" :model="FaultForm" :rules="FaultFormRules" label-width="120px">
                 <el-form-item label="故障" prop="name">
                   <el-input v-model="FaultForm.name" placeholder="故障" size="small" />
+                </el-form-item>
+                <el-form-item label="相关设备" prop="equipmentId">
+                  <el-select v-model="FaultForm.equipmentId" placeholder="选择相关设备">
+                    <el-option v-for="item in Equipment" :key="item.id" :label="item.name" :value="item.id" />
+                  </el-select>
                 </el-form-item>
               </el-form>
               <span slot="footer" class="dialog-footer">
@@ -57,7 +63,9 @@ export default {
   data() {
     return {
       FaultData: [], // 数据
+      Equipment: [],
       FaultFormSearch: {
+        equipmentId: undefined,
         text: '',
         pageSize: 20,
         pageNumber: 1
@@ -67,6 +75,7 @@ export default {
       FaultFormVisible: false,
       FaultForm: {
         id: undefined,
+        equipmentId: undefined,
         name: ''
       },
       FaultFormRules: {
@@ -74,6 +83,11 @@ export default {
           required: true,
           message: '故障名称不可为空',
           trigger: 'blur'
+        },
+        equipmentId: {
+          required: true,
+          message: '相关设备不可为空',
+          trigger: 'change'
         }
       },
       FaultDeleteModelVisible: false,
@@ -91,6 +105,9 @@ export default {
       this.$axios.get('/api/Meta/Fault', { params: this.FaultFormSearch }).then(res => {
         this.FaultData = res.data
         this.FaultTotalCount = res.totalCount
+      })
+      this.$axios.get('/api/Meta/Equipment', { params: { pageNumber: 1, pageSize: 999999 }}).then(res => {
+        this.Equipment = res.data
       })
     },
     // 分页
@@ -121,11 +138,13 @@ export default {
           this.FaultFormVisible = true
           this.FaultForm.id = this.multipleSelectionFault[0].id
           this.FaultForm.name = this.multipleSelectionFault[0].name
+          this.FaultForm.equipmentId = this.multipleSelectionFault[0].equipmentId
         }
       } else {
         this.FaultFormVisible = true
         this.FaultForm.id = row.id
         this.FaultForm.name = row.name
+        this.FaultForm.equipmentId = row.equipmentId
       }
     },
     // 表单提交
