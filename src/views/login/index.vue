@@ -147,7 +147,6 @@ export default {
     register() {
       this.$refs.registerForm.validate(valid => {
         if (valid) {
-          console.log(valid)
           this.$axios.post('/api/Account', this.registerForm).then(res => {
             if (res.success) {
               this.$message.success('用户注册成功，返回登录')

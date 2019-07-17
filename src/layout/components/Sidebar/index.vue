@@ -3,12 +3,12 @@
     <logo v-if="showLogo" :collapse="isCollapse" />
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu :default-active="getActiveMenu" class="el-menu-vertical-demo menu" router :collapse="isCollapse" background-color="#304156" text-color="#fff" active-text-color="#409eff">
-        <el-submenu v-for="(item,index) in getRouter" :key="index" :index="item.meta.fullPath" :class="isCollapse? 'menu_shrink':''">
+        <el-submenu v-for="(item,index) in routers" v-show="!item.meta.hidden && isShowParentMenu(item.children)" :key="index" :index="item.meta.fullPath" :class="isCollapse? 'menu_shrink':''">
           <template slot="title">
             <i :class="item.meta.icon" />
             <span slot="title">{{ item.meta.title }}</span>
           </template>
-          <el-menu-item v-for="(items,indexs) in item.children" :key="indexs" :index="items.meta.fullPath">
+          <el-menu-item v-for="(items,indexs) in item.children" v-show="!items.meta.hidden && roles.includes(items.meta.roles)===true" :key="indexs" :index="items.meta.fullPath">
             <i :class="items.meta.icon" />
             <span slot="title">{{ items.meta.title }}</span>
           </el-menu-item>
@@ -49,20 +49,14 @@ export default {
     isCollapse() {
       return !this.sidebar.opened
     },
-    getRouter() {
-      const showRouter = []
-      this.routers.forEach(item => {
-        // let childrenRouter = []
-        // item.meta.hidden ? '' : item.children ? childrenRouter = item.children.filter(x => !x.meta.hidden && this.roles.includes(x.meta.roles)) : ''
-        // console.log(childrenRouter)
-        // item.children = childrenRouter
-        item.meta.hidden ? '' : item.children ? item.children = item.children.filter(x => !x.meta.hidden && this.roles.includes(x.meta.roles)) : ''
-        item.meta.hidden ? '' : showRouter.push(item)
-      })
-      return showRouter.filter(item => item.children.length !== 0)
-    },
     getActiveMenu() {
       return this.$route.meta.fullPath
+    }
+  },
+  methods: {
+    isShowParentMenu(routerChildren) {
+      const isShowMenu = routerChildren.filter(x => !x.meta.hidden && this.roles.includes(x.meta.roles))
+      return isShowMenu.length > 0
     }
   }
 }

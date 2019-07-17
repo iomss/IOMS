@@ -10,7 +10,7 @@ import Layout from '@/layout'
  * redirect: noRedirect           if set noRedirect will no redirect in the breadcrumb
  * name:'router-name'             the name is used by <keep-alive> (must set!!!)
  * meta : {
-    roles: ['admin','editor']     所需权限   control the page roles (you can set roles)
+    roles: ['admin']     所需权限   control the page roles (you can set roles)
     title: 'title'                the name show in sidebar and breadcrumb (recommend set)
     icon: 'icon-name'             the icon show in the sidebar
     noCache: true                 if set true, the page will no be cached(default is false)
@@ -30,12 +30,18 @@ export const constantRoutes = [
     name: 'redirect',
     meta: {
       title: 'redirect',
-      hidden: true
+      hidden: true,
+      fullPath: '/redirect'
     },
     component: Layout,
     children: [
       {
         path: '/redirect/:path*',
+        meta: {
+          title: 'redirect',
+          hidden: true,
+          fullPath: '/redirect'
+        },
         component: () => import('@/views/redirect/index')
       }
     ]
@@ -45,7 +51,8 @@ export const constantRoutes = [
     name: 'login',
     meta: {
       title: '登录',
-      hidden: true
+      hidden: true,
+      fullPath: '/login'
     },
     component: () => import('@/views/login/index'),
     hidden: true
@@ -55,7 +62,8 @@ export const constantRoutes = [
     name: '404',
     meta: {
       title: '404',
-      hidden: true
+      hidden: true,
+      fullPath: '/404'
     },
     component: () => import('@/views/error-page/404'),
     hidden: true
@@ -65,7 +73,8 @@ export const constantRoutes = [
     name: '401',
     meta: {
       title: '401',
-      hidden: true
+      hidden: true,
+      fullPath: '/401'
     },
     component: () => import('@/views/error-page/401'),
     hidden: true
@@ -612,7 +621,8 @@ export const asyncRoutes = [
     name: '*',
     meta: {
       title: '*',
-      hidden: true
+      hidden: true,
+      fullPath: '/404'
     },
     redirect: '/404',
     hidden: true

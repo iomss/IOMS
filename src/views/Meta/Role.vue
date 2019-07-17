@@ -115,7 +115,6 @@ export default {
       })
       this.$axios.get('/api/Meta/Claims').then(res => {
         this.claimData = res
-        console.log(this.claimData)
       })
     },
     // 分页
