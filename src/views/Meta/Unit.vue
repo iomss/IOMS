@@ -7,6 +7,9 @@
           <div class="header">
             <div class="search">
               <el-input v-model="UnitFormSearce.text" placeholder="全局查询" size="small" />
+              <div style="width:300px;display:inline-block;margin-right:20px;">
+                <treeselect v-model="UnitFormSearce.parentId" :normalizer="normalizer" :options="UnitTreeData" :load-options="loadOptions" placeholder="上级部门" no-results-text="未找到相关数据" />
+              </div>
               <el-button type="primary" size="small" @click="getData()">查询</el-button>
               <el-button type="success" size="small" @click="addData()">添加</el-button>
               <el-button type="warning" size="small" @click="updateUnit()">修改</el-button>
@@ -18,7 +21,16 @@
               <el-table-column type="selection" width="40" />
               <el-table-column prop="id" label="序号" />
               <el-table-column prop="name" label="部门" />
-              <el-table-column prop="parentName" label="上级部门" />
+              <el-table-column prop="parent" label="上级部门">
+                <template slot-scope="scope">
+                  {{ scope.row.parent?scope.row.parent.name:'' }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="position" label="所在位置">
+                <template slot-scope="scope">
+                  <span v-for="item in scope.row.positions" :key="item.id" style="margin-right:15px;">{{ item.name }}</span>
+                </template>
+              </el-table-column>
             </el-table>
             <pagination v-show="UnitTotalCount>0" :total="UnitTotalCount" :page.sync="UnitFormSearce.pageNumber" :limit.sync="UnitFormSearce.pageSize" @pagination="getUnitPage" />
 
@@ -31,7 +43,7 @@
                   <treeselect v-model="UnitForm.parentId" :normalizer="normalizer" :options="UnitTreeData" :load-options="loadOptions" placeholder="请选择上级部门" no-results-text="未找到相关数据" />
                 </el-form-item>
                 <el-form-item label="所在位置">
-                  <treeselect v-model="UnitForm.positionId" :normalizer="normalizer" :options="PositionData" :load-options="loadOptions" placeholder="请选择所在位置" no-results-text="未找到相关数据" />
+                  <treeselect v-model="UnitForm.positionIds" :normalizer="normalizer" :multiple="true" :flat="true" :options="PositionData" :load-options="loadOptions" placeholder="请选择所在位置" no-results-text="未找到相关数据" />
                 </el-form-item>
               </el-form>
               <span slot="footer" class="dialog-footer">
@@ -81,7 +93,7 @@ export default {
       UnitTreeData: [],
       UnitFormSearce: {
         text: '',
-        positionId: undefined,
+        positionIds: undefined,
         pageSize: 20,
         pageNumber: 1
       },
@@ -91,7 +103,7 @@ export default {
       UnitForm: {
         id: undefined,
         parentId: undefined,
-        positionId: undefined,
+        positionIds: undefined,
         name: ''
       },
       UnitFormRules: {
@@ -176,7 +188,9 @@ export default {
       this.UnitFormVisible = true// 显示弹框
       this.UnitFormTitle = '添加部门类型'
       this.UnitForm.id = undefined
+      this.UnitForm.name = ''
       this.UnitForm.parentId = undefined
+      this.UnitForm.positionIds = undefined
     },
     updateUnit(row) {
       if (row === undefined) {
@@ -187,13 +201,23 @@ export default {
           this.UnitFormVisible = true
           this.UnitForm.id = this.multipleSelectionUnit[0].id
           this.UnitForm.name = this.multipleSelectionUnit[0].name
-          this.UnitForm.parentId = this.multipleSelectionUnit[0].parentId
+          this.UnitForm.parentId = this.multipleSelectionUnit[0].parent.id
+          const position = []
+          this.multipleSelectionUnit[0].positions.forEach(item => {
+            position.push(item.id)
+          })
+          this.UnitForm.positionIds = position
         }
       } else {
         this.UnitFormVisible = true
         this.UnitForm.id = row.id
         this.UnitForm.name = row.name
-        this.UnitForm.parentId = row.parentId
+        this.UnitForm.parentId = row.parent.id
+        const position = []
+        row.positions.forEach(item => {
+          position.push(item.id)
+        })
+        this.UnitForm.positionIds = position
       }
     },
     // 表单提交

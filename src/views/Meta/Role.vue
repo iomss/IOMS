@@ -131,6 +131,7 @@ export default {
       this.RoleFormVisible = true// 显示弹框
       this.RoleFormTitle = '添加角色'
       this.RoleForm.id = undefined
+      this.RoleForm.name = ''
       this.RoleForm.claims = []
     },
     // 表单关闭重置

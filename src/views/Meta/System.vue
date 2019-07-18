@@ -126,6 +126,8 @@ export default {
       this.systemFormVisible = true// 显示弹框
       this.systemFormTitle = '添加所属系统'
       this.systemForm.id = undefined
+      this.systemForm.name = ''
+      this.systemForm.parentId = undefined
     },
     // 型号表单关闭重置
     systemFormClose() {
