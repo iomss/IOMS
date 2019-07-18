@@ -11,9 +11,6 @@
               <el-button type="success" size="small" @click="adddata()">添加</el-button>
               <el-button type="warning" size="small" @click="updateRole()">修改</el-button>
               <el-button type="danger" size="small" @click="deleteRole()">删除</el-button>
-              <el-select v-model="claim" multiple size="small" placeholder="选择权限">
-                <el-option v-for="item in claimData" :key="item.value" :label="item.description" :value="item.value" />
-              </el-select>
             </div>
           </div>
           <div class="content">
@@ -71,7 +68,6 @@ export default {
     return {
       RoleData: [], // 数据
       claimData: [], // 权限
-      claim: [],
       RoleFormSearch: {
         text: '',
         pageSize: 20,
