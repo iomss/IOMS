@@ -7,8 +7,8 @@
           <div class="header">
             <h4>我的工作</h4>
             <div class="tools">
-              <el-button type="primary" size="small" @click="selectstate()">新建报修单</el-button>
-              <el-button type="primary" size="small" @click="changework()">转单</el-button>
+              <el-button v-if="roles.indexOf('CreateRepairOrder')!==-1" type="primary" size="small" @click="selectstate()">新建报修单</el-button>
+              <el-button v-if="roles.indexOf('BeingDispatched')!==-1" type="primary" size="small" @click="changework()">转单</el-button>
               <el-button v-if="roles.indexOf('CheckRepairRecord')!==-1" type="primary" size="small" @click="checkwork()">验收</el-button>
               <el-button v-if="roles.indexOf('ReviewRepairRecord')!==-1" type="primary" size="small" @click="reviewwork()">审核</el-button>
               <el-button v-if="roles.indexOf('DeleteRepairOrder')!==-1" type="danger" size="small" @click="deletedata()">删除</el-button>
@@ -33,7 +33,7 @@
                 <template slot-scope="scope">
                   <!-- 删除权限 -->
                   <div v-if="roles.indexOf('DeleteRepairOrder')!==-1">
-                    <el-button v-show="scope.row.selfCreated&&(scope.row.orderState==='Record'||scope.row.orderState==='Dispatching'||scope.row.orderState==='Dispatched')" size="mini" type="primary" @click="deletedata(scope.row)">删除</el-button>
+                    <el-button v-show="scope.row.selfCreated&&(scope.row.orderState==='Record'||scope.row.orderState==='Dispatching'||scope.row.orderState==='Dispatched')" size="mini" type="danger" @click="deletedata(scope.row)">删除</el-button>
                   </div>
                   <!-- 验收权限 -->
                   <div v-if="roles.indexOf('CheckRepairRecord')!==-1">
@@ -157,7 +157,11 @@ export default {
         if (this.multipleSelection === '') {
           this.$message.error('请选择一条数据')
         } else {
-          this.$router.push('/Workorder/MaintainerChangeOrder/' + this.multipleSelection[0].id)
+          if (this.multipleSelection[0].orderState === 'Dispatching' || this.multipleSelection[0].orderState === 'Dispatched') {
+            this.$router.push('/Workorder/MaintainerChangeOrder/' + this.multipleSelection[0].id)
+          } else {
+            this.$message.error('当前数据不可转单')
+          }
         }
       }
     },
@@ -172,7 +176,11 @@ export default {
         if (this.multipleSelection === '') {
           this.$message.error('请选择一条数据')
         } else {
-          this.$router.push('/Workorder/AcceptorOperate/' + this.multipleSelection[0].id)
+          if (this.multipleSelection[0].orderState === 'Check') {
+            this.$router.push('/Workorder/AcceptorOperate/' + this.multipleSelection[0].id)
+          } else {
+            this.$message.error('当前数据不可验收')
+          }
         }
       }
     },
@@ -183,7 +191,11 @@ export default {
         if (this.multipleSelection === '') {
           this.$message.error('请选择一条数据')
         } else {
-          this.$router.push('/Workorder/AuditorOperate/' + this.multipleSelection[0].id)
+          if (this.multipleSelection[0].orderState === 'Review') {
+            this.$router.push('/Workorder/AuditorOperate/' + this.multipleSelection[0].id)
+          } else {
+            this.$message.error('当前数据不可审核')
+          }
         }
       }
     },
