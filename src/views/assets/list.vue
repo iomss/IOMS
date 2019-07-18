@@ -85,30 +85,30 @@
           </div>
           <!--表格-->
           <div class="content">
-            <el-table :data="tableData" stripe border style="width: 100%" @selection-change="handleSelectionChange">
+            <el-table :data="tableData" stripe border style="width: 100%" @sort-change="sortasstes" @selection-change="handleSelectionChange">
               <el-table-column type="selection" width="40" />
-              <el-table-column prop="id" label="序号" width="60" />
-              <el-table-column prop="state" label="状态" width="80">
+              <el-table-column prop="id" label="序号" sortable="custom" width="80" />
+              <el-table-column prop="state" label="状态" sortable="custom" width="100">
                 <template slot-scope="scope">
                   {{ scope.row.state==='Normal'?"正常":scope.row.state==='Using'?"使用中":"故障" }}
                 </template>
               </el-table-column>
-              <el-table-column prop="code" label="资产编码" width="90" />
-              <el-table-column prop="equipment.equimentType.name" label="资产类别" width="90" />
-              <el-table-column prop="alias" label="资产名称" width="90" />
-              <el-table-column prop="brand.name" label="品牌" width="70" />
-              <el-table-column prop="model.name" label="型号" width="100" />
-              <el-table-column prop="parentSystem" label="所属系统" width="100" />
-              <el-table-column prop="system.name" label="所属子系统" width="120" />
-              <el-table-column prop="position.name" label="安装位置" width="90" />
-              <el-table-column prop="enableTime" label="投用时间" width="90" />
-              <el-table-column prop="handoverDate" label="交工时间" width="90" />
-              <el-table-column prop="purchaseYear" label="购置年份" width="90" />
-              <el-table-column prop="original" label="资产原值" width="90" />
-              <el-table-column prop="source.name" label="增加方式" width="90" />
-              <el-table-column prop="si.name" label="集成商" width="130" />
-              <el-table-column prop="recordUser" label="录入人" width="80" />
-              <el-table-column prop="lastUpdateTime" label="更新时间" width="90" />
+              <el-table-column prop="code" label="资产编码" sortable="custom" width="110" />
+              <el-table-column prop="equipment.equimentType.name" label="资产类别" sortable="custom" width="110" />
+              <el-table-column prop="alias" label="资产名称" sortable="custom" width="110" />
+              <el-table-column prop="brand.name" label="品牌" sortable="custom" width="90" />
+              <el-table-column prop="model.name" label="型号" sortable="custom" width="120" />
+              <el-table-column prop="parentSystem" label="所属系统" sortable="custom" width="120" />
+              <el-table-column prop="system.name" label="所属子系统" sortable="custom" width="140" />
+              <el-table-column prop="position.name" label="安装位置" sortable="custom" width="110" />
+              <el-table-column prop="enableTime" label="投用时间" sortable="custom" width="110" />
+              <el-table-column prop="handoverDate" label="交工时间" sortable="custom" width="110" />
+              <el-table-column prop="purchaseYear" label="购置年份" sortable="custom" width="110" />
+              <el-table-column prop="original" label="资产原值" sortable="custom" width="110" />
+              <el-table-column prop="source.name" label="增加方式" sortable="custom" width="110" />
+              <el-table-column prop="si.name" label="集成商" sortable="custom" width="150" />
+              <el-table-column prop="recordUser" label="录入人" sortable="custom" width="100" />
+              <el-table-column prop="lastUpdateTime" label="更新时间" sortable="custom" width="110" />
               <el-table-column label="操作" width="100">
                 <template slot-scope="scope">
                   <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="primary" @click="UpdateStage(scope.row)">编辑</el-button>
@@ -163,6 +163,8 @@ export default {
       multipleSelection: '', // 表单选中行
       removeData: null, // 当前表单所选删除行
       tableDataSearch: {
+        orderBy: '', // 排序字段
+        desc: undefined, // 倒叙  是否
         text: '', // 搜索文本
         pageSize: 20, // 展示条数
         pageNumber: 1// 页码
@@ -175,6 +177,11 @@ export default {
     this.getData()
   },
   methods: {
+    sortasstes(column) {
+      this.tableDataSearch.orderBy = column.prop
+      this.tableDataSearch.desc = column.order === 'descending'
+      this.getData()
+    },
     getData() { // 获取数据
       console.log(this.tableDataSearch.text)
       // 搜索框内容不为空 页码跳转至第一页
