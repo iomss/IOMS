@@ -111,6 +111,7 @@ export default {
       this.SIFormVisible = true// 显示弹框
       this.SIFormTitle = '添加设备集成商'
       this.SIForm.id = undefined
+      this.SIForm.name = ''
     },
     updateSI(row) {
       if (row === undefined) {

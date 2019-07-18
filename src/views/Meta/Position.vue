@@ -187,6 +187,7 @@ export default {
       this.positionFormVisible = true// 显示弹框
       this.positionFormTitle = '添加位置类型'
       this.positionForm.id = undefined
+      this.positionForm.name = ''
       this.positionForm.parentId = undefined
       this.positionForm.positionTypeId = undefined
     },

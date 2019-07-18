@@ -127,6 +127,7 @@ export default {
       this.equipmentFormVisible = true// 显示弹框
       this.equipmentFormTitle = '添加设备'
       this.equipmentForm.id = undefined
+      this.equipmentForm.name = ''
       this.equipmentForm.equimentTypeId = undefined
     },
 

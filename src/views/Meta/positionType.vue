@@ -108,6 +108,7 @@ export default {
       this.positionTypeFormVisible = true// 显示弹框
       this.positionTypeFormTitle = '添加位置类型'
       this.positionTypeForm.id = undefined
+      this.positionTypeForm.name = ''
     },
     updatePositionType(row) {
       if (row === undefined) {

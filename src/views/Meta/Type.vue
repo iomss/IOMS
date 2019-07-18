@@ -112,6 +112,7 @@ export default {
       this.TypeFormVisible = true// 显示弹框
       this.TypeFormTitle = '添加位置类型'
       this.TypeForm.id = undefined
+      this.TypeForm.name = ''
     },
     updateType(row) {
       if (row === undefined) {

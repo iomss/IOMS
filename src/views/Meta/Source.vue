@@ -107,6 +107,7 @@ export default {
       this.sourceFormVisible = true// 显示弹框
       this.sourceFormTitle = '添加来源'
       this.sourceForm.id = undefined
+      this.sourceForm.name = ''
     },
     // 表单关闭重置
     sourceFormClose() {

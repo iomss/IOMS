@@ -107,6 +107,7 @@ export default {
       this.RepairLevelFormVisible = true// 显示弹框
       this.RepairLevelFormTitle = '添加维修等级'
       this.RepairLevelForm.id = undefined
+      this.RepairLevelForm.name = ''
     },
     // 表单关闭重置
     RepairLevelFormClose() {

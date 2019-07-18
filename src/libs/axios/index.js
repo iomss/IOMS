@@ -19,7 +19,7 @@ function errorLog(error) {
   Message({
     message: error.message,
     type: 'error',
-    duration: 10 * 1000
+    duration: 5 * 1000
   })
 }
 
@@ -45,13 +45,13 @@ const token = {
 // 创建一个 axios 实例
 axios.create({
   baseURL: process.env.VUE_APP_API,
-  timeout: 5000 // 请求超时时间
+  timeout: 10000 // 请求超时时间
 })
 
 const ajaxUrl = process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging' ? process.env.VUE_APP_API : undefined
 axios.defaults.baseURL = ajaxUrl
 // axios 配置
-axios.defaults.timeout = 5000
+axios.defaults.timeout = 10000
 // 请求拦截器
 axios.interceptors.request.use(
   config => {
