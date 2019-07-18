@@ -153,7 +153,7 @@ export default {
         if (valid) {
           this.$axios.post('/api/RepairRecord/' + this.repairRecordId + '/Review', this.checkData).then(response => {
             // 跳转回个人工作页
-            this.$router.push('/Workorder/Auditorlist')
+            this.$router.push('/Workorder/Watchmanlist')
           })
         }
       })

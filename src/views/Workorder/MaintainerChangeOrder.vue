@@ -75,7 +75,7 @@ export default {
         this.updateData.id = res.id
       })
       // 获取用户
-      this.$axios.get('/api/User').then(res => {
+      this.$axios.get('/api/User?dispatch=true').then(res => {
         this.userData = res.data
       })
     },
@@ -83,7 +83,7 @@ export default {
       this.$axios.post('/api/RepairOrder/' + this.formData.id + '/Dispatch', this.updateData).then(res => {
         this.$message.success('工单分配成功')
         // 跳转个人工作页
-        this.$router.push('/Workorder/Headmanlist')
+        this.$router.push('/Workorder/Watchmanlist')
       })
     },
     processrecord() { // 点击过程记录
@@ -91,7 +91,7 @@ export default {
     },
     closework() { // 点击关闭
       // 跳转个人工作页
-      this.$router.push('/Workorder/Headmanlist')
+      this.$router.push('/Workorder/Watchmanlist')
     }
   }
 }

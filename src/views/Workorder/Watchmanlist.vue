@@ -1,14 +1,24 @@
-<!-- 值班员工作页面 -->
+<!-- 工作页面 -->
 <template>
   <div>
     <el-row>
       <el-col>
         <div class="panel">
           <div class="header">
-            <h4>值班员-我的工作</h4>
-            <div class="select">
+            <h4>我的工作</h4>
+            <div class="tools">
               <el-button type="primary" size="small" @click="selectstate()">新建报修单</el-button>
-              <el-button type="danger" size="small" @click="deletedata()">删除</el-button>
+              <el-button type="primary" size="small" @click="changework()">转单</el-button>
+              <el-button v-if="roles.indexOf('CheckRepairRecord')!==-1" type="primary" size="small" @click="checkwork()">验收</el-button>
+              <el-button v-if="roles.indexOf('ReviewRepairRecord')!==-1" type="primary" size="small" @click="reviewwork()">审核</el-button>
+              <el-button v-if="roles.indexOf('DeleteRepairOrder')!==-1" type="danger" size="small" @click="deletedata()">删除</el-button>
+            </div>
+            <div class="select">
+              <el-select v-model="tableDataSearch.state" clearable placeholder="工单状态" size="small">
+                <el-option key="0" label="全部" value="0" />
+                <el-option key="1" label="已指派" value="1" />
+                <el-option key="2" label="未指派" value="2" />
+              </el-select>
             </div>
             <div class="toolsrt">
               <el-input v-model="tableDataSearch.text" placeholder="请输入查询内容" size="small" />
@@ -19,9 +29,32 @@
             <el-table :data="tableData" stripe border style="width: 100%" @selection-change="handleSelectionChange">
               <el-table-column type="selection" width="40" />
               <el-table-column prop="id" label="序号" width="60" />
-              <el-table-column label="操作" width="80">
+              <el-table-column label="操作" width="200">
                 <template slot-scope="scope">
-                  <el-button v-show="scope.row.orderState==='Record'||scope.row.orderState==='Dispatching'||scope.row.orderState==='Dispatched'" size="mini" type="primary" @click="deletedata(scope.row)">删除</el-button>
+                  <!-- 删除权限 -->
+                  <div v-if="roles.indexOf('DeleteRepairOrder')!==-1">
+                    <el-button v-show="scope.row.selfCreated&&(scope.row.orderState==='Record'||scope.row.orderState==='Dispatching'||scope.row.orderState==='Dispatched')" size="mini" type="primary" @click="deletedata(scope.row)">删除</el-button>
+                  </div>
+                  <!-- 验收权限 -->
+                  <div v-if="roles.indexOf('CheckRepairRecord')!==-1">
+                    <el-button v-show="scope.row.orderState==='Check'" size="mini" type="primary" @click="checkwork(scope.row)">验收</el-button>
+                  </div>
+                  <!-- 审核权限 -->
+                  <div v-if="roles.indexOf('ReviewRepairRecord')!==-1">
+                    <el-button v-show="scope.row.orderState==='Review'" size="mini" type="primary" @click="reviewwork(scope.row)">审核</el-button>
+                  </div>
+                  <!-- 转单权限 -->
+                  <div v-if="roles.indexOf('BeingDispatched')!==-1">
+                    <el-button v-show="scope.row.orderState==='Dispatching'||scope.row.orderState==='Dispatched'" size="mini" type="primary" @click="changework(scope.row)">转单</el-button>
+                  </div>
+                  <!-- 录入维修记录权限 -->
+                  <div v-if="roles.indexOf('CreateRepairRecord')!==-1">
+                    <el-button v-show="scope.row.orderState==='Repair'" size="mini" type="success" @click="updatework(scope.row)">录入维修记录</el-button>
+                  </div>
+                  <!-- 接单权限 -->
+                  <div v-if="roles.indexOf('GrabOrder')!==-1">
+                    <el-button v-show="scope.row.orderState==='Dispatched'" size="mini" type="primary" @click="Receiptwork(scope.row)">接单</el-button>
+                  </div>
                 </template>
               </el-table-column>
               <el-table-column prop="code" label="维修单编号" width="120" />
@@ -43,13 +76,6 @@
               </el-table-column>
               <el-table-column prop="repairLevel.name" label="报修等级" width="130" />
               <el-table-column prop="lastUpdateTime" label="更新时间" width="130" />
-              <!-- 工单可派单可取消（未接单） -->
-              <!-- <el-table-column label="操作" width="100">
-                <template slot-scope="scope">
-                  <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="success" @click="showInfo(scope.row)">详情</el-button>
-                  <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="primary" @click="UpdateStage(scope.row)">编辑</el-button>
-                </template>
-              </el-table-column> -->
             </el-table>
             <!-- 删除弹框 -->
             <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeQuestionVisible" width="220px">
@@ -75,6 +101,7 @@ export default {
   },
   data() {
     return {
+      roles: this.$cookie.get('roles').split(','),
       tableData: [],
       multipleSelection: '', // 表单选中行
       tableDataSearch: {
@@ -93,7 +120,6 @@ export default {
   },
   methods: {
     getData() { // 获取数据
-      console.log(this.tableDataSearch.text)
       // 搜索框内容不为空 页码跳转至第一页
       if (this.tableDataSearch.text !== '') {
         this.tableDataSearch.pageNumber = 1
@@ -102,6 +128,8 @@ export default {
         this.tableData = res.data
         this.totalCount = res.totalCount
       })
+      console.log('111111')
+      console.log(this.roles)
     },
     getPage(val) { // page事件
       // 展示条数
@@ -116,6 +144,48 @@ export default {
     },
     handleSelectionChange(val) { // 表格选中行
       this.multipleSelection = val
+    },
+    Receiptwork(data) { // 接单
+      console.log(data)
+      this.$router.push('/Workorder/MaintainerReceipt/' + data.id)
+    },
+    changework(data) { // 转单
+      console.log(data)
+      if (data) {
+        this.$router.push('/Workorder/MaintainerChangeOrder/' + data.id)
+      } else {
+        if (this.multipleSelection === '') {
+          this.$message.error('请选择一条数据')
+        } else {
+          this.$router.push('/Workorder/MaintainerChangeOrder/' + this.multipleSelection[0].id)
+        }
+      }
+    },
+    updatework(data) { // 录入维修记录
+      console.log(data)
+      this.$router.push('/Workorder/MaintainerAddRecord/' + data.id)
+    },
+    checkwork(data) { // 验收
+      if (data) {
+        this.$router.push('/Workorder/AcceptorOperate/' + data.id)
+      } else {
+        if (this.multipleSelection === '') {
+          this.$message.error('请选择一条数据')
+        } else {
+          this.$router.push('/Workorder/AcceptorOperate/' + this.multipleSelection[0].id)
+        }
+      }
+    },
+    reviewwork(data) { // 审核
+      if (data) {
+        this.$router.push('/Workorder/AuditorOperate/' + data.id)
+      } else {
+        if (this.multipleSelection === '') {
+          this.$message.error('请选择一条数据')
+        } else {
+          this.$router.push('/Workorder/AuditorOperate/' + this.multipleSelection[0].id)
+        }
+      }
     },
     deletedata(data) { // 删除报修单
       if (data) {
@@ -143,8 +213,11 @@ export default {
 <style lang='scss' scoped>
 .header {
   width: 100%;
+  .tools {
+    width: 100%;
+  }
   .select {
-    margin: 10px 0px;
+    margin: 20px 0px;
     width: 49%;
     display: inline-block;
     .el-form {
@@ -161,10 +234,16 @@ export default {
   }
 }
 .content {
-  margin-top: 30px;
   .el-table th,
   .el-table td {
     padding: 5px;
+  }
+}
+.cell {
+  > div {
+    display: inline-block;
+    overflow: hidden;
+    margin: 2px;
   }
 }
 </style>

@@ -15,7 +15,7 @@
                 <li><span>故障类型:</span><b>{{ formData.equipment.name }}</b></li>
                 <li><span>故障时间:</span><b>{{ formData.failureTime }}</b></li>
                 <li><span>设备描述:</span><b>{{ formData.description }}</b></li>
-                <li><span>录入人:</span><b>{{ formData.repairUser }}</b></li>
+                <li><span>录入人:</span><b>{{ formData.repairUser.name }}</b></li>
                 <li><span>报修级别:</span><b>{{ formData.equipmentFault.name }}</b></li>
                 <li><span>代维状态:</span><b>{{ formData.reporterName }}</b></li>
                 <li><span>报修人:</span><b>{{ formData.reporterName }}</b></li>
@@ -93,9 +93,7 @@
               </el-radio-group>
             </el-form-item> -->
             <el-form-item label="维修人" prop="repairerId">
-              <el-select v-model="formRcordc.repairerId" clearable placeholder="维修人" size="small">
-                <el-option v-for="item in UserData" :key="item.id" :label="item.userName" :value="item.id" />
-              </el-select>
+              {{ dangqianUser.userName }}
             </el-form-item>
             <el-form-item label="备注" prop="comment">
               <el-input v-model="formRcordc.comment" placeholder="备注" size="small" />
@@ -211,7 +209,6 @@ export default {
       faultData: [], // 故障类型数据
       equipmentData: [], // 设备类别数据
       levelData: [], // 维修等级数据
-      UserData: [], // 用户数据
       assetsData: [], // 设备编码数据
       formRcordarules: {// 维修完成验证规则
         equipmentId: [
@@ -279,10 +276,6 @@ export default {
       this.$axios.get('/api/Meta/RepairLevel').then(res => {
         this.levelData = res.data
       })
-      // 获取用户数据
-      this.$axios.get('/api/User').then(res => {
-        this.UserData = res.data
-      })
       // 获取设备编码
       this.$axios.get('/api/Meta/Assets').then(res => {
         this.assetsData = res.data
@@ -317,7 +310,7 @@ export default {
             this.formRcorda.repairOrderId = window.location.href.split('/')[window.location.href.split('/').length - 1]
             this.$axios.post('/api/RepairRecord', this.formRcorda).then(response => {
               // 跳转回个人工作页
-              this.$router.push('/Workorder/Maintainerlist')
+              this.$router.push('/Workorder/Watchmanlist')
             })
           }
         })
@@ -330,7 +323,7 @@ export default {
             this.formRcordc.repairOrderId = window.location.href.split('/')[window.location.href.split('/').length - 1]
             this.$axios.post('/api/RepairRecord', this.formRcordc).then(response => {
               // 跳转回个人工作页
-              this.$router.push('/Workorder/Maintainerlist')
+              this.$router.push('/Workorder/Watchmanlist')
             })
           }
         })
@@ -343,7 +336,7 @@ export default {
             this.formRcordd.repairOrderId = window.location.href.split('/')[window.location.href.split('/').length - 1]
             this.$axios.post('/api/RepairRecord/', this.formRcordd).then(response => {
               // 跳转回个人工作页
-              this.$router.push('/Workorder/Maintainerlist')
+              this.$router.push('/Workorder/Watchmanlist')
             })
           }
         })

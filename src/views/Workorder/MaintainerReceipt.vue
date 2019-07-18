@@ -65,6 +65,7 @@ export default {
       this.$axios.get('/api/RepairOrder/' + this.formData.assetId).then(res => {
         this.formData = res
         this.updateData.id = res.id
+        this.updateData.userId = res.recordUser.id
       })
     },
     reciptwork(val) { // 点击接受按钮
@@ -73,7 +74,7 @@ export default {
       this.$axios.post('/api/RepairOrder/' + this.formData.id + '/Dispatch', this.updateData).then(res => {
         this.$message.success('工单接单成功')
         // 跳转个人工作页
-        this.$router.push('/Workorder/Maintainerlist')
+        this.$router.push('/Workorder/Watchmanlist')
       })
     },
     backworke(val) { // 点击退回按钮
@@ -81,7 +82,7 @@ export default {
       this.$axios.post('/api/RepairOrder/' + this.formData.id + '/Dispatch', this.updateData).then(res => {
         this.$message.success('工单退回成功')
         // 跳转个人工作页
-        this.$router.push('/Workorder/Maintainerlist')
+        this.$router.push('/Workorder/Watchmanlist')
       })
     },
     historywork() { // 点击历史详情

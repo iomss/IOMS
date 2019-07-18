@@ -147,14 +147,14 @@ export default {
         if (valid) {
           this.$axios.post('/api/RepairRecord/' + this.repairRecordId + '/Check', this.checkData).then(response => {
             // 跳转回个人工作页
-            this.$router.push('/Workorder/Acceptorlist')
+            this.$router.push('/Workorder/Watchmanlist')
           })
         }
       })
     },
     reset() { },
     close() { // 点击关闭按钮，跳转回个人工作页
-      this.$router.push('/Workorder/Acceptorlist')
+      this.$router.push('/Workorder/Watchmanlist')
     }
   }
 }

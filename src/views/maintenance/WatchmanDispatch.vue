@@ -155,7 +155,7 @@ export default {
         this.levelData = res.data
       })
       // 获取用户
-      this.$axios.get('/api/User').then(res => {
+      this.$axios.get('/api/User?dispatch=true').then(res => {
         this.userData = res.data
       })
     },
