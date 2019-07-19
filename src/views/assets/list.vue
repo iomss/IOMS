@@ -7,10 +7,10 @@
           <div class="header">
             <h4>资产管理</h4>
             <div class="select">
-              <el-button type="primary" plain size="small" @click="selectstate(0)">资产列表</el-button>
-              <el-button type="primary" plain size="small" @click="selectstate(1)">在用资产</el-button>
-              <el-button type="primary" plain size="small" @click="selectstate(2)">闲置资产</el-button>
-              <el-button type="primary" plain size="small" @click="selectstate(3)">报废资产</el-button>
+              <el-button type="primary" plain size="small" @click="selectstate()">资产列表</el-button>
+              <el-button type="primary" plain size="small" @click="selectstate(0)">在用资产</el-button>
+              <el-button type="primary" plain size="small" @click="selectstate(1)">闲置资产</el-button>
+              <el-button type="primary" plain size="small" @click="selectstate(2)">报废资产</el-button>
             </div>
             <!--导入导出-->
             <div class="tools">
@@ -165,6 +165,7 @@ export default {
       tableDataSearch: {
         orderBy: '', // 排序字段
         desc: undefined, // 倒叙  是否
+        state: null, // 资产状态
         text: '', // 搜索文本
         pageSize: 20, // 展示条数
         pageNumber: 1// 页码
@@ -205,7 +206,9 @@ export default {
       this.$router.push('/assets/Create')
     },
     selectstate(data) { // 按状态筛选资产
+      this.tableDataSearch.state = data === undefined ? null : data
       console.log(data)
+      this.getData()
     },
     handleClick(e) { // 导入导出选择事件
       console.log(e)
