@@ -4,7 +4,7 @@
     <el-row>
       <el-col :span="6">
         <h4>设备位置</h4>
-        <el-tree ref="TreeData" :data="treeData" show-checkbox node-key="id" :props="defaultProps" @check-change="handleCheckChange" />
+        <el-tree ref="TreeData" :data="treeData" :check-strictly="true" show-checkbox node-key="id" :props="defaultProps" @check-change="handleCheckChange" />
       </el-col>
       <el-col :span="18">
         <div class="panel">
@@ -116,6 +116,7 @@ export default {
     showerror(data) { // 列表单行报修方法
       this.$router.push('/maintenance/WatchmanDispatch/' + data.id)
     },
+
     handleCheckChange(data, checked, indeterminate) {
       /* 主要通过checked进行判断 */
       if (checked) {
@@ -123,14 +124,10 @@ export default {
         // this.$refs.TreeData.setCheckedKeys(arr)// 饿了么树变单选
         this.tableDataSearch.positionIds.push(data.id)
         // 请求筛选右侧
-        this.$axios.get('/api/Assets', { params: this.tableDataSearch }).then(res => {
-          this.tableData = res.data
-        })
+        this.getData()
       } else {
         this.tableDataSearch.positionIds.splice(this.tableDataSearch.positionIds.indexOf(data.id), 1)
-        this.$axios.get('/api/Assets', { params: this.tableDataSearch }).then(res => {
-          this.tableData = res.data
-        })
+        this.getData()
       }
     }
   }
