@@ -89,7 +89,7 @@ export default {
       UserFormSearch: {
         text: '',
         passWord: '',
-        pageUserze: 20,
+        pageSize: 20,
         pageNumber: 1
       },
       UserTotalCount: 0, // 总条数
