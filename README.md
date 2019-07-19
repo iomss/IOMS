@@ -112,3 +112,59 @@ node-sass 相关
 ```
     npm install node-sass sass-loader
 ```
+
+## 项目相关文档直达链接
+
+Vue 相关
+
+```
+    github:      https://github.com/vuejs/vue
+    中文文档:     https://cn.vuejs.org/index.html
+    英文文档：    https://vuejs.org/
+```
+
+Vuex 相关
+
+```
+    github:   https://github.com/vuejs/vuex
+    中文文档：  https://vuex.vuejs.org/zh/
+    英文文档：  https://vuex.vuejs.org/
+```
+
+element-ui 相关
+
+```
+    github:   https://github.com/ElemeFE/element
+    中文文档： https://element.eleme.cn/#/zh-CN
+    英文文档： https://element.eleme.cn/#/en-US
+```
+
+vue-treeselect 相关
+
+```
+    github:   https://github.com/riophae/vue-treeselect
+    文档：    https://vue-treeselect.js.org/
+```
+
+axios 相关文档
+
+```
+    github:   https://github.com/axios/axios
+    文档：    https://www.axios.com/
+```
+
+moment 日期时间格式化 相关文档
+
+```
+    github:     https://github.com/moment/moment
+    文档：      https://momentjs.com/
+```
+
+Vue Element Admin 相关文档
+
+```
+    github:     https://github.com/PanJiaChen/vue-element-admin/
+    预览地址：  https://panjiachen.github.io/vue-element-admin/#/dashboard
+    中文文档：  https://panjiachen.github.io/vue-element-admin-site/zh/
+    英文文档：  https://panjiachen.github.io/vue-element-admin-site/
+```
