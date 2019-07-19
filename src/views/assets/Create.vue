@@ -163,6 +163,24 @@ export default {
         ],
         enableTime: [
           { type: 'date', required: true, message: '请选择投用时间', trigger: 'change' }
+        ],
+        sourceId: [
+          { required: true, message: '来源不可为空', trigger: 'change' }
+        ],
+        purchaseYear: [
+          { required: true, message: '购置年份不可为空', trigger: 'change' }
+        ],
+        ratedLife: [
+          { required: true, message: '使用年限不可为空', trigger: 'change' }
+        ],
+        handoverDate: [
+          { required: true, message: '交工不可为空', trigger: 'change' }
+        ],
+        liabilityPeriod: [
+          { required: true, message: '缺陷责任期不可为空', trigger: 'change' }
+        ],
+        original: [
+          { required: true, message: '资产原值不可为空', trigger: 'change' }
         ]
       }
     }
