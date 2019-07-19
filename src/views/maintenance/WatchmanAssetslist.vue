@@ -71,7 +71,7 @@ export default {
         text: '', // 搜索文本
         pageSize: 20, // 展示条数
         pageNumber: 1, // 页码
-        positionIds: '', // 树选中值
+        positionIds: [], // 树选中值
         systemId: ''// 所属系统选中值
       },
       totalCount: 0, // 数据总条数
@@ -114,16 +114,20 @@ export default {
       this.multipleSelection = val
     },
     showerror(data) { // 列表单行报修方法
-      console.log(data)
       this.$router.push('/maintenance/WatchmanDispatch/' + data.id)
     },
     handleCheckChange(data, checked, indeterminate) {
       /* 主要通过checked进行判断 */
       if (checked) {
-        const arr = [data.id]
-        this.$refs.TreeData.setCheckedKeys(arr)// 饿了么树变单选
-        this.tableDataSearch.positionIds = data.id
+        // const arr = [data.id]
+        // this.$refs.TreeData.setCheckedKeys(arr)// 饿了么树变单选
+        this.tableDataSearch.positionIds.push(data.id)
         // 请求筛选右侧
+        this.$axios.get('/api/Assets', { params: this.tableDataSearch }).then(res => {
+          this.tableData = res.data
+        })
+      } else {
+        this.tableDataSearch.positionIds.splice(this.tableDataSearch.positionIds.indexOf(data.id), 1)
         this.$axios.get('/api/Assets', { params: this.tableDataSearch }).then(res => {
           this.tableData = res.data
         })

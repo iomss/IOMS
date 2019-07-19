@@ -94,7 +94,7 @@
                 </template>
               </el-table-column>
               <el-table-column prop="code" label="资产编码" sortable="custom" width="110" />
-              <el-table-column prop="equipment.equimentType.name" label="资产类别" sortable="custom" width="110" />
+              <el-table-column prop="equimentType.name" label="资产类别" sortable="custom" width="110" />
               <el-table-column prop="alias" label="资产名称" sortable="custom" width="110" />
               <el-table-column prop="brand.name" label="品牌" sortable="custom" width="90" />
               <el-table-column prop="model.name" label="型号" sortable="custom" width="120" />

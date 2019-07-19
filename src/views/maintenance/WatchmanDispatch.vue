@@ -9,7 +9,7 @@
             <div class="select">
               <el-form ref="formData" :model="formData" label-width="90px" :rules="formDatarules">
                 <el-form-item label="报修位置" prop="positionId">
-                  {{ formData.equipment }}
+                  {{ formData.positionName }}
                 </el-form-item>
                 <el-form-item label="资产名称" prop="equipment">
                   {{ formData.equipment }}
@@ -94,6 +94,7 @@ export default {
       formData: {
         assetId: '',
         positionId: '',
+        positionName: '',
         equipment: '',
         equipmentId: '',
         failureTime: '',
@@ -167,6 +168,7 @@ export default {
         _this.formData.equipment = res.equipment.name
         _this.formData.equipmentId = res.equipment.id
         _this.formData.positionId = res.position.id
+        _this.formData.positionName = res.position.name
       })
     },
     createWorker() { // 提交派单按钮方法
