@@ -101,14 +101,14 @@
               <el-table-column prop="parentSystem" label="所属系统" sortable="custom" width="120" />
               <el-table-column prop="system.name" label="所属子系统" sortable="custom" width="140" />
               <el-table-column prop="position.name" label="安装位置" sortable="custom" width="110" />
-              <el-table-column prop="enableTime" label="投用时间" sortable="custom" width="110" />
-              <el-table-column prop="handoverDate" label="交工时间" sortable="custom" width="110" />
+              <el-table-column prop="enableTime" label="投用时间" sortable="custom" width="110" :formatter="formatterDate" />
+              <el-table-column prop="handoverDate" label="交工时间" sortable="custom" width="110" :formatter="formatterDate" />
               <el-table-column prop="purchaseYear" label="购置年份" sortable="custom" width="110" />
               <el-table-column prop="original" label="资产原值" sortable="custom" width="110" />
               <el-table-column prop="source.name" label="增加方式" sortable="custom" width="110" />
               <el-table-column prop="si.name" label="集成商" sortable="custom" width="150" />
               <el-table-column prop="recordUser" label="录入人" sortable="custom" width="100" />
-              <el-table-column prop="lastUpdateTime" label="更新时间" sortable="custom" width="110" />
+              <el-table-column prop="lastUpdateTime" label="更新时间" sortable="custom" width="110" :formatter="formatterDate" />
               <el-table-column label="操作" width="100">
                 <template slot-scope="scope">
                   <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="primary" @click="UpdateStage(scope.row)">编辑</el-button>
@@ -177,6 +177,14 @@ export default {
     this.getData()
   },
   methods: {
+    // 日期时间格式化
+    formatterDate(row, column, cellValue) {
+      if (cellValue !== null) {
+        return this.$moment(cellValue).format('YYYY-MM-DD HH:mm')
+      } else {
+        return cellValue
+      }
+    },
     sortasstes(column) {
       this.tableDataSearch.orderBy = column.prop
       this.tableDataSearch.desc = column.order === 'descending'

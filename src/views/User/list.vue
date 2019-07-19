@@ -29,7 +29,7 @@
                 </template>
               </el-table-column>
               <el-table-column prop="contactNumber" label="联系方式" />
-              <el-table-column prop="lastLoginTime" label="最后登录时间" />
+              <el-table-column prop="lastLoginTime" label="最后登录时间" :formatter="formatterDate" />
             </el-table>
             <pagination v-show="UserTotalCount>0" :total="UserTotalCount" :page.sync="UserFormSearch.pageNumber" :limit.sync="UserFormSearch.pageUserze" @pagination="getUserPage" />
 
@@ -88,7 +88,6 @@ export default {
       roleData: [], // 角色数据
       UserFormSearch: {
         text: '',
-        passWord: '',
         pageSize: 20,
         pageNumber: 1
       },
@@ -134,6 +133,14 @@ export default {
     this.getData()
   },
   methods: {
+    // 日期时间格式化
+    formatterDate(row, column, cellValue) {
+      if (cellValue !== null) {
+        return this.$moment(cellValue).format('YYYY-MM-DD HH:mm')
+      } else {
+        return cellValue
+      }
+    },
     // 获取数据
     getData() {
       this.$axios.get('/api/User', { params: this.UserFormSearch }).then(res => {

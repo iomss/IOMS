@@ -63,11 +63,11 @@
               <el-table-column prop="assetCode" label="设备编码" width="100" />
               <el-table-column prop="equipmentFault.name" label="故障类型" width="100" />
               <el-table-column prop="description" label="故障描述" width="200" />
-              <el-table-column prop="failureTime" label="故障时间" width="120" />
+              <el-table-column prop="failureTime" label="故障时间" width="120" :formatter="formatterDate" />
               <el-table-column prop="reporterName" label="报修人" width="90" />
-              <el-table-column prop="reportTime" label="报修时间" width="90" />
+              <el-table-column prop="reportTime" label="报修时间" width="90" :formatter="formatterDate" />
               <el-table-column prop="recordUser.name" label="录入人" width="90" />
-              <el-table-column prop="recordTime" label="录入时间" width="90" />
+              <el-table-column prop="recordTime" label="录入时间" width="90" :formatter="formatterDate" />
               <el-table-column prop="repairUser" label="维修员" width="90" />
               <el-table-column prop="orderState" label="状态" width="180">
                 <template slot-scope="scope">
@@ -75,7 +75,7 @@
                 </template>
               </el-table-column>
               <el-table-column prop="repairLevel.name" label="报修等级" width="130" />
-              <el-table-column prop="lastUpdateTime" label="更新时间" width="130" />
+              <el-table-column prop="lastUpdateTime" label="更新时间" width="130" :formatter="formatterDate" />
             </el-table>
             <!-- 删除弹框 -->
             <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeQuestionVisible" width="220px">
@@ -119,6 +119,14 @@ export default {
     this.getData()
   },
   methods: {
+    // 日期时间格式化
+    formatterDate(row, column, cellValue) {
+      if (cellValue !== null) {
+        return this.$moment(cellValue).format('YYYY-MM-DD HH:mm')
+      } else {
+        return cellValue
+      }
+    },
     getData() { // 获取数据
       // 搜索框内容不为空 页码跳转至第一页
       if (this.tableDataSearch.text !== '') {

@@ -15,10 +15,10 @@
                   {{ formData.equipment }}
                 </el-form-item>
                 <el-form-item label="故障时间" prop="failureTime">
-                  <el-date-picker v-model="formData.failureTime" type="datetime" placeholder="故障时间" />
+                  <el-date-picker v-model="formData.failureTime" type="datetime" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm" placeholder="故障时间" />
                 </el-form-item>
                 <el-form-item label="报修时间" prop="reportTime">
-                  <el-date-picker v-model="formData.reportTime" type="datetime" placeholder="报修时间" />
+                  <el-date-picker v-model="formData.reportTime" type="datetime" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm" placeholder="报修时间" />
                 </el-form-item>
                 <el-form-item label="故障类型" class="showtishi" prop="equipmentFaultId">
                   <el-select v-model="formData.equipmentFaultId" clearable placeholder="故障类型" size="small">

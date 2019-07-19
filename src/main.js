@@ -27,6 +27,9 @@ import { ajax } from 'jquery'
 // vue treeSelect 样式引入
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
+// 时间格式化插件
+import moment from 'moment'
+
 Vue.use(Element)
 
 Vue.config.productionTip = false
@@ -37,6 +40,10 @@ Vue.prototype.$cookie = cookie
 // 将 axios 挂载到vue 属性中
 Vue.prototype.$axios = axios
 Vue.prototype.$ajax = ajax
+
+// 时间日期格式话
+Vue.prototype.$moment = moment
+
 new Vue({
   el: '#app',
   router,
