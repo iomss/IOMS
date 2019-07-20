@@ -16,7 +16,7 @@
           <div class="content">
             <el-table :data="positionTypeData" stripe border style="width: 100%" @selection-change="handleSelectionChangePositionType">
               <el-table-column type="selection" width="40" />
-              <el-table-column prop="id" label="序号" />
+              <el-table-column type="index" label="序号" />
               <el-table-column prop="name" label="位置类型名称" />
             </el-table>
             <pagination v-show="positionTypeTotalCount>0" :total="positionTypeTotalCount" :page.sync="positionTypeFormSearce.pageNumber" :limit.sync="positionTypeFormSearce.pageSize" @pagination="getPositionTypePage" />

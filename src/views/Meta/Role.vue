@@ -16,7 +16,7 @@
           <div class="content">
             <el-table :data="RoleData" stripe border style="width: 100%" @selection-change="handleSelectionChangeRole">
               <el-table-column type="selection" width="40" />
-              <el-table-column prop="id" label="序号" />
+              <el-table-column type="index" label="序号" />
               <el-table-column prop="name" label="角色名称" />
               <el-table-column label="拥有权限">
                 <template slot-scope="scope">

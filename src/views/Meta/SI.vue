@@ -16,7 +16,7 @@
           <div class="content">
             <el-table :data="SIData" stripe border style="width: 100%" @selection-change="handleSelectionChangeSI">
               <el-table-column type="selection" width="40" />
-              <el-table-column prop="id" label="序号" />
+              <el-table-column type="index" label="序号" />
               <el-table-column prop="name" label="系统集成商名称" />
             </el-table>
             <pagination v-show="SITotalCount>0" :total="SITotalCount" :page.sync="SIFormSearce.pageNumber" :limit.sync="SIFormSearce.pageSize" @pagination="getSIPage" />

@@ -17,7 +17,7 @@
           <div class="content">
             <el-table :data="TypeData" stripe border style="width: 100%" @selection-change="handleSelectionChangeType">
               <el-table-column type="selection" width="40" />
-              <el-table-column prop="id" label="序号" />
+              <el-table-column type="index" label="序号" />
               <el-table-column prop="name" label="设备种类" />
             </el-table>
             <!--分页-->
