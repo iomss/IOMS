@@ -37,7 +37,7 @@
             <div class="toolsrt">
               <el-input v-model="tableDataSearch.text" placeholder="全局查询" size="small" />
               <el-button type="primary" size="small" @click="getData()">查询</el-button>
-              <el-button type="primary" plain size="small" @click="formSearchShow = !formSearchShow">高级搜索</el-button>
+              <!-- <el-button type="primary" plain size="small" @click="formSearchShow = !formSearchShow">高级搜索</!-->
             </div>
             <!--高级搜索表单-->
             <el-card v-if="formSearchShow" class="search" :body-style="{ padding: '20px' }">
@@ -87,28 +87,29 @@
           <div class="content">
             <el-table :data="tableData" stripe border style="width: 100%" @sort-change="sortasstes" @selection-change="handleSelectionChange">
               <el-table-column type="selection" width="40" />
-              <el-table-column prop="id" label="序号" sortable="custom" width="80" />
+              <el-table-column type="index" width="40" label="序号" />
+              <!-- <el-table-column v-show="false" prop="id" label="序号" sortable="custom" width="80" /> -->
               <el-table-column prop="state" label="状态" sortable="custom" width="100">
                 <template slot-scope="scope">
                   {{ scope.row.state==='Normal'?"正常":scope.row.state==='Using'?"使用中":"故障" }}
                 </template>
               </el-table-column>
-              <el-table-column prop="code" label="资产编码" sortable="custom" width="110" />
-              <el-table-column prop="equimentType.name" label="资产类别" sortable="custom" width="110" />
-              <el-table-column prop="alias" label="资产名称" sortable="custom" width="110" />
-              <el-table-column prop="brand.name" label="品牌" sortable="custom" width="90" />
-              <el-table-column prop="model.name" label="型号" sortable="custom" width="120" />
-              <el-table-column prop="parentSystem" label="所属系统" sortable="custom" width="120" />
-              <el-table-column prop="system.name" label="所属子系统" sortable="custom" width="140" />
-              <el-table-column prop="position.name" label="安装位置" sortable="custom" width="110" />
-              <el-table-column prop="enableTime" label="投用时间" sortable="custom" width="110" :formatter="formatterDate" />
-              <el-table-column prop="handoverDate" label="交工时间" sortable="custom" width="110" :formatter="formatterDate" />
-              <el-table-column prop="purchaseYear" label="购置年份" sortable="custom" width="110" />
-              <el-table-column prop="original" label="资产原值" sortable="custom" width="110" />
-              <el-table-column prop="source.name" label="增加方式" sortable="custom" width="110" />
-              <el-table-column prop="si.name" label="集成商" sortable="custom" width="150" />
-              <el-table-column prop="recordUser" label="录入人" sortable="custom" width="100" />
-              <el-table-column prop="lastUpdateTime" label="更新时间" sortable="custom" width="110" :formatter="formatterDate" />
+              <el-table-column prop="code" label="资产编码" sortable="custom" />
+              <el-table-column prop="equimentType.name" label="资产类别" sortable="custom" />
+              <el-table-column prop="alias" label="资产名称" sortable="custom" />
+              <el-table-column prop="brand.name" label="品牌" sortable="custom" />
+              <el-table-column prop="model.name" label="型号" sortable="custom" />
+              <el-table-column prop="parentSystem" label="所属系统" sortable="custom" />
+              <el-table-column prop="system.name" label="所属子系统" sortable="custom" />
+              <el-table-column prop="position.name" label="安装位置" sortable="custom" />
+              <el-table-column prop="enableTime" label="投用时间" sortable="custom" :formatter="formatterDate" />
+              <el-table-column prop="handoverDate" label="交工时间" sortable="custom" :formatter="formatterDate" />
+              <el-table-column prop="purchaseYear" label="购置年份" sortable="custom" />
+              <el-table-column prop="original" label="资产原值" sortable="custom" />
+              <el-table-column prop="source.name" label="增加方式" sortable="custom" />
+              <el-table-column prop="si.name" label="集成商" sortable="custom" />
+              <el-table-column prop="recordUser" label="录入人" sortable="custom" />
+              <el-table-column prop="lastUpdateTime" label="更新时间" sortable="custom" :formatter="formatterDate" />
               <el-table-column label="操作" width="100">
                 <template slot-scope="scope">
                   <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="primary" @click="UpdateStage(scope.row)">编辑</el-button>
@@ -117,7 +118,7 @@
               </el-table-column>
             </el-table>
             <!--分页-->
-            <pagination v-show="totalCount>0" :total="totalCount" :page.sync="formSearch.pageSize" :limit.sync="formSearch.pageNumber" @pagination="getPage" />
+            <pagination v-show="totalCount>0" :total="totalCount" :page.sync="tableDataSearch.pageSize" :limit.sync="tableDataSearch.pageNumber" @pagination="getPage" />
             <!--删除-->
             <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeQuestionVisible" width="220px">
               <span>您确定要删除此条数据？</span>
@@ -167,7 +168,7 @@ export default {
         desc: undefined, // 倒叙  是否
         state: null, // 资产状态
         text: '', // 搜索文本
-        pageSize: 20, // 展示条数
+        pageSize: 10, // 展示条数
         pageNumber: 1// 页码
       },
       totalCount: 0 // 数据总条数

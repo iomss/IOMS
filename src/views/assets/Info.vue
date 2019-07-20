@@ -13,9 +13,7 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="安装位置" prop="positionId">
-                <el-select v-model="formData.positionId" v-loadmore="loadMoreposition" filterable placeholder="安装位置" size="small">
-                  <el-option v-for="item in positionData" :key="item.id" :label="item.name" :value="item.id" />
-                </el-select>
+                <treeselect v-model="formData.positionId" :normalizer="normalizer" :options="positionTreeData" :load-options="loadOptions" placeholder="安装位置" no-results-text="未找到相关数据" />
               </el-form-item>
               <el-form-item label="所属系统" prop="systemId">
                 <el-select v-model="formData.systemId" v-loadmore="loadMoresystem" filterable placeholder="所属系统" size="small">
@@ -117,13 +115,26 @@
   </div>
 </template>
 <script>
-// import page from '@/components/page.vue'
+import { Treeselect, LOAD_CHILDREN_OPTIONS } from '@riophae/vue-treeselect'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+// 节流
+const simulateAsyncOperation = fn => {
+  setTimeout(fn, 500)
+}
 export default {
   components: {
-    // page
+    Treeselect
   },
   data() {
     return {
+      // 树结构
+      normalizer(node) {
+        return {
+          id: node.id,
+          label: node.name,
+          children: node.children
+        }
+      },
       id: '', // 资产id
       formData: {
         useUnitId: '',
@@ -157,7 +168,7 @@ export default {
         }
       ],
       unitData: [], // 使用单位数据
-      positionData: [], // 安装位置数据
+      positionTreeData: [], // 安装位置数据
       systemData: [], // 所属系统数据
       equipmentData: [], // 资产类别数据
       brandData: [], // 品牌数据
@@ -256,9 +267,8 @@ export default {
     },
     getpositionData() {
       // 获取安装位置
-      this.$axios.get('/api/Meta/Position?pageSize=' + this.positionpage.pageSize + '&pageNumber=' + this.positionpage.pageNumber).then(res => {
-        this.positionData = res.data
-        this.positionpage.pageCount = res.pageCount
+      this.$axios.get('/api/Tree/Position').then(res => {
+        this.positionTreeData = res
       })
     },
     getsystemData() {
@@ -304,15 +314,9 @@ export default {
       })
     },
     loadMoreunit() { // 加载下一页数据
-      if (this.positionpage.pageCount > this.positionpage.pageNumber) {
-        this.positionpage.pageNumber += 1
-        this.getunitData()
-      }
-    },
-    loadMoreposition() { // 使用单位或产权单位加载下一页数据
       if (this.unitpage.pageCount > this.unitpage.pageNumber) {
         this.unitpage.pageNumber += 1
-        this.getpositionData()
+        this.getunitData()
       }
     },
     loadMoresystem() { // 所属系统加载下一页数据
@@ -349,6 +353,39 @@ export default {
       if (this.sourcepage.pageCount > this.sourcepage.pageNumber) {
         this.sourcepage.pageNumber += 1
         this.getsourceData()
+      }
+    },
+    // treeSelect 加载
+    loadOptions({ action, parentNode, callback }) {
+      if (action === LOAD_CHILDREN_OPTIONS) {
+        switch (parentNode.id) {
+          case 'success': {
+            simulateAsyncOperation(() => {
+              parentNode.children = [
+                {
+                  id: 'child',
+                  label: 'Child option'
+                }
+              ]
+              callback()
+            })
+            break
+          }
+          case 'no-children': {
+            simulateAsyncOperation(() => {
+              parentNode.children = []
+              callback()
+            })
+            break
+          }
+          case 'failure': {
+            simulateAsyncOperation(() => {
+              callback(new Error('Failed to load options: network error.'))
+            })
+            break
+          }
+          default: /* empty */
+        }
       }
     },
     gedata() { // 获取单条数据
