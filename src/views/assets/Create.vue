@@ -8,27 +8,27 @@
             <h4>新增资产</h4>
             <el-form ref="formData" :model="formData" :rules="formDatarules" label-width="90px">
               <el-form-item label="使用单位" prop="useUnitId">
-                <el-select v-model="formData.useUnitId" v-loadmore="loadMore" filterable placeholder="使用单位" size="small">
+                <el-select v-model="formData.useUnitId" v-loadmore="loadMoreunit" filterable placeholder="使用单位" size="small">
                   <el-option v-for="item in unitData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
               <el-form-item label="安装位置" prop="positionId">
-                <el-select v-model="formData.positionId" filterable placeholder="安装位置" size="small">
+                <el-select v-model="formData.positionId" v-loadmore="loadMoreposition" filterable placeholder="安装位置" size="small">
                   <el-option v-for="item in positionData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
               <el-form-item label="所属系统" prop="systemId">
-                <el-select v-model="formData.systemId" filterable placeholder="所属系统" size="small">
+                <el-select v-model="formData.systemId" v-loadmore="loadMoresystem" filterable placeholder="所属系统" size="small">
                   <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
               <el-form-item label="资产类别" prop="equipmentID">
-                <el-select v-model="formData.equipmentID" filterable placeholder="资产类别" size="small">
-                  <el-option v-for="item in typeData" :key="item.id" :label="item.name" :value="item.id" />
+                <el-select v-model="formData.equipmentID" v-loadmore="loadMoreequipment" filterable placeholder="资产类别" size="small">
+                  <el-option v-for="item in equipmentData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
               <el-form-item label="集成商" prop="siId">
-                <el-select v-model="formData.siId" filterable placeholder="设备集成商" size="small">
+                <el-select v-model="formData.siId" v-loadmore="loadMoresi" filterable placeholder="设备集成商" size="small">
                   <el-option v-for="item in siData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
@@ -39,17 +39,17 @@
                 <el-date-picker v-model="formData.enableTime" type="date" placeholder="投用时间" />
               </el-form-item>
               <el-form-item label="品牌" prop="brandId">
-                <el-select v-model="formData.brandId" filterable placeholder="资产类别" size="small">
+                <el-select v-model="formData.brandId" v-loadmore="loadMorebrand" filterable placeholder="资产类别" size="small">
                   <el-option v-for="item in brandData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
               <el-form-item label="型号" prop="modelId">
-                <el-select v-model="formData.modelId" filterable placeholder="资产类别" size="small">
+                <el-select v-model="formData.modelId" v-loadmore="loadMoremodel" filterable placeholder="资产类别" size="small">
                   <el-option v-for="item in modelData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
               <el-form-item label="来源" prop="sourceId">
-                <el-select v-model="formData.sourceId" filterable placeholder="来源" size="small">
+                <el-select v-model="formData.sourceId" v-loadmore="loadMoresource" filterable placeholder="来源" size="small">
                   <el-option v-for="item in sourceData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
@@ -69,7 +69,7 @@
                 <el-input v-model="formData.liabilityPeriod" placeholder="缺陷责任期" size="small" />
               </el-form-item>
               <el-form-item label="产权单位" prop="propertyUnitId">
-                <el-select v-model="formData.propertyUnitId" filterable placeholder="产权单位" size="small">
+                <el-select v-model="formData.propertyUnitId" v-loadmore="loadMoreunit" filterable placeholder="产权单位" size="small">
                   <el-option v-for="item in unitData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
@@ -89,7 +89,7 @@
               </el-form-item>
               <el-form-item label="照片" class="form_mid" prop="img" />
               <el-form-item label="自定义属性">
-                <el-input v-model="formData.Model" placeholder="使用单位" size="small" />
+                <el-input v-model="formData.Model" placeholder="自定义属性" size="small" />
               </el-form-item>
               <el-form-item class="form_total">
                 <el-button type="primary" size="small" icon="el-icon-search" @click="create()">保存</el-button>
@@ -134,7 +134,7 @@ export default {
       unitData: [], // 使用单位同产权单位数据
       positionData: [], // 安装位置数据
       systemData: [], // 所属系统数据
-      typeData: [], // 资产类别数据
+      equipmentData: [], // 资产类别数据
       brandData: [], // 品牌数据
       modelData: [], // 型号数据
       sourceData: [], // 设备来源
@@ -183,7 +183,42 @@ export default {
           { required: true, message: '资产原值不可为空', trigger: 'change' }
         ]
       },
-      selectpage: {
+      unitpage: {// 使用单位同产权单位分页
+        pageNumber: 1,
+        pageSize: 10,
+        pageCount: ''
+      },
+      positionpage: {// 安装位置分页
+        pageNumber: 1,
+        pageSize: 10,
+        pageCount: ''
+      },
+      systempage: {// 所属系统分页
+        pageNumber: 1,
+        pageSize: 10,
+        pageCount: ''
+      },
+      equipmentpage: {// 资产类别分页
+        pageNumber: 1,
+        pageSize: 10,
+        pageCount: ''
+      },
+      brandpage: {// 品牌分页
+        pageNumber: 1,
+        pageSize: 10,
+        pageCount: ''
+      },
+      modelpage: {// 型号分页
+        pageNumber: 1,
+        pageSize: 10,
+        pageCount: ''
+      },
+      sourcepage: {// 来源分页
+        pageNumber: 1,
+        pageSize: 10,
+        pageCount: ''
+      },
+      sipage: {// 集成商分页
         pageNumber: 1,
         pageSize: 10,
         pageCount: ''
@@ -192,51 +227,118 @@ export default {
   },
   computed: {},
   mounted() {
-    this.getselectData()
+    this.getunitData()
+    this.getpositionData()
+    this.getsystemData()
+    this.getequipmentData()
+    this.getbrandData()
+    this.getmodelData()
+    this.getsourceData()
+    this.getsiData()
   },
   methods: {
-    getselectData() { // 获取下拉菜单数据
+    getunitData() {
       // 获取使用单位信息
-      this.$axios.get('/api/Meta/Unit?pageSize=10&pageNumber=' + this.selectpage.pageNumber).then(res => {
-        this.unitData = res.data
-        this.selectpage.pageCount = res.pageCount
-      })
-      // 获取安装位置
-      this.$axios.get('/api/Meta/Position').then(res => {
-        this.positionData = res.data
-      })
-      // 获取所属系统
-      this.$axios.get('/api/Meta/System').then(res => {
-        this.systemData = res.data
-      })
-      // 获取资产类别
-      this.$axios.get('/api/Meta/equipment').then(res => {
-        this.typeData = res.data
-      })
-      // 获取品牌
-      this.$axios.get('/api/Meta/Brand').then(res => {
-        this.brandData = res.data
-      })
-      // 获取型号
-      this.$axios.get('/api/Meta/Model').then(res => {
-        this.modelData = res.data
-      })
-      // 获取设备来源
-      this.$axios.get('/api/Meta/Source').then(res => {
-        this.sourceData = res.data
-      })
-      // 获取集成商
-      this.$axios.get('/api/Meta/SI').then(res => {
-        this.siData = res.data
+      this.$axios.get('/api/Meta/Unit?pageSize=' + this.unitpage.pageSize + '&pageNumber=' + this.unitpage.pageNumber).then(res => {
+        this.unitData = this.unitData.concat(res.data)
+        this.unitpage.pageCount = res.pageCount
       })
     },
-    loadMore() {
-      if (this.selectpage.pageCount > this.selectpage.pageNumber) {
-        this.selectpage.pageNumber += 1
-        this.$axios.get('/api/Meta/Unit?pageSize=10&pageNumber=' + this.selectpage.pageNumber).then(res => {
-          this.unitData = this.unitData.concat(res.data)
-          console.log(this.unitData)
-        })
+    getpositionData() {
+      // 获取安装位置
+      this.$axios.get('/api/Meta/Position?pageSize=' + this.positionpage.pageSize + '&pageNumber=' + this.positionpage.pageNumber).then(res => {
+        this.positionData = res.data
+        this.positionpage.pageCount = res.pageCount
+      })
+    },
+    getsystemData() {
+      // 获取所属系统
+      this.$axios.get('/api/Meta/System?pageSize=' + this.systempage.pageSize + '&pageNumber=' + this.systempage.pageNumber).then(res => {
+        this.systemData = res.data
+        this.systempage.pageCount = res.pageCount
+      })
+    },
+    getequipmentData() {
+      // 获取资产类别
+      this.$axios.get('/api/Meta/equipment?pageSize=' + this.equipmentpage.pageSize + '&pageNumber=' + this.equipmentpage.pageNumber).then(res => {
+        this.equipmentData = res.data
+        this.equipmentpage.pageCount = res.pageCount
+      })
+    },
+    getbrandData() {
+      // 获取品牌
+      this.$axios.get('/api/Meta/Brand?pageSize=' + this.brandpage.pageSize + '&pageNumber=' + this.brandpage.pageNumber).then(res => {
+        this.brandData = res.data
+        this.brandpage.pageCount = res.pageCount
+      })
+    },
+    getmodelData() {
+      // 获取型号
+      this.$axios.get('/api/Meta/Model?pageSize=' + this.modelpage.pageSize + '&pageNumber=' + this.modelpage.pageNumber).then(res => {
+        this.modelData = res.data
+        this.modelpage.pageCount = res.pageCount
+      })
+    },
+    getsourceData() {
+      // 获取设备来源
+      this.$axios.get('/api/Meta/Source?pageSize=' + this.sourcepage.pageSize + '&pageNumber=' + this.sourcepage.pageNumber).then(res => {
+        this.sourceData = res.data
+        this.sourcepage.pageCount = res.pageCount
+      })
+    },
+    getsiData() {
+      // 获取集成商
+      this.$axios.get('/api/Meta/SI?pageSize=' + this.sipage.pageSize + '&pageNumber=' + this.sipage.pageNumber).then(res => {
+        this.siData = res.data
+        this.sipage.pageCount = res.pageCount
+      })
+    },
+    loadMoreunit() { // 加载下一页数据
+      if (this.positionpage.pageCount > this.positionpage.pageNumber) {
+        this.positionpage.pageNumber += 1
+        this.getunitData()
+      }
+    },
+    loadMoreposition() { // 使用单位或产权单位加载下一页数据
+      if (this.unitpage.pageCount > this.unitpage.pageNumber) {
+        this.unitpage.pageNumber += 1
+        this.getpositionData()
+      }
+    },
+    loadMoresystem() { // 所属系统加载下一页数据
+      if (this.systempage.pageCount > this.systempage.pageNumber) {
+        this.systempage.pageNumber += 1
+        this.getsystemData()
+      }
+    },
+    loadMoreequipment() { // 资产种类加载下一页数据
+      if (this.equipmentpage.pageCount > this.equipmentpage.pageNumber) {
+        this.equipmentpage.pageNumber += 1
+        this.getequipmentData()
+      }
+    },
+    loadMoresi() { // 集成商加载下一页数据
+      if (this.sipage.pageCount > this.sipage.pageNumber) {
+        this.sipage.pageNumber += 1
+        this.getsiData()
+      }
+    },
+    loadMorebrand() { // 品牌加载下一页数据
+      if (this.brandpage.pageCount > this.brandpage.pageNumber) {
+        this.brandpage.pageNumber += 1
+        this.getbrandData()
+      }
+    },
+    loadMoremodel() { // 型号加载下一页数据
+      if (this.modelpage.pageCount > this.modelpage.pageNumber) {
+        this.modelpage.pageNumber += 1
+        this.getmodelData()
+      }
+    },
+    loadMoresource() { // 来源加载下一页数据
+      if (this.sourcepage.pageCount > this.sourcepage.pageNumber) {
+        this.sourcepage.pageNumber += 1
+        this.getsourceData()
       }
     },
     create() { // 新增资产/api/Assets
