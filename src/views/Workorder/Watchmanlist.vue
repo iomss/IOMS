@@ -161,6 +161,10 @@ export default {
       console.log(data)
       this.$router.push('/Workorder/MaintainerReceipt/' + data.id)
     },
+    robwork(data) { // 抢单
+      console.log(data)
+      this.$router.push('/Workorder/MaintainerRob/' + data.id)
+    },
     changework(data) { // 转单
       console.log(data)
       if (data) {

@@ -39,22 +39,22 @@
           </el-form>
           <el-form v-if="repairType=='Done'" ref="formRcorda" :model="formRcorda" label-width="120px" :rules="formRcordarules">
             <el-form-item label="设备种类" prop="equipmentId">
-              <el-select v-model="formRcorda.equipmentId" clearable placeholder="设备种类" size="small" @change="changeEquipment">
+              <el-select v-model="formRcorda.equipmentId" v-loadmore="loadMoreequipment" filterable placeholder="设备种类" size="small" @change="changeEquipment">
                 <el-option v-for="item in equipmentData" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
             <el-form-item label="设备编码" prop="assetCode">
-              <el-select v-model="formRcorda.assetCode" clearable placeholder="设备编码" size="small">
+              <el-select v-model="formRcorda.assetCode" filterable placeholder="设备编码" size="small">
                 <el-option v-for="item in assetsData" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
             <el-form-item label="故障类型" prop="equipmentFaultId">
-              <el-select v-model="formRcorda.equipmentFaultId" clearable placeholder="故障类型" size="small">
+              <el-select v-model="formRcorda.equipmentFaultId" v-loadmore="loadMorefault" filterable placeholder="故障类型" size="small">
                 <el-option v-for="item in faultData" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
             <el-form-item label="维修级别" prop="repairLevelId">
-              <el-select v-model="formRcorda.repairLevelId" clearable placeholder="产权单位" size="small">
+              <el-select v-model="formRcorda.repairLevelId" filterable placeholder="产权单位" size="small">
                 <el-option v-for="item in levelData" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
@@ -106,22 +106,22 @@
           </el-form>
           <el-form v-if="repairType=='Suspend'" ref="formRcordd" :model="formRcordd" label-width="120px" :rules="formRcorddrules">
             <el-form-item label="设备种类" prop="equipmentId">
-              <el-select v-model="formRcordd.equipmentId" clearable placeholder="设备种类" size="small" @change="changeEquipment">
+              <el-select v-model="formRcordd.equipmentId" v-loadmore="loadMoreequipment" filterable placeholder="设备种类" size="small" @change="changeEquipment">
                 <el-option v-for="item in equipmentData" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
             <el-form-item label="设备编码" prop="assetCode">
-              <el-select v-model="formRcordd.assetCode" clearable placeholder="设备编码" size="small">
+              <el-select v-model="formRcordd.assetCode" filterable placeholder="设备编码" size="small">
                 <el-option v-for="item in assetsData" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
             <el-form-item label="故障类型" prop="equipmentFaultId">
-              <el-select v-model="formRcordd.equipmentFaultId" clearable placeholder="故障类型" size="small">
+              <el-select v-model="formRcordd.equipmentFaultId" v-loadmore="loadMorefault" filterable placeholder="故障类型" size="small">
                 <el-option v-for="item in faultData" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
             <el-form-item label="维修级别" prop="repairLevelId">
-              <el-select v-model="formRcordd.repairLevelId" clearable placeholder="产权单位" size="small">
+              <el-select v-model="formRcordd.repairLevelId" filterable placeholder="产权单位" size="small">
                 <el-option v-for="item in levelData" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
@@ -254,6 +254,16 @@ export default {
         endTime: [
           { type: 'date', required: true, message: '请选择预计结束时间', trigger: 'change' }
         ]
+      },
+      equipmentpage: {// 资产类别分页
+        pageNumber: 1,
+        pageSize: 10,
+        pageCount: ''
+      },
+      faultpage: {// 故障类型分页
+        pageNumber: 1,
+        pageSize: 10,
+        pageCount: ''
       }
     }
   },
@@ -261,17 +271,11 @@ export default {
   mounted() {
     this.getdata()
     this.getselectData()
+    this.getequipmentData()
+    this.getfaultData()
   },
   methods: {
     getselectData() { // 获取下拉菜单数据
-      // 获取资产类别
-      this.$axios.get('/api/Meta/equipment').then(res => {
-        this.equipmentData = res.data
-      })
-      // 获取故障类型
-      this.$axios.get('/api/Meta/fault').then(res => {
-        this.faultData = res.data
-      })
       // 获取维修级别数据
       this.$axios.get('/api/Meta/RepairLevel').then(res => {
         this.levelData = res.data
@@ -281,14 +285,38 @@ export default {
         this.assetsData = res.data
       })
     },
+    getequipmentData() {
+      // 获取资产类别
+      this.$axios.get('/api/Meta/equipment?pageSize=' + this.equipmentpage.pageSize + '&pageNumber=' + this.equipmentpage.pageNumber).then(res => {
+        this.equipmentData = res.data
+        this.equipmentpage.pageCount = res.pageCount
+      })
+    },
+    getfaultData() {
+      // 获取故障类型
+      this.$axios.get('/api/Meta/Fault?pageSize=' + this.faultpage.pageSize + '&pageNumber=' + this.faultpage.pageNumber).then(res => {
+        this.faultData = res.data
+        this.faultpage.pageCount = res.pageCount
+      })
+    },
+    loadMoreequipment() { // 资产种类加载下一页数据
+      if (this.equipmentpage.pageCount > this.equipmentpage.pageNumber) {
+        this.equipmentpage.pageNumber += 1
+        this.getequipmentData()
+      }
+    },
+    loadMorefault() { // 故障类型获取下一页
+      if (this.faultpage.pageCount > this.faultpage.pageNumber) {
+        this.faultpage.pageNumber += 1
+        this.getfaultData()
+      }
+    },
     getdata() {
       // 获取维修详情数据
       this.formData.assetId = window.location.href.split('/')[window.location.href.split('/').length - 1]
       this.$axios.get('/api/RepairOrder/' + this.formData.assetId).then(res => {
         this.formData = res
         this.updateData.id = res.id
-        this.formSearch.repairerId = res.repairUser.id
-        this.formSearch.repairername = res.repairUser.name
       })
     },
     changeEquipment() { // 设备种类筛选设备编码

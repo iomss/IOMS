@@ -15,7 +15,7 @@
                 <li><span>设备类型:</span><b>{{ formData.equipment.name }}</b></li>
                 <li><span>故障时间:</span><b>{{ formData.failureTime }}</b></li>
                 <li><span>设备描述:</span><b>{{ formData.description }}</b></li>
-                <li><span>录入人:</span><b>{{ formData.repairUser.name }}</b></li>
+                <li><span>录入人:</span><b>{{ formData.repairUser==null?'': formData.repairUser.name }}</b></li>
                 <li><span>报修级别:</span><b>{{ formData.equipmentFault.name }}</b></li>
                 <li><span>报修人:</span><b>{{ formData.reporterName }}</b></li>
                 <li><span>报修时间:</span><b>{{ formData.reportTime }}</b></li>
@@ -68,11 +68,11 @@ export default {
         this.updateData.userId = res.recordUser.id
       })
     },
-    robwork(val) { // 点击接受按钮
+    robwork() { // 点击接受按钮
       // this.$router.push('/Asset/Info' + val)
       this.updateData.dispatchType = 'Grab'// 抢单
       this.$axios.post('/api/RepairOrder/' + this.formData.id + '/Dispatch', this.updateData).then(res => {
-        this.$message.success('工单接单成功')
+        this.$message.success('工单抢单成功')
         // 跳转个人工作页
         this.$router.push('/Workorder/Watchmanlist')
       })

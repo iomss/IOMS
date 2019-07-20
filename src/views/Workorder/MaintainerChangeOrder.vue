@@ -24,7 +24,7 @@
                 <li>
                   <el-form ref="form" :model="updateData" label-width="120px">
                     <el-form-item label="派工:">
-                      <el-select v-model="updateData.userId" clearable placeholder="派工" size="small">
+                      <el-select v-model="updateData.userId" v-loadmore="loadMoreuser" filterable placeholder="派工" size="small">
                         <el-option v-for="item in userData" :key="item.id" :label="item.userName" :value="item.id" />
                       </el-select>
                     </el-form-item>
@@ -59,12 +59,18 @@ export default {
         id: '',
         userId: '',
         dispatchType: 'Transfer'// 转单
+      },
+      userpage: {// 指定工程师分页
+        pageNumber: 1,
+        pageSize: 10,
+        pageCount: ''
       }
     }
   },
   computed: {},
   mounted() {
     this.getdata()
+    this.getuserData()
   },
   methods: {
     getdata() {
@@ -74,10 +80,19 @@ export default {
         this.formData = res
         this.updateData.id = res.id
       })
+    },
+    getuserData() {
       // 获取用户
-      this.$axios.get('/api/User?dispatch=true').then(res => {
+      this.$axios.get('/api/User?Dispatch=true&pageSize=' + this.userpage.pageSize + '&pageNumber=' + this.userpage.pageNumber).then(res => {
         this.userData = res.data
+        this.userpage.pageCount = res.pageCount
       })
+    },
+    loadMoreuser() {
+      if (this.userpage.pageCount > this.userpage.pageNumber) {
+        this.userpage.pageNumber += 1
+        this.getuserData()
+      }
     },
     partwork() { // 分配工单
       this.$axios.post('/api/RepairOrder/' + this.formData.id + '/Dispatch', this.updateData).then(res => {
