@@ -14,6 +14,9 @@
                 <el-form-item label="资产名称" prop="equipment">
                   {{ formData.equipment }}
                 </el-form-item>
+                <el-form-item label="资产编码" prop="code">
+                  {{ formData.code }}
+                </el-form-item>
                 <el-form-item label="故障时间" prop="failureTime">
                   <el-date-picker v-model="formData.failureTime" type="datetime" placeholder="故障时间" />
                 </el-form-item>
@@ -26,11 +29,11 @@
                   </el-select>
                   <i class="fa fa-plus" aria-hidden="true" @click="creatorder()" />
                 </el-form-item>
-                <el-form-item label="报修人" prop="reporterName">
-                  {{ dangqianUser.userName }}
-                </el-form-item>
                 <el-form-item label="故障描述" class="total" prop="description">
                   <el-input v-model="formData.description" placeholder="故障描述" size="small" />
+                </el-form-item>
+                <el-form-item label="报修人" prop="reporterName">
+                  {{ dangqianUser.userName }}
                 </el-form-item>
                 <el-form-item label="故障级别" class="showtishi" prop="repairLevelId">
                   <el-select v-model="formData.repairLevelId" filterable placeholder="故障级别" size="small">
@@ -92,6 +95,7 @@ export default {
       },
       changeActiveVisible: false,
       formData: {
+        code: '',
         assetId: '',
         positionId: '',
         positionName: '',
@@ -215,6 +219,7 @@ export default {
         _this.formData.equipmentId = res.equipment.id
         _this.formData.positionId = res.position.id
         _this.formData.positionName = res.position.name
+        _this.formData.code = res.code
       })
     },
     createWorker() { // 提交派单按钮方法
