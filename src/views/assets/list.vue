@@ -89,7 +89,7 @@
               <el-table-column type="selection" width="40" />
               <el-table-column type="index" width="40" label="序号" />
               <!-- <el-table-column v-show="false" prop="id" label="序号" sortable="custom" width="80" /> -->
-              <el-table-column prop="state" label="状态" sortable="custom" width="100">
+              <el-table-column prop="state" label="状态" sortable="custom">
                 <template slot-scope="scope">
                   {{ scope.row.state==='Normal'?"正常":scope.row.state==='Using'?"使用中":"故障" }}
                 </template>
@@ -102,7 +102,7 @@
               <el-table-column prop="parentSystem" label="所属系统" sortable="custom" />
               <el-table-column prop="system.name" label="所属子系统" sortable="custom" />
               <el-table-column prop="position.name" label="安装位置" sortable="custom" />
-              <el-table-column prop="enableTime" label="投用时间" sortable="custom" :formatter="formatterDate" />
+              <el-table-column prop="enableTime" label="投用时间" sortable="custom" :formatter="formatterstartDate" />
               <el-table-column prop="handoverDate" label="交工时间" sortable="custom" :formatter="formatterDate" />
               <el-table-column prop="purchaseYear" label="购置年份" sortable="custom" />
               <el-table-column prop="original" label="资产原值" sortable="custom" />
@@ -183,6 +183,14 @@ export default {
     formatterDate(row, column, cellValue) {
       if (cellValue !== null) {
         return this.$moment(cellValue).format('YYYY-MM-DD HH:mm')
+      } else {
+        return cellValue
+      }
+    },
+    // 投用时间日期时间格式化
+    formatterstartDate(row, column, cellValue) {
+      if (cellValue !== null) {
+        return this.$moment(cellValue).format('YYYY-MM-DD')
       } else {
         return cellValue
       }

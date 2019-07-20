@@ -33,7 +33,7 @@
                   <el-input v-model="formData.description" placeholder="故障描述" size="small" />
                 </el-form-item>
                 <el-form-item label="故障级别" class="showtishi" prop="repairLevelId">
-                  <el-select v-model="formData.repairLevelId" clearable placeholder="故障级别" size="small">
+                  <el-select v-model="formData.repairLevelId" filterable placeholder="故障级别" size="small">
                     <el-option v-for="item in levelData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                   <el-tooltip placement="right">

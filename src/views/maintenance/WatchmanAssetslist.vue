@@ -4,7 +4,7 @@
     <el-row>
       <el-col :span="6">
         <h4>设备位置</h4>
-        <el-tree ref="TreeData" :data="treeData" :check-strictly="true" show-checkbox node-key="id" :props="defaultProps" @check-change="handleCheckChange" />
+        <el-tree ref="TreeData" :data="treeData" :check-strictly="true" :default-expanded-keys="[13]" show-checkbox node-key="id" :props="defaultProps" @check-change="handleCheckChange" />
       </el-col>
       <el-col :span="18">
         <div class="panel">
@@ -23,26 +23,28 @@
             </div>
             <div class="content">
               <el-table :data="tableData" stripe border style="width: 100%" @selection-change="handleSelectionChange">
-                <el-table-column type="selection" width="40" />
-                <el-table-column prop="id" label="序号" width="60" />
-                <el-table-column prop="state" label="状态" width="80">
+                <el-table-column type="selection" />
+                <el-table-column type="index" label="序号" />
+                <el-table-column prop="state" label="状态">
                   <template slot-scope="scope">
                     {{ scope.row.state==='Normal'?"正常":scope.row.state==='Using'?"使用中":"故障" }}
                   </template>
                 </el-table-column>
-                <el-table-column prop="code" label="资产编码" width="150" />
-                <el-table-column prop="alias" label="资产名称" width="100" />
-                <el-table-column prop="brand.name" label="品牌" width="100" />
-                <el-table-column prop="model.name" label="型号" width="100" />
-                <el-table-column prop="system.name" label="所属系统" width="100" />
-                <el-table-column prop="position.name" label="安装位置" width="150" />
-                <el-table-column prop="recommendedTime" label="报修次数" width="100" />
+                <el-table-column prop="code" label="资产编码" />
+                <el-table-column prop="alias" label="资产名称" />
+                <el-table-column prop="brand.name" label="品牌" />
+                <el-table-column prop="model.name" label="型号" />
+                <el-table-column prop="system.name" label="所属系统" />
+                <el-table-column prop="position.name" label="安装位置" />
+                <el-table-column prop="recommendedTime" label="报修次数" />
                 <el-table-column label="操作" width="100">
                   <template slot-scope="scope">
                     <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="primary" @click="showerror(scope.row)">报修</el-button>
                   </template>
                 </el-table-column>
               </el-table>
+              <!--分页-->
+              <pagination v-show="totalCount>0" :total="totalCount" :page.sync="tableDataSearch.pageSize" :limit.sync="tableDataSearch.pageNumber" @pagination="getPage" />
             </div>
           </div>
         </div>
@@ -51,8 +53,10 @@
   </div>
 </template>
 <script>
+import pagination from '@/components/Pagination'
 export default {
   components: {
+    pagination
   },
   data() {
     return {
@@ -69,7 +73,7 @@ export default {
       },
       tableDataSearch: {
         text: '', // 搜索文本
-        pageSize: 20, // 展示条数
+        pageSize: 10, // 展示条数
         pageNumber: 1, // 页码
         positionIds: [], // 树选中值
         systemId: ''// 所属系统选中值
@@ -129,6 +133,14 @@ export default {
         this.tableDataSearch.positionIds.splice(this.tableDataSearch.positionIds.indexOf(data.id), 1)
         this.getData()
       }
+    },
+    getPage(val) { // page事件
+      // 展示条数
+      this.tableDataSearch.pageSize = val.limit
+      // 页码
+      this.tableDataSearch.pageNumber = val.page
+      // 调用获取数据
+      this.getData()
     }
   }
 }
@@ -162,5 +174,9 @@ export default {
   .el-table td {
     padding: 5px;
   }
+}
+.el-tree{
+  height:600px;
+  overflow-y: scroll;
 }
 </style>
