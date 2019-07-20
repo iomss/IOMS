@@ -10,13 +10,15 @@
               <ul>
                 <li><span>维修单编号:</span><b>{{ formData.code }}</b></li>
                 <li><span>设备位置:</span><b>{{ formData.position.name }}</b></li>
-                <li><span>设备种类:</span><b>{{ formData.equipment.equimentType.name }}</b></li>
+                <li><span>资产名称:</span><b>{{ formData.equipment.name }}</b></li>
+                <!-- <li><span>设备种类:</span><b>{{ formData.equipment.equimentType.name }}</b></li> -->
                 <li><span>设备编码:</span><b>{{ formData.assetCode }}</b></li>
-                <li><span>设备类型:</span><b>{{ formData.equipment.name }}</b></li>
+                <!-- <li><span>设备类型:</span><b>{{ formData.equipment.name }}</b></li> -->
                 <li><span>故障时间:</span><b>{{ formData.failureTime }}</b></li>
-                <li><span>设备描述:</span><b>{{ formData.description }}</b></li>
+                <li><span>故障描述:</span><b>{{ formData.description }}</b></li>
                 <li><span>录入人:</span><b>{{ formData.repairUser==null?'': formData.repairUser.name }}</b></li>
-                <li><span>报修级别:</span><b>{{ formData.equipmentFault.name }}</b></li>
+                <li><span>故障类型:</span><b>{{ formData.equipmentFault.name }}</b></li>
+                <li><span>报修级别:</span><b>{{ formData.repairLevel.name }}</b></li>
                 <li><span>报修人:</span><b>{{ formData.reporterName }}</b></li>
                 <li><span>报修时间:</span><b>{{ formData.reportTime }}</b></li>
                 <li><span>派工次数:</span><b>{{ formData.dispatchCount }}</b></li>

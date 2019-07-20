@@ -174,21 +174,21 @@ export default {
     getfaultData() {
       // 获取故障类型
       this.$axios.get('/api/Meta/Fault?pageSize=' + this.faultpage.pageSize + '&pageNumber=' + this.faultpage.pageNumber).then(res => {
-        this.faultData = res.data
+        this.faultData = this.faultData.concat(res.data)
         this.faultpage.pageCount = res.pageCount
       })
     },
     getequipmentData() {
       // 获取资产类别
       this.$axios.get('/api/Meta/equipment?pageSize=' + this.equipmentpage.pageSize + '&pageNumber=' + this.equipmentpage.pageNumber).then(res => {
-        this.equipmentData = res.data
+        this.equipmentData = this.equipmentData.concat(res.data)
         this.equipmentpage.pageCount = res.pageCount
       })
     },
     getuserData() {
       // 获取用户
       this.$axios.get('/api/User?Dispatch=true&pageSize=' + this.userpage.pageSize + '&pageNumber=' + this.userpage.pageNumber).then(res => {
-        this.userData = res.data
+        this.userData = this.userData.concat(res.data)
         this.userpage.pageCount = res.pageCount
       })
     },

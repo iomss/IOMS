@@ -251,61 +251,61 @@ export default {
       })
     },
     checkhasChildren(data) {
-      if (data.children.length > 0) {
-        data.children.forEach(item => {
-          this.checkhasChildren(item)
-        })
-      } else {
-        delete data.children
-      }
+      // 位置数据遍历
+      data.forEach((item, index) => {
+        if (item.children === null) {
+          item.children = undefined
+        } else {
+          this.checkhasChildren(item.children)
+        }
+      })
       return data
     },
     getpositionData() {
       // 获取安装位置
       this.$axios.get('/api/Tree/Position').then(res => {
-        debugger
-        this.positionTreeData = res
+        this.positionTreeData = this.checkhasChildren(res)
       })
     },
     getsystemData() {
       // 获取所属系统
       this.$axios.get('/api/Meta/System?pageSize=' + this.systempage.pageSize + '&pageNumber=' + this.systempage.pageNumber).then(res => {
-        this.systemData = res.data
+        this.systemData = this.systemData.concat(res.data)
         this.systempage.pageCount = res.pageCount
       })
     },
     getequipmentData() {
       // 获取资产类别
       this.$axios.get('/api/Meta/equipment?pageSize=' + this.equipmentpage.pageSize + '&pageNumber=' + this.equipmentpage.pageNumber).then(res => {
-        this.equipmentData = res.data
+        this.equipmentData = this.equipmentData.concat(res.data)
         this.equipmentpage.pageCount = res.pageCount
       })
     },
     getbrandData() {
       // 获取品牌
       this.$axios.get('/api/Meta/Brand?pageSize=' + this.brandpage.pageSize + '&pageNumber=' + this.brandpage.pageNumber).then(res => {
-        this.brandData = res.data
+        this.brandData = this.brandData.concat(res.data)
         this.brandpage.pageCount = res.pageCount
       })
     },
     getmodelData() {
       // 获取型号
       this.$axios.get('/api/Meta/Model?pageSize=' + this.modelpage.pageSize + '&pageNumber=' + this.modelpage.pageNumber).then(res => {
-        this.modelData = res.data
+        this.modelData = this.modelData.concat(res.data)
         this.modelpage.pageCount = res.pageCount
       })
     },
     getsourceData() {
       // 获取设备来源
       this.$axios.get('/api/Meta/Source?pageSize=' + this.sourcepage.pageSize + '&pageNumber=' + this.sourcepage.pageNumber).then(res => {
-        this.sourceData = res.data
+        this.sourceData = this.sourceData.concat(res.data)
         this.sourcepage.pageCount = res.pageCount
       })
     },
     getsiData() {
       // 获取集成商
       this.$axios.get('/api/Meta/SI?pageSize=' + this.sipage.pageSize + '&pageNumber=' + this.sipage.pageNumber).then(res => {
-        this.siData = res.data
+        this.siData = this.siData.concat(res.data)
         this.sipage.pageCount = res.pageCount
       })
     },

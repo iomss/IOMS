@@ -63,7 +63,8 @@
               </el-table-column>
               <el-table-column prop="code" label="维修单编号" />
               <el-table-column prop="position.name" label="设备位置" />
-              <el-table-column prop="equipment.equimentType.name" label="设备种类" />
+              <el-table-column prop="position.name" label="资产名称" />
+              <!-- <el-table-column prop="equipment.equimentType.name" label="设备种类" /> -->
               <el-table-column prop="assetCode" label="设备编码" />
               <el-table-column prop="equipmentFault.name" label="故障类型" />
               <el-table-column prop="description" label="故障描述" />
