@@ -218,7 +218,7 @@ export default {
         _this.formData.equipment = res.equipment.name
         _this.formData.equipmentId = res.equipment.id
         _this.formData.positionId = res.position.id
-        _this.formData.positionName = res.position.name
+        _this.formData.positionName = res.position.crumbName
         _this.formData.code = res.code
       })
     },
