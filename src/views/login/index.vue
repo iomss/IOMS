@@ -132,7 +132,7 @@ export default {
                 })
                 roles.push('show')
                 _this.$cookie.set('roles', roles.toString())
-                _this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+                _this.$router.push({ path: this.redirect || '/Workorder', query: this.otherQuery })
               })
             },
             error: (err) => {
