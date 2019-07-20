@@ -27,8 +27,8 @@
           </div>
           <div class="content">
             <el-table :data="tableData" stripe border style="width: 100%" @selection-change="handleSelectionChange">
-              <el-table-column type="selection" width="40" />
-              <el-table-column prop="id" label="序号" width="60" />
+              <el-table-column type="selection" />
+              <el-table-column type="index" label="序号" />
               <el-table-column label="操作" width="200">
                 <template slot-scope="scope">
                   <!-- 删除权限 -->
@@ -51,25 +51,29 @@
                   <div v-if="roles.indexOf('CreateRepairRecord')!==-1">
                     <el-button v-show="scope.row.orderState==='Repair'" size="mini" type="success" @click="updatework(scope.row)">录入维修记录</el-button>
                   </div>
+                  <!-- 抢单权限 -->
+                  <div v-if="roles.indexOf('CreateRepairRecord')!==-1">
+                    <el-button v-show="scope.row.orderState==='Record'" size="mini" type="primary" @click="robwork(scope.row)">抢单</el-button>
+                  </div>
                   <!-- 接单权限 -->
                   <div v-if="roles.indexOf('GrabOrder')!==-1">
                     <el-button v-show="scope.row.orderState==='Dispatched'" size="mini" type="primary" @click="Receiptwork(scope.row)">接单</el-button>
                   </div>
                 </template>
               </el-table-column>
-              <el-table-column prop="code" label="维修单编号" width="120" />
-              <el-table-column prop="position.name" label="设备位置" width="200" />
-              <el-table-column prop="equipment.equimentType.name" label="设备种类" width="90" />
-              <el-table-column prop="assetCode" label="设备编码" width="100" />
-              <el-table-column prop="equipmentFault.name" label="故障类型" width="100" />
-              <el-table-column prop="description" label="故障描述" width="200" />
-              <el-table-column prop="failureTime" label="故障时间" width="120" :formatter="formatterDate" />
-              <el-table-column prop="reporterName" label="报修人" width="90" />
-              <el-table-column prop="reportTime" label="报修时间" width="90" :formatter="formatterDate" />
-              <el-table-column prop="recordUser.name" label="录入人" width="90" />
-              <el-table-column prop="recordTime" label="录入时间" width="90" :formatter="formatterDate" />
-              <el-table-column prop="repairUser" label="维修员" width="90" />
-              <el-table-column prop="orderState" label="状态" width="180">
+              <el-table-column prop="code" label="维修单编号" />
+              <el-table-column prop="position.name" label="设备位置" />
+              <el-table-column prop="equipment.equimentType.name" label="设备种类" />
+              <el-table-column prop="assetCode" label="设备编码" />
+              <el-table-column prop="equipmentFault.name" label="故障类型" />
+              <el-table-column prop="description" label="故障描述" />
+              <el-table-column prop="failureTime" label="故障时间" :formatter="formatterDate" />
+              <el-table-column prop="reporterName" label="报修人" />
+              <el-table-column prop="reportTime" label="报修时间" :formatter="formatterDate" />
+              <el-table-column prop="recordUser.name" label="录入人" />
+              <el-table-column prop="recordTime" label="录入时间" :formatter="formatterDate" />
+              <el-table-column prop="repairUser" label="维修员" />
+              <el-table-column prop="orderState" label="状态">
                 <template slot-scope="scope">
                   {{ scope.row.orderState==="Record"?"记录，等待指派或抢单":scope.row.orderState==='Dispatching'?"已分配给组长，等待分派工程师":scope.row.orderState==='Dispatched'?'已分配给工程师，工程师待确认':scope.row.orderState==='Repair'?'已分配工程师，等待维修':scope.row.orderState==='Suspend'?'暂缓':scope.row.orderState==='Check'?'维修完成待验收':scope.row.orderState==='Review'?'验收完成，待审核':scope.row.orderState==='Done'?'审核完成':'报修单流程被终止' }}
                 </template>
@@ -106,7 +110,7 @@ export default {
       multipleSelection: '', // 表单选中行
       tableDataSearch: {
         text: '', // 搜索文本
-        pageSize: 20, // 展示条数
+        pageSize: 10, // 展示条数
         pageNumber: 1// 页码
       },
       totalCount: 0, // 数据总条数

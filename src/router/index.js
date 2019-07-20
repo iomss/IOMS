@@ -156,6 +156,18 @@ export const asyncRoutes = [
         }
       },
       {
+        path: 'MaintainerRob/:id',
+        name: 'Workorder-MaintainerRob',
+        component: () => import('@/views/Workorder/MaintainerRob'),
+        meta: {
+          title: '维修工程师抢单',
+          icon: 'fa fa-home',
+          roles: ['CreateRepairRecord'],
+          hidden: true,
+          fullPath: '/Workorder/MaintainerRob'
+        }
+      },
+      {
         path: 'MaintainerAddRecord/:id',
         name: 'Workorder-MaintainerAddRecord',
         component: () => import('@/views/Workorder/MaintainerAddRecord'),
