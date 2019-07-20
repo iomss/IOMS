@@ -32,8 +32,11 @@
                 <el-form-item label="故障描述" class="total" prop="description">
                   <el-input v-model="formData.description" placeholder="故障描述" size="small" />
                 </el-form-item>
-                <el-form-item label="报修人" prop="reporterName">
+                <el-form-item label="录入人" prop="reporterName">
                   {{ dangqianUser.userName }}
+                </el-form-item>
+                <el-form-item label="报修人" prop="reporterName">
+                  <el-input v-model="formData.reporterName" placeholder="报修人" size="small" />
                 </el-form-item>
                 <el-form-item label="故障级别" class="showtishi" prop="repairLevelId">
                   <el-select v-model="formData.repairLevelId" filterable placeholder="故障级别" size="small">
@@ -225,7 +228,6 @@ export default {
     createWorker() { // 提交派单按钮方法
       this.$refs.formData.validate(valid => {
         if (valid) {
-          this.formData.reporterName = this.dangqianUser.id
           this.$axios.post('/api/RepairOrder', this.formData).then(res => {
             this.$message.success('录入成功')
             this.$router.push('/maintenance/WatchmanAssetslist')
