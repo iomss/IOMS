@@ -34,7 +34,7 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-import Logo from '@/assets/user.png'
+import Logo from '@/assets/logo.png'
 
 export default {
   components: {
