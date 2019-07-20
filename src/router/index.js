@@ -89,36 +89,49 @@ export const constantRoutes = [
   //   },
   //   component: Layout,
   //   redirect: '/index',
-  //   children: [{
-  //     path: 'index',
-  //     component: () => import('@/views/home/index'),
-  //     name: 'index',
-  //     meta: {
-  //       title: '状态概览',
-  //       icon: 'fa fa-home',
-  //       fullPath: '/index',
-  //       roles: ['EnterSystem'],
-  //       affix: true
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/home/index'),
+  //       name: 'index',
+  //       meta: {
+  //         title: '状态概览',
+  //         icon: 'fa fa-home',
+  //         fullPath: '/index',
+  //         roles: ['EnterSystem'],
+  //         affix: true
+  //       }
+  //     },
+  //     {
+  //       path: 'myjob',
+  //       component: () => import('@/views/home/myjob'),
+  //       name: 'myjob',
+  //       meta: {
+  //         title: '我的工作',
+  //         icon: 'fa fa-home',
+  //         fullPath: '/myjob',
+  //         roles: ['EnterSystem'],
+  //         affix: true
+  //       }
   //     }
-  //   },
-  //   {
-  //     path: 'myjob',
-  //     component: () => import('@/views/home/myjob'),
-  //     name: 'myjob',
-  //     meta: {
-  //       title: '我的工作',
-  //       icon: 'fa fa-home',
-  //       fullPath: '/myjob',
-  //       roles: ['EnterSystem'],
-  //       affix: true
-  //     }
-  //   }
   //   ]
   // }
 ]
 
 export const asyncRoutes = [
   // 404 page must be placed at the end !!!
+  {
+    path: '/',
+    name: '/',
+    meta: {
+      title: '首页',
+      icon: 'fa fa-home',
+      fullPath: '/',
+      hidden: true
+    },
+    component: Layout,
+    redirect: '/Workorder'
+  },
   // 我都工作相关 权限已调整
   {
     path: '/Workorder',
