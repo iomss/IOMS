@@ -59,10 +59,10 @@
               </el-select>
             </el-form-item>
             <el-form-item label="维修开始时间" prop="startTime">
-              <el-date-picker v-model="formRcorda.startTime" type="datetime" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm" placeholder="维修开始时间" />
+              <el-date-picker v-model="formRcorda.startTime" type="datetime" placeholder="维修开始时间" />
             </el-form-item>
             <el-form-item label="维修结束时间" prop="endTime">
-              <el-date-picker v-model="formRcorda.endTime" type="datetime" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm" placeholder="维修结束时间" />
+              <el-date-picker v-model="formRcorda.endTime" type="datetime" placeholder="维修结束时间" />
             </el-form-item>
             <el-form-item label="维修过程" prop="description">
               <el-input v-model="formRcorda.description" placeholder="维修过程" size="small" />

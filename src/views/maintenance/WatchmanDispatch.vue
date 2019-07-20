@@ -228,7 +228,7 @@ export default {
           this.formData.reporterName = this.dangqianUser.id
           this.$axios.post('/api/RepairOrder', this.formData).then(res => {
             this.$message.success('录入成功')
-            this.$router.push('/Workorder/Watchmanlist')
+            this.$router.push('/maintenance/WatchmanAssetslist')
             // 页面跳转个人工作页
           })
         }

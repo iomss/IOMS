@@ -568,6 +568,7 @@ export const asyncRoutes = [
           title: '权限列表',
           icon: 'fa fa-home',
           roles: ['All'],
+          hidden: true,
           fullPath: '/Meta/Claims'
         },
         component: () => import('@/views/Meta/Claims')

@@ -8,8 +8,8 @@
             <h4>资产管理</h4>
             <div class="select">
               <el-button type="primary" plain size="small" @click="selectstate()">资产列表</el-button>
-              <el-button type="primary" plain size="small" @click="selectstate(0)">在用资产</el-button>
-              <el-button type="primary" plain size="small" @click="selectstate(1)">闲置资产</el-button>
+              <el-button type="primary" plain size="small" @click="selectstate(1)">在用资产</el-button>
+              <el-button type="primary" plain size="small" @click="selectstate(0)">闲置资产</el-button>
               <el-button type="primary" plain size="small" @click="selectstate(2)">报废资产</el-button>
             </div>
             <!--导入导出-->

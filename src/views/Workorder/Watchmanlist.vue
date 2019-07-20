@@ -72,7 +72,7 @@
               <el-table-column prop="reportTime" label="报修时间" :formatter="formatterDate" />
               <el-table-column prop="recordUser.name" label="录入人" />
               <el-table-column prop="recordTime" label="录入时间" :formatter="formatterDate" />
-              <el-table-column prop="repairUser" label="维修员" />
+              <el-table-column prop="repairUser.name" label="维修员" />
               <el-table-column prop="orderState" label="状态">
                 <template slot-scope="scope">
                   {{ scope.row.orderState==="Record"?"记录，等待指派或抢单":scope.row.orderState==='Dispatching'?"已分配给组长，等待分派工程师":scope.row.orderState==='Dispatched'?'已分配给工程师，工程师待确认':scope.row.orderState==='Repair'?'已分配工程师，等待维修':scope.row.orderState==='Suspend'?'暂缓':scope.row.orderState==='Check'?'维修完成待验收':scope.row.orderState==='Review'?'验收完成，待审核':scope.row.orderState==='Done'?'审核完成':'报修单流程被终止' }}

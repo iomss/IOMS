@@ -123,7 +123,7 @@ export default {
       },
       formData: {
         useUnitId: '',
-        positionId: '',
+        positionId: null,
         systemId: '',
         equipmentID: '',
         enableTime: '',
@@ -250,9 +250,20 @@ export default {
         this.unitpage.pageCount = res.pageCount
       })
     },
+    checkhasChildren(data) {
+      if (data.children.length > 0) {
+        data.children.forEach(item => {
+          this.checkhasChildren(item)
+        })
+      } else {
+        delete data.children
+      }
+      return data
+    },
     getpositionData() {
       // 获取安装位置
       this.$axios.get('/api/Tree/Position').then(res => {
+        debugger
         this.positionTreeData = res
       })
     },
