@@ -162,7 +162,7 @@ export const asyncRoutes = [
         meta: {
           title: '维修工程师抢单',
           icon: 'fa fa-home',
-          roles: ['CreateRepairRecord'],
+          roles: ['GrabOrder'],
           hidden: true,
           fullPath: '/Workorder/MaintainerRob'
         }
@@ -372,9 +372,9 @@ export const asyncRoutes = [
         name: 'maintenance-WatchmanAssetslist',
         component: () => import('@/views/maintenance/WatchmanAssetslist'),
         meta: {
-          title: '工单资产列表',
+          title: '维修单录入',
           icon: 'fa fa-home',
-          roles: ['ManageAsset'],
+          roles: ['CreateRepairOrder'],
           fullPath: '/maintenance/WatchmanAssetslist'
         }
       },

@@ -19,7 +19,7 @@
           <div class="content">
             <el-table :data="UnitData" stripe border style="width: 100%" @selection-change="handleSelectionChangeUnit">
               <el-table-column type="selection" width="40" />
-              <el-table-column prop="id" label="序号" />
+              <el-table-column type="index" label="序号" />
               <el-table-column prop="name" label="部门" />
               <el-table-column prop="parent" label="上级部门">
                 <template slot-scope="scope">

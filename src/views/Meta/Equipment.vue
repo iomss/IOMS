@@ -16,7 +16,7 @@
           <div class="content">
             <el-table :data="equipmentData" stripe border style="width: 100%" @selection-change="handleSelectionChangeEquipment">
               <el-table-column type="selection" width="40" />
-              <el-table-column prop="id" label="序号" />
+              <el-table-column type="index" label="序号" />
               <el-table-column prop="" label="设备类型">
                 <template slot-scope="scope">
                   {{ scope.row.equimentType.name }}

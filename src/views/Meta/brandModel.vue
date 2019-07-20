@@ -26,7 +26,7 @@
                   <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="danger" @click="deleteBrand(scope.row)">删除</el-button>
                 </template>
               </el-table-column>
-              <el-table-column prop="id" label="序号" width="100" />
+              <el-table-column type="index" label="序号" width="100" />
               <el-table-column prop="name" label="品牌名称" width="150" />
             </el-table>
             <pagination v-show="brandTotalCount>0" :total="brandTotalCount" :page.sync="brandFormSearce.pageNumber" :limit.sync="brandFormSearce.pageSize" @pagination="getBrandPage" />
@@ -78,7 +78,7 @@
                   <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="danger" @click="deleteModel(scope.row)">删除</el-button>
                 </template>
               </el-table-column>
-              <el-table-column prop="id" label="序号" width="100" />
+              <el-table-column type="index" label="序号" width="100" />
               <el-table-column prop="name" label="型号名称" width="150" />
               <el-table-column prop="brandName" label="品牌" width="150" />
             </el-table>

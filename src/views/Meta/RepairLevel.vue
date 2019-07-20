@@ -16,7 +16,7 @@
           <div class="content">
             <el-table :data="RepairLevelData" stripe border style="width: 100%" @selection-change="handleSelectionChangeRepairLevel">
               <el-table-column type="selection" width="40" />
-              <el-table-column prop="id" label="序号" />
+              <el-table-column type="index" label="序号" />
               <el-table-column prop="name" label="维修等级名称" />
             </el-table>
             <pagination v-show="RepairLevelTotalCount>0" :total="RepairLevelTotalCount" :page.sync="RepairLevelFormSearch.pageNumber" :limit.sync="RepairLevelFormSearch.pageSize" @pagination="getRepairLevelPage" />

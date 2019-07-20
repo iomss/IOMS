@@ -19,7 +19,7 @@
           <div class="content">
             <el-table :data="FaultData" stripe border style="width: 100%" @selection-change="handleSelectionChangeFault">
               <el-table-column type="selection" width="40" />
-              <el-table-column prop="id" label="序号" />
+              <el-table-column type="index" label="序号" />
               <el-table-column prop="name" label="故障名称" />
               <el-table-column prop="equipmentName" label="相关设备名称" />
             </el-table>

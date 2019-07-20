@@ -19,7 +19,7 @@
           <div class="content">
             <el-table :data="systemData" stripe border style="width: 100%" @selection-change="handleSelectionChangeSystem">
               <el-table-column type="selection" width="40" />
-              <el-table-column prop="id" label="序号" />
+              <el-table-column type="index" label="序号" />
               <el-table-column prop="name" label="所属系统" />
               <el-table-column prop="parentName" label="上级系统" />
             </el-table>

@@ -13,7 +13,7 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="安装位置" prop="positionId">
-                <treeselect v-model="formData.positionId" :normalizer="normalizer" :options="positionTreeData" :load-options="loadOptions" placeholder="安装位置" no-results-text="未找到相关数据" />
+                <treeselect v-model="formData.positionId" :disable-branch-nodes="true" :normalizer="normalizer" :options="positionTreeData" :load-options="loadOptions" placeholder="安装位置" no-results-text="未找到相关数据" />
               </el-form-item>
               <el-form-item label="所属系统" prop="systemId">
                 <el-select v-model="formData.systemId" v-loadmore="loadMoresystem" filterable placeholder="所属系统" size="small">

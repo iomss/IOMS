@@ -16,7 +16,7 @@
           <div class="content">
             <el-table :data="positionData" stripe border style="width: 100%" @selection-change="handleSelectionChangePosition">
               <el-table-column type="selection" width="40" />
-              <el-table-column prop="id" label="序号" />
+              <el-table-column type="index" label="序号" />
               <el-table-column prop="name" label="位置" />
               <el-table-column prop="parentName" label="上级位置" />
               <el-table-column prop="" label="位置类型">

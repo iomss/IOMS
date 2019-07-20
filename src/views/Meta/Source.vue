@@ -16,7 +16,7 @@
           <div class="content">
             <el-table :data="sourceData" stripe border style="width: 100%" @selection-change="handleSelectionChangeSource">
               <el-table-column type="selection" width="40" />
-              <el-table-column prop="id" label="序号" />
+              <el-table-column type="index" label="序号" />
               <el-table-column prop="name" label="来源名称" />
             </el-table>
             <pagination v-show="sourceTotalCount>0" :total="sourceTotalCount" :page.sync="sourceFormSearch.pageNumber" :limit.sync="sourceFormSearch.pageSize" @pagination="getSourcePage" />
