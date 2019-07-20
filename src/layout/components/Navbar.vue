@@ -59,6 +59,7 @@ export default {
       this.$store.dispatch('app/toggleSideBar')
     },
     logout() {
+      this.$store.dispatch('tagsView/delAllViews')
       document.cookie.match(/[^ =;]+(?=\=)/g).forEach(item => {
         this.$cookie.remove(item.replace('ioms-', ''))
       })
