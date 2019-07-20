@@ -1,4 +1,5 @@
 import Vue from 'vue'
+// import directives from './directives'
 
 // css 标准化
 import 'normalize.css/normalize.css' // a modern alternative to CSS resets
@@ -32,6 +33,8 @@ import moment from 'moment'
 
 Vue.use(Element)
 
+// Vue.use(directives)
+
 Vue.config.productionTip = false
 
 // 将cookie挂载到vue属性中
@@ -44,6 +47,18 @@ Vue.prototype.$ajax = ajax
 // 时间日期格式话
 Vue.prototype.$moment = moment
 
+Vue.directive('loadmore', {
+  bind(el, binding) {
+    // 获取element-ui定义好的scroll盒子
+    const SELECTWRAP_DOM = el.querySelector('.el-select-dropdown .el-select-dropdown__wrap')
+    SELECTWRAP_DOM.addEventListener('scroll', function() {
+      const CONDITION = this.scrollHeight - this.scrollTop <= this.clientHeight
+      if (CONDITION) {
+        binding.value()
+      }
+    })
+  }
+})
 new Vue({
   el: '#app',
   router,

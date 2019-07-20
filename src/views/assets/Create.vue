@@ -8,7 +8,7 @@
             <h4>新增资产</h4>
             <el-form ref="formData" :model="formData" :rules="formDatarules" label-width="90px">
               <el-form-item label="使用单位" prop="useUnitId">
-                <el-select v-model="formData.useUnitId" filterable placeholder="使用单位" size="small">
+                <el-select v-model="formData.useUnitId" v-loadmore="loadMore" filterable placeholder="使用单位" size="small">
                   <el-option v-for="item in unitData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
@@ -23,12 +23,12 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="资产类别" prop="equipmentID">
-                <el-select v-model="formData.equipmentID" clearable placeholder="资产类别" size="small">
+                <el-select v-model="formData.equipmentID" filterable placeholder="资产类别" size="small">
                   <el-option v-for="item in typeData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
               <el-form-item label="集成商" prop="siId">
-                <el-select v-model="formData.siId" clearable placeholder="设备集成商" size="small">
+                <el-select v-model="formData.siId" filterable placeholder="设备集成商" size="small">
                   <el-option v-for="item in siData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
@@ -39,17 +39,17 @@
                 <el-date-picker v-model="formData.enableTime" type="date" placeholder="投用时间" />
               </el-form-item>
               <el-form-item label="品牌" prop="brandId">
-                <el-select v-model="formData.brandId" clearable placeholder="资产类别" size="small">
+                <el-select v-model="formData.brandId" filterable placeholder="资产类别" size="small">
                   <el-option v-for="item in brandData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
               <el-form-item label="型号" prop="modelId">
-                <el-select v-model="formData.modelId" clearable placeholder="资产类别" size="small">
+                <el-select v-model="formData.modelId" filterable placeholder="资产类别" size="small">
                   <el-option v-for="item in modelData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
               <el-form-item label="来源" prop="sourceId">
-                <el-select v-model="formData.sourceId" clearable placeholder="来源" size="small">
+                <el-select v-model="formData.sourceId" filterable placeholder="来源" size="small">
                   <el-option v-for="item in sourceData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
@@ -69,7 +69,7 @@
                 <el-input v-model="formData.liabilityPeriod" placeholder="缺陷责任期" size="small" />
               </el-form-item>
               <el-form-item label="产权单位" prop="propertyUnitId">
-                <el-select v-model="formData.propertyUnitId" clearable placeholder="产权单位" size="small">
+                <el-select v-model="formData.propertyUnitId" filterable placeholder="产权单位" size="small">
                   <el-option v-for="item in unitData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
@@ -182,6 +182,11 @@ export default {
         original: [
           { required: true, message: '资产原值不可为空', trigger: 'change' }
         ]
+      },
+      selectpage: {
+        pageNumber: 1,
+        pageSize: 10,
+        pageCount: ''
       }
     }
   },
@@ -192,8 +197,9 @@ export default {
   methods: {
     getselectData() { // 获取下拉菜单数据
       // 获取使用单位信息
-      this.$axios.get('/api/Meta/Unit').then(res => {
+      this.$axios.get('/api/Meta/Unit?pageSize=10&pageNumber=' + this.selectpage.pageNumber).then(res => {
         this.unitData = res.data
+        this.selectpage.pageCount = res.pageCount
       })
       // 获取安装位置
       this.$axios.get('/api/Meta/Position').then(res => {
@@ -223,6 +229,15 @@ export default {
       this.$axios.get('/api/Meta/SI').then(res => {
         this.siData = res.data
       })
+    },
+    loadMore() {
+      if (this.selectpage.pageCount > this.selectpage.pageNumber) {
+        this.selectpage.pageNumber += 1
+        this.$axios.get('/api/Meta/Unit?pageSize=10&pageNumber=' + this.selectpage.pageNumber).then(res => {
+          this.unitData = this.unitData.concat(res.data)
+          console.log(this.unitData)
+        })
+      }
     },
     create() { // 新增资产/api/Assets
       console.log(this)
