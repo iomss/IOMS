@@ -21,7 +21,7 @@
                   <el-date-picker v-model="formData.reportTime" type="datetime" placeholder="报修时间" />
                 </el-form-item>
                 <el-form-item label="故障类型" class="showtishi" prop="equipmentFaultId">
-                  <el-select v-model="formData.equipmentFaultId" clearable placeholder="故障类型" size="small">
+                  <el-select v-model="formData.equipmentFaultId" v-loadmore="loadMorefault" filterable placeholder="故障类型" size="small">
                     <el-option v-for="item in faultData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                   <i class="fa fa-plus" aria-hidden="true" @click="creatorder()" />
@@ -48,7 +48,7 @@
                   </el-tooltip>
                 </el-form-item>
                 <el-form-item label="指定工程师" prop="repairUserId">
-                  <el-select v-model="formData.repairUserId" clearable placeholder="指定工程师" size="small">
+                  <el-select v-model="formData.repairUserId" v-loadmore="loadMoreuser" filterable placeholder="指定工程师" size="small">
                     <el-option v-for="item in userData" :key="item.id" :label="item.userName" :value="item.id" />
                   </el-select>
                 </el-form-item>
@@ -61,8 +61,8 @@
             <el-dialog title="添加故障类型" :visible.sync="changeActiveVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="600px">
               <el-form ref="formAdd" :model="formAdd" label-width="90px" :rules="formAddrules">
                 <el-form-item label="设备种类" prop="equipmentId" class="total">
-                  <el-select v-model="formAdd.equipmentId" clearable placeholder="设备种类" size="small">
-                    <el-option v-for="item in typeData" :key="item.id" :label="item.name" :value="item.id" />
+                  <el-select v-model="formAdd.equipmentId" v-loadmore="loadMoreequipment" filterable placeholder="设备种类" size="small">
+                    <el-option v-for="item in equipmentData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
                 <el-form-item label="故障名称" prop="name" class="total">
@@ -109,8 +109,7 @@ export default {
         equipmentId: '',
         name: ''
       },
-      positionData: [], // 安装位置数据
-      typeData: [], // 设备种类数据
+      equipmentData: [], // 设备种类数据
       faultData: [], // 故障类型数据
       levelData: [], // 故障级别数据
       userData: [], // 可指派人员数据
@@ -135,36 +134,77 @@ export default {
         name: [
           { required: true, message: '故障名称不可为空', trigger: 'change' }
         ]
+      },
+      faultpage: {// 故障类型分页
+        pageNumber: 1,
+        pageSize: 10,
+        pageCount: ''
+      },
+      equipmentpage: {// 资产类别分页
+        pageNumber: 1,
+        pageSize: 10,
+        pageCount: ''
+      },
+      userpage: {// 指定工程师分页
+        pageNumber: 1,
+        pageSize: 10,
+        pageCount: ''
       }
     }
   },
   computed: {},
   mounted() {
-    this.getselectData()
+    this.getlevelData()
+    this.getfaultData()
+    this.getequipmentData()
+    this.getuserData()
     this.getData()
   },
   methods: {
-    getselectData() { // 获取下拉菜单数据
-      // 获取安装位置
-      this.$axios.get('/api/Meta/Position').then(res => {
-        this.positionData = res.data
-      })
-      // 获取设备种类
-      this.$axios.get('/api/Meta/Equipment').then(res => {
-        this.typeData = res.data
-      })
-      // 获取故障类型
-      this.$axios.get('/api/Meta/Fault').then(res => {
-        this.faultData = res.data
-      })
+    getlevelData() {
       // 获取维修级别
       this.$axios.get('/api/Meta/RepairLevel').then(res => {
         this.levelData = res.data
       })
-      // 获取用户
-      this.$axios.get('/api/User?dispatch=true').then(res => {
-        this.userData = res.data
+    },
+    getfaultData() {
+      // 获取故障类型
+      this.$axios.get('/api/Meta/Fault?pageSize=' + this.faultpage.pageSize + '&pageNumber=' + this.faultpage.pageNumber).then(res => {
+        this.faultData = res.data
+        this.faultpage.pageCount = res.pageCount
       })
+    },
+    getequipmentData() {
+      // 获取资产类别
+      this.$axios.get('/api/Meta/equipment?pageSize=' + this.equipmentpage.pageSize + '&pageNumber=' + this.equipmentpage.pageNumber).then(res => {
+        this.equipmentData = res.data
+        this.equipmentpage.pageCount = res.pageCount
+      })
+    },
+    getuserData() {
+      // 获取用户
+      this.$axios.get('/api/User?Dispatch=true&pageSize=' + this.userpage.pageSize + '&pageNumber=' + this.userpage.pageNumber).then(res => {
+        this.userData = res.data
+        this.userpage.pageCount = res.pageCount
+      })
+    },
+    loadMorefault() { // 故障类型获取下一页
+      if (this.faultpage.pageCount > this.faultpage.pageNumber) {
+        this.faultpage.pageNumber += 1
+        this.getfaultData()
+      }
+    },
+    loadMoreequipment() { // 资产类别加载下一页数据
+      if (this.equipmentpage.pageCount > this.equipmentpage.pageNumber) {
+        this.equipmentpage.pageNumber += 1
+        this.getequipmentData()
+      }
+    },
+    loadMoreuser() {
+      if (this.userpage.pageCount > this.userpage.pageNumber) {
+        this.userpage.pageNumber += 1
+        this.getuserData()
+      }
     },
     getData() { // 获取当前数据
       const _this = this
