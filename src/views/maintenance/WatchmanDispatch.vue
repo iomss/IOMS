@@ -172,11 +172,6 @@ export default {
       },
       // 深度观察
       deep: true
-    },
-    formData: {
-      equipment: () => {
-
-      }
     }
   },
   mounted() {
