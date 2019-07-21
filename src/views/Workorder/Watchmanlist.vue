@@ -91,7 +91,7 @@
               </span>
             </el-dialog>
             <!--分页-->
-            <pagination v-show="totalCount>0" :total="totalCount" :page.sync="tableDataSearch.pageSize" :limit.sync="tableDataSearch.pageNumber" @pagination="getPage" />
+            <pagination v-show="totalCount>0" :total="totalCount" :page.sync="tableDataSearch.pageNumber" :limit.sync="tableDataSearch.pageSize" @pagination="getPage" />
           </div>
         </div>
       </el-col>
@@ -141,8 +141,6 @@ export default {
         this.tableData = res.data
         this.totalCount = res.totalCount
       })
-      console.log('111111')
-      console.log(this.roles)
     },
     getPage(val) { // page事件
       // 展示条数
@@ -159,15 +157,12 @@ export default {
       this.multipleSelection = val
     },
     Receiptwork(data) { // 接单
-      console.log(data)
       this.$router.push('/Workorder/MaintainerReceipt/' + data.id)
     },
     robwork(data) { // 抢单
-      console.log(data)
       this.$router.push('/Workorder/MaintainerRob/' + data.id)
     },
     changework(data) { // 转单
-      console.log(data)
       if (data) {
         this.$router.push('/Workorder/MaintainerChangeOrder/' + data.id)
       } else {

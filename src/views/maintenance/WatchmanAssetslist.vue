@@ -44,7 +44,7 @@
                 </el-table-column>
               </el-table>
               <!--分页-->
-              <pagination v-show="totalCount>0" :total="totalCount" :page.sync="tableDataSearch.pageSize" :limit.sync="tableDataSearch.pageNumber" @pagination="getPage" />
+              <pagination v-show="totalCount>0" :total="totalCount" :page.sync="tableDataSearch.pageNumber" :limit.sync="tableDataSearch.pageSize" @pagination="getPage" />
             </div>
           </div>
         </div>
@@ -175,8 +175,8 @@ export default {
     padding: 5px;
   }
 }
-.el-tree{
-  height:600px;
+.el-tree {
+  height: 600px;
   overflow-y: scroll;
 }
 </style>
