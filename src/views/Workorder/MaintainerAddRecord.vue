@@ -348,6 +348,7 @@ export default {
       // 设备种类筛选故障类型
       this.$axios.get('/api/Meta/Fault', { params: this.faultpage }).then(res => {
         this.faultData = res.data
+        this.formRcorda.equipmentFaultId = ''
       })
       // 设备种类筛选设备编码
       this.$axios.get('/api/Meta/Assets', { params: this.assetspage }).then(res => {
