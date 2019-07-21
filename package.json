@@ -44,6 +44,7 @@
     "@fortawesome/fontawesome-free": "^5.9.0",
     "@riophae/vue-treeselect": "0.0.38",
     "axios": "0.18.1",
+    "dayjs": "^1.8.15",
     "echarts": "4.2.1",
     "element-ui": "2.10.1",
     "file-saver": "2.0.1",

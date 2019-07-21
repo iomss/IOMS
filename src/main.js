@@ -30,6 +30,7 @@ import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
 // 时间格式化插件
 import moment from 'moment'
+import dayjs from 'dayjs'
 
 Vue.use(Element)
 
@@ -46,6 +47,7 @@ Vue.prototype.$ajax = ajax
 
 // 时间日期格式话
 Vue.prototype.$moment = moment
+Vue.prototype.$dayjs = dayjs
 
 Vue.directive('loadmore', {
   bind(el, binding) {

@@ -266,7 +266,8 @@ export default {
         pageNumber: 1,
         pageSize: 10,
         pageCount: '',
-        equipmentId: undefined
+        equipmentId: undefined,
+        positionId: ''
       },
       assetspage: {// 设备编码分页
         pageNumber: 1,
@@ -281,7 +282,6 @@ export default {
     this.getdata()
     this.getselectData()
     this.getfaultData()
-    this.getAssetsData()
   },
   methods: {
     getselectData() { // 获取下拉菜单数据
@@ -334,11 +334,14 @@ export default {
       this.formData.assetId = window.location.href.split('/')[window.location.href.split('/').length - 1]
       this.$axios.get('/api/RepairOrder/' + this.formData.assetId).then(res => {
         this.formData = res
-        this.formData.failureTime = this.$moment(res.failureTime).format('YYYY-MM-DD HH:mm')
+        this.formData.failureTime = this.$dayjs(res.failureTime).format('YYYY-MM-DD HH:mm')
+        // this.formData.failureTime = this.$moment(res.failureTime).format('YYYY-MM-DD HH:mm')
         this.formData.reportTime = this.$moment(res.reportTime).format('YYYY-MM-DD HH:mm:ss')
         this.updateData.id = res.id
         this.equipmentpage.positionId = res.position.id
         this.getequipmentData()// 根据位置筛选设备种类
+        this.faultpage.positionId = res.position.id
+        this.getAssetsData()// 根据位置筛选设备编码
       })
     },
     changeEquipment() { // 设备种类筛选设备编码
