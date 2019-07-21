@@ -185,7 +185,6 @@ export default {
         padding: 10px;
       }
       b {
-        width: 77%;
         display: inline-block;
         font-weight: 400;
       }

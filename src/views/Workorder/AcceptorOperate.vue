@@ -18,7 +18,7 @@
                 <li><span>故障描述:</span><b>{{ formData.description }}</b></li>
                 <li><span>录入人:</span><b>{{ formData.repairUser.name }}</b></li>
                 <li><span>故障类型:</span><b>{{ formData.equipmentFault.name }}</b></li>
-                <li><span>报修级别:</span><b>{{ formData.repairLevel.name }}</b></li>
+                <li><span>报修级别:</span><b>{{ formData.repairLevel===null?'':formData.repairLevel.name }}</b></li>
                 <li><span>报修人:</span><b>{{ formData.reporterName }}</b></li>
                 <li><span>报修时间:</span><b>{{ formData.reportTime }}</b></li>
                 <li><span>派工次数:</span><b>{{ formData.dispatchCount }}</b></li>
@@ -183,7 +183,6 @@ export default {
         padding: 10px;
       }
       b {
-        width: 77%;
         display: inline-block;
         font-weight: 400;
       }
