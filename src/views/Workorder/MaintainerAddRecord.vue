@@ -264,7 +264,8 @@ export default {
       faultpage: {// 故障类型分页
         pageNumber: 1,
         pageSize: 10,
-        pageCount: ''
+        pageCount: '',
+        equipmentId: undefined
       }
     }
   },
@@ -295,7 +296,7 @@ export default {
     },
     getfaultData() {
       // 获取故障类型
-      this.$axios.get('/api/Meta/Fault?pageSize=' + this.faultpage.pageSize + '&pageNumber=' + this.faultpage.pageNumber).then(res => {
+      this.$axios.get('/api/Meta/Fault', { params: this.faultpage }).then(res => {
         this.faultData = this.faultData.concat(res.data)
         this.faultpage.pageCount = res.pageCount
       })
@@ -322,6 +323,10 @@ export default {
     },
     changeEquipment() { // 设备种类筛选设备编码
       // 获取设备编码
+      this.faultpage.equipmentId = this.formRcorda.equipmentId
+      this.$axios.get('/api/Meta/Fault', { params: this.faultpage }).then(res => {
+        this.faultData = res.data
+      })
       this.$axios.get('/api/Meta/Assets?equipmentId=' + this.formRcorda.equipmentId).then(res => {
         this.assetsData = res.data
       })
