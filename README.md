@@ -17,8 +17,13 @@ npm run serve
 打包预览环境
 npm run build:stage
 
+api 地址可在 .env.staging 文件中进行配置
+
 打包生产环境
 npm run build:prod
+
+api 地址可在 .env.production 文件中进行配置
+
 ```
 
 ## IOMS 项目发布相关配置
