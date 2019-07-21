@@ -242,6 +242,8 @@ export default {
     createWorker() { // 提交派单按钮方法
       this.$refs.formData.validate(valid => {
         if (valid) {
+          console.log(this.formData.reportTime)
+          console.log(this.formData.failureTime)
           this.$axios.post('/api/RepairOrder', this.formData).then(res => {
             this.$message.success('录入成功')
             this.$router.push('/maintenance/WatchmanAssetslist')

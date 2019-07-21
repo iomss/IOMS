@@ -16,7 +16,7 @@
                 <!-- <li><span>设备类型:</span><b>{{ formData.equipment.name }}</b></li> -->
                 <li><span>故障时间:</span><b>{{ formData.failureTime }}</b></li>
                 <li><span>故障描述:</span><b>{{ formData.description }}</b></li>
-                <li><span>录入人:</span><b>{{ formData.repairUser.name }}</b></li>
+                <li><span>录入人:</span><b>{{ formData.recordUser.name }}</b></li>
                 <li><span>故障类型:</span><b>{{ formData.equipmentFault.name }}</b></li>
                 <li><span>报修级别:</span><b>{{ formData.repairLevel.name }}</b></li>
                 <li><span>报修人:</span><b>{{ formData.reporterName }}</b></li>

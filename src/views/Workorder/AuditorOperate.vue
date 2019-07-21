@@ -15,7 +15,7 @@
                 <!-- <li><span>故障类型:</span><b>{{ formData.equipment.name }}</b></li> -->
                 <li><span>故障时间:</span><b>{{ formData.failureTime }}</b></li>
                 <li><span>故障描述:</span><b>{{ formData.description }}</b></li>
-                <li><span>录入人:</span><b>{{ formData.repairUser.name }}</b></li>
+                <li><span>录入人:</span><b>{{ formData.recordUser.name }}</b></li>
                 <li><span>故障类型:</span><b>{{ formData.equipmentFault.name }}</b></li>
                 <li><span>报修级别:</span><b>{{ formData.repairLevel.name }}</b></li>
                 <li><span>报修人:</span><b>{{ formData.reporterName }}</b></li>
@@ -52,7 +52,7 @@
           <h4>验收确认</h4>
           <div class="Infodata">
             <ul v-if="tableData.repairType!==''">
-              <li><span>验收结果:</span><b>{{ tableData.reviewStatus==='Applied'?'通过':'不通过' }}</b></li>
+              <li><span>验收结果:</span><b>{{ tableData.checkStatus ==='Applied'?'通过':tableData.checkStatus ==='Rejected'?'不通过':'' }}</b></li>
               <li><span>验收意见:</span><b>{{ tableData.checkComment }}</b></li>
               <li><span>验收人:</span><b>{{ tableData.checkUser.name }}</b></li>
             </ul>

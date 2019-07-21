@@ -55,7 +55,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="维修级别" prop="repairLevelId">
-              <el-select v-model="formRcorda.repairLevelId" filterable placeholder="产权单位" size="small">
+              <el-select v-model="formRcorda.repairLevelId" filterable placeholder="维修级别" size="small">
                 <el-option v-for="item in levelData" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
@@ -259,7 +259,8 @@ export default {
       equipmentpage: {// 资产类别分页
         pageNumber: 1,
         pageSize: 10,
-        pageCount: ''
+        pageCount: '',
+        positionId: ''
       },
       faultpage: {// 故障类型分页
         pageNumber: 1,
@@ -279,7 +280,6 @@ export default {
   mounted() {
     this.getdata()
     this.getselectData()
-    this.getequipmentData()
     this.getfaultData()
     this.getAssetsData()
   },
@@ -298,7 +298,7 @@ export default {
       })
     },
     getequipmentData() {
-      // 获取资产类别
+      // 获取设备种类
       this.$axios.get('/api/Meta/equipment', { params: this.equipmentpage }).then(res => {
         this.equipmentData = this.equipmentData.concat(res.data)
         this.equipmentpage.pageCount = res.pageCount
@@ -337,6 +337,8 @@ export default {
         this.formData.failureTime = this.$moment(res.failureTime).format('YYYY-MM-DD HH:mm')
         this.formData.reportTime = this.$moment(res.reportTime).format('YYYY-MM-DD HH:mm:ss')
         this.updateData.id = res.id
+        this.equipmentpage.positionId = res.position.id
+        this.getequipmentData()// 根据位置筛选设备种类
       })
     },
     changeEquipment() { // 设备种类筛选设备编码
