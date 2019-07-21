@@ -326,6 +326,7 @@ export default {
       this.faultpage.equipmentId = this.formRcorda.equipmentId
       this.$axios.get('/api/Meta/Fault', { params: this.faultpage }).then(res => {
         this.faultData = res.data
+        this.formRcorda.equipmentFaultId = ''
       })
       this.$axios.get('/api/Meta/Assets?equipmentId=' + this.formRcorda.equipmentId).then(res => {
         this.assetsData = res.data
