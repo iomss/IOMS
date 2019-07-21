@@ -141,6 +141,8 @@ export default {
       this.$axios.get('/api/RepairOrder/' + this.formData.assetId).then(res => {
         this.formData = res
         this.repairRecordId = res.repairRecordId
+        this.formData.failureTime = this.$moment(res.failureTime).format('YYYY-MM-DD HH:mm')
+        this.formData.reportTime = this.$moment(res.reportTime).format('YYYY-MM-DD HH:mm:ss')
         this.getrecord()
       })
     },

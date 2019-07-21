@@ -32,19 +32,19 @@
           <div class="Infodata">
             <ul v-if="tableData.repairType!==''">
               <li><span>维修单类型:</span><b>{{ tableData.repairType=='Done'?'维修完成':tableData.repairType=='Repeat'?'重复报修':tableData.repairType=='Mistaken'?'误报':'暂缓' }}</b></li>
-              <li><span>设备种类:</span><b>{{ tableData.equipment.equimentType.name }}</b></li>
+              <!-- <li><span>设备种类:</span><b>{{ tableData.equipment.equimentType.name }}</b></li> -->
               <li><span>设备编号:</span><b>{{ tableData.assetCode }}</b></li>
               <li><span>故障类型:</span><b>{{ tableData.equipment.name }}</b></li>
               <li><span>维修级别:</span><b>{{ tableData.repairLevel.name }}</b></li>
               <li><span>维修开始时间:</span><b>{{ tableData.startTime }}</b></li>
               <li><span>维修结束时间:</span><b>{{ tableData.endTime }}</b></li>
               <li><span>维修过程:</span><b>{{ tableData.description }}</b></li>
-              <li><span>建议:</span><b>null</b></li>
+              <!-- <li><span>建议:</span><b>null</b></li> -->
               <li><span>配件名称及数量:</span><b>{{ tableData.spareDescription }}</b></li>
               <li><span>维修人:</span><b>{{ tableData.repairer.name }}</b></li>
               <li><span>协助人:</span><b>{{ tableData.assist }}</b></li>
-              <li><span>维修结果图片:</span><b>{{ tableData.assist }}</b></li>
-              <li><span>现场验收签字:</span><b>{{ tableData.assist }}</b></li>
+              <!-- <li><span>维修结果图片:</span><b>{{ tableData.assist }}</b></li>
+              <li><span>现场验收签字:</span><b>{{ tableData.assist }}</b></li> -->
             </ul>
           </div>
         </div>
@@ -135,6 +135,8 @@ export default {
       this.$axios.get('/api/RepairOrder/' + this.formData.assetId).then(res => {
         this.formData = res
         this.repairRecordId = res.repairRecordId
+        this.formData.failureTime = this.$moment(res.failureTime).format('YYYY-MM-DD HH:mm')
+        this.formData.reportTime = this.$moment(res.reportTime).format('YYYY-MM-DD HH:mm:ss')
         this.getrecord()
       })
     },

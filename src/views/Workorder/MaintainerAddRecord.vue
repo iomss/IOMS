@@ -46,7 +46,7 @@
             </el-form-item>
             <el-form-item label="设备编码" prop="assetCode">
               <el-select v-model="formRcorda.assetCode" v-loadmore="loadMoreAssets" filterable placeholder="设备编码" size="small">
-                <el-option v-for="item in assetsData" :key="item.id" :label="item.name" :value="item.id" />
+                <el-option v-for="item in assetsData" :key="item.name" :label="item.name" :value="item.name" />
               </el-select>
             </el-form-item>
             <el-form-item label="故障类型" prop="equipmentFaultId">
@@ -77,8 +77,8 @@
             <el-form-item label="维修人" prop="repairerId">
               {{ dangqianUser.userName }}
             </el-form-item>
-            <el-form-item label="维修人员" prop="assist">
-              <el-input v-model="formRcorda.assist" placeholder="维修人员" size="small" />
+            <el-form-item label="协助人" prop="assist">
+              <el-input v-model="formRcorda.assist" placeholder="协助人" size="small" />
             </el-form-item>
             <el-form-item class="form_total">
               <el-button type="primary" size="small" @click="updata('a')">提交</el-button>

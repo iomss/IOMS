@@ -68,6 +68,8 @@ export default {
         this.formData = res
         this.updateData.id = res.id
         this.updateData.userId = res.recordUser.id
+        this.formData.failureTime = this.$moment(res.failureTime).format('YYYY-MM-DD HH:mm')
+        this.formData.reportTime = this.$moment(res.reportTime).format('YYYY-MM-DD HH:mm:ss')
       })
     },
     reciptwork(val) { // 点击接受按钮
