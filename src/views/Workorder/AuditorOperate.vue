@@ -6,7 +6,7 @@
         <div class="panel">
           <div class="header">
             <h4>维修单详情</h4>
-            <div class="Infodata">
+            <div v-if="formData.assetCode!==''" class="Infodata">
               <ul>
                 <li><span>维修单编号:</span><b>{{ formData.code }}</b></li>
                 <li><span>设备位置:</span><b>{{ formData.position.crumbName }}</b></li>
@@ -29,7 +29,7 @@
         <div class="content">
           <h4>维修记录</h4>
           <div class="Infodata">
-            <ul v-show="tableData.repairType!==''">
+            <ul v-if="tableData.repairType!==''">
               <li><span>维修单类型:</span><b>{{ tableData.repairType=='Done'?'维修完成':tableData.repairType=='Repeat'?'重复报修':tableData.repairType=='Mistaken'?'误报':'暂缓' }}</b></li>
               <li><span>资产名称:</span><b>{{ tableData.equipment===null?'':tableData.equipment.name }}</b></li>
               <!-- <li><span>设备种类:</span><b>{{ tableData.equipment.equimentType.name }}</b></li> -->
@@ -51,7 +51,7 @@
         <div class="mid">
           <h4>验收确认</h4>
           <div class="Infodata">
-            <ul>
+            <ul v-if="tableData.repairType!==''">
               <li><span>验收结果:</span><b>{{ tableData.reviewStatus==='Applied'?'通过':'不通过' }}</b></li>
               <li><span>验收意见:</span><b>{{ tableData.checkComment }}</b></li>
               <li><span>验收人:</span><b>{{ tableData.checkUser.name }}</b></li>
