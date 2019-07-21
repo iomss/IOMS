@@ -79,7 +79,7 @@
                   <el-option key="1" label="台" value="true" />
                   <el-option key="2" label="套" value="false" />
                   <el-option key="3" label="个" value="true" />
-                  <el-option key="4" label="米" value="false" />
+                  <!-- <el-option key="4" label="米" value="false" /> -->
                 </el-select>
               </el-form-item>
               <el-form-item label="备注" class="form_mid" prop="comment">
