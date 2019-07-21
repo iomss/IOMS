@@ -145,7 +145,8 @@ export default {
       faultpage: {// 故障类型分页
         pageNumber: 1,
         pageSize: 10,
-        pageCount: ''
+        pageCount: '',
+        equipmentId: undefined
       },
       equipmentpage: {// 资产类别分页
         pageNumber: 1,
@@ -160,6 +161,24 @@ export default {
     }
   },
   computed: {},
+  watch: {
+    'formData.equipment': {
+      handler: function(val, oldVal) {
+        this.faultData.equipmentId = this.formData.equipmentId
+        this.$axios.get('/api/Meta/Fault?equipmentId=' + this.formData.equipmentId).then(res => {
+          this.faultData = res.data
+          this.faultpage.pageCount = res.pageCount
+        })
+      },
+      // 深度观察
+      deep: true
+    },
+    formData: {
+      equipment: () => {
+
+      }
+    }
+  },
   mounted() {
     this.getlevelData()
     this.getfaultData()
