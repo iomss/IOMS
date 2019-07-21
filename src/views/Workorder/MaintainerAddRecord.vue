@@ -9,7 +9,7 @@
             <div v-if="formData.code!==''" class="Infodata">
               <ul>
                 <li><span>维修单编号:</span><b>{{ formData.code }}</b></li>
-                <li><span>设备位置:</span><b>{{ formData.position.name }}</b></li>
+                <li><span>设备位置:</span><b>{{ formData.position.crumbName }}</b></li>
                 <li><span>资产名称:</span><b>{{ formData.equipment.name }}</b></li>
                 <!-- <li><span>设备种类:</span><b>{{ formData.equipment.equimentType.name }}</b></li> -->
                 <li><span>设备编码:</span><b>{{ formData.assetCode }}</b></li>
@@ -45,7 +45,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="设备编码" prop="assetCode">
-              <el-select v-model="formRcorda.assetCode" filterable placeholder="设备编码" size="small">
+              <el-select v-model="formRcorda.assetCode" v-loadmore="loadMoreAssets" filterable placeholder="设备编码" size="small">
                 <el-option v-for="item in assetsData" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
@@ -112,7 +112,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="设备编码" prop="assetCode">
-              <el-select v-model="formRcordd.assetCode" filterable placeholder="设备编码" size="small">
+              <el-select v-model="formRcordd.assetCode" v-loadmore="loadMoreAssets" filterable placeholder="设备编码" size="small">
                 <el-option v-for="item in assetsData" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
@@ -266,6 +266,12 @@ export default {
         pageSize: 10,
         pageCount: '',
         equipmentId: undefined
+      },
+      assetspage: {// 设备编码分页
+        pageNumber: 1,
+        pageSize: 10,
+        pageCount: '',
+        equipmentId: undefined
       }
     }
   },
@@ -275,6 +281,7 @@ export default {
     this.getselectData()
     this.getequipmentData()
     this.getfaultData()
+    this.getAssetsData()
   },
   methods: {
     getselectData() { // 获取下拉菜单数据
@@ -282,14 +289,17 @@ export default {
       this.$axios.get('/api/Meta/RepairLevel').then(res => {
         this.levelData = res.data
       })
+    },
+    getAssetsData() {
       // 获取设备编码
-      this.$axios.get('/api/Meta/Assets').then(res => {
-        this.assetsData = res.data
+      this.$axios.get('/api/Meta/Assets', { params: this.faultpage }).then(res => {
+        this.assetsData = this.assetsData.concat(res.data)
+        this.assetspage.pageCount = res.pageCount
       })
     },
     getequipmentData() {
       // 获取资产类别
-      this.$axios.get('/api/Meta/equipment?pageSize=' + this.equipmentpage.pageSize + '&pageNumber=' + this.equipmentpage.pageNumber).then(res => {
+      this.$axios.get('/api/Meta/equipment', { params: this.equipmentpage }).then(res => {
         this.equipmentData = this.equipmentData.concat(res.data)
         this.equipmentpage.pageCount = res.pageCount
       })
@@ -313,6 +323,12 @@ export default {
         this.getfaultData()
       }
     },
+    loadMoreAssets() { // 设备编码获取下一页
+      if (this.assetspage.pageCount > this.assetspage.pageNumber) {
+        this.assetspage.pageNumber += 1
+        this.getAssetsData()
+      }
+    },
     getdata() {
       // 获取维修详情数据
       this.formData.assetId = window.location.href.split('/')[window.location.href.split('/').length - 1]
@@ -322,12 +338,19 @@ export default {
       })
     },
     changeEquipment() { // 设备种类筛选设备编码
-      // 获取设备编码
-      this.faultpage.equipmentId = this.formRcorda.equipmentId
+      if (this.repairType === 'Done') {
+        this.faultpage.equipmentId = this.formRcorda.equipmentId
+        this.assetspage.equipmentId = this.formRcorda.equipmentId
+      } else if (this.repairType === 'Suspend') {
+        this.faultpage.equipmentId = this.formRcordd.equipmentId
+        this.assetspage.equipmentId = this.formRcordd.equipmentId
+      }
+      // 设备种类筛选故障类型
       this.$axios.get('/api/Meta/Fault', { params: this.faultpage }).then(res => {
         this.faultData = res.data
       })
-      this.$axios.get('/api/Meta/Assets?equipmentId=' + this.formRcorda.equipmentId).then(res => {
+      // 设备种类筛选设备编码
+      this.$axios.get('/api/Meta/Assets', { params: this.assetspage }).then(res => {
         this.assetsData = res.data
       })
     },
@@ -397,6 +420,7 @@ export default {
       li {
         width: 49%;
         display: inline-block;
+        overflow: hidden;
         span {
           display: inline-block;
           font-size: 16px;
@@ -405,6 +429,7 @@ export default {
           padding: 10px;
         }
         b {
+          width: 77%;
           display: inline-block;
           font-weight: 400;
         }

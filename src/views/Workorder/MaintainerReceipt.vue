@@ -9,7 +9,7 @@
             <div v-if="formData.code!==''" class="Infodata">
               <ul>
                 <li><span>维修单编号:</span><b>{{ formData.code }}</b></li>
-                <li><span>设备位置:</span><b>{{ formData.position.name }}</b></li>
+                <li><span>设备位置:</span><b>{{ formData.position.crumbName }}</b></li>
                 <li><span>资产名称:</span><b>{{ formData.equipment.name }}</b></li>
                 <!-- <li><span>设备种类:</span><b>{{ formData.equipment.equimentType.name }}</b></li> -->
                 <li><span>设备编码:</span><b>{{ formData.assetCode }}</b></li>
@@ -120,6 +120,7 @@ export default {
           padding: 10px;
         }
         b {
+          width: 77%;
           display: inline-block;
           font-weight: 400;
         }
