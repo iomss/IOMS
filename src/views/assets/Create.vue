@@ -37,7 +37,7 @@
                 <el-date-picker v-model="formData.enableTime" type="date" placeholder="投用时间" />
               </el-form-item>
               <el-form-item label="品牌" prop="brandId">
-                <el-select v-model="formData.brandId" v-loadmore="loadMorebrand" filterable placeholder="资产类别" size="small">
+                <el-select v-model="formData.brandId" v-loadmore="loadMorebrand" filterable placeholder="资产类别" size="small" @change="changeBrand">
                   <el-option v-for="item in brandData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
@@ -217,6 +217,7 @@ export default {
       modelpage: {// 型号分页
         pageNumber: 1,
         pageSize: 10,
+        brandId: undefined,
         pageCount: ''
       },
       sourcepage: {// 来源分页
@@ -238,7 +239,7 @@ export default {
     this.getsystemData()
     this.getequipmentData()
     this.getbrandData()
-    this.getmodelData()
+    // this.getmodelData()
     this.getsourceData()
     this.getsiData()
   },
@@ -288,9 +289,16 @@ export default {
         this.brandpage.pageCount = res.pageCount
       })
     },
+    changeBrand() {
+      this.formData.modelId = ''
+      this.modelpage.brandId = this.formData.brandId
+      this.$axios.get('/api/Meta/Model?brandId=' + this.formData.brandId).then(res => {
+        this.modelData = res.data
+      })
+    },
     getmodelData() {
       // 获取型号
-      this.$axios.get('/api/Meta/Model?pageSize=' + this.modelpage.pageSize + '&pageNumber=' + this.modelpage.pageNumber).then(res => {
+      this.$axios.get('/api/Meta/Model', { params: this.modelpage }).then(res => {
         this.modelData = this.modelData.concat(res.data)
         this.modelpage.pageCount = res.pageCount
       })
