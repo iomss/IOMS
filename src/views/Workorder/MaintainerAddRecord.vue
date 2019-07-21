@@ -334,9 +334,8 @@ export default {
       this.formData.assetId = window.location.href.split('/')[window.location.href.split('/').length - 1]
       this.$axios.get('/api/RepairOrder/' + this.formData.assetId).then(res => {
         this.formData = res
-        this.formData.failureTime = this.$dayjs(res.failureTime).format('YYYY-MM-DD HH:mm')
-        // this.formData.failureTime = this.$moment(res.failureTime).format('YYYY-MM-DD HH:mm')
-        this.formData.reportTime = this.$moment(res.reportTime).format('YYYY-MM-DD HH:mm:ss')
+        this.formData.failureTime = this.$$moment(res.failureTime).format('YYYY-MM-DD HH:mm')
+        this.formData.reportTime = this.$moment(res.reportTime).format('YYYY-MM-DD HH:mm')
         this.updateData.id = res.id
         this.equipmentpage.positionId = res.position.id
         this.getequipmentData()// 根据位置筛选设备种类

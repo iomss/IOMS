@@ -9,15 +9,15 @@
             <div v-if="formData.assetCode!==''" class="Infodata">
               <ul>
                 <li><span>维修单编号:</span><b>{{ formData.code }}</b></li>
-                <li><span>设备位置:</span><b>{{ formData.position.crumbName }}</b></li>
-                <li><span>资产名称:</span><b>{{ formData.equipment.name }}</b></li>
+                <li><span>设备位置:</span><b>{{ formData.position? formData.position.crumbName:'' }}</b></li>
+                <li><span>资产名称:</span><b>{{ formData.equipment? formData.equipment.name:'' }}</b></li>
                 <!-- <li><span>设备种类:</span><b>{{ formData.equipment.equimentType.name }}</b></li> -->
                 <li><span>设备编码:</span><b>{{ formData.assetCode }}</b></li>
                 <!-- <li><span>故障类型:</span><b>{{ formData.equipment.name }}</b></li> -->
                 <li><span>故障时间:</span><b>{{ formData.failureTime }}</b></li>
                 <li><span>故障描述:</span><b>{{ formData.description }}</b></li>
-                <li><span>录入人:</span><b>{{ formData.recordUser.name }}</b></li>
-                <li><span>故障类型:</span><b>{{ formData.equipmentFault.name }}</b></li>
+                <li><span>录入人:</span><b>{{ formData.recordUser ? formData.recordUser.name:'' }}</b></li>
+                <li><span>故障类型:</span><b>{{ formData.equipmentFault? formData.equipmentFault.name :'' }}</b></li>
                 <li><span>报修级别:</span><b>{{ formData.repairLevel===null?'':formData.repairLevel.name }}</b></li>
                 <li><span>报修人:</span><b>{{ formData.reporterName }}</b></li>
                 <li><span>报修时间:</span><b>{{ formData.reportTime }}</b></li>
@@ -35,14 +35,14 @@
               <li><span>资产名称:</span><b>{{ tableData.equipment===null?'':tableData.equipment.name }}</b></li>
               <!-- <li><span>设备种类:</span><b>{{ tableData.equipment.equimentType.name }}</b></li> -->
               <li><span>设备编号:</span><b>{{ tableData.assetCode }}</b></li>
-              <li><span>故障类型:</span><b>{{ tableData.equipmentFault.name }}</b></li>
+              <li><span>故障类型:</span><b>{{ tableData.equipmentFault? tableData.equipmentFault.name:'' }}</b></li>
               <li><span>维修级别:</span><b>{{ tableData.repairLevel===null?'':tableData.repairLevel.name }}</b></li>
               <li><span>维修开始时间:</span><b>{{ tableData.startTime }}</b></li>
               <li><span>维修结束时间:</span><b>{{ tableData.endTime }}</b></li>
               <li><span>维修过程:</span><b>{{ tableData.description }}</b></li>
               <!-- <li><span>建议:</span><b>null</b></li> -->
               <li><span>配件名称及数量:</span><b>{{ tableData.spareDescription }}</b></li>
-              <li><span>维修人:</span><b>{{ tableData.repairer.name }}</b></li>
+              <li><span>维修人:</span><b>{{ tableData.repairer? tableData.repairer.name :'' }}</b></li>
               <li><span>协助人:</span><b>{{ tableData.assist }}</b></li>
               <!-- <li><span>维修结果图片:</span><b>{{ tableData.assist }}</b></li>
               <li><span>现场验收签字:</span><b>{{ tableData.assist }}</b></li> -->
