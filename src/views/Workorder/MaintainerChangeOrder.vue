@@ -80,6 +80,8 @@ export default {
       this.formData.assetId = window.location.href.split('/')[window.location.href.split('/').length - 1]
       this.$axios.get('/api/RepairOrder/' + this.formData.assetId).then(res => {
         this.formData = res
+        this.formData.failureTime = this.$moment(res.failureTime).format('YYYY-MM-DD HH:mm')
+        this.formData.reportTime = this.$moment(res.reportTime).format('YYYY-MM-DD HH:mm:ss')
         this.updateData.id = res.id
       })
     },

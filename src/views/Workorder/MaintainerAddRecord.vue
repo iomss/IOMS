@@ -16,7 +16,7 @@
                 <!-- <li><span>故障类型:</span><b>{{ formData.equipment.name }}</b></li> -->
                 <li><span>故障时间:</span><b>{{ formData.failureTime }}</b></li>
                 <li><span>故障描述:</span><b>{{ formData.description }}</b></li>
-                <li><span>录入人:</span><b>{{ formData.repairUser.name }}</b></li>
+                <li><span>录入人:</span><b>{{ formData.recordUser.name }}</b></li>
                 <li><span>故障类型:</span><b>{{ formData.equipmentFault.name }}</b></li>
                 <li><span>报修级别:</span><b>{{ formData.repairLevel.name }}</b></li>
                 <li><span>报修人:</span><b>{{ formData.reporterName }}</b></li>
@@ -122,7 +122,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="维修级别" prop="repairLevelId">
-              <el-select v-model="formRcordd.repairLevelId" filterable placeholder="产权单位" size="small">
+              <el-select v-model="formRcordd.repairLevelId" filterable placeholder="维修级别" size="small">
                 <el-option v-for="item in levelData" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
@@ -141,8 +141,8 @@
             <el-form-item label="维修人" prop="repairerId">
               {{ dangqianUser.userName }}
             </el-form-item>
-            <el-form-item label="维修人员" prop="assist">
-              <el-input v-model="formRcordd.assist" placeholder="维修人员" size="small" />
+            <el-form-item label="协助人" prop="assist">
+              <el-input v-model="formRcordd.assist" placeholder="协助人" size="small" />
             </el-form-item>
             <el-form-item class="form_total">
               <el-button type="primary" size="small" @click="updata('d')">提交</el-button>
@@ -334,6 +334,8 @@ export default {
       this.formData.assetId = window.location.href.split('/')[window.location.href.split('/').length - 1]
       this.$axios.get('/api/RepairOrder/' + this.formData.assetId).then(res => {
         this.formData = res
+        this.formData.failureTime = this.$moment(res.failureTime).format('YYYY-MM-DD HH:mm')
+        this.formData.reportTime = this.$moment(res.reportTime).format('YYYY-MM-DD HH:mm:ss')
         this.updateData.id = res.id
       })
     },

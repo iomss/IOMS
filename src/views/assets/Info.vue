@@ -203,42 +203,42 @@ export default {
       },
       unitpage: {// 使用单位同产权单位分页
         pageNumber: 1,
-        pageSize: 10,
+        pageSize: 999999,
         pageCount: ''
       },
       positionpage: {// 安装位置分页
         pageNumber: 1,
-        pageSize: 10,
+        pageSize: 999999,
         pageCount: ''
       },
       systempage: {// 所属系统分页
         pageNumber: 1,
-        pageSize: 10,
+        pageSize: 999999,
         pageCount: ''
       },
       equipmentpage: {// 资产类别分页
         pageNumber: 1,
-        pageSize: 10,
+        pageSize: 999999,
         pageCount: ''
       },
       brandpage: {// 品牌分页
         pageNumber: 1,
-        pageSize: 10,
+        pageSize: 999999,
         pageCount: ''
       },
       modelpage: {// 型号分页
         pageNumber: 1,
-        pageSize: 10,
+        pageSize: 999999,
         pageCount: ''
       },
       sourcepage: {// 来源分页
         pageNumber: 1,
-        pageSize: 10,
+        pageSize: 999999,
         pageCount: ''
       },
       sipage: {// 集成商分页
         pageNumber: 1,
-        pageSize: 10,
+        pageSize: 999999,
         pageCount: ''
       }
     }
