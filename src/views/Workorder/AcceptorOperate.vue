@@ -32,10 +32,11 @@
           <div class="Infodata">
             <ul v-if="tableData.repairType!==''">
               <li><span>维修单类型:</span><b>{{ tableData.repairType=='Done'?'维修完成':tableData.repairType=='Repeat'?'重复报修':tableData.repairType=='Mistaken'?'误报':'暂缓' }}</b></li>
+              <li><span>资产名称:</span><b>{{ tableData.equipment===null?'':tableData.equipment.name }}</b></li>
               <!-- <li><span>设备种类:</span><b>{{ tableData.equipment.equimentType.name }}</b></li> -->
               <li><span>设备编号:</span><b>{{ tableData.assetCode }}</b></li>
-              <li><span>故障类型:</span><b>{{ tableData.equipment.name }}</b></li>
-              <li><span>维修级别:</span><b>{{ tableData.repairLevel.name }}</b></li>
+              <li><span>故障类型:</span><b>{{ tableData.equipmentFault.name }}</b></li>
+              <li><span>维修级别:</span><b>{{ tableData.repairLevel===null?'':tableData.repairLevel.name }}</b></li>
               <li><span>维修开始时间:</span><b>{{ tableData.startTime }}</b></li>
               <li><span>维修结束时间:</span><b>{{ tableData.endTime }}</b></li>
               <li><span>维修过程:</span><b>{{ tableData.description }}</b></li>
