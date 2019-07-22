@@ -75,10 +75,10 @@
                 <el-input v-model="formData.original" placeholder="资产原值" size="small" />
               </el-form-item>
               <el-form-item label="计量单位" prop="uint">
-                <el-select v-model="formData.count" clearable placeholder="产权单位" size="small">
-                  <el-option key="1" label="台" value="true" />
-                  <el-option key="2" label="套" value="false" />
-                  <el-option key="3" label="个" value="true" />
+                <el-select v-model="formData.count" clearable placeholder="计量单位" size="small">
+                  <el-option key="1" label="台" value="台" />
+                  <el-option key="2" label="套" value="套" />
+                  <el-option key="3" label="个" value="个" />
                   <!-- <el-option key="4" label="米" value="false" /> -->
                 </el-select>
               </el-form-item>
