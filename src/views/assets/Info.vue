@@ -37,7 +37,7 @@
                 <el-date-picker v-model="formData.enableTime" type="date" placeholder="投用时间" />
               </el-form-item>
               <el-form-item label="品牌" prop="brandId">
-                <el-select v-model="formData.brandId" v-loadmore="loadMorebrand" filterable placeholder="资产类别" size="small">
+                <el-select v-model="formData.brandId" v-loadmore="loadMorebrand" filterable placeholder="资产类别" size="small" @change="changebrand">
                   <el-option v-for="item in brandData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
@@ -365,6 +365,12 @@ export default {
         this.sourcepage.pageNumber += 1
         this.getsourceData()
       }
+    },
+    changebrand() {
+      this.formData.modelId = ''
+      this.$axios.get('/api/Meta/Model?brandId=' + this.formData.brandId).then(res => {
+        this.modelData = res.data
+      })
     },
     // treeSelect 加载
     loadOptions({ action, parentNode, callback }) {

@@ -256,7 +256,7 @@ export default {
           { type: 'date', required: true, message: '请选择预计结束时间', trigger: 'change' }
         ]
       },
-      equipmentpage: {// 资产类别分页
+      equipmentpage: {// 设备种类分页
         pageNumber: 1,
         pageSize: 10,
         pageCount: '',
@@ -266,14 +266,14 @@ export default {
         pageNumber: 1,
         pageSize: 10,
         pageCount: '',
-        equipmentId: undefined,
-        positionId: ''
+        equipmentId: undefined
       },
       assetspage: {// 设备编码分页
         pageNumber: 1,
         pageSize: 10,
         pageCount: '',
-        equipmentId: undefined
+        equipmentId: undefined,
+        positionId: ''
       }
     }
   },
@@ -292,7 +292,7 @@ export default {
     },
     getAssetsData() {
       // 获取设备编码
-      this.$axios.get('/api/Meta/Assets', { params: this.faultpage }).then(res => {
+      this.$axios.get('/api/Meta/Assets', { params: this.assetspage }).then(res => {
         this.assetsData = this.assetsData.concat(res.data)
         this.assetspage.pageCount = res.pageCount
       })
@@ -340,6 +340,7 @@ export default {
         this.equipmentpage.positionId = res.position.id
         this.getequipmentData()// 根据位置筛选设备种类
         this.faultpage.positionId = res.position.id
+        this.assetspage.positionId = res.position.id
         this.getAssetsData()// 根据位置筛选设备编码
       })
     },

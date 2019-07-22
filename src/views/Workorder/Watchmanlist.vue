@@ -148,7 +148,10 @@ export default {
       // 页码
       this.tableDataSearch.pageNumber = val.page
       // 调用获取数据
-      this.getData()
+      this.$axios.get('/api/RepairOrder', { params: this.tableDataSearch }).then(res => {
+        this.tableData = res.data
+        this.totalCount = res.totalCount
+      })
     },
     selectstate() { // 点击新建报修单按钮
       this.$router.push('/maintenance/WatchmanAssetslist')
