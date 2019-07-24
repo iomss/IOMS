@@ -320,10 +320,10 @@ export default {
           this.modelForm.brandId = this.multipleSelectionModel[0].brandId
         }
       } else {
-        this.brandFormVisible = true
-        this.brandForm.id = row.id
-        this.brandForm.name = row.name
-        this.brandForm.brandId = row.brandId
+        this.modelFormVisible = true
+        this.modelForm.id = row.id
+        this.modelForm.name = row.name
+        this.modelForm.brandId = row.brandId
       }
     },
     // 型号表单提交
@@ -350,7 +350,7 @@ export default {
     modelFormClose() {
       this.$refs.modelForm.resetFields()
     },
-    // 删除品牌
+    // 删除
     deleteModel(row) {
       if (row === undefined) {
         if (this.multipleSelectionModel.length !== 1) {
@@ -366,10 +366,10 @@ export default {
     },
     // 提交删除品牌
     submitDeleteModel() {
-      this.$axios.delete('/api/Meta/Model/' + this.brandDeleteDataId).then(res => {
+      this.$axios.delete('/api/Meta/Model/' + this.modelDeleteDataId).then(res => {
         this.getModelData()
         this.$message.success('型号删除成功')
-        this.brandDeleteModelVisible = false
+        this.modelDeleteModelVisible = false
       })
     },
     // 型号table 多选数据
