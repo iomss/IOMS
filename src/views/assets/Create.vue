@@ -85,7 +85,9 @@
               <el-form-item label="备注" class="form_mid" prop="comment">
                 <el-input v-model="formData.comment" type="textarea" :rows="2" placeholder="请输入内容" />
               </el-form-item>
-              <el-form-item label="照片" class="form_mid" prop="img" />
+              <el-form-item label="照片" class="form_mid" prop="img">
+                <Uploadimg v-model="formData.image" :reset="formData.image" @uploadimg="uploadimgdata">aaa</Uploadimg>
+              </el-form-item>
               <!-- <el-form-item label="自定义属性">
                 <el-input v-model="formData.Model" placeholder="自定义属性" size="small" />
               </el-form-item> -->
@@ -107,9 +109,11 @@ import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 const simulateAsyncOperation = fn => {
   setTimeout(fn, 500)
 }
+import Uploadimg from '@/components/Uploadimg'
 export default {
   components: {
-    Treeselect
+    Treeselect,
+    Uploadimg
   },
   data() {
     return {
@@ -140,7 +144,7 @@ export default {
         original: '',
         uint: '',
         comment: '',
-        img: ''
+        image: ''
       },
       unitData: [], // 使用单位同产权单位数据
       positionTreeData: [], // 安装位置数据
@@ -244,6 +248,10 @@ export default {
     this.getsiData()
   },
   methods: {
+    // 上传图片 子传父的值
+    uploadimgdata(e) {
+      this.formData.image = e
+    },
     getunitData() {
       // 获取使用单位信息
       this.$axios.get('/api/Meta/Unit?pageSize=' + this.unitpage.pageSize + '&pageNumber=' + this.unitpage.pageNumber).then(res => {
