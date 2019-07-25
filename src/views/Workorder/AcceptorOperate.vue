@@ -43,9 +43,19 @@
               <!-- <li><span>建议:</span><b>null</b></li> -->
               <li><span>配件名称及数量:</span><b>{{ tableData.spareDescription }}</b></li>
               <li><span>维修人:</span><b>{{ tableData.repairer? tableData.repairer.name :'' }}</b></li>
+              <li>
+                <span>维修结果图片:</span>
+                <b>
+                  <img alt="" :src="tableData.resultImg" style="width:100px;height:100px;">
+                </b>
+              </li>
+              <li>
+                <span>现场验收签字:</span>
+                <b>
+                  <img alt="" :src="tableData.signImg " style="width:100px;height:100px;">
+                </b>
+              </li>
               <li><span>协助人:</span><b>{{ tableData.assist }}</b></li>
-              <!-- <li><span>维修结果图片:</span><b>{{ tableData.assist }}</b></li>
-              <li><span>现场验收签字:</span><b>{{ tableData.assist }}</b></li> -->
             </ul>
           </div>
         </div>
@@ -146,6 +156,8 @@ export default {
         this.tableData = res
         this.tableData.startTime = this.$moment(res.startTime).format('YYYY-MM-DD HH:mm')
         this.tableData.endTime = this.$moment(res.endTime).format('YYYY-MM-DD HH:mm')
+        this.tableData.resultImg = process.env.VUE_APP_API + res.resultImg
+        this.tableData.signImg = process.env.VUE_APP_API + res.signImg
       })
     },
     sureright() { // 验收确认
