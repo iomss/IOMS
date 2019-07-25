@@ -68,9 +68,6 @@
             <el-form-item label="维修过程" prop="description">
               <el-input v-model="formRcorda.description" placeholder="维修过程" size="small" />
             </el-form-item>
-            <el-form-item label="备注" prop="comment">
-              <el-input v-model="formRcorda.comment" placeholder="备注" size="small" />
-            </el-form-item>
             <el-form-item label="配件名称及数量" prop="spareDescription">
               <el-input v-model="formRcorda.spareDescription" placeholder="配件名称及数量" size="small" />
             </el-form-item>
@@ -79,6 +76,15 @@
             </el-form-item>
             <el-form-item label="协助人" prop="assist">
               <el-input v-model="formRcorda.assist" placeholder="协助人" size="small" />
+            </el-form-item>
+            <el-form-item label="维修结果图片" class="form_mid">
+              <Uploadimg v-model="formRcorda.resultImg" :reset="formRcorda.resultImg" @uploadimg="uploadresultImg">aaa</Uploadimg>
+            </el-form-item>
+            <el-form-item label="现场验收签字" class="form_mid">
+              <Uploadimg v-model="formRcorda.signImg" :reset="formRcorda.signImg" @uploadimg="uploadsignImg">aaa</Uploadimg>
+            </el-form-item>
+            <el-form-item label="备注" prop="comment">
+              <el-input v-model="formRcorda.comment" placeholder="备注" size="small" />
             </el-form-item>
             <el-form-item class="form_total">
               <el-button type="primary" size="small" @click="updata('a')">提交</el-button>
@@ -156,8 +162,11 @@
   </div>
 </template>
 <script>
+
+import Uploadimg from '@/components/Uploadimg'
 export default {
   components: {
+    Uploadimg
   },
   data() {
     return {
@@ -186,7 +195,9 @@ export default {
         repairerId: '',
         assist: '',
         equipmentId: '',
-        equipmentFaultId: ''
+        equipmentFaultId: '',
+        resultImg: '',
+        signImg: ''
       },
       formRcordc: {
         repairerId: '',
@@ -284,6 +295,14 @@ export default {
     this.getfaultData()
   },
   methods: {
+    uploadresultImg(e) {
+      console.log(e)
+      this.formRcorda.resultImg = e
+    },
+    uploadsignImg(e) {
+      console.log(e)
+      this.formRcorda.signImg = e
+    },
     getselectData() { // 获取下拉菜单数据
       // 获取维修级别数据
       this.$axios.get('/api/Meta/RepairLevel').then(res => {
