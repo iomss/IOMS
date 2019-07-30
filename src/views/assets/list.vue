@@ -37,7 +37,7 @@
             <div class="toolsrt">
               <el-input v-model="tableDataSearch.text" placeholder="全局查询" size="small" />
               <el-button type="primary" size="small" @click="getData()">查询</el-button>
-              <!-- <el-button type="primary" plain size="small" @click="formSearchShow = !formSearchShow">高级搜索</el-button> -->
+              <el-button type="primary" plain size="small" @click="formSearchShow = !formSearchShow">高级搜索</el-button>
             </div>
             <!--高级搜索表单-->
             <el-card v-if="formSearchShow" class="search" :body-style="{ padding: '20px' }">
@@ -47,7 +47,7 @@
                     <el-option v-for="item in unitData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
-                <el-form-item>
+                <el-form-item style="margin-bottom:-10px;">
                   <treeselect v-model="formSearch.positionId" :disable-branch-nodes="true" :normalizer="normalizer" :options="positionTreeData" :load-options="loadOptions" placeholder="安装位置" no-results-text="未找到相关数据" />
                 </el-form-item>
                 <el-form-item>
@@ -73,8 +73,8 @@
                 </el-form-item>
                 <el-form-item>
                   <el-select v-model="formSearch.age" clearable placeholder="寿命状态" size="small">
-                    <el-option key="1" label="启用" value="true" />
-                    <el-option key="2" label="禁用" value="false" />
+                    <el-option key="1" label="超过使用期限" value="true" />
+                    <el-option key="2" label="未超过使用期限" value="false" />
                   </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -87,7 +87,7 @@
                     <el-option v-for="item in modelData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
-                <el-form-item style="margin-bottom:0">
+                <el-form-item class="form_total">
                   <el-button type="primary" size="small" icon="el-icon-search" @click="initData(formSearch.pageNumber)">查询</el-button>
                   <el-button size="small" icon="el-icon-close" @click="formSearchShow=false">取消</el-button>
                 </el-form-item>
@@ -232,12 +232,20 @@
                   </el-form>
                 </el-tab-pane>
                 <el-tab-pane label="处理日志" name="second">
-                  <el-table :data="dealtableData" style="width: 100%">
-                    <el-table-column prop="dealdate" label="处理日期" width="100" />
-                    <el-table-column prop="dealperson" label="处理人" width="80" />
-                    <el-table-column prop="dealway" label="处理方式" />
-                    <el-table-column prop="message" label="处理内容" width="150" />
-                    <el-table-column prop="dealremark" label="备注" />
+                  <el-table :data="logsData" style="width: 100%">
+                    <el-table-column prop="createTime" label="处理日期" :formatter="formatterstartDate" />
+                    <el-table-column prop="operatUser" label="处理人">
+                      <template slot-scope="scope">
+                        {{ scope.row.operatUser.name }}
+                      </template>
+                    </el-table-column>
+                    <el-table-column prop="type" label="处理方式">
+                      <template slot-scope="scope">
+                        {{ scope.row.type==='Update'?"更新":scope.row.type==='Enable'?"启用":"禁用" }}
+                      </template>
+                    </el-table-column>
+                    <el-table-column prop="content" label="处理内容" width="400" />
+                    <el-table-column prop="remark" label="备注" width="400" />
                   </el-table>
                   <span slot="footer" class="dialog-footer">
                     <el-button type="primary" @click="showInfo=false">确 定</el-button>
@@ -331,13 +339,13 @@ export default {
         pageNumber: 1// 页码
       },
       totalCount: 0, // 数据总条数
-      dealtableData: [// 日志数据
+      logsData: [// 日志数据
         {
-          dealdate: '123',
-          dealperson: '123',
-          dealway: '123',
-          message: '123',
-          dealremark: '123'
+          createTime: '',
+          operatUser: '',
+          type: '',
+          content: '',
+          remark: ''
         }
       ],
       unitData: [], // 使用单位数据
@@ -430,6 +438,12 @@ export default {
     this.getsiData()
   },
   methods: {
+    getlogs() { // 获取日志
+      const _this = this
+      this.$axios.get('/api/Assets/' + _this.formData.id + '/logs').then(res => {
+        _this.logsData = res.data
+      })
+    },
     // 上传图片 子传父的值
     uploadimgdata(e) {
       console.log(e)
@@ -492,6 +506,8 @@ export default {
       this.formData.id = val.id
       // 获取单条数据
       this.gedata()
+      // 获取日志
+      this.getlogs()
     },
     deleteManage(row) {
       this.removeData = row
@@ -741,10 +757,6 @@ export default {
       width: 100%;
     }
   }
-  .form_total {
-    width: 100%;
-    text-align: center;
-  }
   .el-tabs__content {
     border: 1px solid #ddd;
     min-height: 700px;
@@ -752,6 +764,10 @@ export default {
   .el-tabs--left.el-tabs--card .el-tabs__item.is-left.is-active:first-child {
     border: none;
   }
+}
+.form_total {
+  width: 100% !important;
+  text-align: center;
 }
 .el-card__body {
   .el-form-item {
