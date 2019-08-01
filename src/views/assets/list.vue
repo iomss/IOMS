@@ -88,7 +88,7 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item class="form_total">
-                  <el-button type="primary" size="small" icon="el-icon-search" @click="initData(formSearch.pageNumber)">查询</el-button>
+                  <el-button type="primary" size="small" icon="el-icon-search" @click="initData()">查询</el-button>
                   <el-button size="small" icon="el-icon-close" @click="formSearchShow=false">取消</el-button>
                 </el-form-item>
               </el-form>
@@ -254,6 +254,7 @@
               </el-tabs>
             </el-dialog>
           </div>
+
         </div>
       </el-col>
     </el-row>
@@ -469,6 +470,14 @@ export default {
       this.tableDataSearch.orderBy = column.prop
       this.tableDataSearch.desc = column.order === 'descending'
       this.getData()
+    },
+    initData() { // 高级搜索
+      this.$axios.get('/api/Assets', { params: this.formSearch }).then(res => {
+        this.tableData = res.data
+        this.totalCount = res.totalCount
+        // 隐藏高级搜索
+        this.formSearchShow = false
+      })
     },
     getData() { // 获取数据
       // 搜索框内容不为空 页码跳转至第一页
