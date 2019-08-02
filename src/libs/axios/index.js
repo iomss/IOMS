@@ -74,7 +74,12 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   response => {
     // dataAxios 是 axios 返回数据中的 data
-    const dataAxios = response.data
+    let dataAxios
+    if (response.config.url === '/api/Assets/Export') {
+      dataAxios = response
+    } else {
+      dataAxios = response.data
+    }
     // 这个状态码是和后端约定的
     // const { code } = dataAxios
     // 根据 code 进行判断

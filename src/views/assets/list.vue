@@ -29,7 +29,7 @@
                   批量导出<i class="el-icon-arrow-down el-icon--right" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item>导出全部</el-dropdown-item>
+                  <el-dropdown-item @click.native="assetsExport">导出全部</el-dropdown-item>
                   <el-dropdown-item>选择导出</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
@@ -501,9 +501,6 @@ export default {
     Import() { // 导入方法
 
     },
-    export() { // 导出方法
-
-    },
     searchData() {
       // 全局查询方法
     },
@@ -703,6 +700,18 @@ export default {
       this.$axios.put('/api/Assets?id=' + this.formData.id, this.formData).then(res => {
         // 关掉编辑或详情弹框
         this.showInfo = false
+      })
+    },
+    assetsExport() {
+      this.$axios.post('/api/Assets/Export', this.formSearch).then(res => {
+        const url = window.URL.createObjectURL(new Blob([res.data]))
+        const link = document.createElement('a')
+        link.style.display = 'none'
+        link.href = url
+        link.setAttribute('download', this.$base64.decode(/(?<=").*?(?=")/.exec(res.headers['content-disposition'])[0]) + '.xlsx')
+        debugger
+        document.body.appendChild(link)
+        link.click()
       })
     }
   }
