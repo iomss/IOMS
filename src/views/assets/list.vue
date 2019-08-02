@@ -247,9 +247,9 @@
                     <el-table-column prop="content" label="处理内容" width="400" />
                     <el-table-column prop="remark" label="备注" width="400" />
                   </el-table>
-                  <span slot="footer" class="dialog-footer">
+                  <div class="dialog-footer">
                     <el-button type="primary" @click="showInfo=false">确 定</el-button>
-                  </span>
+                  </div>
                 </el-tab-pane>
               </el-tabs>
             </el-dialog>
@@ -790,5 +790,6 @@ export default {
 }
 .dialog-footer {
   text-align: center;
+  margin-top: 20px;
 }
 </style>

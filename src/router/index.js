@@ -24,61 +24,58 @@ import Layout from '@/layout'
  * a base page that does not have permission requirements
  * all roles can be accessed
  */
-export const constantRoutes = [
-  {
-    path: '/redirect',
-    name: 'redirect',
+export const constantRoutes = [{
+  path: '/redirect',
+  name: 'redirect',
+  meta: {
+    title: 'redirect',
+    hidden: true,
+    fullPath: '/redirect'
+  },
+  component: Layout,
+  children: [{
+    path: '/redirect/:path*',
     meta: {
       title: 'redirect',
       hidden: true,
       fullPath: '/redirect'
     },
-    component: Layout,
-    children: [
-      {
-        path: '/redirect/:path*',
-        meta: {
-          title: 'redirect',
-          hidden: true,
-          fullPath: '/redirect'
-        },
-        component: () => import('@/views/redirect/index')
-      }
-    ]
+    component: () => import('@/views/redirect/index')
+  }]
+},
+{
+  path: '/login',
+  name: 'login',
+  meta: {
+    title: '登录',
+    hidden: true,
+    fullPath: '/login'
   },
-  {
-    path: '/login',
-    name: 'login',
-    meta: {
-      title: '登录',
-      hidden: true,
-      fullPath: '/login'
-    },
-    component: () => import('@/views/login/index'),
-    hidden: true
+  component: () => import('@/views/login/index'),
+  hidden: true
+},
+{
+  path: '/404',
+  name: '404',
+  meta: {
+    title: '404',
+    hidden: true,
+    fullPath: '/404'
   },
-  {
-    path: '/404',
-    name: '404',
-    meta: {
-      title: '404',
-      hidden: true,
-      fullPath: '/404'
-    },
-    component: () => import('@/views/error-page/404'),
-    hidden: true
+  component: () => import('@/views/error-page/404'),
+  hidden: true
+},
+{
+  path: '/401',
+  name: '401',
+  meta: {
+    title: '401',
+    hidden: true,
+    fullPath: '/401'
   },
-  {
-    path: '/401',
-    name: '401',
-    meta: {
-      title: '401',
-      hidden: true,
-      fullPath: '/401'
-    },
-    component: () => import('@/views/error-page/401'),
-    hidden: true
-  }
+  component: () => import('@/views/error-page/401'),
+  hidden: true
+}
   // {
   //   path: '/',
   //   name: '/',
@@ -143,90 +140,89 @@ export const asyncRoutes = [
     },
     component: Layout,
     redirect: '/Workorder/Watchmanlist',
-    children: [
-      {
-        path: 'Watchmanlist',
-        name: 'Workorder-Watchmanlist',
-        component: () => import('@/views/Workorder/Watchmanlist'),
-        meta: {
-          title: '工作列表',
-          icon: 'fa fa-home',
-          roles: ['EnterSystem'],
-          fullPath: '/Workorder/Watchmanlist'
-        }
-      },
-      {
-        path: 'MaintainerRob/:id',
-        name: 'Workorder-MaintainerRob',
-        component: () => import('@/views/Workorder/MaintainerRob'),
-        meta: {
-          title: '维修工程师抢单',
-          icon: 'fa fa-home',
-          roles: ['GrabOrder'],
-          hidden: true,
-          fullPath: '/Workorder/MaintainerRob'
-        }
-      },
-      {
-        path: 'MaintainerAddRecord/:id',
-        name: 'Workorder-MaintainerAddRecord',
-        component: () => import('@/views/Workorder/MaintainerAddRecord'),
-        meta: {
-          title: '维修工程师添加维修记录',
-          icon: 'fa fa-home',
-          roles: ['CreateRepairRecord'],
-          hidden: true,
-          fullPath: '/Workorder/MaintainerAddRecord'
-        }
-      },
-      {
-        path: 'MaintainerReceipt/:id',
-        name: 'Workorder-MaintainerReceipt',
-        component: () => import('@/views/Workorder/MaintainerReceipt'),
-        meta: {
-          title: '维修工程师接单',
-          icon: 'fa fa-home',
-          roles: ['CreateRepairRecord'],
-          hidden: true,
-          fullPath: '/Workorder/MaintainerReceipt'
-        }
-      },
-      {
-        path: 'MaintainerChangeOrder/:id',
-        name: 'Workorder-MaintainerChangeOrder',
-        component: () => import('@/views/Workorder/MaintainerChangeOrder'),
-        meta: {
-          title: '维修工程师转单',
-          icon: 'fa fa-home',
-          roles: ['CreateRepairRecord'],
-          hidden: true,
-          fullPath: '/Workorder/MaintainerChangeOrder'
-        }
-      },
-      {
-        path: 'AcceptorOperate/:id',
-        name: 'Workorder-AcceptorOperate',
-        component: () => import('@/views/Workorder/AcceptorOperate'),
-        meta: {
-          title: '验收人员验收',
-          icon: 'fa fa-home',
-          roles: ['CheckRepairRecord'],
-          hidden: true,
-          fullPath: '/Workorder/AcceptorOperate'
-        }
-      },
-      {
-        path: 'AuditorOperate/:id',
-        name: 'Workorder-AuditorOperate',
-        component: () => import('@/views/Workorder/AuditorOperate'),
-        meta: {
-          title: '审核人员审核',
-          icon: 'fa fa-home',
-          roles: ['ReviewRepairRecord'],
-          hidden: true,
-          fullPath: '/Workorder/AuditorOperate'
-        }
+    children: [{
+      path: 'Watchmanlist',
+      name: 'Workorder-Watchmanlist',
+      component: () => import('@/views/Workorder/Watchmanlist'),
+      meta: {
+        title: '工作列表',
+        icon: 'fa fa-home',
+        roles: ['EnterSystem'],
+        fullPath: '/Workorder/Watchmanlist'
       }
+    },
+    {
+      path: 'MaintainerRob/:id',
+      name: 'Workorder-MaintainerRob',
+      component: () => import('@/views/Workorder/MaintainerRob'),
+      meta: {
+        title: '维修工程师抢单',
+        icon: 'fa fa-home',
+        roles: ['GrabOrder'],
+        hidden: true,
+        fullPath: '/Workorder/MaintainerRob'
+      }
+    },
+    {
+      path: 'MaintainerAddRecord/:id',
+      name: 'Workorder-MaintainerAddRecord',
+      component: () => import('@/views/Workorder/MaintainerAddRecord'),
+      meta: {
+        title: '维修工程师添加维修记录',
+        icon: 'fa fa-home',
+        roles: ['CreateRepairRecord'],
+        hidden: true,
+        fullPath: '/Workorder/MaintainerAddRecord'
+      }
+    },
+    {
+      path: 'MaintainerReceipt/:id',
+      name: 'Workorder-MaintainerReceipt',
+      component: () => import('@/views/Workorder/MaintainerReceipt'),
+      meta: {
+        title: '维修工程师接单',
+        icon: 'fa fa-home',
+        roles: ['CreateRepairRecord'],
+        hidden: true,
+        fullPath: '/Workorder/MaintainerReceipt'
+      }
+    },
+    {
+      path: 'MaintainerChangeOrder/:id',
+      name: 'Workorder-MaintainerChangeOrder',
+      component: () => import('@/views/Workorder/MaintainerChangeOrder'),
+      meta: {
+        title: '维修工程师转单',
+        icon: 'fa fa-home',
+        roles: ['CreateRepairRecord'],
+        hidden: true,
+        fullPath: '/Workorder/MaintainerChangeOrder'
+      }
+    },
+    {
+      path: 'AcceptorOperate/:id',
+      name: 'Workorder-AcceptorOperate',
+      component: () => import('@/views/Workorder/AcceptorOperate'),
+      meta: {
+        title: '验收人员验收',
+        icon: 'fa fa-home',
+        roles: ['CheckRepairRecord'],
+        hidden: true,
+        fullPath: '/Workorder/AcceptorOperate'
+      }
+    },
+    {
+      path: 'AuditorOperate/:id',
+      name: 'Workorder-AuditorOperate',
+      component: () => import('@/views/Workorder/AuditorOperate'),
+      meta: {
+        title: '审核人员审核',
+        icon: 'fa fa-home',
+        roles: ['ReviewRepairRecord'],
+        hidden: true,
+        fullPath: '/Workorder/AuditorOperate'
+      }
+    }
     ]
   },
   // 资产相关 权限已调整
@@ -240,41 +236,40 @@ export const asyncRoutes = [
     },
     component: Layout,
     redirect: '/assets/list',
-    children: [
-      {
-        path: 'list',
-        name: 'assets-list',
-        meta: {
-          title: '资产列表',
-          icon: 'fa fa-home',
-          roles: ['ManageAsset'],
-          fullPath: '/assets/list'
-        },
-        component: () => import('@/views/assets/list')
+    children: [{
+      path: 'list',
+      name: 'assets-list',
+      meta: {
+        title: '资产列表',
+        icon: 'fa fa-home',
+        roles: ['ManageAsset'],
+        fullPath: '/assets/list'
       },
-      {
-        path: 'Info/:id',
-        name: 'assets-Info',
-        meta: {
-          title: '资产明细',
-          icon: 'fa fa-home',
-          roles: ['ManageAsset'],
-          fullPath: '/assets/Info/',
-          hidden: true
-        },
-        component: () => import('@/views/assets/Info')
+      component: () => import('@/views/assets/list')
+    },
+    {
+      path: 'Info/:id',
+      name: 'assets-Info',
+      meta: {
+        title: '资产明细',
+        icon: 'fa fa-home',
+        roles: ['ManageAsset'],
+        fullPath: '/assets/Info/',
+        hidden: true
       },
-      {
-        path: 'Create',
-        name: 'assets-Create',
-        meta: {
-          title: '新增资产',
-          icon: 'fa fa-home',
-          roles: ['ManageAsset'],
-          fullPath: '/assets/Create'
-        },
-        component: () => import('@/views/assets/Create')
-      }
+      component: () => import('@/views/assets/Info')
+    },
+    {
+      path: 'Create',
+      name: 'assets-Create',
+      meta: {
+        title: '新增资产',
+        icon: 'fa fa-home',
+        roles: ['ManageAsset'],
+        fullPath: '/assets/Create'
+      },
+      component: () => import('@/views/assets/Create')
+    }
     ]
   },
 
@@ -289,43 +284,41 @@ export const asyncRoutes = [
     },
     component: Layout,
     redirect: '/Inventory/list',
-    children: [
-      {
-        path: 'list',
-        name: 'Inventory-list',
-        meta: {
-          title: '清单列表',
-          icon: 'fa fa-home',
-          roles: ['show'],
-          hidden: true,
-          fullPath: '/Inventory/List'
-        },
-        component: () => import('@/views/Inventory/List')
+    children: [{
+      path: 'list',
+      name: 'Inventory-list',
+      meta: {
+        title: '清单列表',
+        icon: 'fa fa-home',
+        roles: ['show'],
+        fullPath: '/Inventory/List'
       },
-      {
-        path: 'Info/:id',
-        name: 'Inventory-Info',
-        meta: {
-          title: '清单详情',
-          icon: 'fa fa-home',
-          roles: ['show'],
-          hidden: true,
-          fullPath: '/Inventory/Info'
-        },
-        component: () => import('@/views/Inventory/Info')
+      component: () => import('@/views/Inventory/List')
+    },
+    {
+      path: 'Info/:id',
+      name: 'Inventory-Info',
+      meta: {
+        title: '清单详情',
+        icon: 'fa fa-home',
+        roles: ['show'],
+        hidden: true,
+        fullPath: '/Inventory/Info'
       },
-      {
-        path: 'selectList',
-        name: 'Inventory-selectList',
-        meta: {
-          title: '生成清单详情',
-          icon: 'fa fa-home',
-          roles: ['show'],
-          hidden: true,
-          fullPath: '/Inventory/selectList'
-        },
-        component: () => import('@/views/Inventory/selectList')
-      }
+      component: () => import('@/views/Inventory/Info')
+    },
+    {
+      path: 'Update/:id',
+      name: 'Inventory-Update',
+      meta: {
+        title: '生成清单详情',
+        icon: 'fa fa-home',
+        roles: ['show'],
+        hidden: true,
+        fullPath: '/Inventory/Update'
+      },
+      component: () => import('@/views/Inventory/Update')
+    }
     ]
   },
   // 备品备件相关
@@ -339,20 +332,18 @@ export const asyncRoutes = [
     },
     component: Layout,
     redirect: '/sparepPart/list',
-    children: [
-      {
-        path: 'list',
-        name: 'sparepPart-list',
-        component: () => import('@/views/sparepPart/list'),
-        meta: {
-          title: '备件列表',
-          icon: 'fa fa-home',
-          roles: ['show'],
-          hidden: true,
-          fullPath: '/sparepPart/list'
-        }
+    children: [{
+      path: 'list',
+      name: 'sparepPart-list',
+      component: () => import('@/views/sparepPart/list'),
+      meta: {
+        title: '备件列表',
+        icon: 'fa fa-home',
+        roles: ['show'],
+        hidden: true,
+        fullPath: '/sparepPart/list'
       }
-    ]
+    }]
   },
 
   // 维护维修相关 权限已调整
@@ -366,30 +357,29 @@ export const asyncRoutes = [
     },
     component: Layout,
     redirect: '/maintenance/WatchmanAssetslist',
-    children: [
-      {
-        path: 'WatchmanAssetslist',
-        name: 'maintenance-WatchmanAssetslist',
-        component: () => import('@/views/maintenance/WatchmanAssetslist'),
-        meta: {
-          title: '维修单录入',
-          icon: 'fa fa-home',
-          roles: ['CreateRepairOrder'],
-          fullPath: '/maintenance/WatchmanAssetslist'
-        }
-      },
-      {
-        path: 'WatchmanDispatch/:id',
-        name: 'maintenance-WatchmanDispatch',
-        component: () => import('@/views/maintenance/WatchmanDispatch'),
-        meta: {
-          title: '值班人员派单',
-          icon: 'fa fa-home',
-          roles: ['Staff'],
-          hidden: true,
-          fullPath: '/maintenance/WatchmanDispatch'
-        }
+    children: [{
+      path: 'WatchmanAssetslist',
+      name: 'maintenance-WatchmanAssetslist',
+      component: () => import('@/views/maintenance/WatchmanAssetslist'),
+      meta: {
+        title: '维修单录入',
+        icon: 'fa fa-home',
+        roles: ['CreateRepairOrder'],
+        fullPath: '/maintenance/WatchmanAssetslist'
       }
+    },
+    {
+      path: 'WatchmanDispatch/:id',
+      name: 'maintenance-WatchmanDispatch',
+      component: () => import('@/views/maintenance/WatchmanDispatch'),
+      meta: {
+        title: '值班人员派单',
+        icon: 'fa fa-home',
+        roles: ['Staff'],
+        hidden: true,
+        fullPath: '/maintenance/WatchmanDispatch'
+      }
+    }
     ]
   },
   // 用户相关 权限已调整
@@ -403,19 +393,17 @@ export const asyncRoutes = [
     },
     component: Layout,
     redirect: '/User/list',
-    children: [
-      {
-        path: 'list',
-        name: 'User-list',
-        component: () => import('@/views/User/list'),
-        meta: {
-          title: '用户管理',
-          icon: 'fa fa-home',
-          roles: ['CreateUser'],
-          fullPath: '/User/list'
-        }
+    children: [{
+      path: 'list',
+      name: 'User-list',
+      component: () => import('@/views/User/list'),
+      meta: {
+        title: '用户管理',
+        icon: 'fa fa-home',
+        roles: ['CreateUser'],
+        fullPath: '/User/list'
       }
-    ]
+    }]
   },
   // 元数据相关 权限已调整
   {
@@ -428,151 +416,150 @@ export const asyncRoutes = [
     },
     component: Layout,
     redirect: '/Meta/Type',
-    children: [
-      {
-        path: 'brandModel',
-        name: 'Meta-brandModel',
-        meta: {
-          title: '品牌型号',
-          icon: 'fa fa-home',
-          roles: ['ManageMeta'],
-          fullPath: '/Meta/brandModel'
-        },
-        component: () => import('@/views/Meta/brandModel')
+    children: [{
+      path: 'brandModel',
+      name: 'Meta-brandModel',
+      meta: {
+        title: '品牌型号',
+        icon: 'fa fa-home',
+        roles: ['ManageMeta'],
+        fullPath: '/Meta/brandModel'
       },
-      {
-        path: 'Type',
-        name: 'Meta-Type',
-        meta: {
-          title: '设备类型',
-          icon: 'fa fa-home',
-          roles: ['ManageMeta'],
-          fullPath: '/Meta/Type'
-        },
-        component: () => import('@/views/Meta/Type')
+      component: () => import('@/views/Meta/brandModel')
+    },
+    {
+      path: 'Type',
+      name: 'Meta-Type',
+      meta: {
+        title: '设备类型',
+        icon: 'fa fa-home',
+        roles: ['ManageMeta'],
+        fullPath: '/Meta/Type'
       },
-      {
-        path: 'Source',
-        name: 'Meta-Source',
-        meta: {
-          title: '设备来源',
-          icon: 'fa fa-home',
-          roles: ['ManageMeta'],
-          fullPath: '/Meta/Source'
-        },
-        component: () => import('@/views/Meta/Source')
+      component: () => import('@/views/Meta/Type')
+    },
+    {
+      path: 'Source',
+      name: 'Meta-Source',
+      meta: {
+        title: '设备来源',
+        icon: 'fa fa-home',
+        roles: ['ManageMeta'],
+        fullPath: '/Meta/Source'
       },
-      {
-        path: 'Equipment',
-        name: 'Meta-Equipment',
-        meta: {
-          title: '设备管理',
-          icon: 'fa fa-home',
-          roles: ['ManageMeta'],
-          fullPath: '/Meta/Equipment'
-        },
-        component: () => import('@/views/Meta/Equipment')
+      component: () => import('@/views/Meta/Source')
+    },
+    {
+      path: 'Equipment',
+      name: 'Meta-Equipment',
+      meta: {
+        title: '设备管理',
+        icon: 'fa fa-home',
+        roles: ['ManageMeta'],
+        fullPath: '/Meta/Equipment'
       },
-      {
-        path: 'System',
-        name: 'Meta-System',
-        meta: {
-          title: '设备系统',
-          icon: 'fa fa-home',
-          roles: ['ManageMeta'],
-          fullPath: '/Meta/System'
-        },
-        component: () => import('@/views/Meta/System')
+      component: () => import('@/views/Meta/Equipment')
+    },
+    {
+      path: 'System',
+      name: 'Meta-System',
+      meta: {
+        title: '设备系统',
+        icon: 'fa fa-home',
+        roles: ['ManageMeta'],
+        fullPath: '/Meta/System'
       },
-      {
-        path: 'SI',
-        name: 'Meta-SI',
-        meta: {
-          title: '设备集成商',
-          icon: 'fa fa-home',
-          roles: ['ManageMeta'],
-          fullPath: '/Meta/SI'
-        },
-        component: () => import('@/views/Meta/SI')
+      component: () => import('@/views/Meta/System')
+    },
+    {
+      path: 'SI',
+      name: 'Meta-SI',
+      meta: {
+        title: '设备集成商',
+        icon: 'fa fa-home',
+        roles: ['ManageMeta'],
+        fullPath: '/Meta/SI'
       },
-      {
-        path: 'positionType',
-        name: 'Meta-positionType',
-        meta: {
-          title: '位置类型',
-          icon: 'fa fa-home',
-          roles: ['ManageMeta'],
-          fullPath: '/Meta/positionType'
-        },
-        component: () => import('@/views/Meta/positionType')
+      component: () => import('@/views/Meta/SI')
+    },
+    {
+      path: 'positionType',
+      name: 'Meta-positionType',
+      meta: {
+        title: '位置类型',
+        icon: 'fa fa-home',
+        roles: ['ManageMeta'],
+        fullPath: '/Meta/positionType'
       },
-      {
-        path: 'position',
-        name: 'Meta-position',
-        meta: {
-          title: '位置管理',
-          icon: 'fa fa-home',
-          roles: ['ManageMeta'],
-          fullPath: '/Meta/position'
-        },
-        component: () => import('@/views/Meta/Position')
+      component: () => import('@/views/Meta/positionType')
+    },
+    {
+      path: 'position',
+      name: 'Meta-position',
+      meta: {
+        title: '位置管理',
+        icon: 'fa fa-home',
+        roles: ['ManageMeta'],
+        fullPath: '/Meta/position'
       },
-      {
-        path: 'Fault',
-        name: 'Meta-Fault',
-        meta: {
-          title: '故障管理',
-          icon: 'fa fa-home',
-          roles: ['ManageMeta'],
-          fullPath: '/Meta/Fault'
-        },
-        component: () => import('@/views/Meta/Fault')
+      component: () => import('@/views/Meta/Position')
+    },
+    {
+      path: 'Fault',
+      name: 'Meta-Fault',
+      meta: {
+        title: '故障管理',
+        icon: 'fa fa-home',
+        roles: ['ManageMeta'],
+        fullPath: '/Meta/Fault'
       },
-      {
-        path: 'RepairLevel',
-        name: 'Meta-RepairLevel',
-        meta: {
-          title: '维修等级管理',
-          icon: 'fa fa-home',
-          roles: ['ManageMeta'],
-          fullPath: '/Meta/RepairLevel'
-        },
-        component: () => import('@/views/Meta/RepairLevel')
+      component: () => import('@/views/Meta/Fault')
+    },
+    {
+      path: 'RepairLevel',
+      name: 'Meta-RepairLevel',
+      meta: {
+        title: '维修等级管理',
+        icon: 'fa fa-home',
+        roles: ['ManageMeta'],
+        fullPath: '/Meta/RepairLevel'
       },
-      {
-        path: 'Unit',
-        name: 'Meta-Unit',
-        meta: {
-          title: '部门管理',
-          icon: 'fa fa-home',
-          roles: ['ManageUnit'],
-          fullPath: '/Meta/Unit'
-        },
-        component: () => import('@/views/Meta/Unit')
+      component: () => import('@/views/Meta/RepairLevel')
+    },
+    {
+      path: 'Unit',
+      name: 'Meta-Unit',
+      meta: {
+        title: '部门管理',
+        icon: 'fa fa-home',
+        roles: ['ManageUnit'],
+        fullPath: '/Meta/Unit'
       },
-      {
-        path: 'Role',
-        name: 'Meta-Role',
-        meta: {
-          title: '角色管理',
-          icon: 'fa fa-home',
-          roles: ['ManageRole'],
-          fullPath: '/Meta/Role'
-        },
-        component: () => import('@/views/Meta/Role')
+      component: () => import('@/views/Meta/Unit')
+    },
+    {
+      path: 'Role',
+      name: 'Meta-Role',
+      meta: {
+        title: '角色管理',
+        icon: 'fa fa-home',
+        roles: ['ManageRole'],
+        fullPath: '/Meta/Role'
       },
-      {
-        path: 'Claims',
-        name: 'Meta-Claims',
-        meta: {
-          title: '权限列表',
-          icon: 'fa fa-home',
-          roles: ['All'],
-          hidden: true,
-          fullPath: '/Meta/Claims'
-        },
-        component: () => import('@/views/Meta/Claims')
-      }
+      component: () => import('@/views/Meta/Role')
+    },
+    {
+      path: 'Claims',
+      name: 'Meta-Claims',
+      meta: {
+        title: '权限列表',
+        icon: 'fa fa-home',
+        roles: ['All'],
+        hidden: true,
+        fullPath: '/Meta/Claims'
+      },
+      component: () => import('@/views/Meta/Claims')
+    }
     ]
   },
   // 404

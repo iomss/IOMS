@@ -11,34 +11,38 @@
             </div>
             <div class="toolsrt">
               <el-form ref="form" :model="formSearch">
-                <el-select v-model="formSearch.system" clearable placeholder="系统名称" size="small">
-                  <el-option key="1" label="单选" value="1" />
-                  <el-option key="2" label="多选" value="2" />
+                <el-select v-model="formSearch.system" v-loadmore="loadMoresystem" filterable placeholder="系统名称" size="small">
+                  <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
-                <el-select v-model="formSearch.source" clearable placeholder="来源" size="small">
-                  <el-option key="1" label="单选" value="1" />
-                  <el-option key="2" label="多选" value="2" />
+                <el-select v-model="formSearch.source" v-loadmore="loadMoresource" filterable placeholder="来源" size="small">
+                  <el-option v-for="item in sourceData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
-                <el-input v-model="formSearch.name" placeholder="设备名称" size="small" />
-                <el-button type="primary" plain size="small" @click="search()">查询</el-button>
+                <el-input v-model="formSearch.text" placeholder="设备名称" size="small" />
+                <el-button type="primary" plain size="small" @click="getData()">查询</el-button>
               </el-form>
             </div>
           </div>
           <div class="content">
             <el-table :data="tableData" stripe border style="width: 100%" @selection-change="handleSelectionChange">
-              <el-table-column type="selection" width="40" />
-              <el-table-column label="系统名称" prop="version" width="150">
+              <el-table-column type="selection" />
+              <el-table-column label="系统名称" prop="system">
                 <template slot-scope="scope">
-                  <span v-for="(item,index) in scope.row.answer" :key="index" style="margin-right:8px;">{{ item===1?"A":item===2?"B":item===3?"C":"D" }}</span>
+                  {{ scope.row.system.name }}
                 </template>
               </el-table-column>
-              <el-table-column prop="year" label="设备种类" width="90" />
-              <el-table-column prop="unit" label="责任期内数量" width="150" />
-              <el-table-column prop="num" label="责任期外数量" width="150" />
-              <el-table-column prop="time" label="设备小计" width="100" />
-              <el-table-column prop="state" label="备注" width="100" />
-              <el-table-column prop="state" label="来源" width="100" />
+              <el-table-column prop="year" label="设备种类" />
+              <el-table-column prop="inLiability" label="责任期内数量" />
+              <el-table-column prop="outLiability" label="责任期外数量" />
+              <el-table-column prop="count" label="设备小计" />
+              <el-table-column prop="remark" label="备注" />
+              <el-table-column prop="source" label="来源">
+                <template slot-scope="scope">
+                  {{ scope.row.source==='Automatic'?"自动汇总":"人工修订" }}
+                </template>
+              </el-table-column>
             </el-table>
+            <!--分页-->
+            <pagination v-show="totalCount>0" :total="totalCount" :page.sync="formSearch.pageNumber" :limit.sync="formSearch.pageSize" @pagination="getPage" />
           </div>
         </div>
       </el-col>
@@ -46,28 +50,91 @@
   </div>
 </template>
 <script>
-// import page from '@/components/page.vue'
+import pagination from '@/components/Pagination'
 export default {
   components: {
-    // page
+    pagination
   },
   data() {
     return {
+      id: '',
       formSearchShow: false,
       formSearch: {
         name: '',
         year: '',
-        system: ''
+        system: '',
+        text: '', // 搜索文本
+        pageSize: 10, // 展示条数
+        pageNumber: 1// 页码
       },
+      totalCount: 0, // 数据总条数
       multipleSelection: false, // 表单选中行
       tableData: [],
-      removeData: []
+      removeData: [],
+      systemData: [],
+      sourceData: [],
+      sourcepage: {// 来源分页
+        pageNumber: 1,
+        pageSize: 999999,
+        pageCount: ''
+      },
+      systempage: {// 所属系统分页
+        pageNumber: 1,
+        pageSize: 999999,
+        pageCount: ''
+      }
     }
   },
   computed: {},
   mounted() {
+    this.getData()
+    this.getsystemData()
+    this.getsourceData()
   },
   methods: {
+    getData() {
+      this.id = window.location.href.split('/')[window.location.href.split('/').length - 1]
+      this.$axios.get('/api/EquipmentList/' + this.id + '/Items', { params: this.formSearch }).then(res => {
+        this.tableData = res.data
+        this.totalCount = res.totalCount
+      })
+    },
+    getPage(val) { // page事件
+      // 展示条数
+      this.formSearch.pageSize = val.limit
+      // 页码
+      this.formSearch.pageNumber = val.page
+      // 调用获取数据
+      this.$axios.get('/api/EquipmentList/' + this.id + '/Items', { params: this.formSearch }).then(res => {
+        this.tableData = res.data
+      })
+    },
+    getsystemData() {
+      // 获取所属系统
+      this.$axios.get('/api/Meta/System?pageSize=' + this.systempage.pageSize + '&pageNumber=' + this.systempage.pageNumber).then(res => {
+        this.systemData = this.systemData.concat(res.data)
+        this.systempage.pageCount = res.pageCount
+      })
+    },
+    getsourceData() {
+      // 获取设备来源
+      this.$axios.get('/api/Meta/Source?pageSize=' + this.sourcepage.pageSize + '&pageNumber=' + this.sourcepage.pageNumber).then(res => {
+        this.sourceData = this.sourceData.concat(res.data)
+        this.sourcepage.pageCount = res.pageCount
+      })
+    },
+    loadMoresystem() { // 所属系统加载下一页数据
+      if (this.systempage.pageCount > this.systempage.pageNumber) {
+        this.systempage.pageNumber += 1
+        this.getsystemData()
+      }
+    },
+    loadMoresource() { // 来源加载下一页数据
+      if (this.sourcepage.pageCount > this.sourcepage.pageNumber) {
+        this.sourcepage.pageNumber += 1
+        this.getsourceData()
+      }
+    },
     search() {
       // 点击右上角查询方法
     },
@@ -109,6 +176,6 @@ export default {
 }
 .el-input {
   display: inline-block;
-  width: 30%;
+  width: 200px;
 }
 </style>
