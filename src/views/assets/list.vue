@@ -708,7 +708,7 @@ export default {
         const link = document.createElement('a')
         link.style.display = 'none'
         link.href = url
-        link.setAttribute('download', this.$base64.decode(/(?<=").*?(?=")/.exec(res.headers['content-disposition'])[0]) + '.xlsx')
+        link.setAttribute('download', this.$base64.decode(/filename="=\?(\S*)\?(\S*)==/.exec(res.headers['content-disposition'])[2]))
         debugger
         document.body.appendChild(link)
         link.click()
