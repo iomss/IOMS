@@ -703,13 +703,14 @@ export default {
       })
     },
     assetsExport() {
-      this.$axios.post('/api/Assets/Export', this.formSearch).then(res => {
+      this.$axios.post('/api/Assets/Export', this.formSearch, { Accept: {
+        'Content-Type': 'application/json;application/octet-stream'
+      }, responseType: 'blob' }).then(res => {
         const url = window.URL.createObjectURL(new Blob([res.data]))
         const link = document.createElement('a')
         link.style.display = 'none'
         link.href = url
         link.setAttribute('download', this.$base64.decode(/filename="=\?(\S*)\?(\S*)==/.exec(res.headers['content-disposition'])[2]))
-        debugger
         document.body.appendChild(link)
         link.click()
       })
