@@ -6,13 +6,13 @@
         <div class="panel">
           <div class="content">
             <h4>新增资产</h4>
-            <el-form ref="formData" :model="formData" :rules="formDatarules" label-width="90px">
+            <el-form ref="formData" :model="formData" :rules="formDatarules" label-width="110px">
               <el-form-item label="使用单位" prop="useUnitId">
                 <el-select v-model="formData.useUnitId" v-loadmore="loadMoreunit" filterable placeholder="使用单位" size="small">
                   <el-option v-for="item in unitData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
-              <el-form-item label="安装位置" prop="positionId">
+              <el-form-item label="安装位置" prop="positionId" style="margin-bottom:-20px;">
                 <treeselect v-model="formData.positionId" :disable-branch-nodes="true" :normalizer="normalizer" :options="positionTreeData" :load-options="loadOptions" placeholder="安装位置" no-results-text="未找到相关数据" />
               </el-form-item>
               <el-form-item label="所属系统" prop="systemId">

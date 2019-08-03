@@ -382,6 +382,53 @@ export const asyncRoutes = [
     }
     ]
   },
+  // 维护管理相关
+  {
+    path: '/Repairmanage',
+    name: '/Repairmanage',
+    meta: {
+      title: '维护管理',
+      icon: 'fa fa-home',
+      fullPath: '/Repairmanage',
+      roles: ['show']
+    },
+    component: Layout,
+    redirect: '/Repairmanage/List',
+    children: [{
+      path: 'RepairplanList',
+      name: 'RepairplanList-List',
+      component: () => import('@/views/Repairmanage/RepairplanList'),
+      meta: {
+        title: '维护计划',
+        icon: 'fa fa-home',
+        roles: ['show'],
+        fullPath: '/Repairmanage/RepairplanList'
+      }
+    },
+    {
+      path: 'RepairtaskList',
+      name: 'RepairtaskList-List',
+      component: () => import('@/views/Repairmanage/RepairtaskList'),
+      meta: {
+        title: '维护任务',
+        icon: 'fa fa-home',
+        roles: ['show'],
+        fullPath: '/Repairmanage/RepairtaskList'
+      }
+    },
+    {
+      path: 'RepaircheckList',
+      name: 'RepaircheckList-List',
+      component: () => import('@/views/Repairmanage/RepaircheckList'),
+      meta: {
+        title: '维护验收',
+        icon: 'fa fa-home',
+        roles: ['show'],
+        fullPath: '/Repairmanage/RepaircheckList'
+      }
+    }
+    ]
+  },
   // 用户相关 权限已调整
   {
     path: '/User',

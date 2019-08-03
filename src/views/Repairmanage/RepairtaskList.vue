@@ -7,23 +7,20 @@
           <div class="header">
             <h4>清单管理</h4>
             <div class="select">
-              <el-button type="primary" size="small" @click="changeActiveVisible=true">生成设备清单</el-button>
-              <el-button type="primary" size="small" @click="setvalid()">设置清单有效</el-button>
-              <el-button type="danger" size="small" @click="deletelist()">删除设备清单</el-button>
-            </div>
-            <div class="tools">
-              <el-button type="primary" plain size="small" @click="getData()">清单列表</el-button>
-              <el-button type="primary" plain size="small" @click="getData('false')">未生效清单</el-button>
-              <el-button type="primary" plain size="small" @click="getData('true')">已生效清单</el-button>
+              <el-button type="primary" size="small" @click="changeActiveVisible=true">任务列表</el-button>
+              <el-button type="primary" size="small" @click="setvalid()">待验收</el-button>
+              <el-button type="danger" size="small" @click="deletelist()">已完成</el-button>
+              <el-button type="danger" size="small" @click="deletelist()">未完成</el-button>
             </div>
             <div class="toolsrt">
               <el-form ref="form" :model="tableDataSearch">
-                <el-select v-model="tableDataSearch.positionId" filterable placeholder="管理单位" size="small">
+                <el-select v-model="tableDataSearch.positionId" filterable placeholder="开始时间" size="small">
                   <el-option v-for="item in positionTreeData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
-                <el-select v-model="tableDataSearch.year" filterable placeholder="所属年度" size="small">
+                <el-select v-model="tableDataSearch.year" filterable placeholder="结束时间" size="small">
                   <el-option v-for="item in yearData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
+                <el-input v-model="tableDataSearch.text" placeholder="全局查询" size="small" />
                 <el-button type="primary" plain size="small" @click="getData()">查询</el-button>
               </el-form>
             </div>
@@ -31,26 +28,34 @@
           <div class="content">
             <el-table :data="tableData" stripe border style="width: 100%" @selection-change="handleSelectionChange">
               <el-table-column type="selection" />
-              <el-table-column label="版本号" prop="code">
+              <el-table-column label="操作">
+                <template slot-scope="scope">
+                  <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="primary" @click="UpdateStage(scope.row)">维修记录</el-button>
+                </template>
+              </el-table-column>
+              <el-table-column label="完成状态" prop="code">
                 <template slot-scope="scope">
                   <el-button size="mini" type="text" @click="showInfo(scope.row)">{{ scope.row.code }}</el-button>
                 </template>
               </el-table-column>
-              <el-table-column prop="year" label="年份" />
-              <el-table-column prop="position.name" label="管理单位" />
-              <el-table-column prop="count" label="数量" />
-              <el-table-column prop="createTime" label="生成时间" :formatter="formatterDate" />
-              <el-table-column prop="valid" label="生效状态">
+              <el-table-column prop="year" label="维护计划名名称" />
+              <el-table-column prop="position.name" label="起止时间" />
+              <el-table-column prop="count" label="负责人" />
+              <el-table-column prop="createTime" label="执行人" :formatter="formatterDate" />
+              <el-table-column prop="valid" label="关联资产数">
                 <template slot-scope="scope">
                   {{ scope.row.status?'已生效':'未生效' }}
                 </template>
               </el-table-column>
-              <el-table-column label="操作">
+              <el-table-column prop="count" label="维护频率" />
+              <el-table-column prop="createTime" label="录入日期" :formatter="formatterDate" />
+              <el-table-column prop="valid" label="录入人">
                 <template slot-scope="scope">
-                  <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="primary" @click="UpdateStage(scope.row)">编辑</el-button>
-                  <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="danger" @click="deletelist(scope.row)">删除</el-button>
+                  {{ scope.row.status?'已生效':'未生效' }}
                 </template>
               </el-table-column>
+              <el-table-column prop="count" label="验收人" />
+              <el-table-column prop="createTime" label="验收时间" :formatter="formatterDate" />
             </el-table>
             <!--分页-->
             <pagination v-show="totalCount>0" :total="totalCount" :page.sync="tableDataSearch.pageNumber" :limit.sync="tableDataSearch.pageSize" @pagination="getPage" />
