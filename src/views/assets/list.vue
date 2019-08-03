@@ -41,54 +41,54 @@
             </div>
             <!--高级搜索表单-->
             <el-card v-if="formSearchShow" class="search" :body-style="{ padding: '20px' }">
-              <el-form ref="form" :model="formSearch">
+              <el-form ref="form" :model="tableDataSearch">
                 <el-form-item>
-                  <el-select v-model="formSearch.useUnitId" v-loadmore="loadMoreunit" filterable placeholder="使用单位" size="small">
+                  <el-select v-model="tableDataSearch.useUnitId" v-loadmore="loadMoreunit" filterable placeholder="使用单位" size="small">
                     <el-option v-for="item in unitData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
                 <el-form-item style="margin-bottom:-10px;">
-                  <treeselect v-model="formSearch.positionId" :disable-branch-nodes="true" :normalizer="normalizer" :options="positionTreeData" :load-options="loadOptions" placeholder="安装位置" no-results-text="未找到相关数据" />
+                  <treeselect v-model="tableDataSearch.positionId" :disable-branch-nodes="true" :normalizer="normalizer" :options="positionTreeData" :load-options="loadOptions" placeholder="安装位置" no-results-text="未找到相关数据" />
                 </el-form-item>
                 <el-form-item>
-                  <el-select v-model="formSearch.equipmentID" v-loadmore="loadMoreequipment" filterable placeholder="资产类别" size="small">
+                  <el-select v-model="tableDataSearch.equipmentID" v-loadmore="loadMoreequipment" filterable placeholder="资产类别" size="small">
                     <el-option v-for="item in equipmentData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
                 <el-form-item>
-                  <el-select v-model="formSearch.systemId" v-loadmore="loadMoresystem" filterable placeholder="所属系统" size="small">
+                  <el-select v-model="tableDataSearch.systemId" v-loadmore="loadMoresystem" filterable placeholder="所属系统" size="small">
                     <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
                 <el-form-item>
-                  <el-date-picker v-model="formSearch.handoverDate" type="date" placeholder="投用开始时间" />
+                  <el-date-picker v-model="tableDataSearch.handoverDate" type="date" placeholder="投用开始时间" />
                 </el-form-item>
                 <el-form-item>
-                  <el-date-picker v-model="formSearch.handoverDate" type="date" placeholder="投用截止时间" />
+                  <el-date-picker v-model="tableDataSearch.handoverDate" type="date" placeholder="投用截止时间" />
                 </el-form-item>
                 <el-form-item>
-                  <el-select v-model="formSearch.sourceId" v-loadmore="loadMoresource" filterable placeholder="资产来源" size="small">
+                  <el-select v-model="tableDataSearch.sourceId" v-loadmore="loadMoresource" filterable placeholder="资产来源" size="small">
                     <el-option v-for="item in sourceData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
                 <el-form-item>
-                  <el-select v-model="formSearch.age" clearable placeholder="寿命状态" size="small">
+                  <el-select v-model="tableDataSearch.age" clearable placeholder="寿命状态" size="small">
                     <el-option key="1" label="超过使用期限" value="true" />
                     <el-option key="2" label="未超过使用期限" value="false" />
                   </el-select>
                 </el-form-item>
                 <el-form-item>
-                  <el-select v-model="formSearch.brandId" v-loadmore="loadMorebrand" filterable placeholder="品牌" size="small" @change="changebrand">
+                  <el-select v-model="tableDataSearch.brandId" v-loadmore="loadMorebrand" filterable placeholder="品牌" size="small" @change="changebrand">
                     <el-option v-for="item in brandData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
                 <el-form-item>
-                  <el-select v-model="formSearch.modelId" v-loadmore="loadMoremodel" filterable placeholder="型号" size="small">
+                  <el-select v-model="tableDataSearch.modelId" v-loadmore="loadMoremodel" filterable placeholder="型号" size="small">
                     <el-option v-for="item in modelData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
                 <el-form-item class="form_total">
-                  <el-button type="primary" size="small" icon="el-icon-search" @click="initData()">查询</el-button>
+                  <el-button type="primary" size="small" icon="el-icon-search" @click="getData()">查询</el-button>
                   <el-button size="small" icon="el-icon-close" @click="formSearchShow=false">取消</el-button>
                 </el-form-item>
               </el-form>
@@ -289,23 +289,23 @@ export default {
       activeName: 'first', // 编辑弹框tab
       formSearchShow: false, // 高级搜索弹框隐藏
       removeQuestionVisible: false, // 删除弹框隐藏
-      formSearch: {// 高级搜索数据
-        code: '',
-        equimentType: '',
-        alias: '',
-        brand: '',
-        model: '',
-        parentSystem: '',
-        system: '',
-        position: '',
-        enableTime: '',
-        handoverDate: '',
-        purchaseYear: '',
-        original: '',
-        source: '',
-        recordUser: '',
-        lastUpdateTime: ''
-      },
+      // formSearch: {// 高级搜索数据
+      //   code: '',
+      //   equimentType: '',
+      //   alias: '',
+      //   brand: '',
+      //   model: '',
+      //   parentSystem: '',
+      //   system: '',
+      //   position: '',
+      //   enableTime: '',
+      //   handoverDate: '',
+      //   purchaseYear: '',
+      //   original: '',
+      //   source: '',
+      //   recordUser: '',
+      //   lastUpdateTime: ''
+      // },
       formData: {// 编辑或详情表单数据
         id: '',
         useUnitId: '',
@@ -337,7 +337,22 @@ export default {
         state: null, // 资产状态
         text: '', // 搜索文本
         pageSize: 10, // 展示条数
-        pageNumber: 1// 页码
+        pageNumber: 1, // 页码
+        code: '', // 高级搜索数据
+        equimentType: '',
+        alias: '',
+        brand: '',
+        model: '',
+        parentSystem: '',
+        system: '',
+        position: '',
+        enableTime: '',
+        handoverDate: '',
+        purchaseYear: '',
+        original: '',
+        source: '',
+        recordUser: '',
+        lastUpdateTime: ''
       },
       totalCount: 0, // 数据总条数
       logsData: [// 日志数据
@@ -471,14 +486,6 @@ export default {
       this.tableDataSearch.desc = column.order === 'descending'
       this.getData()
     },
-    initData() { // 高级搜索
-      this.$axios.get('/api/Assets', { params: this.formSearch }).then(res => {
-        this.tableData = res.data
-        this.totalCount = res.totalCount
-        // 隐藏高级搜索
-        this.formSearchShow = false
-      })
-    },
     getData() { // 获取数据
       // 搜索框内容不为空 页码跳转至第一页
       if (this.tableDataSearch.text !== '') {
@@ -487,6 +494,8 @@ export default {
       this.$axios.get('/api/Assets', { params: this.tableDataSearch }).then(res => {
         this.tableData = res.data
         this.totalCount = res.totalCount
+        // 隐藏高级搜索
+        this.formSearchShow = false
       })
     },
     create() { // 新增资产

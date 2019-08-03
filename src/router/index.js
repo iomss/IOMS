@@ -283,7 +283,7 @@ export const asyncRoutes = [
       fullPath: '/Inventory'
     },
     component: Layout,
-    redirect: '/Inventory/list',
+    redirect: '/Inventory/List',
     children: [{
       path: 'list',
       name: 'Inventory-list',
@@ -346,12 +346,12 @@ export const asyncRoutes = [
     }]
   },
 
-  // 维护维修相关 权限已调整
+  // 运维管理相关 权限已调整
   {
     path: '/maintenance',
     name: 'maintenance',
     meta: {
-      title: '维护维修',
+      title: '运维管理',
       icon: 'fa fa-home',
       fullPath: '/maintenance'
     },
