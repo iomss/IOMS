@@ -31,6 +31,9 @@ import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 // 时间格式化插件
 import moment from 'moment'
 
+// base64编解码
+import { Base64 } from 'js-base64'
+
 Vue.use(Element)
 
 // Vue.use(directives)
@@ -46,6 +49,9 @@ Vue.prototype.$ajax = ajax
 
 // 时间日期格式话
 Vue.prototype.$moment = moment
+
+// base64
+Vue.prototype.$base64 = Base64
 
 Vue.directive('loadmore', {
   bind(el, binding) {
