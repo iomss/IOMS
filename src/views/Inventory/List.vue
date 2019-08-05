@@ -42,7 +42,7 @@
               <el-table-column prop="createTime" label="生成时间" :formatter="formatterDate" />
               <el-table-column prop="valid" label="生效状态">
                 <template slot-scope="scope">
-                  {{ scope.row.status?'已生效':'未生效' }}
+                  {{ scope.row.valid?'已生效':'未生效' }}
                 </template>
               </el-table-column>
               <el-table-column label="操作">
@@ -59,7 +59,7 @@
               <span>您确定要删除此条数据？</span>
               <span slot="footer" class="dialog-footer">
                 <el-button @click="removeQuestionVisible = false">取 消</el-button>
-                <el-button type="primary" @click="deletelist">确 定</el-button>
+                <el-button type="primary" @click="removeData">确 定</el-button>
               </span>
             </el-dialog>
             <!-- 生成新的设备清单 -->
@@ -113,7 +113,7 @@ export default {
       totalCount: 0, // 数据总条数
       tableData: [],
       tableDatanew: {},
-      multipleSelection: '', // 表单选中行
+      multipleSelection: [], // 表单选中行
       yearData: [],
       positionTreeData: []
     }
@@ -181,32 +181,39 @@ export default {
       })
     },
     setvalid() {
+      const _this = this
       // 设置清单有效
-      if (this.multipleSelection === '') {
+      if (this.multipleSelection === []) {
         this.$message.error('请至少选择一条数据')
       } else {
-        this.$axios.post('/api/EquipmentList/' + this.multipleSelection[0].id + '/Valid').then(res => {
-          this.tableData = res.data
+        this.$axios.post('/api/EquipmentList/' + _this.multipleSelection[0].id + '/Valid').then(res => {
+          _this.$message.success('操作成功')
+          _this.getData()// 刷新数据
         })
       }
     },
     deletelist(data) {
+      debugger
       // 删除设备清单
       if (data) {
+        this.multipleSelection = []
         this.removeQuestionVisible = true
-        this.$axios.delete('/api/EquipmentList/' + data.id).then(res => {
-          this.removeQuestionVisible = false
-        })
+        this.multipleSelection.push(data)
       } else {
-        if (this.multipleSelection === '') {
+        if (this.multipleSelection === []) {
           this.$message.error('请至少选择一条数据')
         } else {
           this.removeQuestionVisible = true
-          this.$axios.delete('/api/EquipmentList/' + this.multipleSelection[0].id).then(res => {
-            this.removeQuestionVisible = false
-          })
         }
       }
+    },
+    removeData() { // 删除弹框点确定
+      this.removeQuestionVisible = true
+      this.$axios.delete('/api/EquipmentList/' + this.multipleSelection[0].id).then(res => {
+        this.removeQuestionVisible = false
+        // 清空选中值
+        this.multipleSelection = []
+      })
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
@@ -216,10 +223,6 @@ export default {
     },
     UpdateStage(val) { // 点击编辑按钮
       this.$router.push('/Inventory/Update/' + val.id)
-    },
-    deleteManage(row) { // 点击删除按钮
-      this.removeData = row
-      this.removeQuestionVisible = true
     }
   }
 }

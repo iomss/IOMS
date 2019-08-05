@@ -9,7 +9,7 @@
             <div class="select">
               <el-button type="primary" size="small" @click="changeActiveVisible=true">新增计划</el-button>
               <el-button type="primary" size="small" @click="setvalid()">导出计划</el-button>
-              <el-button type="danger" size="small" @click="deletelist()">编辑</el-button>
+              <el-button type="success" size="small" @click="deletelist()">编辑</el-button>
               <el-button type="danger" size="small" @click="deletelist()">删除</el-button>
             </div>
             <div class="toolsrt">
