@@ -72,12 +72,6 @@
                 <el-form-item label="设备小计">
                   <el-input-number v-model="formSearch.count" placeholder="设备小计" controls-position="right" :min="0" :max="2147483647" />
                 </el-form-item>
-                <el-form-item label="来源">
-                  <el-select v-model="formSearch.source" placeholder="请选择">
-                    <el-option key="Manual" label="人工修订" value="Manual" />
-                    <el-option key="Automatic" label="自动汇总" value="Automatic" />
-                  </el-select>
-                </el-form-item>
                 <el-form-item label="备注">
                   <el-input v-model="formSearch.remark" placeholder="备注" size="small" />
                 </el-form-item>
@@ -117,7 +111,6 @@ export default {
         inLiability: '',
         outLiability: '',
         count: '',
-        source: '',
         remark: ''
       },
       tableData: [],
@@ -129,12 +122,12 @@ export default {
       equipmentData: [], // 设备种类数据
       systempage: {// 所属系统分页
         pageNumber: 1,
-        pageSize: 999999,
+        pageSize: 10,
         pageCount: ''
       },
       equipmentpage: {// 资产类别分页
         pageNumber: 1,
-        pageSize: 999999,
+        pageSize: 10,
         pageCount: ''
       }
     }
@@ -143,6 +136,9 @@ export default {
   mounted() {
     this.getData()
     this.gettitle()
+    // 获取下拉菜单数据
+    this.getsystemData()
+    this.getequipmentData()
   },
   methods: {
     getData() {
@@ -212,9 +208,6 @@ export default {
       this.multipleSelection = val
     },
     UpdateStage(val) { // 点击编辑按钮
-      // 获取下拉菜单数据
-      this.getsystemData()
-      this.getequipmentData()
       // 显示弹框
       this.changeActiveVisible = true
       console.log(val)

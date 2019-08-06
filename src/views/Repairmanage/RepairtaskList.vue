@@ -179,7 +179,7 @@
                   <el-input v-model="tableDatathird.text" placeholder="维护时间" size="small" />
                 </el-form-item>
                 <el-form-item prop="" label="维护等级">
-                  <el-checkbox-group v-model="tableDatathird">
+                  <el-checkbox-group v-model="tableDatathird.stage">
                     <el-checkbox key="1" val="1" label="一级">一级</el-checkbox>
                     <el-checkbox key="2" val="2" label="二级">二级</el-checkbox>
                     <el-checkbox key="3" val="2" label="三级">三级</el-checkbox>
@@ -238,7 +238,10 @@ export default {
       tableData: [],
       tableDatafirst: [], // 一级弹框表单数据
       tableDatasecond: [], // 二级弹框表单数据
-      tableDatathird: [], // 三级弹框表单数据
+      tableDatathird: { // 三级弹框表单数据
+        text: '',
+        stage: []
+      },
       tableDatanew: {},
       tableDatanewfirst: {}, // 一级弹框搜索
       multiple: '', // 表单选中行
