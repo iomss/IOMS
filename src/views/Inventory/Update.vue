@@ -54,12 +54,12 @@
             <el-dialog title="编辑设备清单" :visible.sync="changeActiveVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px">
               <el-form ref="form" :model="formSearch" label-width="120px">
                 <el-form-item label="系统名称">
-                  <el-select v-model="formSearch.systemId" v-loadmore="loadMoresystem" filterable placeholder="系统名称" size="small">
+                  <el-select v-model="formSearch.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" placeholder="系统名称" size="small" @focus="remoteMethodsystemId">
                     <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
                 <el-form-item label="设备种类">
-                  <el-select v-model="formSearch.equipmentId" v-loadmore="loadMoreequipment" filterable placeholder="设备种类" size="small">
+                  <el-select v-model="formSearch.equipmentId" filterable remote :remote-method="remoteMethodequipmentID" :loading="loading" placeholder="设备种类" size="small" @focus="remoteMethodequipmentID">
                     <el-option v-for="item in equipmentData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
@@ -98,6 +98,7 @@ export default {
   },
   data() {
     return {
+      loading: false, // 远程搜索
       formSearchShow: false,
       removeQuestionVisible: false,
       changeActiveVisible: false,
@@ -122,12 +123,12 @@ export default {
       equipmentData: [], // 设备种类数据
       systempage: {// 所属系统分页
         pageNumber: 1,
-        pageSize: 10,
+        pageSize: 50,
         pageCount: ''
       },
       equipmentpage: {// 资产类别分页
         pageNumber: 1,
-        pageSize: 10,
+        pageSize: 50,
         pageCount: ''
       }
     }
@@ -156,29 +157,47 @@ export default {
     },
     getsystemData() {
       // 获取所属系统
-      this.$axios.get('/api/Meta/System?pageSize=' + this.systempage.pageSize + '&pageNumber=' + this.systempage.pageNumber).then(res => {
+      this.$axios.get('/api/Meta/System?pageNumber=1&pageSize=' + this.systempage.pageSize).then(res => {
         this.systemData = this.systemData.concat(res.data)
-        this.systempage.pageCount = res.pageCount
+        // this.systempage.pageCount = res.pageCount
       })
     },
     getequipmentData() {
       // 获取资产类别
-      this.$axios.get('/api/Meta/equipment?pageSize=' + this.equipmentpage.pageSize + '&pageNumber=' + this.equipmentpage.pageNumber).then(res => {
+      this.$axios.get('/api/Meta/equipment?pageNumber=1&pageSize=' + this.equipmentpage.pageSize).then(res => {
         this.equipmentData = this.equipmentData.concat(res.data)
-        this.equipmentpage.pageCount = res.pageCount
+        // this.equipmentpage.pageCount = res.pageCount
       })
     },
-    loadMoresystem() { // 所属系统加载下一页数据
-      if (this.systempage.pageCount > this.systempage.pageNumber) {
-        this.systempage.pageNumber += 1
-        this.getsystemData()
-      }
+    // loadMoresystem() { // 所属系统加载下一页数据
+    //   if (this.systempage.pageCount > this.systempage.pageNumber) {
+    //     this.systempage.pageNumber += 1
+    //     this.getsystemData()
+    //   }
+    // },
+    // loadMoreequipment() { // 资产种类加载下一页数据
+    //   if (this.equipmentpage.pageCount > this.equipmentpage.pageNumber) {
+    //     this.equipmentpage.pageNumber += 1
+    //     this.getequipmentData()
+    //   }
+    // },
+    remoteMethodsystemId(query) {
+      this.loading = true
+      let querytext = ''
+      querytext = typeof (query) === 'string' ? query : ''
+      this.$axios.get('/api/Meta/System?pageSize=50&text=' + querytext).then(res => {
+        this.loading = false
+        this.systemData = res.data
+      })
     },
-    loadMoreequipment() { // 资产种类加载下一页数据
-      if (this.equipmentpage.pageCount > this.equipmentpage.pageNumber) {
-        this.equipmentpage.pageNumber += 1
-        this.getequipmentData()
-      }
+    remoteMethodequipmentID(query) {
+      this.loading = true
+      let querytext = ''
+      querytext = typeof (query) === 'string' ? query : ''
+      this.$axios.get('/api/Meta/Equipment?pageSize=50&text=' + querytext).then(res => {
+        this.loading = false
+        this.equipmentData = res.data
+      })
     },
     getPage(val) { // page事件
       // 展示条数
@@ -208,12 +227,21 @@ export default {
       this.multipleSelection = val
     },
     UpdateStage(val) { // 点击编辑按钮
-      // 显示弹框
-      this.changeActiveVisible = true
+      let hasEquipmentData = false
+      this.equipmentData.forEach(item => { item.id === val.equipment.id ? hasEquipmentData = true : '' })
+      hasEquipmentData ? '' : this.equipmentData.push(val.equipment)
+
+      let hasSystemData = false
+      this.systemData.forEach(item => { item.id === val.system.id ? hasSystemData = true : '' })
+      hasSystemData ? '' : this.systemData.push(val.system)
+
       console.log(val)
       this.formSearch = val
       this.formSearch.systemId = val.system.id
       this.formSearch.equipmentId = val.equipment.id
+
+      // 显示弹框
+      this.changeActiveVisible = true
     },
     updatedata() {
       // 编辑弹框关闭
