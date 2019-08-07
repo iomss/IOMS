@@ -85,6 +85,8 @@
             </el-form-item>
             <el-form-item class="form_total">
               <el-button type="primary" @click="sureright()">确定</el-button>
+              <el-button type="primary" @click="reset()">重置</el-button>
+              <el-button type="primary" @click="close()">关闭</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -174,6 +176,10 @@ export default {
           })
         }
       })
+    },
+    reset() { },
+    close() { // 点击关闭按钮，跳转回个人工作页
+      this.$router.push('/Workorder/Watchmanlist')
     }
   }
 }

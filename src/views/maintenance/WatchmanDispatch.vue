@@ -24,7 +24,7 @@
                   <el-date-picker v-model="formData.reportTime" type="datetime" placeholder="报修时间" />
                 </el-form-item>
                 <el-form-item label="故障类型" class="showtishi" prop="equipmentFaultId">
-                  <el-select v-model="formData.equipmentFaultId" v-loadmore="loadMorefault" filterable placeholder="故障类型" size="small">
+                  <el-select v-model="formData.equipmentFaultId" filterable remote :remote-method="remoteMethodefaultID" :loading="loading" placeholder="故障类型" size="small" @focus="remoteMethodefaultID">
                     <el-option v-for="item in faultData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                   <i class="fa fa-plus" aria-hidden="true" @click="creatorder()" />
@@ -54,7 +54,7 @@
                   </el-tooltip>
                 </el-form-item>
                 <el-form-item label="指定工程师" prop="repairUserId">
-                  <el-select v-model="formData.repairUserId" v-loadmore="loadMoreuser" filterable placeholder="指定工程师" size="small">
+                  <el-select v-model="formData.repairUserId" filterable remote :remote-method="remoteMethoduserId" :loading="loading" placeholder="指定工程师" size="small" @focus="remoteMethoduserId">
                     <el-option v-for="item in userData" :key="item.id" :label="item.userName" :value="item.id" />
                   </el-select>
                 </el-form-item>
@@ -67,7 +67,7 @@
             <el-dialog title="添加故障类型" :visible.sync="changeActiveVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="600px">
               <el-form ref="formAdd" :model="formAdd" label-width="90px" :rules="formAddrules">
                 <el-form-item label="设备种类" prop="equipmentId" class="total">
-                  <el-select v-model="formAdd.equipmentId" v-loadmore="loadMoreequipment" filterable placeholder="设备种类" size="small">
+                  <el-select v-model="formAdd.equipmentId" filterable remote :remote-method="remoteMethodequipmentID" :loading="loading" placeholder="设备种类" size="small" @focus="remoteMethodequipmentID">
                     <el-option v-for="item in equipmentData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
@@ -96,6 +96,7 @@ export default {
         userName: this.$cookie.get('userName'),
         id: this.$cookie.get('id')
       },
+      loading: false, // 远程搜索
       changeActiveVisible: false,
       formData: {
         code: '',
@@ -144,18 +145,18 @@ export default {
       },
       faultpage: {// 故障类型分页
         pageNumber: 1,
-        pageSize: 10,
+        pageSize: 50,
         pageCount: '',
         equipmentId: undefined
       },
       equipmentpage: {// 资产类别分页
         pageNumber: 1,
-        pageSize: 10,
+        pageSize: 50,
         pageCount: ''
       },
       userpage: {// 指定工程师分页
         pageNumber: 1,
-        pageSize: 10,
+        pageSize: 50,
         pageCount: ''
       }
     }
@@ -199,7 +200,6 @@ export default {
       // 获取资产类别
       this.$axios.get('/api/Meta/equipment?pageSize=' + this.equipmentpage.pageSize + '&pageNumber=' + this.equipmentpage.pageNumber).then(res => {
         this.equipmentData = this.equipmentData.concat(res.data)
-        this.equipmentpage.pageCount = res.pageCount
       })
     },
     getuserData() {
@@ -209,23 +209,32 @@ export default {
         this.userpage.pageCount = res.pageCount
       })
     },
-    loadMorefault() { // 故障类型获取下一页
-      if (this.faultpage.pageCount > this.faultpage.pageNumber) {
-        this.faultpage.pageNumber += 1
-        this.getfaultData()
-      }
+    remoteMethodefaultID(query) {
+      this.loading = true
+      let querytext = ''
+      querytext = typeof (query) === 'string' ? query : ''
+      this.$axios.get('/api/Meta/Fault?text=' + querytext).then(res => {
+        this.loading = false
+        this.faultData = res.data
+      })
     },
-    loadMoreequipment() { // 资产类别加载下一页数据
-      if (this.equipmentpage.pageCount > this.equipmentpage.pageNumber) {
-        this.equipmentpage.pageNumber += 1
-        this.getequipmentData()
-      }
+    remoteMethoduserId(query) {
+      this.loading = true
+      let querytext = ''
+      querytext = typeof (query) === 'string' ? query : ''
+      this.$axios.get('/api/User?text=' + querytext).then(res => {
+        this.loading = false
+        this.userData = res.data
+      })
     },
-    loadMoreuser() {
-      if (this.userpage.pageCount > this.userpage.pageNumber) {
-        this.userpage.pageNumber += 1
-        this.getuserData()
-      }
+    remoteMethodequipmentID(query) {
+      this.loading = true
+      let querytext = ''
+      querytext = typeof (query) === 'string' ? query : ''
+      this.$axios.get('/api/Meta/Equipment?text=' + querytext).then(res => {
+        this.loading = false
+        this.equipmentData = res.data
+      })
     },
     getData() { // 获取当前数据
       const _this = this

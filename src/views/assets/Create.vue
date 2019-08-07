@@ -8,7 +8,7 @@
             <h4>新增资产</h4>
             <el-form ref="formData" :model="formData" :rules="formDatarules" label-width="110px">
               <el-form-item label="使用单位" prop="useUnitId">
-                <el-select v-model="formData.useUnitId" v-loadmore="loadMoreunit" filterable placeholder="使用单位" size="small">
+                <el-select v-model="formData.useUnitId" filterable remote :remote-method="remoteMethodUnit" :loading="loading" placeholder="使用单位" size="small" @focus="remoteMethodUnit">
                   <el-option v-for="item in unitData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
@@ -16,17 +16,17 @@
                 <treeselect v-model="formData.positionId" :disable-branch-nodes="true" :normalizer="normalizer" :options="positionTreeData" :load-options="loadOptions" placeholder="安装位置" no-results-text="未找到相关数据" />
               </el-form-item>
               <el-form-item label="所属系统" prop="systemId">
-                <el-select v-model="formData.systemId" v-loadmore="loadMoresystem" filterable placeholder="所属系统" size="small">
+                <el-select v-model="formData.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" placeholder="所属系统" size="small" @focus="remoteMethodsystemId">
                   <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
               <el-form-item label="资产类别" prop="equipmentID">
-                <el-select v-model="formData.equipmentID" v-loadmore="loadMoreequipment" filterable placeholder="资产类别" size="small">
+                <el-select v-model="formData.equipmentID" filterable remote :remote-method="remoteMethodequipmentID" :loading="loading" placeholder="资产类别" size="small" @focus="remoteMethodequipmentID">
                   <el-option v-for="item in equipmentData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
               <el-form-item label="集成商" prop="siId">
-                <el-select v-model="formData.siId" v-loadmore="loadMoresi" filterable placeholder="设备集成商" size="small">
+                <el-select v-model="formData.siId" filterable remote :remote-method="remoteMethodsiId" :loading="loading" placeholder="设备集成商" size="small" @focus="remoteMethodsiId">
                   <el-option v-for="item in siData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
@@ -37,17 +37,17 @@
                 <el-date-picker v-model="formData.enableTime" type="date" placeholder="投用时间" />
               </el-form-item>
               <el-form-item label="品牌" prop="brandId">
-                <el-select v-model="formData.brandId" v-loadmore="loadMorebrand" filterable placeholder="资产类别" size="small" @change="changeBrand">
+                <el-select v-model="formData.brandId" filterable remote :remote-method="remoteMethodbrandId" :loading="loading" placeholder="资产类别" size="small" @focus="remoteMethodbrandId" @change="changeBrand">
                   <el-option v-for="item in brandData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
               <el-form-item label="型号" prop="modelId">
-                <el-select v-model="formData.modelId" v-loadmore="loadMoremodel" filterable placeholder="资产类别" size="small">
+                <el-select v-model="formData.modelId" filterable remote :remote-method="remoteMethodmodelId" :loading="loading" placeholder="资产类别" size="small" @focus="remoteMethodmodelId">
                   <el-option v-for="item in modelData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
               <el-form-item label="来源" prop="sourceId">
-                <el-select v-model="formData.sourceId" v-loadmore="loadMoresource" filterable placeholder="来源" size="small">
+                <el-select v-model="formData.sourceId" filterable remote :remote-method="remoteMethodsourceId" :loading="loading" placeholder="来源" size="small" @focus="remoteMethodsourceId">
                   <el-option v-for="item in sourceData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
@@ -67,7 +67,7 @@
                 <el-input v-model="formData.liabilityPeriod" placeholder="缺陷责任期" size="small" />
               </el-form-item>
               <el-form-item label="产权单位" prop="propertyUnitId">
-                <el-select v-model="formData.propertyUnitId" v-loadmore="loadMoreunit" filterable placeholder="产权单位" size="small">
+                <el-select v-model="formData.propertyUnitId" filterable remote :remote-method="remoteMethodUnit" :loading="loading" placeholder="产权单位" size="small" @focus="remoteMethodUnit">
                   <el-option v-for="item in unitData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
@@ -79,7 +79,6 @@
                   <el-option key="1" label="台" value="台" />
                   <el-option key="2" label="套" value="套" />
                   <el-option key="3" label="个" value="个" />
-                  <!-- <el-option key="4" label="米" value="false" /> -->
                 </el-select>
               </el-form-item>
               <el-form-item label="备注" class="form_mid" prop="comment">
@@ -88,9 +87,6 @@
               <el-form-item label="照片" class="form_mid" prop="img">
                 <Uploadimg v-model="formData.image" :reset="formData.image" @uploadimg="uploadimgdata">aaa</Uploadimg>
               </el-form-item>
-              <!-- <el-form-item label="自定义属性">
-                <el-input v-model="formData.Model" placeholder="自定义属性" size="small" />
-              </el-form-item> -->
               <el-form-item class="form_total">
                 <el-button type="primary" size="small" icon="el-icon-search" @click="create()">保存</el-button>
                 <el-button size="small" icon="el-icon-close" @click="cancel()">取消</el-button>
@@ -125,6 +121,7 @@ export default {
           children: node.children
         }
       },
+      loading: false, // 远程搜索
       formData: {
         useUnitId: '',
         positionId: null,
@@ -200,38 +197,38 @@ export default {
       },
       unitpage: {// 使用单位同产权单位分页
         pageNumber: 1,
-        pageSize: 10,
+        pageSize: 50,
         pageCount: ''
       },
       systempage: {// 所属系统分页
         pageNumber: 1,
-        pageSize: 10,
+        pageSize: 50,
         pageCount: ''
       },
       equipmentpage: {// 资产类别分页
         pageNumber: 1,
-        pageSize: 10,
+        pageSize: 50,
         pageCount: ''
       },
       brandpage: {// 品牌分页
         pageNumber: 1,
-        pageSize: 10,
+        pageSize: 50,
         pageCount: ''
       },
       modelpage: {// 型号分页
         pageNumber: 1,
-        pageSize: 10,
+        pageSize: 50,
         brandId: undefined,
         pageCount: ''
       },
       sourcepage: {// 来源分页
         pageNumber: 1,
-        pageSize: 10,
+        pageSize: 50,
         pageCount: ''
       },
       sipage: {// 集成商分页
         pageNumber: 1,
-        pageSize: 10,
+        pageSize: 50,
         pageCount: ''
       }
     }
@@ -243,7 +240,6 @@ export default {
     this.getsystemData()
     this.getequipmentData()
     this.getbrandData()
-    // this.getmodelData()
     this.getsourceData()
     this.getsiData()
   },
@@ -280,21 +276,18 @@ export default {
       // 获取所属系统
       this.$axios.get('/api/Meta/System?pageSize=' + this.systempage.pageSize + '&pageNumber=' + this.systempage.pageNumber).then(res => {
         this.systemData = this.systemData.concat(res.data)
-        this.systempage.pageCount = res.pageCount
       })
     },
     getequipmentData() {
       // 获取资产类别
       this.$axios.get('/api/Meta/equipment?pageSize=' + this.equipmentpage.pageSize + '&pageNumber=' + this.equipmentpage.pageNumber).then(res => {
         this.equipmentData = this.equipmentData.concat(res.data)
-        this.equipmentpage.pageCount = res.pageCount
       })
     },
     getbrandData() {
       // 获取品牌
       this.$axios.get('/api/Meta/Brand?pageSize=' + this.brandpage.pageSize + '&pageNumber=' + this.brandpage.pageNumber).then(res => {
         this.brandData = this.brandData.concat(res.data)
-        this.brandpage.pageCount = res.pageCount
       })
     },
     changeBrand() {
@@ -308,64 +301,83 @@ export default {
       // 获取型号
       this.$axios.get('/api/Meta/Model', { params: this.modelpage }).then(res => {
         this.modelData = this.modelData.concat(res.data)
-        this.modelpage.pageCount = res.pageCount
       })
     },
     getsourceData() {
       // 获取设备来源
       this.$axios.get('/api/Meta/Source?pageSize=' + this.sourcepage.pageSize + '&pageNumber=' + this.sourcepage.pageNumber).then(res => {
         this.sourceData = this.sourceData.concat(res.data)
-        this.sourcepage.pageCount = res.pageCount
       })
     },
     getsiData() {
       // 获取集成商
       this.$axios.get('/api/Meta/SI?pageSize=' + this.sipage.pageSize + '&pageNumber=' + this.sipage.pageNumber).then(res => {
         this.siData = this.siData.concat(res.data)
-        this.sipage.pageCount = res.pageCount
       })
     },
-    loadMoreunit() { // 使用单位或产权单位加载下一页数据
-      if (this.unitpage.pageCount > this.unitpage.pageNumber) {
-        this.unitpage.pageNumber += 1
-        this.getunitData()
-      }
+    // /远程搜索数据
+    remoteMethodUnit(query) {
+      this.loading = true
+      let querytext = ''
+      querytext = typeof (query) === 'string' ? query : ''
+      this.$axios.get('/api/Meta/Unit?text=' + querytext).then(res => {
+        this.loading = false
+        this.unitData = res.data
+      })
     },
-    loadMoresystem() { // 所属系统加载下一页数据
-      if (this.systempage.pageCount > this.systempage.pageNumber) {
-        this.systempage.pageNumber += 1
-        this.getsystemData()
-      }
+    remoteMethodsystemId(query) {
+      this.loading = true
+      let querytext = ''
+      querytext = typeof (query) === 'string' ? query : ''
+      this.$axios.get('/api/Meta/System?text=' + querytext).then(res => {
+        this.loading = false
+        this.systemData = res.data
+      })
     },
-    loadMoreequipment() { // 资产种类加载下一页数据
-      if (this.equipmentpage.pageCount > this.equipmentpage.pageNumber) {
-        this.equipmentpage.pageNumber += 1
-        this.getequipmentData()
-      }
+    remoteMethodequipmentID(query) {
+      this.loading = true
+      let querytext = ''
+      querytext = typeof (query) === 'string' ? query : ''
+      this.$axios.get('/api/Meta/Equipment?text=' + querytext).then(res => {
+        this.loading = false
+        this.equipmentData = res.data
+      })
     },
-    loadMoresi() { // 集成商加载下一页数据
-      if (this.sipage.pageCount > this.sipage.pageNumber) {
-        this.sipage.pageNumber += 1
-        this.getsiData()
-      }
+    remoteMethodsiId(query) {
+      this.loading = true
+      let querytext = ''
+      querytext = typeof (query) === 'string' ? query : ''
+      this.$axios.get('/api/Meta/SI?text=' + querytext).then(res => {
+        this.loading = false
+        this.siData = res.data
+      })
     },
-    loadMorebrand() { // 品牌加载下一页数据
-      if (this.brandpage.pageCount > this.brandpage.pageNumber) {
-        this.brandpage.pageNumber += 1
-        this.getbrandData()
-      }
+    remoteMethodbrandId(query) {
+      this.loading = true
+      let querytext = ''
+      querytext = typeof (query) === 'string' ? query : ''
+      this.$axios.get('/api/Meta/Brand?text=' + querytext).then(res => {
+        this.loading = false
+        this.brandData = res.data
+      })
     },
-    loadMoremodel() { // 型号加载下一页数据
-      if (this.modelpage.pageCount > this.modelpage.pageNumber) {
-        this.modelpage.pageNumber += 1
-        this.getmodelData()
-      }
+    remoteMethodmodelId(query) {
+      this.loading = true
+      let querytext = ''
+      querytext = typeof (query) === 'string' ? query : ''
+      this.$axios.get('/api/Meta/Model?brandId=' + this.formData.brandId + '&text=' + querytext).then(res => {
+        this.loading = false
+        this.modelData = res.data
+      })
     },
-    loadMoresource() { // 来源加载下一页数据
-      if (this.sourcepage.pageCount > this.sourcepage.pageNumber) {
-        this.sourcepage.pageNumber += 1
-        this.getsourceData()
-      }
+    remoteMethodsourceId(query) {
+      this.loading = true
+      let querytext = ''
+      querytext = typeof (query) === 'string' ? query : ''
+      this.$axios.get('/api/Meta/source?text=' + querytext).then(res => {
+        this.loading = false
+        this.sourceData = res.data
+      })
     },
     // treeSelect 加载
     loadOptions({ action, parentNode, callback }) {

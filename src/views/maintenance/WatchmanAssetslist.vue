@@ -13,7 +13,7 @@
               <el-button type="primary" size="small" @click="showerror()">报修</el-button>
             </div>
             <div class="select">
-              <el-select v-model="tableDataSearch.systemId" clearable placeholder="所属系统" size="small">
+              <el-select v-model="tableDataSearch.systemId" filterable :remote-method="remoteMethodsystemId" :loading="loading" placeholder="所属系统" size="small" @focus="remoteMethodsystemId">
                 <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </div>
@@ -60,6 +60,7 @@ export default {
   },
   data() {
     return {
+      loading: false, // 远程搜索
       tableData: [],
       treeData: [],
       treeselect: null,
@@ -97,9 +98,17 @@ export default {
     getTree() {
       this.$axios.get('/api/tree/position').then(res => {
         this.treeData = res
-        console.log(this.treeData)
       })
       this.getData()
+    },
+    remoteMethodsystemId(query) {
+      this.loading = true
+      let querytext = ''
+      querytext = typeof (query) === 'string' ? query : ''
+      this.$axios.get('/api/Meta/System?text=' + querytext).then(res => {
+        this.loading = false
+        this.systemData = res.data
+      })
     },
     getData() { // 获取右侧列表数据
       // 搜索框内容不为空 页码跳转至第一页

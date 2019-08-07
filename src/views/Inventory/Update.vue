@@ -159,28 +159,14 @@ export default {
       // 获取所属系统
       this.$axios.get('/api/Meta/System?pageNumber=1&pageSize=' + this.systempage.pageSize).then(res => {
         this.systemData = this.systemData.concat(res.data)
-        // this.systempage.pageCount = res.pageCount
       })
     },
     getequipmentData() {
       // 获取资产类别
       this.$axios.get('/api/Meta/equipment?pageNumber=1&pageSize=' + this.equipmentpage.pageSize).then(res => {
         this.equipmentData = this.equipmentData.concat(res.data)
-        // this.equipmentpage.pageCount = res.pageCount
       })
     },
-    // loadMoresystem() { // 所属系统加载下一页数据
-    //   if (this.systempage.pageCount > this.systempage.pageNumber) {
-    //     this.systempage.pageNumber += 1
-    //     this.getsystemData()
-    //   }
-    // },
-    // loadMoreequipment() { // 资产种类加载下一页数据
-    //   if (this.equipmentpage.pageCount > this.equipmentpage.pageNumber) {
-    //     this.equipmentpage.pageNumber += 1
-    //     this.getequipmentData()
-    //   }
-    // },
     remoteMethodsystemId(query) {
       this.loading = true
       let querytext = ''
@@ -256,19 +242,6 @@ export default {
       this.removeData = row
       this.removeQuestionVisible = true
     }
-    // removeQuestion() {
-    // const _this = this
-    // this.$ajax.delete('/api/services/app/Question/DeleteClozeQuestion?Id=' + this.removeData.id).then(response => {
-    //   if (response.data.success) {
-    //     let index = _this.tableData.indexOf(_this.removeData)
-    //     _this.tableData.splice(index, 1)
-    //     _this.$message.success('删除成功')
-    //     _this.removeQuestionVisible = false
-    //   } else {
-    //     _this.$message.error(response.data.error.message)
-    //   }
-    // })
-    // }
   }
 }
 </script>

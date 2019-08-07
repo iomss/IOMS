@@ -40,17 +40,17 @@
           </el-form>
           <el-form v-if="repairType=='Done'" ref="formRcorda" :model="formRcorda" label-width="120px" :rules="formRcordarules">
             <el-form-item label="设备种类" prop="equipmentId">
-              <el-select v-model="formRcorda.equipmentId" v-loadmore="loadMoreequipment" filterable placeholder="设备种类" size="small" @change="changeEquipment">
+              <el-select v-model="formRcorda.equipmentId" filterable remote :remote-method="remoteMethodequipmentID" :loading="loading" placeholder="设备种类" size="small" @focus="remoteMethodequipmentID" @change="changeEquipment">
                 <el-option v-for="item in equipmentData" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
             <el-form-item label="设备编码" prop="assetCode">
-              <el-select v-model="formRcorda.assetCode" v-loadmore="loadMoreAssets" filterable placeholder="设备编码" size="small">
+              <el-select v-model="formRcorda.assetCode" filterable remote :remote-method="remoteMethodecodeID" :loading="loading" placeholder="设备编码" size="small" @focus="remoteMethodecodeID">
                 <el-option v-for="item in assetsData" :key="item.name" :label="item.name" :value="item.name" />
               </el-select>
             </el-form-item>
             <el-form-item label="故障类型" prop="equipmentFaultId">
-              <el-select v-model="formRcorda.equipmentFaultId" v-loadmore="loadMorefault" filterable placeholder="故障类型" size="small">
+              <el-select v-model="formRcorda.equipmentFaultId" filterable remote :remote-method="remoteMethodefaultID" :loading="loading" placeholder="故障类型" size="small" @focus="remoteMethodefaultID">
                 <el-option v-for="item in faultData" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
@@ -113,17 +113,17 @@
           </el-form>
           <el-form v-if="repairType=='Suspend'" ref="formRcordd" :model="formRcordd" label-width="120px" :rules="formRcorddrules">
             <el-form-item label="设备种类" prop="equipmentId">
-              <el-select v-model="formRcordd.equipmentId" v-loadmore="loadMoreequipment" filterable placeholder="设备种类" size="small" @change="changeEquipment">
+              <el-select v-model="formRcordd.equipmentId" filterable remote :remote-method="remoteMethodequipmentID" :loading="loading" placeholder="设备种类" size="small" @focus="remoteMethodequipmentID" @change="changeEquipment">
                 <el-option v-for="item in equipmentData" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
             <el-form-item label="设备编码" prop="assetCode">
-              <el-select v-model="formRcordd.assetCode" v-loadmore="loadMoreAssets" filterable placeholder="设备编码" size="small">
+              <el-select v-model="formRcordd.assetCode" filterable remote :remote-method="remoteMethodecodeID" :loading="loading" placeholder="设备编码" size="small" @focus="remoteMethodecodeID">
                 <el-option v-for="item in assetsData" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
             <el-form-item label="故障类型" prop="equipmentFaultId">
-              <el-select v-model="formRcordd.equipmentFaultId" v-loadmore="loadMorefault" filterable placeholder="故障类型" size="small">
+              <el-select v-model="formRcordd.equipmentFaultId" filterable remote :remote-method="remoteMethodefaultID" :loading="loading" placeholder="故障类型" size="small" @focus="remoteMethodefaultID">
                 <el-option v-for="item in faultData" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
@@ -170,6 +170,7 @@ export default {
   },
   data() {
     return {
+      loading: false, // 远程搜索
       dangqianUser: {
         userName: this.$cookie.get('userName'),
         id: this.$cookie.get('id')
@@ -269,19 +270,19 @@ export default {
       },
       equipmentpage: {// 设备种类分页
         pageNumber: 1,
-        pageSize: 10,
+        pageSize: 50,
         pageCount: '',
         positionId: ''
       },
       faultpage: {// 故障类型分页
         pageNumber: 1,
-        pageSize: 10,
+        pageSize: 50,
         pageCount: '',
         equipmentId: undefined
       },
       assetspage: {// 设备编码分页
         pageNumber: 1,
-        pageSize: 10,
+        pageSize: 50,
         pageCount: '',
         equipmentId: undefined,
         positionId: ''
@@ -313,40 +314,46 @@ export default {
       // 获取设备编码
       this.$axios.get('/api/Meta/Assets', { params: this.assetspage }).then(res => {
         this.assetsData = this.assetsData.concat(res.data)
-        this.assetspage.pageCount = res.pageCount
       })
     },
     getequipmentData() {
       // 获取设备种类
       this.$axios.get('/api/Meta/equipment', { params: this.equipmentpage }).then(res => {
         this.equipmentData = this.equipmentData.concat(res.data)
-        this.equipmentpage.pageCount = res.pageCount
       })
     },
     getfaultData() {
       // 获取故障类型
       this.$axios.get('/api/Meta/Fault', { params: this.faultpage }).then(res => {
         this.faultData = this.faultData.concat(res.data)
-        this.faultpage.pageCount = res.pageCount
       })
     },
-    loadMoreequipment() { // 资产种类加载下一页数据
-      if (this.equipmentpage.pageCount > this.equipmentpage.pageNumber) {
-        this.equipmentpage.pageNumber += 1
-        this.getequipmentData()
-      }
+    remoteMethodecodeID(query) {
+      this.loading = true
+      let querytext = ''
+      querytext = typeof (query) === 'string' ? query : ''
+      this.$axios.get('/api/Meta/Assets?text=' + querytext, { params: this.assetspage }).then(res => {
+        this.loading = false
+        this.assetsData = res.data
+      })
     },
-    loadMorefault() { // 故障类型获取下一页
-      if (this.faultpage.pageCount > this.faultpage.pageNumber) {
-        this.faultpage.pageNumber += 1
-        this.getfaultData()
-      }
+    remoteMethodefaultID(query) {
+      this.loading = true
+      let querytext = ''
+      querytext = typeof (query) === 'string' ? query : ''
+      this.$axios.get('/api/Meta/Fault?text=' + querytext, { params: this.faultpage }).then(res => {
+        this.loading = false
+        this.faultData = res.data
+      })
     },
-    loadMoreAssets() { // 设备编码获取下一页
-      if (this.assetspage.pageCount > this.assetspage.pageNumber) {
-        this.assetspage.pageNumber += 1
-        this.getAssetsData()
-      }
+    remoteMethodequipmentID(query) {
+      this.loading = true
+      let querytext = ''
+      querytext = typeof (query) === 'string' ? query : ''
+      this.$axios.get('/api/Meta/Equipment?text=' + querytext, { params: this.equipmentpage }).then(res => {
+        this.loading = false
+        this.equipmentData = res.data
+      })
     },
     getdata() {
       // 获取维修详情数据
