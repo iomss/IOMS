@@ -11,11 +11,15 @@
             </div>
             <div class="toolsrt">
               <el-form ref="form" :model="formSearch">
-                <el-select v-model="formSearch.system" v-loadmore="loadMoresystem" filterable placeholder="系统名称" size="small">
+                <el-select v-model="formSearch.system" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" placeholder="系统名称" size="small" @focus="remoteMethodsystemId">
                   <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
-                <el-select v-model="formSearch.source" v-loadmore="loadMoresource" filterable placeholder="来源" size="small">
+                <!-- <el-select v-model="formSearch.source" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" placeholder="来源" size="small" @focus="remoteMethodsourceId">
                   <el-option v-for="item in sourceData" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select> -->
+                <el-select v-model="formSearch.source" filterable placeholder="来源" size="small">
+                  <el-option key="Manual" label="人工修订" value="Manual" />
+                  <el-option key="Automatic" label="自动汇总" value="Automatic" />
                 </el-select>
                 <el-input v-model="formSearch.text" placeholder="设备名称" size="small" />
                 <el-button type="primary" plain size="small" @click="getData()">查询</el-button>
@@ -61,11 +65,11 @@ export default {
   },
   data() {
     return {
+      loading: false, // 远程搜索
       id: '',
       formSearchShow: false,
       formSearch: {
-        name: '',
-        year: '',
+        source: '',
         system: '',
         text: '', // 搜索文本
         pageSize: 10, // 展示条数
@@ -117,27 +121,45 @@ export default {
       // 获取所属系统
       this.$axios.get('/api/Meta/System?pageSize=' + this.systempage.pageSize + '&pageNumber=' + this.systempage.pageNumber).then(res => {
         this.systemData = this.systemData.concat(res.data)
-        this.systempage.pageCount = res.pageCount
+        // this.systempage.pageCount = res.pageCount
       })
     },
     getsourceData() {
       // 获取设备来源
       this.$axios.get('/api/Meta/Source?pageSize=' + this.sourcepage.pageSize + '&pageNumber=' + this.sourcepage.pageNumber).then(res => {
         this.sourceData = this.sourceData.concat(res.data)
-        this.sourcepage.pageCount = res.pageCount
+        // this.sourcepage.pageCount = res.pageCount
       })
     },
-    loadMoresystem() { // 所属系统加载下一页数据
-      if (this.systempage.pageCount > this.systempage.pageNumber) {
-        this.systempage.pageNumber += 1
-        this.getsystemData()
-      }
+    // loadMoresystem() { // 所属系统加载下一页数据
+    //   if (this.systempage.pageCount > this.systempage.pageNumber) {
+    //     this.systempage.pageNumber += 1
+    //     this.getsystemData()
+    //   }
+    // },
+    // loadMoresource() { // 来源加载下一页数据
+    //   if (this.sourcepage.pageCount > this.sourcepage.pageNumber) {
+    //     this.sourcepage.pageNumber += 1
+    //     this.getsourceData()
+    //   }
+    // },
+    remoteMethodsystemId(query) {
+      this.loading = true
+      let querytext = ''
+      querytext = typeof (query) === 'string' ? query : ''
+      this.$axios.get('/api/Meta/System?text=' + querytext).then(res => {
+        this.loading = false
+        this.systemData = res.data
+      })
     },
-    loadMoresource() { // 来源加载下一页数据
-      if (this.sourcepage.pageCount > this.sourcepage.pageNumber) {
-        this.sourcepage.pageNumber += 1
-        this.getsourceData()
-      }
+    remoteMethodsourceId(query) {
+      this.loading = true
+      let querytext = ''
+      querytext = typeof (query) === 'string' ? query : ''
+      this.$axios.get('/api/Meta/source?text=' + querytext).then(res => {
+        this.loading = false
+        this.sourceData = res.data
+      })
     },
     search() {
       // 点击右上角查询方法

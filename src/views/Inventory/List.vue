@@ -113,7 +113,7 @@ export default {
       totalCount: 0, // 数据总条数
       tableData: [],
       tableDatanew: {},
-      multipleSelection: [], // 表单选中行
+      multipleSelection: '', // 表单选中行
       yearData: [],
       positionTreeData: []
     }
@@ -151,6 +151,7 @@ export default {
       this.$axios.get('/api/EquipmentList', { params: this.tableDataSearch }).then(res => {
         this.tableData = res.data
         this.totalCount = res.totalCount
+        this.multipleSelection === ''// 重置选中
       })
     },
     getPage(val) { // page事件
@@ -183,7 +184,7 @@ export default {
     setvalid() {
       const _this = this
       // 设置清单有效
-      if (this.multipleSelection === []) {
+      if (this.multipleSelection === '') {
         this.$message.error('请至少选择一条数据')
       } else {
         this.$axios.post('/api/EquipmentList/' + _this.multipleSelection[0].id + '/Valid').then(res => {
@@ -193,14 +194,12 @@ export default {
       }
     },
     deletelist(data) {
-      debugger
       // 删除设备清单
       if (data) {
-        this.multipleSelection = []
         this.removeQuestionVisible = true
-        this.multipleSelection.push(data)
+        this.multipleSelection = data
       } else {
-        if (this.multipleSelection === []) {
+        if (this.multipleSelection === '') {
           this.$message.error('请至少选择一条数据')
         } else {
           this.removeQuestionVisible = true
@@ -209,10 +208,17 @@ export default {
     },
     removeData() { // 删除弹框点确定
       this.removeQuestionVisible = true
-      this.$axios.delete('/api/EquipmentList/' + this.multipleSelection[0].id).then(res => {
+      let id = ''
+      if (typeof (this.multipleSelection) === 'object' && this.multipleSelection.constructor === Array) {
+        id = this.multipleSelection[0].id
+      } else if (typeof (this.multipleSelection) === 'object') {
+        id = this.multipleSelection.id
+      }
+      this.$axios.delete('/api/EquipmentList/' + id).then(res => {
+        this.$message.success('删除成功')
         this.removeQuestionVisible = false
         // 清空选中值
-        this.multipleSelection = []
+        this.multipleSelection = ''
       })
     },
     handleSelectionChange(val) {
