@@ -6,7 +6,7 @@
         <div class="panel">
           <div class="header">
             <div class="select">
-              <el-button type="primary" size="small" @click="Visiblefirst=true">新增计划</el-button>
+              <el-button type="primary" size="small" @click="Visible=true">新增计划</el-button>
               <el-button type="primary" size="small" @click="setvalid()">导出计划</el-button>
               <el-button type="success" size="small" @click="deletelist()">编辑</el-button>
               <el-button type="danger" size="small" @click="deletelist()">删除</el-button>
@@ -41,7 +41,11 @@
                   {{ scope.row.status?'已生效':'未生效' }}
                 </template>
               </el-table-column>
-              <el-table-column prop="count" label="维护频率" />
+              <el-table-column prop="cyclic" label="维护频率">
+                <template slot-scope="scope">
+                  {{ scope.row.cyclic=='Day'?'每天':scope.row.cyclic=='Week'?'每周':scope.row.cyclic=='Month'?'每月':'每年' }}
+                </template>
+              </el-table-column>
               <el-table-column prop="createTime" label="录入日期" :formatter="formatterDate" />
               <el-table-column prop="valid" label="录入人">
                 <template slot-scope="scope">
@@ -52,8 +56,9 @@
               <el-table-column prop="createTime" label="验收时间" :formatter="formatterDate" />
               <el-table-column label="操作">
                 <template slot-scope="scope">
-                  <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="primary" @click="UpdateStage(scope.row)">编辑</el-button>
-                  <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="danger" @click="deletelist(scope.row)">删除</el-button>
+                  <el-button size="mini" type="primary" style="margin:2px 5px" @click="UpdateStage(scope.row)">编辑计划</el-button>
+                  <el-button type="primary" size="mini" style="margin:2px 5px" @click="Visiblefirst=true">管理资产</el-button>
+                  <el-button size="mini" type="danger" style="margin:2px 5px" @click="deletelist(scope.row)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -68,8 +73,61 @@
               </span>
             </el-dialog>
             <!-- 生成新的计划-->
+            <el-dialog :title="title" :visible.sync="Visible" :close-on-press-escape="false" :close-on-click-modal="false" width="1200px">
+              <el-form ref="form" :model="tableDatanewfirst" label-width="120px">
+                <el-row class="selfstyle">
+                  <el-col :span="12">
+                    <el-form-item label="计划名称" prop="name">
+                      <el-input v-model="tableDatanewfirst.name" placeholder="计划名称" size="small" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="所属系统" prop="">
+                      <el-select v-model="tableDatanewfirst.positionId" clearable placeholder="所属系统" size="small">
+                        <el-option v-for="item in positionTreeData" :key="item.id" :label="item.name" :value="item.id" />
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="起止时间" prop="">
+                      <el-date-picker v-model="tableDatanewfirst.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="6">
+                    <el-form-item label="维护频率" prop="">
+                      <el-select v-model="tableDatanewfirst.year" filterable placeholder="维护频率" size="small">
+                        <el-option v-for="item in yearData" :key="item.id" :label="item.name" :value="item.id" />
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="6">
+                    <el-form-item label="抽检率" prop="">
+                      <el-select v-model="tableDatanewfirst.year" filterable placeholder="抽检率" size="small">
+                        <el-option v-for="item in yearData" :key="item.id" :label="item.name" :value="item.id" />
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="责任人" prop="">
+                      <el-input v-model="tableDatanewfirst.code" placeholder="责任人" size="small" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="执行人" prop="">
+                      <el-input v-model="tableDatanewfirst.code" placeholder="执行人" size="small" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="24">
+                    <el-form-item>
+                      <el-button type="primary" size="small" icon="el-icon-search" @click="create()">保存</el-button>
+                      <el-button size="small" icon="el-icon-close" @click="cancel()">取消</el-button>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
+            </el-dialog>
             <!-- 一级弹框开始******************************************************* -->
-            <el-dialog title="新增计划" :visible.sync="Visiblefirst" :close-on-press-escape="false" :close-on-click-modal="false" width="1200px">
+            <el-dialog title="编辑资产" :visible.sync="Visiblefirst" :close-on-press-escape="false" :close-on-click-modal="false" width="1200px">
               <el-form ref="form" :model="tableDatanewfirst" label-width="120px">
                 <el-row class="selfstyle">
                   <el-col :span="12">
@@ -142,7 +200,7 @@
             </el-dialog>
             <!-- 一级弹框结束**************************************************************** -->
             <!-- 二级弹框开始**************************************************************** -->
-            <el-dialog title="新增计划" :visible.sync="Visiblesecond" :close-on-press-escape="false" :close-on-click-modal="false" width="1200px">
+            <el-dialog title="新增资产" :visible.sync="Visiblesecond" :close-on-press-escape="false" :close-on-click-modal="false" width="1200px">
               <div class="header">
                 <div class="toolsrt">
                   <el-form ref="form" :model="tableDataSearchsecond">
@@ -187,8 +245,10 @@ export default {
   },
   data() {
     return {
+      title: '新增计划',
       formSearchShow: false,
       removeQuestionVisible: false,
+      Visible: false, // 新增计划弹框
       Visiblefirst: false, // 一级弹框隐藏
       Visiblesecond: false, // 二级弹框隐藏
       tableDataSearch: {
@@ -267,7 +327,7 @@ export default {
       } else {
         this.tableDataSearch.valid = ''
       }
-      this.$axios.get('/api/EquipmentList', { params: this.tableDataSearch }).then(res => {
+      this.$axios.get('/api/MaintenancePlan', { params: this.tableDataSearch }).then(res => {
         this.tableData = res.data
         this.totalCount = res.totalCount
       })
@@ -278,7 +338,7 @@ export default {
       // 页码
       this.tableDataSearch.pageNumber = val.page
       // 调用获取数据
-      this.$axios.get('/api/EquipmentList', { params: this.tableDataSearch }).then(res => {
+      this.$axios.get('/api/MaintenancePlan', { params: this.tableDataSearch }).then(res => {
         this.tableData = res.data
       })
     },
@@ -324,15 +384,26 @@ export default {
       this.multiple = val
     },
     showInfo(val) { // 点击详情按钮
-      this.$router.push('/Inventory/Info/' + val.id)
+      this.Visible = true
+      this.title = '计划详情'
     },
     UpdateStage(val) { // 点击编辑按钮
-      this.$router.push('/Inventory/Update/' + val.id)
+      this.Visible = true
+      this.title = '编辑计划'
+      // 传计划id数据
     },
     removeEquip() { // 一级弹框中点删除
 
     },
+    //* *************************************************************************************************************** */
+    // 新增计划弹框方法
 
+    create() {
+      this.Visible = false
+    },
+    cancel() {
+      this.Visible = false
+    },
     //* *************************************************************************************************************** */
     // 一级弹框方法
 
