@@ -27,33 +27,34 @@
           <div class="content">
             <el-table :data="tableData" stripe border style="width: 100%" @selection-change="handleChange">
               <el-table-column type="selection" />
-              <el-table-column label="完成状态" prop="code">
+              <el-table-column label="完成状态" prop="planState ">
                 <template slot-scope="scope">
-                  <el-button size="mini" type="text" @click="showInfo(scope.row)">{{ scope.row.code }}</el-button>
+                  <el-button size="mini" type="text" @click="showInfo(scope.row)">{{ scope.row.planState }}</el-button>
                 </template>
               </el-table-column>
-              <el-table-column prop="year" label="维护计划名名称" />
-              <el-table-column prop="position.name" label="起止时间" />
-              <el-table-column prop="count" label="负责人" />
-              <el-table-column prop="createTime" label="执行人" :formatter="formatterDate" />
-              <el-table-column prop="valid" label="关联资产数">
+              <el-table-column prop="name" label="维护计划名名称" />
+              <el-table-column prop="start" label="起止时间">
                 <template slot-scope="scope">
-                  {{ scope.row.status?'已生效':'未生效' }}
+                  {{ formatter(scope.row.start) }} <br>至<br>
+                  {{ formatter(scope.row.end) }}
                 </template>
               </el-table-column>
+              <el-table-column prop="responsibleUser" label="负责人" />
+              <el-table-column prop="excuteUser" label="执行人" :formatter="formatterDate" />
+              <el-table-column prop="assetCount" label="关联资产数" />
               <el-table-column prop="cyclic" label="维护频率">
                 <template slot-scope="scope">
                   {{ scope.row.cyclic=='Day'?'每天':scope.row.cyclic=='Week'?'每周':scope.row.cyclic=='Month'?'每月':'每年' }}
                 </template>
               </el-table-column>
               <el-table-column prop="createTime" label="录入日期" :formatter="formatterDate" />
-              <el-table-column prop="valid" label="录入人">
+              <el-table-column prop="createUser" label="录入人">
                 <template slot-scope="scope">
-                  {{ scope.row.status?'已生效':'未生效' }}
+                  {{ scope.row.createUser.name }}
                 </template>
               </el-table-column>
-              <el-table-column prop="count" label="验收人" />
-              <el-table-column prop="createTime" label="验收时间" :formatter="formatterDate" />
+              <el-table-column prop="reviewUser" label="验收人" />
+              <el-table-column prop="reviewtime" label="验收时间" :formatter="formatterDate" />
               <el-table-column label="操作">
                 <template slot-scope="scope">
                   <el-button size="mini" type="primary" style="margin:2px 5px" @click="UpdateStage(scope.row)">编辑计划</el-button>
@@ -74,47 +75,47 @@
             </el-dialog>
             <!-- 生成新的计划-->
             <el-dialog :title="title" :visible.sync="Visible" :close-on-press-escape="false" :close-on-click-modal="false" width="1200px">
-              <el-form ref="form" :model="tableDatanewfirst" label-width="120px">
+              <el-form ref="form" :model="tableDatanew" label-width="120px">
                 <el-row class="selfstyle">
                   <el-col :span="12">
                     <el-form-item label="计划名称" prop="name">
-                      <el-input v-model="tableDatanewfirst.name" placeholder="计划名称" size="small" />
+                      <el-input v-model="tableDatanew.name" placeholder="计划名称" size="small" />
                     </el-form-item>
                   </el-col>
                   <el-col :span="12">
                     <el-form-item label="所属系统" prop="">
-                      <el-select v-model="tableDatanewfirst.positionId" clearable placeholder="所属系统" size="small">
+                      <el-select v-model="tableDatanew.systemId" clearable placeholder="所属系统" size="small">
                         <el-option v-for="item in positionTreeData" :key="item.id" :label="item.name" :value="item.id" />
                       </el-select>
                     </el-form-item>
                   </el-col>
                   <el-col :span="12">
-                    <el-form-item label="起止时间" prop="">
-                      <el-date-picker v-model="tableDatanewfirst.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
+                    <el-form-item label="起止时间" prop="daterange">
+                      <el-date-picker v-model="tableDatanew.daterange" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" @change="daterangeChange" />
                     </el-form-item>
                   </el-col>
                   <el-col :span="6">
                     <el-form-item label="维护频率" prop="">
-                      <el-select v-model="tableDatanewfirst.year" filterable placeholder="维护频率" size="small">
+                      <el-select v-model="tableDatanew.year" filterable placeholder="维护频率" size="small">
                         <el-option v-for="item in yearData" :key="item.id" :label="item.name" :value="item.id" />
                       </el-select>
                     </el-form-item>
                   </el-col>
                   <el-col :span="6">
                     <el-form-item label="抽检率" prop="">
-                      <el-select v-model="tableDatanewfirst.year" filterable placeholder="抽检率" size="small">
+                      <el-select v-model="tableDatanew.year" filterable placeholder="抽检率" size="small">
                         <el-option v-for="item in yearData" :key="item.id" :label="item.name" :value="item.id" />
                       </el-select>
                     </el-form-item>
                   </el-col>
                   <el-col :span="12">
                     <el-form-item label="责任人" prop="">
-                      <el-input v-model="tableDatanewfirst.code" placeholder="责任人" size="small" />
+                      <el-input v-model="tableDatanew.code" placeholder="责任人" size="small" />
                     </el-form-item>
                   </el-col>
                   <el-col :span="12">
                     <el-form-item label="执行人" prop="">
-                      <el-input v-model="tableDatanewfirst.code" placeholder="执行人" size="small" />
+                      <el-input v-model="tableDatanew.code" placeholder="执行人" size="small" />
                     </el-form-item>
                   </el-col>
                   <el-col :span="24">
@@ -273,7 +274,11 @@ export default {
       tableData: [],
       tableDatafirst: [], // 一级弹框表单数据
       tableDatasecond: [], // 二级弹框表单数据
-      tableDatanew: {},
+      tableDatanew: {
+        daterange: [],
+        start: '',
+        end: ''
+      },
       tableDatanewfirst: {}, // 一级弹框搜索
       multiple: '', // 表单选中行
       multiplefirst: '', // 一级弹框表单选中行
@@ -299,6 +304,9 @@ export default {
       } else {
         return cellValue
       }
+    },
+    formatter(val) { // 日期时间格式化
+      return this.$moment(val).format('YYYY-MM-DD')
     },
     //* ******************************************************************************************************* */
     // 下拉菜单数据
@@ -387,10 +395,17 @@ export default {
       this.Visible = true
       this.title = '计划详情'
     },
-    UpdateStage(val) { // 点击编辑按钮
+    daterangeChange(val) {
+      console.log(val)
+      this.tableDatanew.start = val[0]
+      this.tableDatanew.end = val[1]
+    },
+    UpdateStage(row) { // 点击编辑按钮
       this.Visible = true
       this.title = '编辑计划'
       // 传计划id数据
+      // tableDatanew
+      this.tableDatanew.daterange = [row.start, row.end]
     },
     removeEquip() { // 一级弹框中点删除
 
