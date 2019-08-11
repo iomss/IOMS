@@ -1,4 +1,4 @@
-<!-- 资产清单管理页面 -->
+<!-- 维护计划管理页面 -->
 <template>
   <div>
     <el-row>
@@ -65,7 +65,7 @@
             </el-table>
             <!--分页-->
             <pagination v-show="totalCount>0" :total="totalCount" :page.sync="tableDataSearch.pageNumber" :limit.sync="tableDataSearch.pageSize" @pagination="getPage" />
-            <!-- 删除 -->
+            <!-- 删除计划 -->
             <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeQuestionVisible" width="220px">
               <span>您确定要删除此条数据？</span>
               <span slot="footer" class="dialog-footer">
@@ -188,9 +188,21 @@
               </div>
               <el-table :data="tableDatafirst" stripe border style="width: 100%" @selection-change="handleChangefirst">
                 <el-table-column type="selection" />
-                <el-table-column prop="name" label="资产名称" />
-                <el-table-column prop="brand" label="品牌" />
-                <el-table-column prop="model" label="型号" />
+                <el-table-column prop="equipment" label="资产名称">
+                  <template slot-scope="scope">
+                    {{ scope.row.equipment.name }}
+                  </template>
+                </el-table-column>
+                <el-table-column prop="brand" label="品牌">
+                  <template slot-scope="scope">
+                    {{ scope.row.brand.name }}
+                  </template>
+                </el-table-column>
+                <el-table-column prop="model" label="型号">
+                  <template slot-scope="scope">
+                    {{ scope.row.model.name }}
+                  </template>
+                </el-table-column>
                 <el-table-column prop="count" label="数量" />
                 <el-table-column prop="level1" label="一级" />
                 <el-table-column prop="level2" label="二级" />
@@ -203,7 +215,7 @@
             </el-dialog>
             <!-- 一级弹框结束**************************************************************** -->
             <!-- 二级弹框开始**************************************************************** -->
-            <el-dialog title="新增资产" :visible.sync="Visiblesecond" :close-on-press-escape="false" :close-on-click-modal="false" width="1200px">
+            <el-dialog title="新增计划子项" :visible.sync="Visiblesecond" :close-on-press-escape="false" :close-on-click-modal="false" width="1200px">
               <div class="header">
                 <div class="">
                   <el-form ref="tableDataSearchsecond" :model="tableDataSearchsecond" label-width="50px;">
@@ -275,17 +287,17 @@
                 <el-table-column type="selection" />
                 <el-table-column prop="equipment" label="资产名称">
                   <template slot-scope="scope">
-                    {{ scope.row.equipment.name }}
+                    {{ scope.equipment.name }}
                   </template>
                 </el-table-column>
                 <el-table-column prop="brand" label="品牌">
                   <template slot-scope="scope">
-                    {{ scope.row.brand.name }}
+                    {{ scope.brand.name }}
                   </template>
                 </el-table-column>
                 <el-table-column prop="model" label="型号">
                   <template slot-scope="scope">
-                    {{ scope.row.model.name }}
+                    {{ scope.model.name }}
                   </template>
                 </el-table-column>
                 <el-table-column prop="count" label="数量" />
@@ -298,6 +310,14 @@
               </span>
             </el-dialog>
             <!-- 二级弹框结束**************************************************************** -->
+            <!-- 删除计划子项**************************************************************** -->
+            <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeVisible" width="220px">
+              <span>您确定要删除此条数据？</span>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="removeVisible = false">取 消</el-button>
+                <el-button type="primary" @click="removeDatainfo">确 定</el-button>
+              </span>
+            </el-dialog>
           </div>
         </div>
       </el-col>
@@ -331,7 +351,8 @@ export default {
       loading: false, // 远程搜索
       title: '新增计划',
       formSearchShow: false,
-      removeQuestionVisible: false,
+      removeQuestionVisible: false, // 删除计划弹框
+      removeVisible: false, // 删除计划子项弹框
       Visible: false, // 新增计划弹框
       Visiblefirst: false, // 一级弹框隐藏
       Visiblesecond: false, // 二级弹框隐藏
@@ -374,7 +395,7 @@ export default {
       tableDatanewfirst: {}, // 一级弹框搜索
       multiple: '', // 表单选中行
       multiplefirst: '', // 一级弹框表单选中行
-      multiplesecond: '', // 二级弹框表单选中行
+      multiplesecond: [], // 二级弹框表单选中行
       yearData: [],
       systemData: [],
       systempage: {// 所属系统分页
@@ -415,7 +436,8 @@ export default {
         level3: '',
         level4: '',
         level5: ''
-      }
+      },
+      itemid: ''// 计划子项id
     }
   },
   computed: {},
@@ -518,7 +540,7 @@ export default {
     //* ******************************************************************************************************* */
     // 列表数据
 
-    getData(data) { // 获取清单列表
+    getData(data) { // 获取列表
       if (data) {
         this.tableDataSearch.valid = data
       } else {
@@ -639,8 +661,10 @@ export default {
       this.tableDatanewfirst.excuteUser = row.excuteUser
       //  打开弹框
       this.Visiblefirst = true
+
+      this.itemid = row.id
       // 加载数据
-      this.getDatafirst(row.id)
+      this.getDatafirst()
     },
     //* *************************************************************************************************************** */
     // 新增或编辑计划弹框方法
@@ -669,8 +693,8 @@ export default {
     //* *************************************************************************************************************** */
     // 一级弹框方法
 
-    getDatafirst(data) { // 获取资产列表
-      this.$axios.get('api/MaintenancePlan/' + data + '/Items').then(res => {
+    getDatafirst() { // 获取资产列表
+      this.$axios.get('/api/MaintenancePlan/' + this.itemid + '/Items').then(res => {
         this.tableDatafirst = res.data
         this.totalCountfirst = res.totalCount
       })
@@ -681,16 +705,38 @@ export default {
       // 页码
       this.tableDataSearchfirst.pageNumber = val.page
       // 调用获取数据
-      this.$axios.get('/api/EquipmentList', { params: this.tableDataSearchfirst }).then(res => {
+      this.$axios.get('/api/MaintenancePlan/' + this.itemid + '/Items', { params: this.tableDataSearchfirst }).then(res => {
         this.tableDatafirst = res.data
       })
     },
     handleChangefirst(val) {
-      this.multiplefirst = val
+      const arr = []
+      val.forEach(item => {
+        arr.push(item.id)
+      })
+      this.multiplefirst = arr
+      console.log(this.multiplefirst)
     },
 
-    removeEquremoveEquipip() { // 一级弹框中点删除
+    removeEquip() { // 一级弹框中点删除
+      if (this.multiplefirst === '') {
+        this.$message.error('请至少选择一条数据')
+      } else {
+        this.removeVisible = true
+      }
+    },
 
+    removeDatainfo() { // 删除弹框点确定
+      this.removeVisible = true
+      const itemIds = {
+        itemIds: this.multiplefirst
+      }
+      this.$axios.delete('api/MaintenancePlan/' + this.itemid + '/Item', { data: itemIds }).then(res => {
+        this.$message.success('删除成功')
+        this.removeVisible = false
+        // 清空选中值
+        this.multiple = ''
+      })
     },
     addAssets() { // 一级弹框中点添加资产
       // 获取位置数据
@@ -702,7 +748,7 @@ export default {
     //* *************************************************************************************************************** */
     // 二级弹框方法
 
-    getDatasecond() { // 获取清单列表
+    getDatasecond() { // 获取列表
       this.$axios.get('/api/MaintenancePlan/Equipments', { params: this.tableDataSearchsecond }).then(res => {
         this.tableDatasecond = res.data
         this.totalCountsecond = res.totalCount
@@ -719,15 +765,33 @@ export default {
       })
     },
     handleChangesecond(val) {
-      this.multiplesecond = val
+      const arr = []
+      val.forEach(item => {
+        arr.push(
+          {
+            equipmentId: item.equipment.id,
+            modelId: item.model.id,
+            brandId: item.brand.id
+          }
+        )
+      })
+      this.multiplesecond = arr
+      console.log(this.multiplesecond)
     },
     creatlist() {
-      this.$axios.post('/api/EquipmentList/', this.tableDataSearchsecond).then(res => {
-        this.tableData = res.data
-        this.changeActiveVisible = false
-        // 刷新数据
-        this.getData()
-      })
+      if (this.multiplesecond.length === 0) {
+        this.$message.error('请至少选择一条数据')
+      } else {
+        this.RepairRecord.equipmentIds = this.multiplesecond
+        this.RepairRecord.positionId = this.tableDataSearchsecond.positionId
+        this.RepairRecord.systemId = this.tableDataSearchsecond.systemId
+        this.$axios.post('api/MaintenancePlan/' + this.itemid + '/Item', this.RepairRecord).then(res => {
+          this.$message.success('添加成功')
+          this.Visiblesecond = false
+          // 刷新资产列表
+          this.getDatafirst()
+        })
+      }
     }
   }
 }
