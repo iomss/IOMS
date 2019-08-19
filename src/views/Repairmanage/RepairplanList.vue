@@ -6,18 +6,18 @@
         <div class="panel">
           <div class="header">
             <div class="select">
-              <el-button type="primary" size="small" @click="Visible=true">新增计划</el-button>
+              <el-button type="primary" size="small" @click="addlist()">新增计划</el-button>
               <el-button type="primary" size="small" @click="setvalid()">导出计划</el-button>
               <el-button type="success" size="small" @click="UpdateStage()">编辑</el-button>
               <el-button type="danger" size="small" @click="deletelist()">删除</el-button>
             </div>
             <div class="toolsrt">
               <el-form ref="form" :model="tableDataSearch">
-                <el-select v-model="tableDataSearch.positionId" filterable placeholder="开始时间" size="small">
-                  <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
+                <el-select v-model="tableDataSearch.start" filterable placeholder="开始时间" size="small">
+                  <el-option v-for="item in startdateData" :key="item" :label="item" :value="item" />
                 </el-select>
-                <el-select v-model="tableDataSearch.year" filterable placeholder="结束时间" size="small">
-                  <el-option v-for="item in yearData" :key="item.id" :label="item.name" :value="item.id" />
+                <el-select v-model="tableDataSearch.end" filterable placeholder="结束时间" size="small">
+                  <el-option v-for="item in enddateData" :key="item" :label="item" :value="item" />
                 </el-select>
                 <el-input v-model="tableDataSearch.text" placeholder="全局搜索" size="small" />
                 <el-button type="primary" plain size="small" @click="getData()">查询</el-button>
@@ -40,7 +40,7 @@
                 </template>
               </el-table-column>
               <el-table-column prop="responsibleUser" label="负责人" />
-              <el-table-column prop="excuteUser" label="执行人" :formatter="formatterDate" />
+              <el-table-column prop="excuteUser" label="执行人" />
               <el-table-column prop="assetCount" label="关联资产数" />
               <el-table-column prop="cyclic" label="维护频率">
                 <template slot-scope="scope">
@@ -287,17 +287,17 @@
                 <el-table-column type="selection" />
                 <el-table-column prop="equipment" label="资产名称">
                   <template slot-scope="scope">
-                    {{ scope.equipment.name }}
+                    {{ scope.row.equipment.name }}
                   </template>
                 </el-table-column>
                 <el-table-column prop="brand" label="品牌">
                   <template slot-scope="scope">
-                    {{ scope.brand.name }}
+                    {{ scope.row.brand.name }}
                   </template>
                 </el-table-column>
                 <el-table-column prop="model" label="型号">
                   <template slot-scope="scope">
-                    {{ scope.model.name }}
+                    {{ scope.row.model.name }}
                   </template>
                 </el-table-column>
                 <el-table-column prop="count" label="数量" />
@@ -357,9 +357,9 @@ export default {
       Visiblefirst: false, // 一级弹框隐藏
       Visiblesecond: false, // 二级弹框隐藏
       tableDataSearch: {
-        positionId: '',
-        year: '',
-        valid: '',
+        planState: 'Plan', // 状态
+        start: '',
+        end: '',
         text: '', // 搜索文本
         pageSize: 10, // 展示条数
         pageNumber: 1// 页码
@@ -437,7 +437,9 @@ export default {
         level4: '',
         level5: ''
       },
-      itemid: ''// 计划子项id
+      itemid: '', // 计划子项id
+      startdateData: [],
+      enddateData: []
     }
   },
   computed: {},
@@ -446,6 +448,7 @@ export default {
     // 获取查询项下拉菜单数据
     this.getyearData()
     this.getsystemData()
+    this.getDates()
   },
   methods: {
     //* ******************************************************************************************************* */
@@ -510,6 +513,12 @@ export default {
         this.positionTreeData = this.checkhasChildren(res)
       })
     },
+    getDates() { // 获取列表
+      this.$axios.get('/api/MaintenancePlan/Dates').then(res => {
+        this.startdateData = res.startDates
+        this.enddateData = res.endDates
+      })
+    },
 
     //* ******************************************************************************************************* */
     // 下拉菜单数据
@@ -565,6 +574,21 @@ export default {
     setvalid() { // 导出计划
 
     },
+    addlist() { // 新增计划
+      // 重置表单数据
+      this.tableDatanew = {
+        daterange: [],
+        start: '',
+        end: '',
+        responsibleUser: '',
+        excuteUser: '',
+        samplingRate: '',
+        systemId: '',
+        name: '',
+        cyclic: ''
+      }
+      this.Visible = true
+    },
     deletelist(data) { // 删除计划
       if (data) {
         this.removeQuestionVisible = true
@@ -590,12 +614,26 @@ export default {
         this.removeQuestionVisible = false
         // 清空选中值
         this.multiple = ''
+        // 更新表格数据
+        this.getData()
       })
     },
     handleChange(val) {
       this.multiple = val
     },
     showInfo(row) { // 点击详情按钮
+      // 重置表单数据
+      this.tableDatanew = {
+        daterange: [],
+        start: '',
+        end: '',
+        responsibleUser: '',
+        excuteUser: '',
+        samplingRate: '',
+        systemId: '',
+        name: '',
+        cyclic: ''
+      }
       this.title = '计划详情'
       // 判断当前按选中值是否存在，不存在插入
       let hasSystemData = false
@@ -611,6 +649,7 @@ export default {
       this.tableDatanew.excuteUser = row.excuteUser
       // 显示弹框
       this.Visible = true
+      this.itemid = row.id
     },
     daterangeChange(val) {
       this.tableDatanew.start = val[0]
@@ -618,6 +657,18 @@ export default {
     },
     UpdateStage(row) { // 点击编辑按钮
       if (row) {
+        // 重置表单数据
+        this.tableDatanew = {
+          daterange: [],
+          start: '',
+          end: '',
+          responsibleUser: '',
+          excuteUser: '',
+          samplingRate: '',
+          systemId: '',
+          name: '',
+          cyclic: ''
+        }
         this.title = '编辑计划'
         // 判断当前按选中值是否存在，不存在插入
         let hasSystemData = false
@@ -633,20 +684,35 @@ export default {
         this.tableDatanew.excuteUser = row.excuteUser
         // 显示弹框
         this.Visible = true
+        this.itemid = row.id
       } else {
         if (this.multiple === '') {
           this.$message.error('请至少选择一条数据')
         } else {
+          // 重置表单数据
+          this.tableDatanew = {
+            daterange: [],
+            start: '',
+            end: '',
+            responsibleUser: '',
+            excuteUser: '',
+            samplingRate: '',
+            systemId: '',
+            name: '',
+            cyclic: ''
+          }
+          // 获取编辑弹框中数据
           this.$axios.get('/api/MaintenancePlan/' + this.multiple[0].id).then(res => {
             // 判断当前按选中值是否存在，不存在插入
             let hasSystemData = false
-            this.systemData.forEach(item => { item.id === row.system.id ? hasSystemData = true : '' })
-            hasSystemData ? '' : this.systemData.push(row.system)
+            this.systemData.forEach(item => { item.id === res.system.id ? hasSystemData = true : '' })
+            hasSystemData ? '' : this.systemData.push(res.system)
             // 赋值
             this.tableDatanew = res
             this.tableDatanew.daterange = [res.start, res.end]
             // 显示弹框
             this.Visible = true
+            this.itemid = this.multiple[0].id
           })
         }
       }
@@ -677,11 +743,19 @@ export default {
             this.$axios.post('/api/MaintenancePlan', this.tableDatanew).then(response => {
               this.$message.success('添加成功')
               this.Visible = false
+              // 清空选中值
+              this.multiple = ''
+              // 更新表格数据
+              this.getData()
             })
-          } else if (this.title === '编辑计划') {
-            this.$axios.put('/api/MaintenancePlan', this.tableDatanew).then(response => {
+          } else if (this.title === '编辑计划' || this.title === '计划详情') {
+            this.$axios.put('/api/MaintenancePlan/' + this.itemid, this.tableDatanew).then(response => {
               this.$message.success('编辑成功')
               this.Visible = false
+              // 清空选中值
+              this.multiple = ''
+              // 更新表格数据
+              this.getData()
             })
           }
         }
@@ -736,19 +810,37 @@ export default {
         this.removeVisible = false
         // 清空选中值
         this.multiple = ''
+        // 获取资产level列表
+        this.getDatafirst()
       })
     },
     addAssets() { // 一级弹框中点添加资产
       // 获取位置数据
-      this.getpositionData()
-      this.Visiblesecond = true
-      // 获取资产level列表
-      this.getDatasecond()
+      // this.getpositionData()
+      this.$axios.get('/api/Tree/Position').then(res => {
+        this.positionTreeData = this.checkhasChildren(res)
+        this.Visiblesecond = true
+        // 获取资产level列表
+        this.getDatasecond()
+      })
     },
     //* *************************************************************************************************************** */
     // 二级弹框方法
-
+    gettreeposition(arr) { // 遍历位置树，设置第一个可点positionId
+      for (var item of arr) {
+        if (item.children === undefined) {
+          this.tableDataSearchsecond.positionId = item.id
+          break
+        } else {
+          this.gettreeposition(item.children)
+          break
+        }
+      }
+    },
     getDatasecond() { // 获取列表
+      // 遍历位置树，设置第一个可点positionId
+      this.gettreeposition(this.positionTreeData)
+      console.log(this.tableDataSearchsecond.positionId)
       this.$axios.get('/api/MaintenancePlan/Equipments', { params: this.tableDataSearchsecond }).then(res => {
         this.tableDatasecond = res.data
         this.totalCountsecond = res.totalCount

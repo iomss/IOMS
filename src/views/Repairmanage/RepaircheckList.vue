@@ -6,18 +6,18 @@
         <div class="panel">
           <div class="header">
             <div class="select">
-              <el-button type="primary" size="small" @click="Visiblefirst=true">任务列表</el-button>
-              <el-button type="primary" size="small" @click="setvalid()">待验收</el-button>
-              <el-button type="primary" size="small" @click="deletelist()">已完成</el-button>
-              <el-button type="primary" size="small" @click="deletelist()">未完成</el-button>
+              <el-button type="primary" size="small" @click="selectstate('')">任务列表</el-button>
+              <el-button type="primary" size="small" @click="selectstate('Review')">待验收</el-button>
+              <el-button type="primary" size="small" @click="selectstate('Excute')">已完成</el-button>
+              <el-button type="primary" size="small" @click="selectstate('Plan')">未完成</el-button>
             </div>
             <div class="toolsrt">
               <el-form ref="form" :model="tableDataSearch">
-                <el-select v-model="tableDataSearch.positionId" filterable placeholder="开始时间" size="small">
-                  <el-option v-for="item in positionTreeData" :key="item.id" :label="item.name" :value="item.id" />
+                <el-select v-model="tableDataSearch.start" filterable placeholder="开始时间" size="small">
+                  <el-option v-for="item in startdateData" :key="item" :label="item" :value="item" />
                 </el-select>
-                <el-select v-model="tableDataSearch.year" filterable placeholder="结束时间" size="small">
-                  <el-option v-for="item in yearData" :key="item.id" :label="item.name" :value="item.id" />
+                <el-select v-model="tableDataSearch.end" filterable placeholder="结束时间" size="small">
+                  <el-option v-for="item in enddateData" :key="item" :label="item" :value="item" />
                 </el-select>
                 <el-input v-model="tableDataSearch.text" placeholder="全局搜索" size="small" />
                 <el-button type="primary" plain size="small" @click="getData()">查询</el-button>
@@ -45,7 +45,7 @@
                 </template>
               </el-table-column>
               <el-table-column prop="responsibleUser" label="负责人" />
-              <el-table-column prop="excuteUser" label="执行人" :formatter="formatterDate" />
+              <el-table-column prop="excuteUser" label="执行人" />
               <el-table-column prop="assetCount" label="关联资产数" />
               <el-table-column prop="cyclic" label="维护频率">
                 <template slot-scope="scope">
@@ -151,8 +151,8 @@
               <el-form ref="form" :model="tableDatathird" label-width="90px">
                 <el-form-item prop="reviewStatus" label="验收意见">
                   <el-radio-group v-model="tableDatathird.reviewStatus">
-                    <el-radio key="Applied" val="Applied" label="通过">通过</el-radio>
-                    <el-radio key="Rejected" val="Rejected" label="不通过">不通过</el-radio>
+                    <el-radio key="Applied" val="Applied" label="Applied">通过</el-radio>
+                    <el-radio key="Rejected" val="Rejected" label="Rejected">不通过</el-radio>
                   </el-radio-group>
                 </el-form-item>
                 <el-form-item prop="reviewComment" label="意见">
@@ -183,9 +183,9 @@ export default {
       removeQuestionVisible: false,
       Visiblefirst: false, // 一级弹框隐藏
       tableDataSearch: {
-        positionId: '',
-        year: '',
-        valid: '',
+        planState: 'Review', // 状态
+        start: '', // 开始时间
+        end: '', // 结束时间
         text: '', // 搜索文本
         pageSize: 10, // 展示条数
         pageNumber: 1// 页码
@@ -195,8 +195,8 @@ export default {
         pageNumber: 1// 页码
       },
       tableDatathird: {
-        state: 0,
-        text: ''
+        reviewStatus: '',
+        reviewComment: ''
       },
       totalCount: 0, // 数据总条数
       totalCountfirst: 0, // 数据总条数
@@ -226,7 +226,9 @@ export default {
         { id: 100, name: '100 %' }
       ],
       positionTreeData: [],
-      itemid: ''// 计划子项id
+      itemid: '', // 计划子项id
+      startdateData: [],
+      enddateData: []
     }
   },
   computed: {},
@@ -235,6 +237,7 @@ export default {
     // 获取查询项下拉菜单数据
     this.getyearData()
     this.getpositionData()
+    this.getDates()
   },
   methods: {
     //* ******************************************************************************************************* */
@@ -257,6 +260,12 @@ export default {
         this.positionTreeData = res.data
       })
     },
+    getDates() { // 获取列表
+      this.$axios.get('/api/MaintenancePlan/Dates').then(res => {
+        this.startdateData = res.startDates
+        this.enddateData = res.endDates
+      })
+    },
     getyearData() {
       var year = new Date().getFullYear()
       for (var i = 2015; i <= year; i++) {
@@ -267,16 +276,18 @@ export default {
       }
       console.log(this.yearData)
     },
-
+    selectstate(data) { // 列表筛选
+      if (data === '') {
+        this.tableDataSearch.planState = null
+      } else {
+        this.tableDataSearch.planState = data
+      }
+      this.getData()
+    },
     //* ******************************************************************************************************* */
     // 列表数据
 
-    getData(data) { // 获取列表
-      if (data) {
-        this.tableDataSearch.valid = data
-      } else {
-        this.tableDataSearch.valid = ''
-      }
+    getData() { // 获取列表
       this.$axios.get('/api/MaintenancePlan', { params: this.tableDataSearch }).then(res => {
         this.tableData = res.data
         this.totalCount = res.totalCount
@@ -295,7 +306,7 @@ export default {
 
     creatlist() {
       // 生成设备
-      this.$axios.post('//api/MaintenancePlan/' + this.itemid + '/Review', this.tableDatathird).then(res => {
+      this.$axios.post('/api/MaintenancePlan/' + this.itemid + '/Review', this.tableDatathird).then(res => {
         this.$message.success('验收成功')
         this.Visiblefirst = false
         // 刷新数据
