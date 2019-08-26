@@ -429,6 +429,119 @@ export const asyncRoutes = [
     }
     ]
   },
+  // 预算管理相关
+  {
+    path: '/Budgetmanage',
+    name: '/Budgetmanage',
+    meta: {
+      title: '预算管理',
+      icon: 'fa fa-home',
+      fullPath: '/Budgetmanage',
+      roles: ['show']
+    },
+    component: Layout,
+    redirect: '/Budgetmanage/List',
+    children: [{
+      path: 'HardwareMaintenance',
+      name: 'HardwareMaintenance-List',
+      component: () => import('@/views/Budgetmanage/HardwareMaintenance'),
+      meta: {
+        title: '硬件维护单价管理',
+        icon: 'fa fa-home',
+        roles: ['show'],
+        fullPath: '/Budgetmanage/HardwareMaintenance'
+      }
+    },
+    {
+      path: 'SoftwareMaintenance',
+      name: 'SoftwareMaintenance-List',
+      component: () => import('@/views/Budgetmanage/SoftwareMaintenance'),
+      meta: {
+        title: '软件维护单价管理',
+        icon: 'fa fa-home',
+        roles: ['show'],
+        fullPath: '/Budgetmanage/SoftwareMaintenance'
+      }
+    },
+    {
+      path: 'Informationsafety',
+      name: 'Informationsafety-List',
+      component: () => import('@/views/Budgetmanage/Informationsafety'),
+      meta: {
+        title: '信息安全单价管理',
+        icon: 'fa fa-home',
+        roles: ['show'],
+        fullPath: '/Budgetmanage/Informationsafety'
+      }
+    },
+    {
+      path: 'HardwareRepair',
+      name: 'HardwareRepair-List',
+      component: () => import('@/views/Budgetmanage/HardwareRepair'),
+      meta: {
+        title: '硬件维修单价管理',
+        icon: 'fa fa-home',
+        roles: ['show'],
+        fullPath: '/Budgetmanage/HardwareRepair'
+      }
+    },
+    {
+      path: 'SoftwareRepair',
+      name: 'SoftwareRepair-List',
+      component: () => import('@/views/Budgetmanage/SoftwareRepair'),
+      meta: {
+        title: '软件维修单价管理',
+        icon: 'fa fa-home',
+        roles: ['show'],
+        fullPath: '/Budgetmanage/SoftwareRepair'
+      }
+    },
+    {
+      path: 'ContractList',
+      name: 'ContractList-List',
+      component: () => import('@/views/Budgetmanage/ContractList'),
+      meta: {
+        title: '合同测算预算调整版',
+        icon: 'fa fa-home',
+        roles: ['show'],
+        fullPath: '/Budgetmanage/ContractList'
+      }
+    },
+    {
+      path: 'ContractEndList',
+      name: 'ContractEndList-List',
+      component: () => import('@/views/Budgetmanage/ContractEndList'),
+      meta: {
+        title: '合同测算预算合同版',
+        icon: 'fa fa-home',
+        roles: ['show'],
+        fullPath: '/Budgetmanage/ContractEndList'
+      }
+    },
+    {
+      path: 'EquipmentQuota',
+      name: 'EquipmentQuota-List',
+      component: () => import('@/views/Budgetmanage/EquipmentQuota'),
+      meta: {
+        title: '设备定额名称匹配',
+        icon: 'fa fa-home',
+        roles: ['show'],
+        fullPath: '/Budgetmanage/EquipmentQuota'
+      }
+    },
+    {
+      path: 'Rateinformation',
+      name: 'Rateinformation-List',
+      component: () => import('@/views/Budgetmanage/Rateinformation'),
+      meta: {
+        title: '费率信息管理',
+        icon: 'fa fa-home',
+        roles: ['show'],
+        fullPath: '/Budgetmanage/Rateinformation'
+      }
+    }
+    ]
+  },
   // 用户相关 权限已调整
   {
     path: '/User',
