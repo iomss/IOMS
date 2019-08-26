@@ -323,27 +323,83 @@ export const asyncRoutes = [
   },
   // 备品备件相关
   {
-    path: '/sparepPart',
-    name: 'sparepPart',
+    path: '/SparePart',
+    name: '/SparePart',
     meta: {
       title: '备品备件',
       icon: 'fa fa-home',
-      fullPath: '/sparepPart'
+      fullPath: '/SparePart',
+      roles: ['show']
     },
     component: Layout,
-    redirect: '/sparepPart/list',
+    redirect: '/SparePart/List',
     children: [{
-      path: 'list',
-      name: 'sparepPart-list',
-      component: () => import('@/views/sparepPart/list'),
+      path: 'SparePartList',
+      name: 'SparePartList-List',
+      component: () => import('@/views/SparePart/sparePartList'),
       meta: {
-        title: '备件列表',
+        title: '备品备件管理',
         icon: 'fa fa-home',
         roles: ['show'],
-        hidden: true,
-        fullPath: '/sparepPart/list'
+        fullPath: '/SparePart/sparePartList'
       }
-    }]
+    },
+    {
+      path: 'StoreroomList',
+      name: 'StoreroomList-List',
+      component: () => import('@/views/SparePart/StoreroomList'),
+      meta: {
+        title: '库房管理',
+        icon: 'fa fa-home',
+        roles: ['show'],
+        fullPath: '/SparePart/StoreroomList'
+      }
+    },
+    {
+      path: 'InstockList',
+      name: 'InstockList-List',
+      component: () => import('@/views/SparePart/InstockList'),
+      meta: {
+        title: '入库单查看',
+        icon: 'fa fa-home',
+        roles: ['show'],
+        fullPath: '/SparePart/InstockList'
+      }
+    },
+    {
+      path: 'OutstockList',
+      name: 'OutstockList-List',
+      component: () => import('@/views/SparePart/OutstockList'),
+      meta: {
+        title: '出库单查看',
+        icon: 'fa fa-home',
+        roles: ['show'],
+        fullPath: '/SparePart/OutstockList'
+      }
+    },
+    {
+      path: 'AllocationList',
+      name: 'AllocationList-List',
+      component: () => import('@/views/SparePart/AllocationList'),
+      meta: {
+        title: '调拨申请',
+        icon: 'fa fa-home',
+        roles: ['show'],
+        fullPath: '/SparePart/AllocationList'
+      }
+    },
+    {
+      path: 'AllocationCheck',
+      name: 'AllocationCheck-List',
+      component: () => import('@/views/SparePart/AllocationCheck'),
+      meta: {
+        title: '调拨申请单审批',
+        icon: 'fa fa-home',
+        roles: ['show'],
+        fullPath: '/SparePart/AllocationCheck'
+      }
+    }
+    ]
   },
 
   // 运维管理相关 权限已调整
