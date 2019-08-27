@@ -7,26 +7,28 @@
           <div class="header">
             <div class="toolsrt">
               <el-form ref="form" :model="formSearch" label-width="110px">
-                <el-form-item label="设备编码" prop="uint">
-                  <el-input v-model="formSearch.text" placeholder="设备编码" size="small" />
+                <el-form-item label="设备编码" prop="normEquipmentId">
+                  <el-input v-model="formSearch.normEquipmentId" placeholder="设备编码" size="small" />
                 </el-form-item>
-                <el-form-item label="设备名称" prop="uint">
-                  <el-input v-model="formSearch.text" placeholder="设备名称" size="small" />
+                <el-form-item label="设备名称" prop="name">
+                  <el-input v-model="formSearch.name" placeholder="设备名称" size="small" />
                 </el-form-item>
-                <el-form-item label="所属系统" prop="uint">
+                <!-- <el-form-item label="所属系统" prop="normSystemId">
                   <el-select v-model="formSearch.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" placeholder="所属系统" size="small" @focus="remoteMethodsystemId">
                     <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
+                </el-form-item> -->
+                <el-form-item label="定额编目" prop="normCode">
+                  <el-input v-model="formSearch.normCode" placeholder="定额编目" size="small" />
                 </el-form-item>
-                <el-form-item label="定额编目" prop="uint">
-                  <el-input v-model="formSearch.text" placeholder="定额编目" size="small" />
+                <el-form-item label="定额设备名称" prop="normName">
+                  <el-input v-model="formSearch.normName" placeholder="定额设备名称" size="small" />
                 </el-form-item>
-                <el-form-item label="定额设备名称" prop="uint">
-                  <el-input v-model="formSearch.text" placeholder="定额设备名称" size="small" />
-                </el-form-item>
-                <el-form-item label="匹配度" prop="uint">
-                  <el-select v-model="formSearch.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" placeholder="所属系统" size="small" @focus="remoteMethodsystemId">
-                    <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
+                <el-form-item label="匹配度" prop="matchType">
+                  <el-select v-model="formSearch.matchType" placeholder="匹配度" size="small">
+                    <el-option key="Full" label="完全匹配" value="Full" />
+                    <el-option key="Like" label="近似匹配" value="Like" />
+                    <el-option key="Reference" label="参考匹配" value="Reference" />
                   </el-select>
                 </el-form-item>
                 <el-form-item class="form_total">
@@ -42,50 +44,58 @@
             </div>
           </div>
           <div class="content">
-            <el-table :data="tableData" stripe border style="width: 100%" @selection-change="handleSelectionChange">
+            <el-table :data="tableData" stripe border style="width: 1000px" @selection-change="handleSelectionChange">
               <el-table-column type="selection" />
-              <el-table-column prop="equipment" label="设备编码">
+              <el-table-column prop="id" label="设备编码" />
+              <el-table-column label="设备名称" prop="name" />
+              <!-- <el-table-column prop="inLiability" label="所属系统">
                 <template slot-scope="scope">
-                  {{ scope.row.equipment.name }}
+                  {{ scope.row.normEquipment===null?'':scope.row.normEquipment.name }}
+                </template>
+              </el-table-column> -->
+              <el-table-column prop="code" label="定额编目">
+                <template slot-scope="scope">
+                  {{ scope.row.normEquipment===null?'':scope.row.normEquipment.code }}
                 </template>
               </el-table-column>
-              <el-table-column label="设备名称" prop="system">
+              <el-table-column prop="count" label="定额设备名称">
                 <template slot-scope="scope">
-                  {{ scope.row.system.name }}
+                  {{ scope.row.normEquipment===null?'':scope.row.normEquipment.name }}
                 </template>
               </el-table-column>
-              <el-table-column prop="inLiability" label="所属系统" />
-              <el-table-column prop="outLiability" label="定额编目" />
-              <el-table-column prop="count" label="定额设备名称" />
-              <el-table-column prop="remark" label="匹配度" />
-              <el-table-column prop="source" label="合同类型">
+              <el-table-column prop="matchType" label="匹配度">
                 <template slot-scope="scope">
-                  {{ scope.row.source==='Automatic'?"自动汇总":"人工修订" }}
+                  {{ scope.row.matchType=='Full'?'完全匹配':scope.row.matchType=='Like'?'近似匹配':scope.row.matchType=='Reference'?'参考匹配':'' }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="operationType" label="合同类型">
+                <template slot-scope="scope">
+                  {{ scope.row.normEquipment===null?'':scope.row.normEquipment.operationType=='HardMaintain'?'硬件维护':scope.row.normEquipment.operationType=='SoftMaintain'?'软件维护':scope.row.normEquipment.operationType=='InformationSecurity'?'信息安全':scope.row.normEquipment.operationType=='HardRepair'?'硬件维修':'软件维修' }}
                 </template>
               </el-table-column>
             </el-table>
             <!-- 编辑 -->
             <el-dialog title="修改" :visible.sync="FormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px">
               <el-form ref="EditForm" :model="EditForm" :rules="FormRules" label-width="120px">
-                <el-form-item label="设备编码" prop="name">
-                  <el-select v-model="EditForm.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" placeholder="设备编码" size="small" @focus="remoteMethodsystemId">
-                    <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
-                  </el-select>
+                <el-form-item label="设备编码" prop="id">
+                  <el-input v-model="EditForm.id" placeholder="设备编码" size="small" :disabled="true" />
                 </el-form-item>
                 <el-form-item label="设备名称" prop="name">
-                  <el-input v-model="EditForm.name" placeholder="设备名称" size="small" />
+                  <el-input v-model="EditForm.name" placeholder="设备名称" size="small" :disabled="true" />
                 </el-form-item>
-                <el-form-item label="定额编目" prop="name">
-                  <el-input v-model="EditForm.name" placeholder="定额编目" size="small" />
+                <el-form-item label="定额编目" prop="code">
+                  <el-input v-model="EditForm.code" placeholder="定额编目" size="small" :disabled="true" />
                 </el-form-item>
-                <el-form-item label="定额设备名称" prop="name">
-                  <el-select v-model="EditForm.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" placeholder="定额设备名称" size="small" @focus="remoteMethodsystemId">
-                    <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
+                <el-form-item label="定额设备名称" prop="normEquipmentId">
+                  <el-select v-model="EditForm.normEquipmentId" filterable remote :remote-method="remoteMethodnormEquipmentId" :loading="loading" placeholder="定额设备名称" size="small" @focus="remoteMethodnormEquipmentId">
+                    <el-option v-for="item in normEquipmentData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
-                <el-form-item label="匹配度" prop="name">
-                  <el-select v-model="EditForm.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" placeholder="匹配度" size="small" @focus="remoteMethodsystemId">
-                    <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
+                <el-form-item label="匹配度" prop="matchType">
+                  <el-select v-model="EditForm.matchType" placeholder="匹配度" size="small">
+                    <el-option key="Full" label="完全匹配" value="Full" />
+                    <el-option key="Like" label="近似匹配" value="Like" />
+                    <el-option key="Reference" label="参考匹配" value="Reference" />
                   </el-select>
                 </el-form-item>
               </el-form>
@@ -121,8 +131,11 @@ export default {
       loading: false, // 远程搜索
       formSearch: {
         name: '',
-        year: '',
-        system: '',
+        normEquipmentId: '',
+        normSystemId: '',
+        matchType: '',
+        normCode: '',
+        normName: '',
         text: '', // 搜索文本
         pageSize: 10, // 展示条数
         pageNumber: 1// 页码
@@ -132,16 +145,22 @@ export default {
       removeQuestionVisible: false, // 删除弹框
       tableData: [],
       removeData: [],
-      systemData: [],
-      sourceData: [],
+      // systemData: [],
+      // sourceData: [],
+      normEquipmentData: [],
       FormVisible: false, // 编辑弹框
       EditForm: [], // 编辑表单数据
-      sourcepage: {// 匹配度分页
-        pageNumber: 1,
-        pageSize: 999999,
-        pageCount: ''
-      },
-      systempage: {// 所属系统分页
+      // sourcepage: {// 匹配度分页
+      //   pageNumber: 1,
+      //   pageSize: 999999,
+      //   pageCount: ''
+      // },
+      // systempage: {// 所属系统分页
+      //   pageNumber: 1,
+      //   pageSize: 999999,
+      //   pageCount: ''
+      // },
+      normEquipmentpage: {// 匹配度分页
         pageNumber: 1,
         pageSize: 999999,
         pageCount: ''
@@ -163,8 +182,9 @@ export default {
   computed: {},
   mounted() {
     this.getData()
-    this.getsystemData()
-    this.getsourceData()
+    // this.getsystemData()
+    // this.getsourceData()
+    this.getnormEquipmentData()
   },
   methods: {
     getData() {
@@ -179,38 +199,37 @@ export default {
       // 页码
       this.formSearch.pageNumber = val.page
       // 调用获取数据
-      this.$axios.get('/api/EquipmentList/', { params: this.formSearch }).then(res => {
+      this.$axios.get('/api/MatchEquipment/', { params: this.formSearch }).then(res => {
         this.tableData = res.data
       })
     },
-    getsystemData() {
-      // 获取所属系统
-      this.$axios.get('/api/Meta/System?pageSize=' + this.systempage.pageSize + '&pageNumber=' + this.systempage.pageNumber).then(res => {
-        this.systemData = this.systemData.concat(res.data)
+    // getsystemData() {
+    //   // 获取所属系统
+    //   this.$axios.get('/api/Meta/System?pageSize=' + this.systempage.pageSize + '&pageNumber=' + this.systempage.pageNumber).then(res => {
+    //     this.systemData = this.systemData.concat(res.data)
+    //   })
+    // },
+    // remoteMethodsystemId(query) {
+    //   this.loading = true
+    //   let querytext = ''
+    //   querytext = typeof (query) === 'string' ? query : ''
+    //   this.$axios.get('/api/Meta/System?text=' + querytext).then(res => {
+    //     this.loading = false
+    //     this.systemData = res.data
+    //   })
+    // },
+    getnormEquipmentData() {
+      this.$axios.get('/api/Meta/NormEquipment?pageSize=' + this.normEquipmentpage.pageSize + '&pageNumber=' + this.normEquipmentpage.pageNumber).then(res => {
+        this.normEquipmentData = this.normEquipmentData.concat(res.data)
       })
     },
-    getsourceData() {
-      // 获取匹配度
-      this.$axios.get('/api/Meta/Source?pageSize=' + this.sourcepage.pageSize + '&pageNumber=' + this.sourcepage.pageNumber).then(res => {
-        this.sourceData = this.sourceData.concat(res.data)
-      })
-    },
-    remoteMethodsystemId(query) {
+    remoteMethodnormEquipmentId(query) {
       this.loading = true
       let querytext = ''
       querytext = typeof (query) === 'string' ? query : ''
-      this.$axios.get('/api/Meta/System?text=' + querytext).then(res => {
+      this.$axios.get('/api/Meta/NormEquipment?text=' + querytext).then(res => {
         this.loading = false
-        this.systemData = res.data
-      })
-    },
-    remoteMethodsourceId(query) {
-      this.loading = true
-      let querytext = ''
-      querytext = typeof (query) === 'string' ? query : ''
-      this.$axios.get('/api/Meta/source?text=' + querytext).then(res => {
-        this.loading = false
-        this.sourceData = res.data
+        this.normEquipmentData = res.data
       })
     },
     updateData(row) {
@@ -219,6 +238,9 @@ export default {
           this.$message.error('请选择一项数据进行操作')
         } else {
           this.FormVisible = true
+          this.EditForm = this.multipleSelection[0]
+          this.EditForm.code = this.multipleSelection[0].normEquipment.code
+          this.EditForm.normEquipmentId = this.multipleSelection[0].normEquipment.id
         }
       } else {
         this.FormVisible = true
@@ -230,6 +252,7 @@ export default {
           this.$message.error('请选择一项数据进行操作')
         } else {
           this.removeQuestionVisible = true
+          this.removeData = this.multipleSelection[0]
         }
       } else {
         this.removeQuestionVisible = true
@@ -238,10 +261,10 @@ export default {
     submitData() {
       this.$refs.EditForm.validate(valid => {
         if (valid) {
-          this.$axios.put('/api/Meta/Brand/' + this.EditForm.id, this.EditForm).then(res => {
-            this.getData()
+          this.$axios.put('/api/MatchEquipment/' + this.EditForm.id, this.EditForm).then(res => {
             this.$message.success('修改成功')
             this.FormVisible = false
+            this.getData()
           })
         }
       })
@@ -249,7 +272,7 @@ export default {
     // 删除
     removeQuestion() {
       const _this = this
-      this.$axios.delete('/api/Assets/?Id=' + this.removeData.id).then(response => {
+      this.$axios.delete('/api/MatchEquipment/?Id=' + this.removeData.id).then(response => {
         _this.$message.success('删除成功')
         _this.removeQuestionVisible = false
         this.getData()
