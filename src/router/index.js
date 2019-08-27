@@ -356,6 +356,17 @@ export const asyncRoutes = [
       }
     },
     {
+      path: 'InstantInventory',
+      name: 'InstantInventory-List',
+      component: () => import('@/views/SparePart/InstantInventory'),
+      meta: {
+        title: '即时库存',
+        icon: 'fa fa-home',
+        roles: ['show'],
+        fullPath: '/SparePart/InstantInventory'
+      }
+    },
+    {
       path: 'InstockList',
       name: 'InstockList-List',
       component: () => import('@/views/SparePart/InstockList'),
