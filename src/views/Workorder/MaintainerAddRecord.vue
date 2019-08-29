@@ -38,7 +38,7 @@
               </el-radio-group>
             </el-form-item>
           </el-form>
-          <el-form v-if="repairType=='Done'" ref="formRcorda" :model="formRcorda" label-width="120px" :rules="formRcordarules">
+          <el-form v-show="repairType=='Done'" ref="formRcorda" :model="formRcorda" label-width="120px" :rules="formRcordarules">
             <el-form-item label="设备种类" prop="equipmentId">
               <el-select v-model="formRcorda.equipmentId" filterable remote :remote-method="remoteMethodequipmentID" :loading="loading" placeholder="设备种类" size="small" @focus="remoteMethodequipmentID" @change="changeEquipment">
                 <el-option v-for="item in equipmentData" :key="item.id" :label="item.name" :value="item.id" />
@@ -92,7 +92,7 @@
               <el-button type="primary" size="small" @click="close('a')">关闭</el-button>
             </el-form-item>
           </el-form>
-          <el-form v-if="repairType=='Mistaken'" ref="formRcordc" :model="formRcordc" label-width="120px" :rules="formRcordcrules">
+          <el-form v-show="repairType=='Mistaken'" ref="formRcordc" :model="formRcordc" label-width="120px" :rules="formRcordcrules">
             <!-- <el-form-item label="是否重新派工" prop="repairType">
               <el-radio-group v-model="formRcordc.repairType" placeholder="是否重新派工">
                 <el-radio label="true">是</el-radio>
@@ -111,7 +111,7 @@
               <el-button type="primary" size="small" @click="close('c')">关闭</el-button>
             </el-form-item>
           </el-form>
-          <el-form v-if="repairType=='Suspend'" ref="formRcordd" :model="formRcordd" label-width="120px" :rules="formRcorddrules">
+          <el-form v-show="repairType=='Suspend'" ref="formRcordd" :model="formRcordd" label-width="120px" :rules="formRcorddrules">
             <el-form-item label="设备种类" prop="equipmentId">
               <el-select v-model="formRcordd.equipmentId" filterable remote :remote-method="remoteMethodequipmentID" :loading="loading" placeholder="设备种类" size="small" @focus="remoteMethodequipmentID" @change="changeEquipment">
                 <el-option v-for="item in equipmentData" :key="item.id" :label="item.name" :value="item.id" />
@@ -433,11 +433,28 @@ export default {
         })
       }
     },
-    initData() { // 重置
-
+    initData(val) { // 重置
+      if (val === 'a') {
+        this.$refs.formRcorda.resetFields()
+        // 重置两张图片
+        this.formRcorda.resultImg = 'delete'
+        this.formRcorda.signImg = 'delete'
+      }
+      if (val === 'b') {
+        this.$refs.formRcordb.resetFields()
+      }
+      if (val === 'c') {
+        this.formRcordc.comment = ''
+      }
+      if (val === 'd') {
+        this.$refs.formRcordd.resetFields()
+      }
     },
-    close() { // 关闭
-
+    close(val) { // 关闭
+      console.log(this.$router.currentRoute.fullPath)
+      this.$store.dispatch('tagsView/delAllViews', this.$router.currentRoute.fullPath)
+      // 跳转回个人工作页
+      this.$router.push('/Workorder/Watchmanlist')
     }
   }
 }

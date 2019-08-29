@@ -10,10 +10,10 @@
             </div>
             <div class="toolsrt">
               <el-form ref="form" :model="formSearch">
-                <el-select v-model="tableDataSearch.start" filterable placeholder="开始时间" size="small">
+                <el-select v-model="formSearch.start" filterable placeholder="开始时间" size="small">
                   <el-option v-for="item in startdateData" :key="item" :label="item" :value="item" />
                 </el-select>
-                <el-select v-model="tableDataSearch.end" filterable placeholder="结束时间" size="small">
+                <el-select v-model="formSearch.end" filterable placeholder="结束时间" size="small">
                   <el-option v-for="item in enddateData" :key="item" :label="item" :value="item" />
                 </el-select>
                 <el-input v-model="formSearch.text" placeholder="模糊搜索" size="small" />
@@ -29,7 +29,11 @@
                   {{ scope.row.source==='Automatic'?"待审核":scope.row.source==='Automa'?'已拒绝':"已批准" }}
                 </template>
               </el-table-column>
-              <el-table-column label="调拨单号" prop="name" />
+              <el-table-column label="调拨单号" prop="name">
+                <template slot-scope="scope">
+                  <el-button type="primary" plain size="small" @click="FormVisibleInfo = true">{{ scope.row.name }}</el-button>
+                </template>
+              </el-table-column>
               <el-table-column prop="remark" label="创建时间" :formatter="formatterstartDate" />
               <el-table-column prop="remark" label="申请单位" />
               <el-table-column prop="remark" label="操作人" />
@@ -48,6 +52,59 @@
               <span slot="footer" class="dialog-footer">
                 <el-button type="primary" size="small" @click="updateData()">确定</el-button>
                 <el-button type="primary" plain size="small" @click="FormVisible = false">取消</el-button>
+              </span>
+            </el-dialog>
+            <!-- 调拨详情 -->
+            <el-dialog title="调拨申请" :visible.sync="FormVisibleInfo" :close-on-press-escape="false" :close-on-click-modal="false" width="1000px">
+              <el-form ref="EditFormInfo" :model="EditFormInfo" :rules="FormRules" label-width="120px">
+                <el-form-item label="调拨单号" prop="name">
+                  <el-input v-model="EditFormInfo.name" placeholder="调拨单号" size="small" />
+                </el-form-item>
+                <el-form-item label="调拨前单位" prop="name">
+                  <el-select v-model="EditFormInfo.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" placeholder="调拨前单位" size="small" @focus="remoteMethodsystemId">
+                    <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="调拨前库房" prop="name">
+                  <el-select v-model="EditFormInfo.brandId" filterable remote :remote-method="remoteMethodbrandId" :loading="loading" placeholder="调拨前库房" size="small" @focus="remoteMethodbrandId" @change="changeBrand">
+                    <el-option v-for="item in brandData" :key="item.id" :label="item.name" :value="item.id" />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="调拨后单位" prop="name">
+                  <el-select v-model="EditFormInfo.modelId" filterable remote :remote-method="remoteMethodmodelId" :loading="loading" placeholder="调拨后单位" size="small" @focus="remoteMethodsystemId">
+                    <el-option v-for="item in modelData" :key="item.id" :label="item.name" :value="item.id" />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="调拨后库房" prop="name">
+                  <el-input v-model="EditFormInfo.name" placeholder="调拨后库房" size="small" />
+                </el-form-item>
+                <el-form-item label="经办人" prop="name">
+                  <el-input v-model="EditFormInfo.name" placeholder="经办人" size="small" />
+                </el-form-item>
+                <el-form-item label="备注" prop="name" class="form_total">
+                  <el-input v-model="EditFormInfo.name" type="textarea" placeholder="备注" size="small" />
+                </el-form-item>
+              </el-form>
+              <el-table :data="tableDataInfo" stripe border style="width: 1500px" @selection-change="handleSelectionChange">
+                <el-table-column type="selection" />
+                <el-table-column prop="equipment" label="编码">
+                  <template slot-scope="scope">
+                    {{ scope.row.equipment.name }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="备件名称" prop="system" />
+                <el-table-column prop="source" label="备件分类">
+                  <template slot-scope="scope">
+                    {{ scope.row.source==='Automatic'?"自动汇总":"人工修订" }}
+                  </template>
+                </el-table-column>
+                <el-table-column prop="brand" label="品牌" />
+                <el-table-column prop="model" label="型号" />
+                <el-table-column prop="model" label="数量" />
+              </el-table>
+              <span slot="footer" class="dialog-footer">
+                <el-button type="primary" size="small" @click="FormVisibleInfo = false">确定</el-button>
+                <el-button type="primary" plain size="small" @click="FormVisibleInfo = false">取消</el-button>
               </span>
             </el-dialog>
             <!--分页-->
@@ -88,14 +145,20 @@ export default {
       systemData: [],
       sourceData: [],
       FormVisible: false, // 编辑弹框
+      FormVisibleInfo: false,
       EditForm: {// 编辑表单数据
+        modelId: '',
+        brandId: '',
+        name: ''
+      },
+      EditFormInfo: {
         modelId: '',
         brandId: '',
         name: ''
       },
       brandData: [], // 品牌数据
       modelData: [], // 型号数据
-      tableDatain: [], // 入库表格
+      tableDataInfo: [],
       startdateData: [],
       enddateData: [],
       sourcepage: {// 匹配度分页

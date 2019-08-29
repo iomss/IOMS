@@ -47,6 +47,9 @@ export default {
         })
         this.dialogImageUrl = val
       }
+      if (val === 'delete') {
+        this.fileList = []
+      }
     }
   },
   mounted() {

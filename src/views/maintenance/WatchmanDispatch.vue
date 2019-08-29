@@ -249,14 +249,16 @@ export default {
       })
     },
     createWorker() { // 提交派单按钮方法
+      const _this = this
       this.$refs.formData.validate(valid => {
         if (valid) {
-          console.log(this.formData.reportTime)
-          console.log(this.formData.failureTime)
-          this.$axios.post('/api/RepairOrder', this.formData).then(res => {
-            this.$message.success('录入成功')
-            this.$router.push('/maintenance/WatchmanAssetslist')
-            // 页面跳转个人工作页
+          _this.$axios.post('/api/RepairOrder', _this.formData).then(res => {
+            _this.$message.success('录入成功')
+            // 跳转维修单录入页面
+            _this.$router.push('/maintenance/WatchmanAssetslist')
+            // 关闭派单页面
+            console.log(_this.$router.currentRoute.fullPath)
+            this.$store.dispatch('tagsView/delAllViews', _this.$router.currentRoute.fullPath)
           })
         }
       })
