@@ -191,7 +191,7 @@ export default {
     },
     getfaultData() {
       // 获取故障类型
-      this.$axios.get('/api/Meta/Fault?pageSize=' + this.faultpage.pageSize + '&pageNumber=' + this.faultpage.pageNumber).then(res => {
+      this.$axios.get('/api/Meta/Fault?equipmentId=' + this.formData.equipmentId + '&pageSize=' + this.faultpage.pageSize + '&pageNumber=' + this.faultpage.pageNumber).then(res => {
         this.faultData = this.faultData.concat(res.data)
         this.faultpage.pageCount = res.pageCount
       })
@@ -213,7 +213,7 @@ export default {
       this.loading = true
       let querytext = ''
       querytext = typeof (query) === 'string' ? query : ''
-      this.$axios.get('/api/Meta/Fault?text=' + querytext).then(res => {
+      this.$axios.get('/api/Meta/Fault?equipmentId=' + this.formData.equipmentId + '&text=' + querytext).then(res => {
         this.loading = false
         this.faultData = res.data
       })

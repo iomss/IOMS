@@ -51,7 +51,7 @@
                   <treeselect v-model="tableDataSearch.positionId" :disable-branch-nodes="true" :normalizer="normalizer" :options="positionTreeData" :load-options="loadOptions" placeholder="安装位置" no-results-text="未找到相关数据" />
                 </el-form-item>
                 <el-form-item>
-                  <el-select v-model="tableDataSearch.equipmentID" filterable remote :remote-method="remoteMethodequipmentID" :loading="loading" placeholder="资产类别" size="small" @focus="remoteMethodequipmentID">
+                  <el-select v-model="tableDataSearch.equipmentId" filterable remote :remote-method="remoteMethodequipmentID" :loading="loading" placeholder="资产类别" size="small" @focus="remoteMethodequipmentID">
                     <el-option v-for="item in equipmentData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
@@ -61,10 +61,10 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item>
-                  <el-date-picker v-model="tableDataSearch.handoverDate" type="date" placeholder="投用开始时间" />
+                  <el-date-picker v-model="tableDataSearch.enableBegin" type="date" placeholder="投用开始时间" />
                 </el-form-item>
                 <el-form-item>
-                  <el-date-picker v-model="tableDataSearch.handoverDate" type="date" placeholder="投用截止时间" />
+                  <el-date-picker v-model="tableDataSearch.enableEnd" type="date" placeholder="投用截止时间" />
                 </el-form-item>
                 <el-form-item>
                   <el-select v-model="tableDataSearch.sourceId" filterable remote :remote-method="remoteMethodsourceId" :loading="loading" placeholder="资产来源" size="small" @focus="remoteMethodsourceId">
@@ -72,9 +72,9 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item>
-                  <el-select v-model="tableDataSearch.age" clearable placeholder="寿命状态" size="small">
-                    <el-option key="1" label="超过使用期限" value="true" />
-                    <el-option key="2" label="未超过使用期限" value="false" />
+                  <el-select v-model="tableDataSearch.inLiability" clearable placeholder="寿命状态" size="small">
+                    <el-option key="1" label="超过使用期限" value="false" />
+                    <el-option key="2" label="未超过使用期限" value="true" />
                   </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -228,6 +228,7 @@
                     </el-form-item>
                     <el-form-item class="form_total">
                       <el-button type="primary" @click="updataform()">确定</el-button>
+                      <el-button type="primary" @click="showInfo = false">关闭</el-button>
                     </el-form-item>
                   </el-form>
                 </el-tab-pane>
@@ -249,6 +250,7 @@
                   </el-table>
                   <div class="dialog-footer">
                     <el-button type="primary" @click="showInfo=false">确 定</el-button>
+                    <el-button type="primary" @click="showInfo = false">关闭</el-button>
                   </div>
                 </el-tab-pane>
               </el-tabs>
@@ -292,7 +294,7 @@ export default {
       formData: {// 编辑或详情表单数据
         id: '',
         useUnitId: '',
-        positionId: '',
+        positionId: null,
         systemId: '',
         equipmentID: '',
         enableTime: '',
@@ -319,23 +321,17 @@ export default {
         desc: undefined, // 倒叙  是否
         state: null, // 资产状态
         text: '', // 搜索文本
-        pageSize: 10, // 展示条数
-        pageNumber: 1, // 页码
-        code: '', // 高级搜索数据
-        equimentType: '',
-        alias: '',
-        brand: '',
-        model: '',
-        parentSystem: '',
-        system: '',
-        position: '',
-        enableTime: '',
+        brandId: '',
+        modelId: '',
+        systemId: '',
+        positionId: null,
         handoverDate: '',
-        purchaseYear: '',
-        original: '',
-        source: '',
-        recordUser: '',
-        lastUpdateTime: ''
+        useUnitId: '',
+        sourceId: '',
+        enableBegin: '',
+        enableEnd: '',
+        inLiability: '',
+        equipmentId: ''
       },
       totalCount: 0, // 数据总条数
       logsData: [// 日志数据
@@ -611,9 +607,15 @@ export default {
     },
     getmodelData() {
       // 获取型号
-      this.$axios.get('/api/Meta/Model?pageSize=' + this.modelpage.pageSize + '&pageNumber=' + this.modelpage.pageNumber).then(res => {
-        this.modelData = this.modelData.concat(res.data)
-      })
+      if (this.tableDataSearch.brandId !== '') {
+        this.$axios.get('/api/Meta/Model?brandId=' + this.tableDataSearch.brandId + '&pageSize=' + this.modelpage.pageSize + '&pageNumber=' + this.modelpage.pageNumber).then(res => {
+          this.modelData = this.modelData.concat(res.data)
+        })
+      } else {
+        this.$axios.get('/api/Meta/Model?pageSize=' + this.modelpage.pageSize + '&pageNumber=' + this.modelpage.pageNumber).then(res => {
+          this.modelData = this.modelData.concat(res.data)
+        })
+      }
     },
     getsourceData() {
       // 获取设备来源
@@ -677,10 +679,18 @@ export default {
       this.loading = true
       let querytext = ''
       querytext = typeof (query) === 'string' ? query : ''
-      this.$axios.get('/api/Meta/Model?brandId=' + this.formData.brandId + '&text=' + querytext).then(res => {
-        this.loading = false
-        this.modelData = res.data
-      })
+      if (this.formData.brandId !== '') {
+        this.$axios.get('/api/Meta/Model?brandId=' + this.formData.brandId + '&text=' + querytext).then(res => {
+          this.loading = false
+          this.modelData = res.data
+        })
+      }
+      if (this.tableDataSearch.brandId !== '') {
+        this.$axios.get('/api/Meta/Model?brandId=' + this.tableDataSearch.brandId + '&text=' + querytext).then(res => {
+          this.loading = false
+          this.modelData = res.data
+        })
+      }
     },
     remoteMethodsourceId(query) {
       this.loading = true

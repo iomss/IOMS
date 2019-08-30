@@ -44,14 +44,14 @@
                 </template>
               </el-table-column>
             </el-table>
-            <!-- <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeQuestionVisible" width="220px">
+            <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeQuestionVisible" width="220px">
               <span>您确定要删除此条数据？</span>
               <span slot="footer" class="dialog-footer">
                 <el-button @click="removeQuestionVisible = false">取 消</el-button>
                 <el-button type="primary" @click="removeQuestion">确 定</el-button>
               </span>
-            </el-dialog> -->
-            <el-dialog title="编辑设备清单" :visible.sync="changeActiveVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px">
+            </el-dialog>
+            <el-dialog :title="titlename" :visible.sync="changeActiveVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px">
               <el-form ref="form" :model="formSearch" label-width="120px">
                 <el-form-item label="系统名称">
                   <el-select v-model="formSearch.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" placeholder="系统名称" size="small" @focus="remoteMethodsystemId">
@@ -82,7 +82,7 @@
               </span>
             </el-dialog>
             <!--分页-->
-            <pagination v-show="totalCount>0" :total="totalCount" :page.sync="formSearch.pageNumber" :limit.sync="formSearch.pageSize" @pagination="getPage" />
+            <pagination v-show="totalCount>0" :total="totalCount" :page.sync="searchData.pageNumber" :limit.sync="searchData.pageSize" @pagination="getPage" />
           </div>
         </div>
       </el-col>
@@ -98,6 +98,7 @@ export default {
   },
   data() {
     return {
+      titlename: '编辑设备清单',
       loading: false, // 远程搜索
       formSearchShow: false,
       removeQuestionVisible: false,
@@ -187,9 +188,9 @@ export default {
     },
     getPage(val) { // page事件
       // 展示条数
-      this.formSearch.pageSize = val.limit
+      this.searchData.pageSize = val.limit
       // 页码
-      this.formSearch.pageNumber = val.page
+      this.searchData.pageNumber = val.page
       // 调用获取数据
       this.$axios.get('/api/EquipmentList/' + this.id + '/Items', { params: this.searchData }).then(res => {
         this.tableData = res.data
@@ -197,6 +198,17 @@ export default {
     },
     create() {
       // 新增设备
+      this.titlename = '新增设备清单'
+      this.changeActiveVisible = true
+      // 重置表单
+      this.formSearch = {
+        systemId: '',
+        equipmentId: '',
+        inLiability: '',
+        outLiability: '',
+        count: '',
+        remark: ''
+      }
     },
     savelist() {
       // 保存设备清单
@@ -206,8 +218,15 @@ export default {
       if (this.multipleSelection === '') {
         this.$message.error('请至少选择一条数据')
       } else {
+        const arr = []
+        this.multipleSelection.forEach(item => {
+          arr.push(item.id)
+        })
         this.removeQuestionVisible = true
       }
+    },
+    removeQuestion() { // 删除弹框点确定
+
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
@@ -228,20 +247,28 @@ export default {
 
       // 显示弹框
       this.changeActiveVisible = true
+      this.titlename = '编辑设备清单'
     },
     updatedata() {
       // 编辑弹框关闭
       this.changeActiveVisible = false
       // 列表数据刷新
-      this.$axios.put('/api/EquipmentList/' + this.id + '/Item/' + this.formSearch.id, { params: this.formSearch }).then(res => {
-        this.$message.success('更新成功')
-        this.getData()
-      })
-    },
-    deleteManage(row) { // 点击删除按钮
-      this.removeData = row
-      this.removeQuestionVisible = true
+      if (this.titlename === '新增设备清单') {
+        this.$axios.post('/api/EquipmentList/' + this.id + '/AddItem/', this.formSearch).then(res => {
+          this.$message.success('添加成功')
+          this.getData()
+        })
+      } else if (this.titlename === '编辑设备清单') {
+        this.$axios.put('/api/EquipmentList/' + this.id + '/Item/' + this.formSearch.id, this.formSearch).then(res => {
+          this.$message.success('更新成功')
+          this.getData()
+        })
+      }
     }
+    // deleteManage(row) { // 点击删除按钮
+    //   this.removeData = row
+    //   this.removeQuestionVisible = true
+    // }
   }
 }
 </script>
@@ -261,6 +288,12 @@ export default {
 }
 .el-dialog__footer {
   text-align: center;
+}
+.el-select {
+  width: 100%;
+}
+.el-input-number {
+  width: 100%;
 }
 </style>
 

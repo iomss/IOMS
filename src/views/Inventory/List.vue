@@ -7,7 +7,7 @@
           <div class="header">
             <h4>清单管理</h4>
             <div class="select">
-              <el-button type="primary" size="small" @click="changeActiveVisible=true">生成设备清单</el-button>
+              <el-button type="primary" size="small" @click="create()">生成设备清单</el-button>
               <el-button type="primary" size="small" @click="setvalid()">设置清单有效</el-button>
               <el-button type="danger" size="small" @click="deletelist()">删除设备清单</el-button>
             </div>
@@ -112,7 +112,10 @@ export default {
       },
       totalCount: 0, // 数据总条数
       tableData: [],
-      tableDatanew: {},
+      tableDatanew: {
+        positionId: '',
+        year: ''
+      },
       multipleSelection: '', // 表单选中行
       yearData: [],
       positionTreeData: []
@@ -134,12 +137,14 @@ export default {
     },
     getyearData() {
       var year = new Date().getFullYear()
-      for (var i = 2015; i <= year; i++) {
-        this.yearData.push({
-          id: i,
-          name: i
-        })
-      }
+      this.yearData.push({
+        id: year,
+        name: year
+      })
+      this.yearData.push({
+        id: year + 1,
+        name: year + 1
+      })
       console.log(this.yearData)
     },
     getData(data) { // 获取清单列表
@@ -172,8 +177,16 @@ export default {
         return cellValue
       }
     },
+    create() { // 生成设备清单
+      this.changeActiveVisible = true
+      // 重置表单
+      this.tableDatanew = {
+        positionId: '',
+        year: ''
+      }
+    },
     creatlist() {
-      // 生成设备清单
+      // 生成设备清单弹框点确定
       this.$axios.post('/api/EquipmentList/', this.tableDatanew).then(res => {
         this.tableData = res.data
         this.changeActiveVisible = false
@@ -196,13 +209,21 @@ export default {
     deletelist(data) {
       // 删除设备清单
       if (data) {
-        this.removeQuestionVisible = true
-        this.multipleSelection = data
+        if (data.valid) {
+          this.$message.error('已生效数据不可删除')
+        } else {
+          this.removeQuestionVisible = true
+          this.multipleSelection = data
+        }
       } else {
         if (this.multipleSelection === '') {
           this.$message.error('请至少选择一条数据')
         } else {
-          this.removeQuestionVisible = true
+          if (this.multipleSelection[0].valid) {
+            this.$message.error('已生效数据不可删除')
+          } else {
+            this.removeQuestionVisible = true
+          }
         }
       }
     },
@@ -219,6 +240,8 @@ export default {
         this.removeQuestionVisible = false
         // 清空选中值
         this.multipleSelection = ''
+        // 刷新数据
+        this.getData()
       })
     },
     handleSelectionChange(val) {
