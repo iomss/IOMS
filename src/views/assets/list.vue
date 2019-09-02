@@ -155,9 +155,10 @@
                       <treeselect v-model="formData.positionId" :disable-branch-nodes="true" :normalizer="normalizer" :options="positionTreeData" :load-options="loadOptions" placeholder="安装位置" no-results-text="未找到相关数据" />
                     </el-form-item>
                     <el-form-item label="所属系统" prop="systemId">
-                      <el-select v-model="formData.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" placeholder="所属系统" size="small" @focus="remoteMethodsystemId">
+                      <!-- <el-select v-model="formData.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" placeholder="所属系统" size="small" @focus="remoteMethodsystemId">
                         <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
-                      </el-select>
+                      </el-select> -->
+                      <treeselect v-model="formData.systemId" :normalizer="normalizer" :options="systemTreeData" :load-options="loadOptions" placeholder="所属系统" no-results-text="未找到相关数据" />
                     </el-form-item>
                     <el-form-item label="资产类别" prop="equipmentID">
                       <el-select v-model="formData.equipmentID" filterable remote :remote-method="remoteMethodequipmentID" :loading="loading" placeholder="资产类别" size="small" @focus="remoteMethodequipmentID">
@@ -346,6 +347,7 @@ export default {
       unitData: [], // 使用单位数据
       positionTreeData: [], // 安装位置数据
       systemData: [], // 所属系统数据
+      systemTreeData: [],
       equipmentData: [], // 资产类别数据
       brandData: [], // 品牌数据
       modelData: [], // 型号数据
@@ -591,6 +593,9 @@ export default {
       // 获取所属系统
       this.$axios.get('/api/Meta/System?pageSize=' + this.systempage.pageSize + '&pageNumber=' + this.systempage.pageNumber).then(res => {
         this.systemData = this.systemData.concat(res.data)
+      })
+      this.$axios.get('/api/Tree/System').then(res => {
+        this.systemTreeData = res
       })
     },
     getequipmentData() {
