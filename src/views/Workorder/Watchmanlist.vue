@@ -57,7 +57,7 @@
                   </div>
                   <!-- 接单权限 -->
                   <div v-if="roles.indexOf('GrabOrder')!==-1">
-                    <el-button v-show="scope.row.orderState==='Dispatched'" size="mini" type="primary" @click="Receiptwork(scope.row)">接单</el-button>
+                    <el-button v-show="scope.row.orderState==='Dispatching'||scope.row.orderState==='Dispatched'" size="mini" type="primary" @click="Receiptwork(scope.row)">接单</el-button>
                   </div>
                 </template>
               </el-table-column>
