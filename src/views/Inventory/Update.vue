@@ -218,15 +218,17 @@ export default {
       if (this.multipleSelection === '') {
         this.$message.error('请至少选择一条数据')
       } else {
-        const arr = []
-        this.multipleSelection.forEach(item => {
-          arr.push(item.id)
-        })
         this.removeQuestionVisible = true
       }
     },
     removeQuestion() { // 删除弹框点确定
-
+      const arr = []
+      this.multipleSelection.forEach(item => {
+        arr.push(item.id)
+      })
+      this.$axios.delete('/api/EquipmentList/' + this.$route.params.id + '/RemveItem', { params: { ids: arr }}).then(res => {
+        this.$message.success('设备删除成功')
+      })
     },
     handleSelectionChange(val) {
       this.multipleSelection = val

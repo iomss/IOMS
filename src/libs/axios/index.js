@@ -45,7 +45,8 @@ const token = {
 // 创建一个 axios 实例
 axios.create({
   baseURL: process.env.VUE_APP_API,
-  timeout: 10000 // 请求超时时间
+  timeout: 10000, // 请求超时时间
+  withCredentials: false
 })
 
 const ajaxUrl = process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging' ? process.env.VUE_APP_API : undefined
