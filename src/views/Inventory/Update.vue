@@ -228,6 +228,8 @@ export default {
       })
       this.$axios.delete('/api/EquipmentList/' + this.$route.params.id + '/RemveItem', { data: { ids: arr }}).then(res => {
         this.$message.success('设备删除成功')
+        this.getData()
+        this.removeQuestionVisible = false
       })
     },
     handleSelectionChange(val) {
