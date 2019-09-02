@@ -217,13 +217,15 @@ export default {
         }
       } else {
         if (this.multipleSelection === '') {
-          this.$message.error('请至少选择一条数据')
-        } else {
+          this.$message.error('请选择一条数据')
+        } else if (this.multipleSelection.length === 1) {
           if (this.multipleSelection[0].valid) {
             this.$message.error('已生效数据不可删除')
           } else {
             this.removeQuestionVisible = true
           }
+        } else {
+          this.$message.error('请选择一条数据')
         }
       }
     },
