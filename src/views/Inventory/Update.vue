@@ -226,7 +226,7 @@ export default {
       this.multipleSelection.forEach(item => {
         arr.push(item.id)
       })
-      this.$axios.delete('/api/EquipmentList/' + this.$route.params.id + '/RemveItem', { params: { ids: arr }}).then(res => {
+      this.$axios.delete('/api/EquipmentList/' + this.$route.params.id + '/RemveItem', { data: { ids: arr }}).then(res => {
         this.$message.success('设备删除成功')
       })
     },
