@@ -13,9 +13,11 @@
             </div>
             <div class="toolsrt">
               <el-form ref="form" :model="formSearch" label-width="70px">
-                <el-form-item label="生效状态" prop="uint">
-                  <el-select v-model="formSearch.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" placeholder="生效状态" size="small" @focus="remoteMethodsystemId">
-                    <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
+                <el-form-item label="生效状态" prop="valid">
+                  <el-select v-model="formSearch.valid" size="small">
+                    <el-option label="全部">全部</el-option>
+                    <el-option key="已生效" label="已生效" value="true">已生效</el-option>
+                    <el-option key="未生效" label="已生效" value="false">未生效</el-option>
                   </el-select>
                 </el-form-item>
                 <el-form-item class="form_total">
@@ -27,51 +29,29 @@
           <div class="content">
             <el-table :data="tableData" stripe border style="width: 800px" @selection-change="handleSelectionChange">
               <el-table-column type="selection" />
-              <el-table-column prop="equipment" label="版本号">
+              <el-table-column prop="code" label="版本号">
                 <template slot-scope="scope">
-                  {{ scope.row.equipment.name }}
+                  <router-link :to="{ name: 'Rateinformation-Info', params: { id: scope.row.id }}" style="color:#409eff">{{ scope.row.code }}</router-link>
                 </template>
               </el-table-column>
-              <el-table-column prop="inLiability" label="创建时间" />
+              <el-table-column prop="createTime" label="创建时间" :formatter="formatterDate" />
               <el-table-column prop="source" label="生效状态">
                 <template slot-scope="scope">
-                  {{ scope.row.source==='Automatic'?"已生效":"未生效" }}
+                  {{ scope.row.isValid?"已生效":"未生效" }}
                 </template>
               </el-table-column>
-              <el-table-column prop="count" label="备注" />
+              <el-table-column prop="comment" label="备注" />
             </el-table>
-            <!-- 编辑 -->
-            <el-dialog title="修改" :visible.sync="FormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px">
-              <el-form ref="EditForm" :model="EditForm" :rules="FormRules" label-width="110px">
-                <el-form-item label="设备编码" prop="name">
-                  <el-select v-model="EditForm.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" placeholder="设备编码" size="small" @focus="remoteMethodsystemId">
-                    <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="设备名称" prop="name">
-                  <el-input v-model="EditForm.name" placeholder="设备名称" size="small" />
-                </el-form-item>
-                <el-form-item label="定额编目" prop="name">
-                  <el-input v-model="EditForm.name" placeholder="定额编目" size="small" />
-                </el-form-item>
-                <el-form-item label="定额设备名称" prop="name">
-                  <el-select v-model="EditForm.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" placeholder="定额设备名称" size="small" @focus="remoteMethodsystemId">
-                    <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="匹配度" prop="name">
-                  <el-select v-model="EditForm.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" placeholder="匹配度" size="small" @focus="remoteMethodsystemId">
-                    <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
-                  </el-select>
-                </el-form-item>
-              </el-form>
-              <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="submitBrand()">确定</el-button>
-                <el-button type="primary" @click="FormVisible=false">关闭</el-button>
-              </span>
-            </el-dialog>
             <!--分页-->
             <pagination v-show="totalCount>0" :total="totalCount" :page.sync="formSearch.pageNumber" :limit.sync="formSearch.pageSize" @pagination="getPage" />
+            <!--设为生效-->
+            <el-dialog ref="setValid" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="setValidVisible" width="220px">
+              <span>您确定要生效此条数据？</span>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="setValidVisible = false">取 消</el-button>
+                <el-button type="primary" @click="setvalidSubmit">确 定</el-button>
+              </span>
+            </el-dialog>
             <!--删除-->
             <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeQuestionVisible" width="220px">
               <span>您确定要删除此条数据？</span>
@@ -96,10 +76,7 @@ export default {
     return {
       loading: false, // 远程搜索
       formSearch: {
-        name: '',
-        year: '',
-        system: '',
-        text: '', // 搜索文本
+        valid: null,
         pageSize: 10, // 展示条数
         pageNumber: 1// 页码
       },
@@ -108,43 +85,23 @@ export default {
       removeQuestionVisible: false, // 删除弹框
       tableData: [],
       removeData: [],
-      systemData: [],
-      sourceData: [],
-      FormVisible: false, // 编辑弹框
-      EditForm: [], // 编辑表单数据
-      sourcepage: {// 匹配度分页
-        pageNumber: 1,
-        pageSize: 999999,
-        pageCount: ''
-      },
-      systempage: {// 所属系统分页
-        pageNumber: 1,
-        pageSize: 999999,
-        pageCount: ''
-      },
-      FormRules: {
-        name: {
-          required: true,
-          message: '设备名称不可为空',
-          trigger: 'blur'
-        },
-        brandId: {
-          required: true,
-          message: '定额编目不可为空',
-          trigger: 'blur'
-        }
-      }
+      setValidVisible: false// 生效弹框
     }
   },
   computed: {},
   mounted() {
     this.getData()
-    this.getsystemData()
-    this.getsourceData()
   },
   methods: {
+    formatterDate(row, column, cellValue) {
+      if (cellValue !== null) {
+        return this.$moment(cellValue).format('YYYY-MM-DD HH:mm')
+      } else {
+        return cellValue
+      }
+    },
     getData() {
-      this.$axios.get('/api/MatchEquipment/', { params: this.formSearch }).then(res => {
+      this.$axios.get('/api/Tariff', { params: this.formSearch }).then(res => {
         this.tableData = res.data
         this.totalCount = res.totalCount
       })
@@ -155,50 +112,12 @@ export default {
       // 页码
       this.formSearch.pageNumber = val.page
       // 调用获取数据
-      this.$axios.get('/api/EquipmentList/', { params: this.formSearch }).then(res => {
-        this.tableData = res.data
-      })
-    },
-    getsystemData() {
-      // 获取所属系统
-      this.$axios.get('/api/Meta/System?pageSize=' + this.systempage.pageSize + '&pageNumber=' + this.systempage.pageNumber).then(res => {
-        this.systemData = this.systemData.concat(res.data)
-      })
-    },
-    getsourceData() {
-      // 获取匹配度
-      this.$axios.get('/api/Meta/Source?pageSize=' + this.sourcepage.pageSize + '&pageNumber=' + this.sourcepage.pageNumber).then(res => {
-        this.sourceData = this.sourceData.concat(res.data)
-      })
-    },
-    remoteMethodsystemId(query) {
-      this.loading = true
-      let querytext = ''
-      querytext = typeof (query) === 'string' ? query : ''
-      this.$axios.get('/api/Meta/System?text=' + querytext).then(res => {
-        this.loading = false
-        this.systemData = res.data
-      })
-    },
-    remoteMethodsourceId(query) {
-      this.loading = true
-      let querytext = ''
-      querytext = typeof (query) === 'string' ? query : ''
-      this.$axios.get('/api/Meta/source?text=' + querytext).then(res => {
-        this.loading = false
-        this.sourceData = res.data
-      })
+      this.getData()
     },
     updateData(row) {
-      if (row === undefined) {
-        if (this.multipleSelection.length !== 1) {
-          this.$message.error('请选择一项数据进行操作')
-        } else {
-          this.FormVisible = true
-        }
-      } else {
-        this.FormVisible = true
-      }
+      this.$axios.post('/api/Tariff').then(res => {
+        this.$router.push('/Budgetmanage/RateinformationInfo/' + res.id)
+      })
     },
     deleteData(row) {
       if (row === undefined) {
@@ -211,24 +130,27 @@ export default {
         this.removeQuestionVisible = true
       }
     },
-    setvalid() { // 设为有效
-
-    },
-    submitData() {
-      this.$refs.EditForm.validate(valid => {
-        if (valid) {
-          this.$axios.put('/api/Meta/Brand/' + this.EditForm.id, this.EditForm).then(res => {
-            this.getData()
-            this.$message.success('修改成功')
-            this.FormVisible = false
-          })
+    setvalid(row) { // 设为有效
+      if (row === undefined) {
+        if (this.multipleSelection.length !== 1) {
+          this.$message.error('请选择一项数据进行操作')
+        } else {
+          this.setValidVisible = true
         }
+      } else {
+        this.setValidVisible = true
+      }
+    },
+    setvalidSubmit() {
+      this.$axios.post('/api/Tariff/' + this.multipleSelection[0].id + '/SetValid').then(res => {
+        this.$message.success('费率版本生效成功')
+        this.setValidVisible = false
       })
     },
     // 删除
     removeQuestion() {
       const _this = this
-      this.$axios.delete('/api/Assets/?Id=' + this.removeData.id).then(response => {
+      this.$axios.delete('/api/Tariff/' + this.multipleSelection[0].id).then(response => {
         _this.$message.success('删除成功')
         _this.removeQuestionVisible = false
         this.getData()

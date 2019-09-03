@@ -616,6 +616,18 @@ export const asyncRoutes = [
           roles: ['EnterSystem'],
           fullPath: '/Budgetmanage/Rateinformation'
         }
+      },
+      {
+        path: 'RateinformationInfo/:id',
+        name: 'Rateinformation-Info',
+        component: () => import('@/views/Budgetmanage/RateinformationInfo'),
+        meta: {
+          title: '费率信息详情',
+          icon: 'fa fa-home',
+          hidden: true,
+          roles: ['EnterSystem'],
+          fullPath: '/Budgetmanage/RateinformationInfo'
+        }
       }
     ]
   },
