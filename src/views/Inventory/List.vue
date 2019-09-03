@@ -47,8 +47,8 @@
               </el-table-column>
               <el-table-column label="操作">
                 <template slot-scope="scope">
-                  <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="primary" @click="UpdateStage(scope.row)">编辑</el-button>
-                  <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="danger" @click="deletelist(scope.row)">删除</el-button>
+                  <el-button v-show="!scope.row.valid" style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="primary" @click="UpdateStage(scope.row)">编辑</el-button>
+                  <el-button v-show="!scope.row.valid" style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="danger" @click="deletelist(scope.row)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
