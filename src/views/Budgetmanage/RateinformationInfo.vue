@@ -21,15 +21,15 @@
             </el-table>
 
             <el-dialog ref="setValid" :title="formTitle" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="changeFormVisible" width="450px">
-              <el-form v-model="form" label-width="80px">
+              <el-form ref="rateForm" :model="rateForm" :rules="formRules" label-width="80px">
                 <el-form-item label="名称" prop="name">
-                  <el-input v-model="form.name" />
+                  <el-input v-model="rateForm.name" />
                 </el-form-item>
                 <el-form-item label="费率" prop="rate">
-                  <el-input v-model="form.rate" />
+                  <el-input v-model="rateForm.rate" />
                 </el-form-item>
                 <el-form-item label="备注" prop="comment">
-                  <el-input v-model="form.comment" />
+                  <el-input v-model="rateForm.comment" />
                 </el-form-item>
               </el-form>
               <span slot="footer" class="dialog-footer">
@@ -53,12 +53,26 @@ export default {
       removeData: [],
       changeFormVisible: false,
       formTitle: '',
-      form: {
+      formType: '',
+      rateForm: {
         name: '', // 名称
         rate: '', // 费率
         comment: '', // 备注
-        parentId: null// 父级id
-      }
+        parentId: undefined// 父级id
+      },
+      formRules: {
+        name: {
+          required: true,
+          message: '项目名称不可为空',
+          trigger: 'blur'
+        },
+        rate: {
+          required: true,
+          message: '费率不可为空',
+          trigger: 'blur'
+        }
+      },
+      rowData: {}
     }
   },
   computed: {},
@@ -74,12 +88,44 @@ export default {
     },
     changeForm(row, type) {
       this.changeFormVisible = true
-      console.log(type)
+      this.rowData = row
+      this.formType = type
       type === 'add' ? this.formTitle = '添加' : this.formTitle = '编辑'
+      if (type === 'add') {
+        this.rateForm.name = ''
+        this.rateForm.rate = ''
+        this.rateForm.comment = ''
+        this.rateForm.parentId = row.id
+        debugger
+      } else {
+        this.rateForm.name = row.name
+        this.rateForm.rate = row.rate
+        this.rateForm.comment = row.comment
+        this.parentId = row.parentId
+      }
       console.log(row)
       console.log(type)
     },
-    submitChangeForm() { },
+    submitChangeForm() {
+      this.$refs.rateForm.validate(valid => {
+        if (valid) {
+          debugger
+          if (this.formType === 'add') {
+            this.$axios.post('/api/Tariff/' + this.$route.params.id, this.rateForm).then(res => {
+              this.$message.success('项目添加成功')
+              this.getData()
+              this.changeFormVisible = false
+            })
+          } else {
+            this.$axios.put('/api/Tariff/' + this.rowData.id, this.rateForm).then(res => {
+              this.$message.success('项目修改成功')
+              this.getData()
+              this.changeFormVisible = false
+            })
+          }
+        }
+      })
+    },
     remove() { }
 
   }
