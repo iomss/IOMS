@@ -1,4 +1,4 @@
-<!-- 软件维修管理页面 -->
+<!-- 硬件维修管理页面 -->
 <template>
   <div>
     <el-row>
@@ -26,24 +26,20 @@
           <div class="content">
             <el-table :data="tableData" stripe border style="width: 1200px" @selection-change="handleSelectionChange">
               <el-table-column type="selection" />
-              <el-table-column prop="equipment" label="版本号">
-                <template slot-scope="scope">
-                  {{ scope.row.equipment.name }}
-                </template>
-              </el-table-column>
+              <el-table-column prop="code" label="版本号" />
               <el-table-column label="创建时间" prop="system">
                 <template slot-scope="scope">
                   {{ scope.row.system.name }}
                 </template>
               </el-table-column>
               <el-table-column prop="inLiability" label="创建人" />
-              <el-table-column prop="outLiability" label="参考定额" />
+              <el-table-column prop="referVesionId" label="参考定额" />
               <el-table-column prop="source" label="是否有效">
                 <template slot-scope="scope">
-                  {{ scope.row.source==='Automatic'?"自动汇总":"人工修订" }}
+                  {{ scope.row.isValid ?"已生效":"未生效" }}
                 </template>
               </el-table-column>
-              <el-table-column prop="remark" label="备注" />
+              <el-table-column prop="comment" label="备注" />
             </el-table>
             <!-- 生成维护费用 -->
             <el-dialog title="选择费率版本" :visible.sync="FormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px">
@@ -85,10 +81,9 @@ export default {
     return {
       loading: false, // 远程搜索
       formSearch: {
-        name: '',
-        year: '',
-        system: '',
-        text: '', // 搜索文本
+        code: '', // 版本编号
+        year: '', // 年度
+        type: 'HardMaintain', // 类型
         pageSize: 10, // 展示条数
         pageNumber: 1// 页码
       },
@@ -128,12 +123,15 @@ export default {
   computed: {},
   mounted() {
     this.getData()
-    this.getsystemData()
-    this.getsourceData()
   },
   methods: {
+    // getData() {
+    //   this.$axios.get('/api/UnitPrice', { params: this.formSearch }).then(res => {
+    //     console.log(res)
+    //   })
+    // },
     getData() {
-      this.$axios.get('/api/MatchEquipment/', { params: this.formSearch }).then(res => {
+      this.$axios.get('/api/UnitPrice', { params: this.formSearch }).then(res => {
         this.tableData = res.data
         this.totalCount = res.totalCount
       })
@@ -146,18 +144,6 @@ export default {
       // 调用获取数据
       this.$axios.get('/api/EquipmentList/', { params: this.formSearch }).then(res => {
         this.tableData = res.data
-      })
-    },
-    getsystemData() {
-      // 获取所属系统
-      this.$axios.get('/api/Meta/System?pageSize=' + this.systempage.pageSize + '&pageNumber=' + this.systempage.pageNumber).then(res => {
-        this.systemData = this.systemData.concat(res.data)
-      })
-    },
-    getsourceData() {
-      // 获取匹配度
-      this.$axios.get('/api/Meta/Source?pageSize=' + this.sourcepage.pageSize + '&pageNumber=' + this.sourcepage.pageNumber).then(res => {
-        this.sourceData = this.sourceData.concat(res.data)
       })
     },
     remoteMethodsystemId(query) {

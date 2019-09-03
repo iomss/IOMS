@@ -15,7 +15,7 @@
               <el-form ref="form" :model="formSearch" label-width="70px">
                 <el-form-item label="生效状态" prop="valid">
                   <el-select v-model="formSearch.valid" size="small">
-                    <el-option label="全部">全部</el-option>
+                    <el-option label="全部" value="">全部</el-option>
                     <el-option key="已生效" label="已生效" value="true">已生效</el-option>
                     <el-option key="未生效" label="已生效" value="false">未生效</el-option>
                   </el-select>

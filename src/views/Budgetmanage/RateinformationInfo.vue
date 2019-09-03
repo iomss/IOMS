@@ -6,12 +6,37 @@
         <div class="panel">
           <div class="header" />
           <div class="content">
-            <el-table :data="tableData" style="width: 100%" row-key="id" border :tree-props="{children: 'children', hasChildren: 'hasChildren'}" @row-contextmenu="rightClick">
+            <el-table id="treeTable" :data="tableData" style="width: 100%" row-key="id" border :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
               <el-table-column type="index" width="50" />
               <el-table-column prop="name" label="项目名称" />
               <el-table-column prop="rate" label="费率" />
               <el-table-column prop="comment" label="备注" />
+              <el-table-column prop="" label="操作">
+                <template slot-scope="scope">
+                  <el-button size="mini" type="success" @click="changeForm(scope.row,'add')"><i class="fa fa-plus" style="margin-right:5px;" />添加</el-button>
+                  <el-button size="mini" type="primary" @click="changeForm(scope.row,'edit')"><i class="fa fa-edit" style="margin-right:5px;" />编辑</el-button>
+                  <el-button size="mini" type="danger" @click="remove(scope.row)"><i class="fa fa-times" style="margin-right:5px;" />删除</el-button>
+                </template>
+              </el-table-column>
             </el-table>
+
+            <el-dialog ref="setValid" :title="formTitle" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="changeFormVisible" width="450px">
+              <el-form v-model="form" label-width="80px">
+                <el-form-item label="名称" prop="name">
+                  <el-input v-model="form.name" />
+                </el-form-item>
+                <el-form-item label="费率" prop="rate">
+                  <el-input v-model="form.rate" />
+                </el-form-item>
+                <el-form-item label="备注" prop="comment">
+                  <el-input v-model="form.comment" />
+                </el-form-item>
+              </el-form>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="changeFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="submitChangeForm">确 定</el-button>
+              </span>
+            </el-dialog>
           </div>
         </div>
       </el-col>
@@ -25,7 +50,15 @@ export default {
   data() {
     return {
       tableData: [],
-      removeData: []
+      removeData: [],
+      changeFormVisible: false,
+      formTitle: '',
+      form: {
+        name: '', // 名称
+        rate: '', // 费率
+        comment: '', // 备注
+        parentId: null// 父级id
+      }
     }
   },
   computed: {},
@@ -39,9 +72,16 @@ export default {
         this.totalCount = res.totalCount
       })
     },
-    rightClick(row, column, event) {
+    changeForm(row, type) {
+      this.changeFormVisible = true
+      console.log(type)
+      type === 'add' ? this.formTitle = '添加' : this.formTitle = '编辑'
       console.log(row)
-    }
+      console.log(type)
+    },
+    submitChangeForm() { },
+    remove() { }
+
   }
 }
 </script>
