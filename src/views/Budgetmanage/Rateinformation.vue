@@ -7,7 +7,7 @@
           <div class="header">
 
             <div class="tools">
-              <el-button type="success" size="small" @click="updateData()">添加</el-button>
+              <el-button type="success" size="small" @click="create()">添加</el-button>
               <el-button type="danger" size="small" @click="deleteData()">删除</el-button>
               <el-button type="primary" size="small" @click="setvalid()">设为生效</el-button>
             </div>
@@ -95,7 +95,7 @@ export default {
   methods: {
     formatterDate(row, column, cellValue) {
       if (cellValue !== null) {
-        return this.$moment(cellValue).format('YYYY-MM-DD HH:mm')
+        return this.$moment(cellValue).format('YYYY-MM-DD HH:mm:ss')
       } else {
         return cellValue
       }
@@ -114,7 +114,7 @@ export default {
       // 调用获取数据
       this.getData()
     },
-    updateData(row) {
+    create(row) {
       this.$axios.post('/api/Tariff').then(res => {
         this.$router.push('/Budgetmanage/RateinformationInfo/' + res.id)
       })
