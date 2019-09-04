@@ -26,7 +26,13 @@
           <div class="content">
             <el-table :data="tableData" stripe border style="width: 1200px" @selection-change="handleSelectionChange">
               <el-table-column type="selection" />
-              <el-table-column prop="code" label="版本号" />
+              <el-table-column prop="code" label="版本号">
+                <template slot-scope="scope">
+                  <el-button type="text">
+                    <router-link :to="'/Budgetmanage/HardwareRepairInfo/'+scope.row.id">{{ scope.row.code }}</router-link>
+                  </el-button>
+                </template>
+              </el-table-column>
               <el-table-column prop="createTime" label="创建时间" :formatter="formatterDate" />
               <el-table-column prop="createUser.name" label="创建人" />
               <el-table-column prop="referVesion" label="参考定额">
