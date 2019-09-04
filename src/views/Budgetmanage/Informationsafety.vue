@@ -29,7 +29,11 @@
               <el-table-column prop="code" label="版本号" />
               <el-table-column prop="createTime" label="创建时间" :formatter="formatterDate" />
               <el-table-column prop="createUser.name" label="创建人" />
-              <el-table-column prop="referVesionId" label="参考定额" />
+              <el-table-column prop="referVesion" label="参考定额">
+                <template slot-scope="scope">
+                  <el-button type="text" @click="clickReferVesionInfo(scope.row)">{{ scope.row.referVesion.code }}</el-button>
+                </template>
+              </el-table-column>
               <el-table-column prop="source" label="是否有效">
                 <template slot-scope="scope">
                   {{ scope.row.isValid ?"已生效":"未生效" }}
@@ -45,6 +49,20 @@
               <span slot="footer" class="dialog-footer">
                 <el-button @click="setValidVisible = false">取 消</el-button>
                 <el-button type="primary" @click="setvalidSubmit">确 定</el-button>
+              </span>
+            </el-dialog>
+            <!--参考定额-->
+            <el-dialog ref="referVesion" title="定额版本详情" :visible.sync="referVesionVisible" width="450px">
+              <el-form v-model="rowDataReferVesion" label-width="80px">
+                <el-form-item label="版本号:">{{ rowDataReferVesion.code }}</el-form-item>
+                <el-form-item label="类型:">{{ rowDataReferVesion.type }}</el-form-item>
+                <el-form-item label="版次:">{{ rowDataReferVesion.edition }}</el-form-item>
+                <el-form-item label="印次:">{{ rowDataReferVesion.print }}</el-form-item>
+                <el-form-item label="书号:">{{ rowDataReferVesion.isbn }}</el-form-item>
+                <el-form-item label="出版社:">{{ rowDataReferVesion.publishingHouse }}</el-form-item>
+              </el-form>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="referVesionVisible = false">取 消</el-button>
               </span>
             </el-dialog>
           </div>
@@ -71,8 +89,9 @@ export default {
         pageNumber: 1// 页码
       },
       multipleSelection: {}, // 表单选中行
-      setValidVisible: false
-
+      setValidVisible: false, // 设为有效弹框
+      referVesionVisible: false, // 定额详情弹框
+      rowDataReferVesion: {}
     }
   },
   computed: {},
@@ -118,7 +137,7 @@ export default {
         this.setValidVisible = true
       }
     },
-    //
+    // 设为有效
     setvalidSubmit() {
       this.$axios.post('/api/UnitPrice/' + this.multipleSelection[0].id + '/SetValid').then(res => {
         this.$message.success('信息安全费用生效成功')
@@ -128,6 +147,10 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
+    },
+    clickReferVesionInfo(row) {
+      this.referVesionVisible = true
+      this.rowDataReferVesion = row.referVesion
     }
   }
 }
