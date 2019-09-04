@@ -530,6 +530,18 @@ export const asyncRoutes = [
         }
       },
       {
+        path: 'HardwareMaintenanceInfo/:id',
+        name: 'HardwareMaintenance-Info',
+        component: () => import('@/views/Budgetmanage/HardwareMaintenanceInfo'),
+        meta: {
+          title: '硬件维护单价详情',
+          icon: 'fa fa-home',
+          roles: ['EnterSystem'],
+          hidden: true,
+          fullPath: '/Budgetmanage/HardwareMaintenanceInfo'
+        }
+      },
+      {
         path: 'SoftwareMaintenance',
         name: 'SoftwareMaintenance-List',
         component: () => import('@/views/Budgetmanage/SoftwareMaintenance'),
@@ -538,6 +550,18 @@ export const asyncRoutes = [
           icon: 'fa fa-home',
           roles: ['EnterSystem'],
           fullPath: '/Budgetmanage/SoftwareMaintenance'
+        }
+      },
+      {
+        path: 'SoftwareMaintenanceInfo/:id',
+        name: 'SoftwareMaintenance-Info',
+        component: () => import('@/views/Budgetmanage/SoftwareMaintenanceInfo'),
+        meta: {
+          title: '软件维护单价详情',
+          icon: 'fa fa-home',
+          roles: ['EnterSystem'],
+          hidden: true,
+          fullPath: '/Budgetmanage/SoftwareMaintenanceInfo'
         }
       },
       {
@@ -552,6 +576,18 @@ export const asyncRoutes = [
         }
       },
       {
+        path: 'InformationsafetyInfo/:id',
+        name: 'Informationsafety-Info',
+        component: () => import('@/views/Budgetmanage/InformationsafetyInfo'),
+        meta: {
+          title: '信息安全单价详情',
+          icon: 'fa fa-home',
+          roles: ['EnterSystem'],
+          hidden: true,
+          fullPath: '/Budgetmanage/InformationsafetyInfo'
+        }
+      },
+      {
         path: 'HardwareRepair',
         name: 'HardwareRepair-List',
         component: () => import('@/views/Budgetmanage/HardwareRepair'),
@@ -563,6 +599,18 @@ export const asyncRoutes = [
         }
       },
       {
+        path: 'HardwareRepairInfo/:id',
+        name: 'HardwareRepair-Info',
+        component: () => import('@/views/Budgetmanage/HardwareRepairInfo'),
+        meta: {
+          title: '硬件维修单价详情',
+          icon: 'fa fa-home',
+          roles: ['EnterSystem'],
+          hidden: true,
+          fullPath: '/Budgetmanage/HardwareRepairInfo'
+        }
+      },
+      {
         path: 'SoftwareRepair',
         name: 'SoftwareRepair-List',
         component: () => import('@/views/Budgetmanage/SoftwareRepair'),
@@ -571,6 +619,18 @@ export const asyncRoutes = [
           icon: 'fa fa-home',
           roles: ['EnterSystem'],
           fullPath: '/Budgetmanage/SoftwareRepair'
+        }
+      },
+      {
+        path: 'SoftwareRepairInfo/:id',
+        name: 'SoftwareRepair-Info',
+        component: () => import('@/views/Budgetmanage/SoftwareRepairInfo'),
+        meta: {
+          title: '软件维修单价管理',
+          icon: 'fa fa-home',
+          roles: ['EnterSystem'],
+          hidden: true,
+          fullPath: '/Budgetmanage/SoftwareRepairInfo'
         }
       },
       {
