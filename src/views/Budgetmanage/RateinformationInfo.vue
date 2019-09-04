@@ -15,7 +15,7 @@
                 <template slot-scope="scope">
                   <el-button size="mini" type="success" @click="changeForm(scope.row,'add')"><i class="fa fa-plus" style="margin-right:5px;" />添加</el-button>
                   <el-button size="mini" type="primary" @click="changeForm(scope.row,'edit')"><i class="fa fa-edit" style="margin-right:5px;" />编辑</el-button>
-                  <el-button size="mini" type="danger" @click="remove(scope.row)"><i class="fa fa-times" style="margin-right:5px;" />删除</el-button>
+                  <!-- <el-button size="mini" type="danger" @click="remove(scope.row)"><i class="fa fa-times" style="margin-right:5px;" />删除</el-button> -->
                 </template>
               </el-table-column>
             </el-table>
@@ -101,10 +101,8 @@ export default {
         this.rateForm.name = row.name
         this.rateForm.rate = row.rate
         this.rateForm.comment = row.comment
-        this.parentId = row.parentId
+        this.rateForm.parentId = row.parentId
       }
-      console.log(row)
-      console.log(type)
     },
     submitChangeForm() {
       this.$refs.rateForm.validate(valid => {
