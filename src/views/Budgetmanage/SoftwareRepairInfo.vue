@@ -30,7 +30,7 @@
             <el-table :data="tableData" stripe border style="width: 1200px">
               <el-table-column type="selection" />
               <el-table-column prop="catelog" label="定额编目" />
-              <el-table-column prop="软件名称" label="软件名称" />
+              <el-table-column prop="normEquipment.name" label="软件名称" />
               <el-table-column prop="维修部件" label="维修部件 " />
               <el-table-column prop="normEquipmentLevel.name" label="维护级别" />
               <el-table-column prop="year" label="年份" />

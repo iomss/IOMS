@@ -15,7 +15,7 @@
                 <template slot-scope="scope">
                   <el-button size="mini" type="success" @click="changeForm(scope.row,'add')"><i class="fa fa-plus" style="margin-right:5px;" />添加</el-button>
                   <el-button size="mini" type="primary" @click="changeForm(scope.row,'edit')"><i class="fa fa-edit" style="margin-right:5px;" />编辑</el-button>
-                  <!-- <el-button size="mini" type="danger" @click="remove(scope.row)"><i class="fa fa-times" style="margin-right:5px;" />删除</el-button> -->
+                  <el-button size="mini" type="danger" @click="remove(scope.row)"><i class="fa fa-times" style="margin-right:5px;" />删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -37,6 +37,14 @@
                 <el-button type="primary" @click="submitChangeForm">确 定</el-button>
               </span>
             </el-dialog>
+            <!--删除-->
+            <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeVisible" width="220px">
+              <span>您确定要删除此条数据？</span>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="removeVisible = false">取 消</el-button>
+                <el-button type="primary" @click="removeSubmit">确 定</el-button>
+              </span>
+            </el-dialog>
           </div>
         </div>
       </el-col>
@@ -50,7 +58,7 @@ export default {
   data() {
     return {
       tableData: [],
-      removeData: [],
+      removeData: {},
       changeFormVisible: false,
       formTitle: '',
       formType: '',
@@ -72,7 +80,8 @@ export default {
           trigger: 'blur'
         }
       },
-      rowData: {}
+      rowData: {},
+      removeVisible: false
     }
   },
   computed: {},
@@ -124,7 +133,18 @@ export default {
         }
       })
     },
-    remove() { }
+    remove(row) {
+      this.removeVisible = true
+      this.removeData = row
+    },
+    // 删除
+    removeSubmit() {
+      this.$axios.delete('/api/Tariff/' + this.$route.params.id + '/Items', { data: { ids: [this.removeData.id] }}).then(response => {
+        this.$message.success('删除成功')
+        this.removeVisible = false
+        this.getData()
+      })
+    }
 
   }
 }
