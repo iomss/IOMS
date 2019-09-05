@@ -23,8 +23,8 @@
             <el-table :data="tableData" stripe border style="width: 1200px">
               <el-table-column type="selection" />
               <el-table-column prop="catelog" label="定额编目" />
-              <el-table-column prop="workName" label="设备名称" />
-              <el-table-column prop="level" label="维护级别" />
+              <el-table-column prop="normEquipment.name" label="设备名称" />
+              <el-table-column prop="normEquipmentLevel.name" label="维护级别" />
               <el-table-column prop="year" label="年份" />
               <el-table-column prop="unitPrice" label="维护单价(元)" />
             </el-table>
@@ -47,7 +47,7 @@ export default {
       tableData: [],
       totalCount: 0, // 数据总条数
       formSearch: {
-        code: '', // 版本编号
+        name: '', // 版本编号
         year: '' // 年度
       }
     }
@@ -65,7 +65,7 @@ export default {
       }
     },
     getData() {
-      this.$axios.get('/api/UnitPrice', { params: this.formSearch }).then(res => {
+      this.$axios.get('/api/UnitPrice/' + this.$route.params.id + '/Items').then(res => {
         this.tableData = res.data
         this.totalCount = res.totalCount
       })
