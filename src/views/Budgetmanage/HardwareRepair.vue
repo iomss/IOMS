@@ -8,6 +8,7 @@
             <div class="tools">
               <el-button type="success" size="small" @click="create()">生成维护费用</el-button>
               <el-button type="primary" size="small" @click="setvalid()">设置有效</el-button>
+              <el-button type="danger" size="small" @click="remove()">删除</el-button>
             </div>
             <div class="toolsrt">
               <el-form ref="form" :model="formSearch" label-width="60px">
@@ -71,6 +72,14 @@
                 <el-button @click="referVesionVisible = false">取 消</el-button>
               </span>
             </el-dialog>
+            <!--删除-->
+            <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeVisible" width="220px">
+              <span>您确定要删除此条数据？</span>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="removeVisible = false">取 消</el-button>
+                <el-button type="primary" @click="removeSubmit">确 定</el-button>
+              </span>
+            </el-dialog>
           </div>
         </div>
       </el-col>
@@ -97,7 +106,8 @@ export default {
       multipleSelection: {}, // 表单选中行
       setValidVisible: false, // 设为有效弹框
       referVesionVisible: false, // 定额详情弹框
-      rowDataReferVesion: {}
+      rowDataReferVesion: {},
+      removeVisible: false
     }
   },
   computed: {},
@@ -157,6 +167,22 @@ export default {
     clickReferVesionInfo(row) {
       this.referVesionVisible = true
       this.rowDataReferVesion = row.referVesion
+    },
+    // 删除
+    remove() {
+      if (this.multipleSelection.length !== 1) {
+        this.$message.error('请选择一项数据进行操作')
+      } else {
+        this.removeVisible = true
+      }
+    },
+    removeSubmit() {
+      const _this = this
+      this.$axios.delete('/api/UnitPrice/' + this.multipleSelection[0].id).then(response => {
+        _this.$message.success('删除成功')
+        _this.removeVisible = false
+        this.getData()
+      })
     }
 
   }
