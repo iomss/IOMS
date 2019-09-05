@@ -10,8 +10,15 @@
                 <el-form-item label="软件类别" prop="name">
                   <el-input v-model="formSearch.name" placeholder="软件类别" size="small" />
                 </el-form-item>
-                <el-form-item label="维护级别" prop="year">
-                  <el-input v-model="formSearch.year" placeholder="维护级别" size="small" />
+                <el-form-item label="维护级别" prop="level">
+                  <el-select v-model="formSearch.level" placeholder="维护级别" size="small">
+                    <el-option key="0" label="全部" value="">全部</el-option>
+                    <el-option key="1" label="一级" value="1">一级</el-option>
+                    <el-option key="2" label="二级" value="2">二级</el-option>
+                    <el-option key="3" label="三级" value="3">三级</el-option>
+                    <el-option key="4" label="四级" value="4">四级</el-option>
+                    <el-option key="5" label="五级" value="5">五级</el-option>
+                  </el-select>
                 </el-form-item>
                 <el-form-item>
                   <el-button type="primary" plain size="small" @click="getData()">查询</el-button>
@@ -49,7 +56,9 @@ export default {
       totalCount: 0, // 数据总条数
       formSearch: {
         name: '', // 版本编号
-        year: '' // 年度
+        level: '', // 维护级别
+        pageSize: 10, // 展示条数
+        pageNumber: 1// 页码
       }
     }
   },
@@ -66,7 +75,7 @@ export default {
       }
     },
     getData() {
-      this.$axios.get('/api/UnitPrice/' + this.$route.params.id + '/Items').then(res => {
+      this.$axios.get('/api/UnitPrice/' + this.$route.params.id + '/Items', { params: this.formSearch }).then(res => {
         this.tableData = res.data
         this.totalCount = res.totalCount
       })
