@@ -4,7 +4,11 @@
     <el-row>
       <el-col>
         <div class="panel">
-          <div class="header" />
+          <div class="header">
+            <div class="tools">
+              <el-button size="mini" type="success" @click="changeForm('','add')"><i class="fa fa-plus" style="margin-right:5px;" />添加</el-button>
+            </div>
+          </div>
           <div class="content">
             <el-table id="treeTable" :data="tableData" style="width: 100%" row-key="id" border :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
               <el-table-column type="index" width="50" />
@@ -96,16 +100,21 @@ export default {
       })
     },
     changeForm(row, type) {
+      debugger
       this.changeFormVisible = true
-      this.rowData = row
+      this.rowData = row !== '' ? row : {}
       this.formType = type
       type === 'add' ? this.formTitle = '添加' : this.formTitle = '编辑'
-      if (type === 'add') {
+      if (row === '' && type === 'add') {
+        this.rateForm.name = ''
+        this.rateForm.rate = ''
+        this.rateForm.comment = ''
+        this.rateForm.parentId = null
+      } else if (type === 'add') {
         this.rateForm.name = ''
         this.rateForm.rate = ''
         this.rateForm.comment = ''
         this.rateForm.parentId = row.id
-        debugger
       } else {
         this.rateForm.name = row.name
         this.rateForm.rate = row.rate
@@ -116,7 +125,6 @@ export default {
     submitChangeForm() {
       this.$refs.rateForm.validate(valid => {
         if (valid) {
-          debugger
           if (this.formType === 'add') {
             this.$axios.post('/api/Tariff/' + this.$route.params.id, this.rateForm).then(res => {
               this.$message.success('项目添加成功')

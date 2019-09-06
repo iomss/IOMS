@@ -145,6 +145,7 @@ export default {
       this.$axios.post('/api/Tariff/' + this.multipleSelection[0].id + '/SetValid').then(res => {
         this.$message.success('费率版本生效成功')
         this.setValidVisible = false
+        this.getData()
       })
     },
     // 删除
