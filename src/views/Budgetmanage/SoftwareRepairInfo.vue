@@ -31,7 +31,7 @@
               <el-table-column type="selection" />
               <el-table-column prop="catelog" label="定额编目" />
               <el-table-column prop="normEquipment.name" label="软件名称" />
-              <el-table-column prop="维修部件" label="维修部件 " />
+              <el-table-column prop="workName" label="维修部件 " />
               <el-table-column prop="normEquipmentLevel.name" label="维护级别" />
               <el-table-column prop="year" label="年份" />
               <el-table-column prop="unitPrice" label="维护单价(元)" />

@@ -30,8 +30,8 @@
             <el-table :data="tableData" stripe border style="width: 1200px">
               <el-table-column type="selection" />
               <el-table-column prop="catelog" label="定额编目" />
-              <el-table-column prop="设备名称" label="设备名称" />
-              <el-table-column prop="更换部件" label="更换部件" />
+              <el-table-column prop="normEquipment.name" label="设备名称 " />
+              <el-table-column prop="workName" label="更换部件 " />
               <el-table-column prop="normEquipmentLevel.name" label="维护级别" />
               <el-table-column prop="year" label="年份" />
               <el-table-column prop="unitPrice" label="维护单价(元)" />
