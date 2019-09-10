@@ -239,7 +239,6 @@ export default {
     },
     getData() { // 获取当前数据
       const _this = this
-      debugger
       this.formData.assetIds = this.$route.params.id.split(',')
       this.$axios.get('/api/Assets/' + this.formData.assetIds[0]).then(res => {
         _this.formData.positionId = res.positionId

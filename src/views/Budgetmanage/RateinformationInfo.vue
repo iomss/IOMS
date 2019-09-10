@@ -100,7 +100,6 @@ export default {
       })
     },
     changeForm(row, type) {
-      debugger
       this.changeFormVisible = true
       this.rowData = row !== '' ? row : {}
       this.formType = type
