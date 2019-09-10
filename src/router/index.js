@@ -454,6 +454,18 @@ export const asyncRoutes = [
           hidden: true,
           fullPath: '/maintenance/WatchmanDispatch'
         }
+      },
+      {
+        path: 'WatchmanDispatchs/:id',
+        name: 'maintenance-WatchmanDispatchs',
+        component: () => import('@/views/maintenance/WatchmanDispatchs'),
+        meta: {
+          title: '值班人员派单',
+          icon: 'fa fa-home',
+          roles: ['Staff'],
+          hidden: true,
+          fullPath: '/maintenance/WatchmanDispatchs'
+        }
       }
     ]
   },

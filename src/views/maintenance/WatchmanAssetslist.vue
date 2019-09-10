@@ -10,7 +10,7 @@
         <div class="panel">
           <div class="header">
             <div class="tools">
-              <el-button type="primary" size="small" @click="showerror()">报修</el-button>
+              <el-button type="primary" size="small" @click="Repairs()">批量报修</el-button>
             </div>
             <div class="select">
               <el-select v-model="tableDataSearch.systemId" filterable :remote-method="remoteMethodsystemId" :loading="loading" placeholder="所属系统" size="small" @focus="remoteMethodsystemId">
@@ -153,6 +153,24 @@ export default {
         this.tableData = res.data
         this.totalCount = res.totalCount
       })
+    },
+    // 批量报修
+    Repairs() {
+      if (this.multipleSelection.length > 0) {
+        const ids = []
+        const isAll = []
+        this.multipleSelection.forEach((item, index) => {
+          ids.push(item.id)
+          isAll.push(item.equipment.id === this.multipleSelection[0].equipment.id)
+        })
+        if (Array.from(new Set(isAll)).length === 1) {
+          this.$router.push('/maintenance/WatchmanDispatchs/' + ids.toString())
+        } else {
+          this.$message.error('批量报修时请选择同一种资产')
+        }
+      } else {
+        this.$message.error('请至少选择一条数据')
+      }
     }
   }
 }
