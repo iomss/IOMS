@@ -874,6 +874,17 @@ export const asyncRoutes = [
         component: () => import('@/views/Meta/Role')
       },
       {
+        path: 'NormEquipment',
+        name: 'Meta-NormEquipment',
+        meta: {
+          title: '定额名称',
+          icon: 'fa fa-home',
+          roles: ['ManageMeta'],
+          fullPath: '/Meta/NormEquipment'
+        },
+        component: () => import('@/views/Meta/NormEquipment')
+      },
+      {
         path: 'Claims',
         name: 'Meta-Claims',
         meta: {
