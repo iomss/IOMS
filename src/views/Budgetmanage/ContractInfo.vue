@@ -26,26 +26,45 @@
               <el-table-column prop="catalog" label="定额编目" />
               <el-table-column prop="normEquipment.name" label="软件类别" />
               <el-table-column prop="workName" label="工作名称" />
-              <el-table-column prop="normEquipmentLevel" label="维护级别" />
+              <el-table-column prop="normEquipmentLevel.name" label="维护级别" />
               <el-table-column prop="levelCount" label="维护频次" />
               <el-table-column prop="levelPrice" label="维护单价" />
               <el-table-column prop="count" label="数量" />
-              <el-table-column prop="remark" label="维护总价" />
+              <el-table-column prop="remark" label="维护总价">
+                <template slot-scope="scope">
+                  {{ scope.row.levelCount*scope.row.levelPrice*scope.row.count }}
+                </template>
+              </el-table-column>
             </el-table>
 
             <!--分页-->
             <pagination v-show="totalCount>0" :total="totalCount" :page.sync="formSearch.pageNumber" :limit.sync="formSearch.pageSize" @pagination="getPage" />
             <!--编辑-->
-            <el-dialog ref="updateForm" title="编辑" :close-on-press-escape=" false" :close-on-click-modal="false" :visible.sync="updateVisible" width="400px">
-              <el-form :model="updateForm" :rules="updateFormRules" label-width="80px">
-                <el-form-item label="设备" prop="normEquipmentId">
-                  sdf
+            <el-dialog title="编辑" :close-on-press-escape=" false" :close-on-click-modal="false" :visible.sync="updateVisible" width="550px">
+              <el-form ref="updateForm" :model="updateForm" :rules="updateFormRules" label-width="80px">
+                <el-form-item label="定额编目">
+                  {{ rowData.catalog }}
+                </el-form-item>
+                <el-form-item label="类别">
+                  {{ rowData.normEquipment?rowData.normEquipment.name:'' }}
+                </el-form-item>
+                <el-form-item label="工作名称">
+                  {{ rowData.workName }}
+                </el-form-item>
+                <el-form-item label="维护级别">
+                  {{ rowData.normEquipmentLevel?rowData.normEquipmentLevel.name:'' }}
+                </el-form-item>
+                <el-form-item label="维修频次" prop="levels[0].levelCount">
+                  <el-input v-model="updateForm.levels[0].levelCount" size="small" />
+                </el-form-item>
+                <el-form-item label="维护单价">
+                  {{ rowData.levelPrice }}
                 </el-form-item>
                 <el-form-item label="数量" prop="count">
                   <el-input v-model="updateForm.count" size="small" />
                 </el-form-item>
-                <el-form-item label="级别" prop="levels">
-                  <el-input v-model="updateForm.levels" size="small" />
+                <el-form-item label="维护总价">
+                  {{ updateForm.levels[0].levelCount*rowData.levelPrice*updateForm.count }}
                 </el-form-item>
               </el-form>
               <span slot="footer" class="dialog-footer">
@@ -78,8 +97,11 @@ export default {
       updateVisible: false,
       updateForm: {
         normEquipmentId: null,
-        count: '',
-        levels: ''
+        levels: [{
+          levelId: null,
+          levelCount: null
+        }],
+        count: ''
       },
       updateFormRules: {
         count: {
@@ -88,11 +110,17 @@ export default {
           trigger: 'blur'
         },
         levels: {
-          required: true,
-          message: '维修级别不可为空',
-          trigger: 'blur'
+          levelCount: {
+            required: true,
+            message: '维修频次不可为空',
+            trigger: 'blur'
+          }
         }
-      }
+
+      },
+      rowData: {},
+      normEquipmentData: [],
+      levelsData: []
     }
   },
   computed: {},
@@ -116,7 +144,12 @@ export default {
       this.getData()
     },
     update(row) {
+      this.rowData = row
       this.updateVisible = true
+      this.updateForm.normEquipmentId = row.normEquipmentId
+      this.updateForm.count = row.count
+      this.updateForm.levels[0].levelCount = row.levelCount
+      this.updateForm.levels[0].levelId = row.normEquipmentLevel.id
     },
     updateSubmit() {
       this.$refs.updateForm.validate(valid => {
@@ -124,6 +157,7 @@ export default {
           this.$axios.put('/api/Budget/' + this.$route.params.id, this.updateForm).then(res => {
             this.$message.success('修改成功')
             this.getData()
+            this.updateVisible = false
           })
         }
       })
