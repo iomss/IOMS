@@ -647,24 +647,25 @@ export const asyncRoutes = [
       },
       {
         path: 'ContractList',
-        name: 'ContractList-List',
+        name: 'ContractEndList-List',
         component: () => import('@/views/Budgetmanage/ContractList'),
         meta: {
-          title: '合同测算预算调整版',
+          title: '合同测算预算',
           icon: 'fa fa-home',
           roles: ['EnterSystem'],
           fullPath: '/Budgetmanage/ContractList'
         }
       },
       {
-        path: 'ContractEndList',
-        name: 'ContractEndList-List',
-        component: () => import('@/views/Budgetmanage/ContractEndList'),
+        path: 'ContractInfo/:id',
+        name: 'ContractEndList-Info',
+        component: () => import('@/views/Budgetmanage/ContractInfo'),
         meta: {
-          title: '合同测算预算合同版',
+          title: '合同测算预算详情',
           icon: 'fa fa-home',
           roles: ['EnterSystem'],
-          fullPath: '/Budgetmanage/ContractEndList'
+          hidden: true,
+          fullPath: '/Budgetmanage/ContractInfo'
         }
       },
       {
