@@ -57,7 +57,7 @@
                 </template>
               </el-table-column>
               <el-table-column prop="year" label="年份" />
-              <el-table-column prop="positionId" label="单位" />
+              <el-table-column prop="position.name" label="单位" />
               <el-table-column prop="totalCount" label="数量/次数" />
               <el-table-column prop="discount" label="折扣率" />
               <el-table-column prop="totalPrice" label="总金额" />
