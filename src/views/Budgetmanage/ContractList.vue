@@ -7,14 +7,14 @@
           <div class="header">
             <div class="tools">
               <span>生成预算：</span>
-              <el-button type="success" size="small" @click="create('HardMaintain')">硬件维护</el-button>
+              <el-button type="primary" size="small" @click="create('HardMaintain')">硬件维护</el-button>
               <el-button type="primary" size="small" @click="create('SoftMaintain')">软件维护</el-button>
-              <el-button type="success" size="small" @click="create('InformationSecurity')">信息安全</el-button>
+              <el-button type="primary" size="small" @click="create('InformationSecurity')">信息安全</el-button>
               <el-button type="primary" size="small" @click="create('HardRepair')">硬件维修</el-button>
-              <el-button type="warning" size="small" @click="create('SoftRepair')">软件维修</el-button>
+              <el-button type="primary" size="small" @click="create('SoftRepair')">软件维修</el-button>
               <!-- <el-button type="warning" size="small" @click="changeRate()">修改折扣</el-button> -->
-              <el-button type="warning" size="small" @click="setvalidSubmit()">设为有效</el-button>
-              <el-button type="warning" size="small" @click="removeSubmit()">删除</el-button>
+              <el-button type="success" size="small" @click="setvalid()">设为有效</el-button>
+              <el-button type="danger" size="small" @click="remove()">删除</el-button>
             </div>
             <div class="toolsrt">
               <el-form ref="form" :model="formSearch" label-width="60px">
