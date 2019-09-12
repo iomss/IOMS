@@ -7,8 +7,8 @@
           <div class="header">
             <div class="toolsrt">
               <el-form ref="form" :model="formSearch" label-width="60px">
-                <el-form-item label="版本号" prop="code">
-                  <el-input v-model="formSearch.code" placeholder="版本号" size="small" />
+                <el-form-item label="版本号" prop="name">
+                  <el-input v-model="formSearch.name" placeholder="版本号" size="small" />
                 </el-form-item>
                 <el-form-item>
                   <el-button type="primary" plain size="small" @click="getData()">查询</el-button>
@@ -130,7 +130,7 @@ export default {
   methods: {
     // 获取数据
     getData() {
-      this.$axios.get('/api/Budget/' + this.$route.params.id).then(res => {
+      this.$axios.get('/api/Budget/' + this.$route.params.id, this.formSearch).then(res => {
         this.tableData = res.data
         this.totalCount = res.totalCount
       })
