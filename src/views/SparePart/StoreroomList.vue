@@ -1,60 +1,53 @@
-<!-- 备品备件管理页面 -->
+<!-- 库房管理页面 -->
 <template>
   <div>
     <el-row>
       <el-col>
         <div class="panel">
           <div class="header">
-            <div class="tools">
-              <el-button type="primary" size="small" @click="getData()">刷新</el-button>
-              <el-button type="success" size="small" @click="FormVisible = true">添加</el-button>
-              <el-button type="primary" size="small" @click="updateData()">编辑</el-button>
-              <el-button type="danger" size="small" @click="deleteData()">删除</el-button>
+            <div class="search">
+              <el-input v-model="SpareRepositoryFormSearce.text" placeholder="全局查询" size="small" />
+              <el-button type="primary" size="small" @click="getData()">查询</el-button>
+              <el-button type="success" size="small" @click="adddata()">添加</el-button>
+              <el-button type="warning" size="small" @click="updateSpareRepository()">修改</el-button>
+              <el-button type="danger" size="small" @click="deleteSpareRepository()">删除</el-button>
             </div>
           </div>
           <div class="content">
-            <el-table :data="tableData" stripe border style="width: 800px" @selection-change="handleSelectionChange">
-              <el-table-column type="selection" />
-              <el-table-column prop="equipment" label="名称">
-                <template slot-scope="scope">
-                  {{ scope.row.equipment.name }}
-                </template>
-              </el-table-column>
-              <el-table-column prop="system" label="所属单位" />
-              <el-table-column prop="inLiability" label="所在位置" />
-              <el-table-column prop="inLiability" label="备注" />
+            <el-table :data="SpareRepositoryData" stripe border style="width: 100%" @selection-change="handleSelectionChangeSpareRepository">
+              <el-table-column type="selection" width="40" />
+              <el-table-column type="index" label="序号" />
+              <el-table-column prop="name" label="仓库名称" />
+              <el-table-column prop="unit.name" label="单位名称" />
+              <el-table-column prop="location" label="位置" />
+              <el-table-column prop="createTime" label="创建时间" :formatter="formatterDate" />
+
             </el-table>
-            <!-- 添加 -->
-            <el-dialog title="新增备件名称" :visible.sync="FormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="800px">
-              <el-form ref="EditForm" :model="EditForm" :rules="FormRules" label-width="120px">
-                <el-form-item label="库房名称" prop="name">
-                  <el-input v-model="EditForm.name" placeholder="库房名称" size="small" />
+            <pagination v-show="SpareRepositoryTotalCount>0" :total="SpareRepositoryTotalCount" :page.sync="SpareRepositoryFormSearce.pageNumber" :limit.sync="SpareRepositoryFormSearce.pageSize" @pagination="getSpareRepositoryPage" />
+
+            <el-dialog :title="SpareRepositoryFormTitle" :visible.sync="SpareRepositoryFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="SpareRepositoryFormClose">
+              <el-form ref="SpareRepositoryForm" :model="SpareRepositoryForm" :rules="SpareRepositoryFormRules" label-width="120px">
+                <el-form-item label="仓库名称" prop="name">
+                  <el-input v-model="SpareRepositoryForm.name" placeholder="仓库名称" size="small" />
                 </el-form-item>
-                <el-form-item label="所属单位" prop="name">
-                  <el-select v-model="EditForm.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" placeholder="所属单位" size="small" @focus="remoteMethodsystemId">
-                    <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
-                  </el-select>
+                <el-form-item label="位置" prop="location">
+                  <el-input v-model="SpareRepositoryForm.location" placeholder="位置" size="small" />
                 </el-form-item>
-                <el-form-item label="所在位置" prop="name">
-                  <el-input v-model="EditForm.name" placeholder="所在位置" size="small" />
-                </el-form-item>
-                <el-form-item label="备注" prop="name">
-                  <el-input v-model="EditForm.name" placeholder="备注" size="small" />
+                <el-form-item label="单位" prop="unitId">
+                  <treeselect v-model="SpareRepositoryForm.unitId" :normalizer="normalizer" :options="unitData" :load-options="loadOptions" placeholder="单位部门" no-results-text="未找到相关数据" />
                 </el-form-item>
               </el-form>
               <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="submitData()">确定</el-button>
-                <el-button type="primary" @click="FormVisible=false">关闭</el-button>
+                <el-button type="primary" @click="SpareRepositoryFormVisible=false">关闭</el-button>
+                <el-button type="primary" @click="submitSpareRepository()">提交</el-button>
               </span>
             </el-dialog>
-            <!--分页-->
-            <pagination v-show="totalCount>0" :total="totalCount" :page.sync="formSearch.pageNumber" :limit.sync="formSearch.pageSize" @pagination="getPage" />
-            <!--删除-->
-            <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeQuestionVisible" width="220px">
+
+            <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="SpareRepositoryDeleteModelVisible" width="220px">
               <span>您确定要删除此条数据？</span>
               <span slot="footer" class="dialog-footer">
-                <el-button @click="removeQuestionVisible = false">取 消</el-button>
-                <el-button type="primary" @click="removeQuestion">确 定</el-button>
+                <el-button @click="SpareRepositoryDeleteModelVisible = false">取 消</el-button>
+                <el-button type="primary" @click="submitDeleteSpareRepository">确 定</el-button>
               </span>
             </el-dialog>
           </div>
@@ -64,238 +57,223 @@
   </div>
 </template>
 <script>
-import pagination from '@/components/Pagination'
+import { Treeselect, LOAD_CHILDREN_OPTIONS } from '@riophae/vue-treeselect'
+
+import pagination from '@/components/Pagination/index.vue'
+
+// 节流
+const simulateAsyncOperation = fn => {
+  setTimeout(fn, 500)
+}
 export default {
   components: {
-    pagination
+    pagination,
+    Treeselect
   },
   data() {
     return {
-      loading: false, // 远程搜索
-      formSearch: {
-        text: '', // 搜索文本
-        pageSize: 10, // 展示条数
-        pageNumber: 1// 页码
+      // 树结构
+      normalizer(node) {
+        return {
+          id: node.id,
+          label: node.name,
+          children: node.children
+        }
       },
-      totalCount: 0, // 数据总条数
-      multipleSelection: '', // 表单选中行
-      removeQuestionVisible: false, // 删除弹框
-      tableData: [],
-      removeData: [],
-      systemData: [],
-      sourceData: [],
-      FormVisible: false, // 编辑弹框
-      EditForm: {
-        modelId: '',
-        brandId: '',
-        name: ''
-      }, // 编辑表单数据
-      brandData: [], // 品牌数据
-      modelData: [], // 型号数据
-      sourcepage: {// 匹配度分页
-        pageNumber: 1,
-        pageSize: 999999,
-        pageCount: ''
+      unitData: [],
+      SpareRepositoryData: [], // 数据
+      SpareRepositoryFormSearce: {
+        text: '',
+        pageSize: 20,
+        pageNumber: 1
       },
-      systempage: {// 所属系统分页
-        pageNumber: 1,
-        pageSize: 999999,
-        pageCount: ''
+      SpareRepositoryTotalCount: 0, // 总条数
+      SpareRepositoryFormTitle: '添加备件仓库', // 表单表头
+      SpareRepositoryFormVisible: false,
+      SpareRepositoryForm: {
+        id: undefined,
+        name: '',
+        location: '',
+        unitId: null
       },
-      brandpage: {// 品牌分页
-        pageNumber: 1,
-        pageSize: 50,
-        pageCount: ''
-      },
-      modelpage: {// 型号分页
-        pageNumber: 1,
-        pageSize: 50,
-        brandId: undefined,
-        pageCount: ''
-      },
-      FormRules: {
+      SpareRepositoryFormRules: {
         name: {
           required: true,
-          message: '设备名称不可为空',
+          message: '备件仓库不可为空',
           trigger: 'blur'
         },
-        brandId: {
+        unitId: {
           required: true,
-          message: '定额编目不可为空',
+          message: '备件仓库单位不可为空',
           trigger: 'blur'
         }
-      }
+      },
+      SpareRepositoryDeleteModelVisible: false,
+      SpareRepositoryDeleteDataId: null,
+      multipleSelectionpSpareRepository: []
     }
   },
   computed: {},
   mounted() {
     this.getData()
-    this.getsystemData()
-    this.getsourceData()
-    this.getbrandData()
-    this.getmodelData()
+    this.getUnitData()
   },
   methods: {
-    uploadresultImg(e) {
-      console.log(e)
-      this.EditForm.resultImg = e
+    // treeSelect 加载
+    loadOptions({ action, parentNode, callback }) {
+      if (action === LOAD_CHILDREN_OPTIONS) {
+        switch (parentNode.id) {
+          case 'success': {
+            simulateAsyncOperation(() => {
+              parentNode.children = [
+                {
+                  id: 'child',
+                  label: 'Child option'
+                }
+              ]
+              callback()
+            })
+            break
+          }
+          case 'no-children': {
+            simulateAsyncOperation(() => {
+              parentNode.children = []
+              callback()
+            })
+            break
+          }
+          case 'failure': {
+            simulateAsyncOperation(() => {
+              callback(new Error('Failed to load options: network error.'))
+            })
+            break
+          }
+          default: /* empty */
+        }
+      }
     },
-    getbrandData() {
-      // 获取品牌
-      this.$axios.get('/api/Meta/Brand?pageSize=' + this.brandpage.pageSize + '&pageNumber=' + this.brandpage.pageNumber).then(res => {
-        this.brandData = this.brandData.concat(res.data)
+    // 时间格式化
+    formatterDate(row, column, cellValue) {
+      if (cellValue !== null) {
+        return this.$moment(cellValue).format('YYYY-MM-DD HH:mm:ss')
+      } else {
+        return cellValue
+      }
+    },
+    getUnitData() {
+      this.$axios.get('/api/Tree/Unit').then(res => {
+        this.unitData = res
       })
     },
-    changeBrand() {
-      this.formData.modelId = ''
-      this.modelpage.brandId = this.formData.brandId
-      this.$axios.get('/api/Meta/Model?brandId=' + this.formData.brandId).then(res => {
-        this.modelData = res.data
-      })
-    },
-    getmodelData() {
-      // 获取型号
-      this.$axios.get('/api/Meta/Model', { params: this.modelpage }).then(res => {
-        this.modelData = this.modelData.concat(res.data)
-      })
-    },
-    remoteMethodbrandId(query) {
-      this.loading = true
-      let querytext = ''
-      querytext = typeof (query) === 'string' ? query : ''
-      this.$axios.get('/api/Meta/Brand?text=' + querytext).then(res => {
-        this.loading = false
-        this.brandData = res.data
-      })
-    },
-    remoteMethodmodelId(query) {
-      this.loading = true
-      let querytext = ''
-      querytext = typeof (query) === 'string' ? query : ''
-      this.$axios.get('/api/Meta/Model?brandId=' + this.formData.brandId + '&text=' + querytext).then(res => {
-        this.loading = false
-        this.modelData = res.data
-      })
-    },
+    // 获取数据
     getData() {
-      this.$axios.get('/api/MatchEquipment/', { params: this.formSearch }).then(res => {
-        this.tableData = res.data
-        this.totalCount = res.totalCount
+      this.$axios.get('/api/SpareRepository', { params: this.SpareRepositoryFormSearce }).then(res => {
+        this.SpareRepositoryData = res.data
+        this.SpareRepositoryTotalCount = res.totalCount
       })
     },
-    getPage(val) { // page事件
+    // 分页
+    getSpareRepositoryPage(val) {
       // 展示条数
-      this.formSearch.pageSize = val.limit
+      this.SpareRepositoryFormSearce.pageSize = val.limit
       // 页码
-      this.formSearch.pageNumber = val.page
+      this.SpareRepositoryFormSearce.pageNumber = val.page
       // 调用获取数据
-      this.$axios.get('/api/EquipmentList/', { params: this.formSearch }).then(res => {
-        this.tableData = res.data
-      })
+      this.getData()
     },
-    getsystemData() {
-      // 获取所属系统
-      this.$axios.get('/api/Meta/System?pageSize=' + this.systempage.pageSize + '&pageNumber=' + this.systempage.pageNumber).then(res => {
-        this.systemData = this.systemData.concat(res.data)
-      })
+    // 表单关闭重置
+    SpareRepositoryFormClose() {
+      this.$refs.SpareRepositoryForm.resetFields()
     },
-    getsourceData() {
-      // 获取匹配度
-      this.$axios.get('/api/Meta/Source?pageSize=' + this.sourcepage.pageSize + '&pageNumber=' + this.sourcepage.pageNumber).then(res => {
-        this.sourceData = this.sourceData.concat(res.data)
-      })
+    // 添加
+    adddata() {
+      this.SpareRepositoryFormVisible = true// 显示弹框
+      this.SpareRepositoryFormTitle = '添加备件仓库'
+      this.SpareRepositoryForm.id = undefined
+      this.SpareRepositoryForm.name = ''
+      this.SpareRepositoryForm.location = ''
+      this.SpareRepositoryForm.unitId = null
     },
-    remoteMethodsystemId(query) {
-      this.loading = true
-      let querytext = ''
-      querytext = typeof (query) === 'string' ? query : ''
-      this.$axios.get('/api/Meta/System?text=' + querytext).then(res => {
-        this.loading = false
-        this.systemData = res.data
-      })
-    },
-    remoteMethodsourceId(query) {
-      this.loading = true
-      let querytext = ''
-      querytext = typeof (query) === 'string' ? query : ''
-      this.$axios.get('/api/Meta/source?text=' + querytext).then(res => {
-        this.loading = false
-        this.sourceData = res.data
-      })
-    },
-    updateData(row) {
+    updateSpareRepository(row) {
       if (row === undefined) {
-        if (this.multipleSelection.length !== 1) {
+        this.SpareRepositoryFormTitle = '编辑'
+        if (this.multipleSelectionpSpareRepository.length !== 1) {
           this.$message.error('请选择一项数据进行操作')
         } else {
-          this.FormVisible = true
+          this.SpareRepositoryFormVisible = true
+          this.SpareRepositoryForm.id = this.multipleSelectionpSpareRepository[0].id
+          this.SpareRepositoryForm.name = this.multipleSelectionpSpareRepository[0].name
+          this.SpareRepositoryForm.location = this.multipleSelectionpSpareRepository[0].location
+          this.SpareRepositoryForm.unitId = this.multipleSelectionpSpareRepository[0].unitId
         }
       } else {
-        this.FormVisible = true
+        this.SpareRepositoryFormVisible = true
+        this.SpareRepositoryForm.id = row.id
+        this.SpareRepositoryForm.name = row.name
+        this.SpareRepositoryForm.location = row.location
+        this.SpareRepositoryForm.unitId = row.unitId
       }
     },
-    deleteData(row) {
-      if (row === undefined) {
-        if (this.multipleSelection.length !== 1) {
-          this.$message.error('请选择一项数据进行操作')
-        } else {
-          this.removeQuestionVisible = true
-        }
-      } else {
-        this.removeQuestionVisible = true
-      }
-    },
-    submitData() {
-      this.$refs.EditForm.validate(valid => {
+    // 表单提交
+    submitSpareRepository() {
+      this.$refs.SpareRepositoryForm.validate(valid => {
         if (valid) {
-          this.$axios.put('/api/Meta/Brand/' + this.EditForm.id, this.EditForm).then(res => {
-            this.getData()
-            this.$message.success('修改成功')
-            this.FormVisible = false
-          })
+          if (this.SpareRepositoryForm.id === undefined) {
+            this.$axios.post('/api/SpareRepository', this.SpareRepositoryForm).then(res => {
+              this.getData()
+              this.$message.success('添加成功')
+              this.SpareRepositoryFormVisible = false
+            })
+          } else {
+            this.$axios.put('/api/SpareRepository/' + this.SpareRepositoryForm.id, this.SpareRepositoryForm).then(res => {
+              this.getData()
+              this.$message.success('修改成功')
+              this.SpareRepositoryFormVisible = false
+            })
+          }
         }
       })
     },
     // 删除
-    removeQuestion() {
-      const _this = this
-      this.$axios.delete('/api/Assets/?Id=' + this.removeData.id).then(response => {
-        _this.$message.success('删除成功')
-        _this.removeQuestionVisible = false
+    deleteSpareRepository(row) {
+      if (row === undefined) {
+        if (this.multipleSelectionpSpareRepository.length !== 1) {
+          this.$message.error('请选择一项数据进行操作')
+        } else {
+          this.SpareRepositoryDeleteModelVisible = true
+          this.SpareRepositoryDeleteDataId = this.multipleSelectionpSpareRepository[0].id
+        }
+      } else {
+        this.SpareRepositoryDeleteModelVisible = true
+        this.SpareRepositoryDeleteDataId = row.id
+      }
+    },
+    // 提交删除
+    submitDeleteSpareRepository() {
+      this.$axios.delete('/api/SpareRepository/' + this.SpareRepositoryDeleteDataId).then(res => {
         this.getData()
+        this.$message.success('删除成功')
+        this.SpareRepositoryDeleteModelVisible = false
       })
     },
-    handleSelectionChange(val) {
-      this.multipleSelection = val
+    // 表单多选数据
+    handleSelectionChangeSpareRepository(val) {
+      this.multipleSelectionpSpareRepository = val
     }
+
   }
 }
 </script>
 <style lang='scss' scoped>
 .header {
   width: 100%;
-}
-
-.tools {
-  margin: 10px 0px;
-  width: 400px;
-  display: inline-block;
-}
-.toolsrt {
-  width: 30%;
-  display: inline-block;
-  .el-input {
-    width: 200px;
-  }
-}
-.el-form-item {
-  width: 49%;
-  display: inline-block;
-  .el-select {
-    width: 100%;
-  }
-  .el-date-editor {
-    width: 100%;
+  .search {
+    margin: 10px 0px;
+    .el-input {
+      display: inline-block;
+      width: 200px;
+      margin-right: 20px;
+    }
   }
 }
 .content {
