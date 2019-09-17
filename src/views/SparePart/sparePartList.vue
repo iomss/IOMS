@@ -42,7 +42,11 @@ Spare<!-- 库房管理页面 -->
               <el-table-column prop="unit" label="计量单位" />
               <el-table-column prop="supplier" label="供应商" />
               <el-table-column prop="safetyStock" label="安全库存" />
-              <el-table-column prop="image" label="图片" />
+              <el-table-column prop="image" label="图片">
+                <template slot-scope="scope">
+                  <el-image v-show="scope.row.image!==''" :src="url+scope.row.image" style="width:100px;height:100px;" />
+                </template>
+              </el-table-column>
               <el-table-column prop="createTime" label="创建时间" :formatter="formatterDate" />
             </el-table>
             <pagination v-show="SpareTotalCount>0" :total="SpareTotalCount" :page.sync="SpareFormSearce.pageNumber" :limit.sync="SpareFormSearce.pageSize" @pagination="getSparePage" />
@@ -72,7 +76,8 @@ Spare<!-- 库房管理页面 -->
                   <el-input v-model="SpareForm.safetyStock" type="number" placeholder="安全库存" size="small" />
                 </el-form-item>
                 <el-form-item label="图像" prop="image">
-                  <Uploadimg v-model="SpareForm.image" :reset="SpareForm.image" @uploadimg="uploadimgdata">aaa</Uploadimg>
+                  <!-- <Uploadimg v-model="SpareForm.image" :reset="SpareForm.image" @uploadimg="uploadimgdata">aaa</Uploadimg> -->
+                  <Uploadimg v-model="SpareForm.image" :message="option" @listenToChildEvent="changeImg" />
                 </el-form-item>
               </el-form>
               <span slot="footer" class="dialog-footer">
@@ -95,7 +100,7 @@ Spare<!-- 库房管理页面 -->
   </div>
 </template>
 <script>
-import Uploadimg from '@/components/Uploadimg'
+import Uploadimg from '@/components/Uploadimg/uploadimg.vue'
 
 import pagination from '@/components/Pagination/index.vue'
 
@@ -106,6 +111,18 @@ export default {
   },
   data() {
     return {
+      url: process.env.VUE_APP_API,
+      // 上传讲义配置
+      option: {
+        fileList: [], // 已上传文件列表  格式 {name:sdf,url:src}
+        listType: 'picture-card', // 列表展示类型
+        limit: 1, // 允许上传数量
+        messageErrorFormat: '上传文件格式不正确', // 文件格式错误提示
+        messageErrorNumber: '最多允许上传1个文件', // 文件个数超出
+        messageSuccess: '上传成功', // 文件上传成功提示
+        accept: '' // 文件允许类型格式
+      },
+      // ////////////////////////////////////////////////////////////////////////////////////
       loading: false, // 远程搜索
       brandData: [], // 品牌数据
       modelData: [], // 型号数据
@@ -173,9 +190,8 @@ export default {
     this.getmodelData()
   },
   methods: {
-    // 上传图片 子传父的值
-    uploadimgdata(e) {
-      this.SpareForm.image = e
+    changeImg(data) {
+      this.SpareForm.image = data
     },
     // 时间格式化
     formatterDate(row, column, cellValue) {
@@ -255,17 +271,19 @@ export default {
       this.SpareForm.supplier = null
       this.SpareForm.safetyStock = ''
       this.SpareForm.image = ''
+      this.option.fileList = []
     },
     // 编辑
     updateSpare(row) {
       if (row === undefined) {
         this.SpareFormTitle = '编辑'
-
         if (this.multipleSelectionpSpare.length !== 1) {
           this.$message.error('请选择一项数据进行操作')
         } else {
-          this.brandData = [...this.brandData, ...[this.multipleSelectionpSpare[0].brand]]
-          this.modelData = [...this.modelData, ...[this.multipleSelectionpSpare[0].model]]
+          const multipleBrand = [...[this.multipleSelectionpSpare[0].brand], ...this.brandData]
+          this.brandData = multipleBrand.reduce((all, next) => all.some((item) => item['id'] === next['id']) ? all : [...all, next], [])
+          const multipleModel = [...[this.multipleSelectionpSpare[0].model], ...this.modelData]
+          this.modelData = multipleModel.reduce((all, next) => all.some((item) => item['id'] === next['id']) ? all : [...all, next], [])
           this.SpareFormVisible = true
           this.SpareForm.id = this.multipleSelectionpSpare[0].id
           this.SpareForm.name = this.multipleSelectionpSpare[0].name
@@ -274,12 +292,16 @@ export default {
           this.SpareForm.unit = this.multipleSelectionpSpare[0].unit
           this.SpareForm.supplier = this.multipleSelectionpSpare[0].supplier
           this.SpareForm.safetyStock = this.multipleSelectionpSpare[0].safetyStock
-          debugger
           this.SpareForm.image = this.multipleSelectionpSpare[0].image
+          if (this.multipleSelectionpSpare[0].image !== '') {
+            this.option.fileList = [{ url: this.url + this.multipleSelectionpSpare[0].image }]
+          }
         }
       } else {
-        this.brandData = [...this.brandData, ...[row.brand]]
-        this.modelData = [...this.modelData, ...[row.model]]
+        const brand = [...[this.multipleSelectionpSpare[0].brand], ...this.brandData]
+        this.brandData = brand.reduce((all, next) => all.some((item) => item['id'] === next['id']) ? all : [...all, next], [])
+        const model = [...[this.multipleSelectionpSpare[0].model], ...this.modelData]
+        this.modelData = model.reduce((all, next) => all.some((item) => item['id'] === next['id']) ? all : [...all, next], [])
         this.SpareFormVisible = true
         this.SpareForm.id = row.id
         this.SpareForm.name = row.name
@@ -289,6 +311,9 @@ export default {
         this.SpareForm.supplier = row.supplier
         this.SpareForm.safetyStock = row.safetyStock
         this.SpareForm.image = row.image
+        if (row.image !== '') {
+          this.option.fileList = [{ url: this.url + row.image }]
+        }
       }
     },
     // 表单提交
