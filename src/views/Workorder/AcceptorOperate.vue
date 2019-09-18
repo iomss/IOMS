@@ -69,7 +69,7 @@
                   <el-radio label="Rejected">不通过</el-radio>
                 </el-radio-group>
               </el-form-item>
-              <el-form-item label="验收意见" prop="comment">
+              <el-form-item v-show="checkData.reviewStatus==='Rejected'" label="验收意见" prop="comment">
                 <el-input v-model="checkData.comment" placeholder="验收意见" size="small" />
               </el-form-item>
               <el-form-item label="验收人" prop="user">
@@ -77,7 +77,6 @@
               </el-form-item>
               <el-form-item class="form_total">
                 <el-button type="primary" @click="sureright()">确定</el-button>
-                <el-button type="primary" @click="reset()">重置</el-button>
                 <el-button type="primary" @click="close()">关闭</el-button>
               </el-form-item>
             </el-form>
@@ -170,8 +169,11 @@ export default {
         }
       })
     },
-    reset() { },
-    close() { // 点击关闭按钮，跳转回个人工作页
+    close() { // 点击关闭按钮，
+      // 关闭抢单页面
+      console.log(this.$router.currentRoute.fullPath)
+      this.$store.dispatch('tagsView/delAllViews', this.$router.currentRoute.fullPath)
+      // 跳转回个人工作页
       this.$router.push('/Workorder/Watchmanlist')
     }
   }
