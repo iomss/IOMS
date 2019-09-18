@@ -187,6 +187,7 @@ export default {
       // 获取维修级别
       this.$axios.get('/api/Meta/RepairLevel').then(res => {
         this.levelData = res.data
+        this.formData.repairLevelId = this.levelData[1].id
       })
     },
     getfaultData() {

@@ -96,8 +96,11 @@ export default {
 
     },
     closework() { // 点击关闭
+      // 关闭抢单页面
+      console.log(this.$router.currentRoute.fullPath)
+      this.$store.dispatch('tagsView/delAllViews', this.$router.currentRoute.fullPath)
       // 跳转个人工作页
-      this.$router.push('/Workorder/Maintainerlist')
+      this.$router.push('/Workorder/Watchmanlist')
     }
   }
 }
