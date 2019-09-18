@@ -115,23 +115,24 @@ export default {
             data: this.loginForm,
             success: (res) => {
               _this.$message.success('登录成功')
+              const day = res.expires_in / 86400
               // cookie 中写入相关登录凭证
               for (const item in res) {
-                _this.$cookie.set(item, res[item])
+                _this.$cookie.set(item, res[item], { expires: day })
               }
-              _this.$cookie.set('tokenSetTime', new Date().getTime())
+              _this.$cookie.set('tokenSetTime', new Date().getTime(), { expires: day })
               // 获取用户数据
               _this.$axios.get('/api/Account/LoginInfo').then(res => {
                 // cookie 中写入相关用户数据
                 for (const item in res) {
-                  _this.$cookie.set(item, res[item])
+                  _this.$cookie.set(item, res[item], { expires: day })
                 }
                 const roles = []
                 res.claims.forEach(item => {
                   roles.push(item.key)
                 })
                 roles.push('show')
-                _this.$cookie.set('roles', roles.toString())
+                _this.$cookie.set('roles', roles.toString(), { expires: day })
                 _this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               })
             },
