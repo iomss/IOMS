@@ -308,12 +308,17 @@ export default {
       // 获取维修级别数据
       this.$axios.get('/api/Meta/RepairLevel').then(res => {
         this.levelData = res.data
+        this.formRcorda.repairLevelId = this.levelData[1].id
+        this.formRcordd.repairLevelId = this.levelData[1].id
       })
     },
     getAssetsData() {
       // 获取设备编码
       this.$axios.get('/api/Meta/Assets', { params: this.assetspage }).then(res => {
         this.assetsData = this.assetsData.concat(res.data)
+
+        const multiple = [...this.assetsData, ...res.data]
+        this.assetsData = multiple.reduce((all, next) => all.some((item) => item['id'] === next['id']) ? all : [...all, next], [])
       })
     },
     getequipmentData() {
