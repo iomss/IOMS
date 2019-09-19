@@ -35,6 +35,27 @@
           <el-button type="danger" size="small" @click="closework()">关闭</el-button>
         </div>
       </el-col>
+      <el-dialog title="历史详情" :visible.sync="showInfo" :close-on-press-escape="false" :close-on-click-modal="false" width="800px" :show-close="false">
+        <el-table :data="logsData" style="width: 100%">
+          <el-table-column prop="createTime" label="处理日期" :formatter="formatterstartDate" />
+          <el-table-column prop="operatUser" label="处理人">
+            <template slot-scope="scope">
+              {{ scope.row.operatUser.name }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="type" label="处理方式">
+            <template slot-scope="scope">
+              {{ scope.row.type==='Update'?"更新":scope.row.type==='Enable'?"启用":"禁用" }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="content" label="处理内容" />
+          <el-table-column prop="remark" label="备注" />
+        </el-table>
+        <div class="dialog-footer">
+          <el-button type="primary" @click="showInfo=false">确 定</el-button>
+          <el-button type="primary" @click="showInfo = false">关闭</el-button>
+        </div>
+      </el-dialog>
     </el-row>
   </div>
 </template>
@@ -45,6 +66,8 @@ export default {
   },
   data() {
     return {
+      showInfo: false,
+      logsData: [],
       formData: {
         assetId: '',
         code: ''
@@ -61,6 +84,13 @@ export default {
     this.getdata()
   },
   methods: {
+    formatterstartDate(row, column, cellValue) {
+      if (cellValue !== null) {
+        return this.$moment(cellValue).format('YYYY-MM-DD')
+      } else {
+        return cellValue
+      }
+    },
     getdata() {
       // 获取维修详情数据
       this.formData.assetId = window.location.href.split('/')[window.location.href.split('/').length - 1]
@@ -90,7 +120,7 @@ export default {
       })
     },
     historywork() { // 点击历史详情
-
+      this.showInfo = true
     },
     processrecord() { // 点击过程记录
 
@@ -135,6 +165,11 @@ export default {
 }
 .content {
   margin-top: 30px;
+  text-align: center;
+}
+.dialog-footer {
+  margin: 20px 0px;
+  width: 100%;
   text-align: center;
 }
 </style>
