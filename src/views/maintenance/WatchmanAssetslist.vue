@@ -13,7 +13,7 @@
               <el-button type="primary" size="small" @click="Repairs()">批量报修</el-button>
             </div>
             <div class="select">
-              <el-select v-model="tableDataSearch.systemId" filterable :remote-method="remoteMethodsystemId" :loading="loading" placeholder="所属系统" size="small" @focus="remoteMethodsystemId">
+              <el-select v-model="tableDataSearch.systemId" filterable :remote-method="remoteMethodsystemId" :loading="loading" clearable="true" placeholder="所属系统" size="small" @focus="remoteMethodsystemId">
                 <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </div>

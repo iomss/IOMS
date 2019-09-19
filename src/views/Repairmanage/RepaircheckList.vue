@@ -83,7 +83,7 @@
                   </el-col>
                   <el-col :span="12">
                     <el-form-item label="所属系统" prop="systemId">
-                      <el-select v-model="tableDatanewfirst.systemId" :disabled="true" clearable placeholder="所属系统" size="small">
+                      <el-select v-model="tableDatanewfirst.systemId" :disabled="true" clearable="true" placeholder="所属系统" size="small">
                         <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
                       </el-select>
                     </el-form-item>

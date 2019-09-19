@@ -227,7 +227,7 @@
                       </el-col>
                       <el-col :span="6">
                         <el-form-item>
-                          <el-select v-model="tableDataSearchsecond.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" placeholder="所属系统" size="small" @focus="remoteMethodsystemId">
+                          <el-select v-model="tableDataSearchsecond.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" clearable="true" placeholder="所属系统" size="small" @focus="remoteMethodsystemId">
                             <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
                           </el-select>
                         </el-form-item>
@@ -246,36 +246,36 @@
                   </el-form>
                   <el-form ref="RepairRecord" :model="RepairRecord" label-width="50px;">
                     <el-row>
-                      <el-col :span="24">录入维修记录</el-col>
+                      <el-col :span="24">录入维护记录</el-col>
                     </el-row>
                     <el-row>
                       <el-col :span="3">
                         <el-form-item label="一级">
-                          <el-input-number v-model="RepairRecord.level1" controls-position="right" size="mini" :min="1" :max="1000000" />
+                          <el-input-number v-model="RepairRecord.level1" controls-position="right" size="mini" :min="0" :max="1000000" />
                         </el-form-item>
                       </el-col>
                       <el-col :span="1">次</el-col>
                       <el-col :span="3">
                         <el-form-item label="二级">
-                          <el-input-number v-model="RepairRecord.level2" controls-position="right" size="mini" :min="1" :max="1000000" />
+                          <el-input-number v-model="RepairRecord.level2" controls-position="right" size="mini" :min="0" :max="1000000" />
                         </el-form-item>
                       </el-col>
                       <el-col :span="1">次</el-col>
                       <el-col :span="3">
                         <el-form-item label="三级">
-                          <el-input-number v-model="RepairRecord.level3" controls-position="right" size="mini" :min="1" :max="1000000" />
+                          <el-input-number v-model="RepairRecord.level3" controls-position="right" size="mini" :min="0" :max="1000000" />
                         </el-form-item>
                       </el-col>
                       <el-col :span="1">次</el-col>
                       <el-col :span="3">
                         <el-form-item label="四级">
-                          <el-input-number v-model="RepairRecord.level4" controls-position="right" size="mini" :min="1" :max="1000000" />
+                          <el-input-number v-model="RepairRecord.level4" controls-position="right" size="mini" :min="0" :max="1000000" />
                         </el-form-item>
                       </el-col>
                       <el-col :span="1">次</el-col>
                       <el-col :span="3">
                         <el-form-item label="五级">
-                          <el-input-number v-model="RepairRecord.level5" controls-position="right" size="mini" :min="1" :max="1000000" />
+                          <el-input-number v-model="RepairRecord.level5" controls-position="right" size="mini" :min="0" :max="1000000" />
                         </el-form-item>
                       </el-col>
                       <el-col :span="1">次</el-col>

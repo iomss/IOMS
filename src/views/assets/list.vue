@@ -56,7 +56,7 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item>
-                  <el-select v-model="tableDataSearch.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" placeholder="所属系统" size="small" @focus="remoteMethodsystemId">
+                  <el-select v-model="tableDataSearch.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" clearable="true" placeholder="所属系统" size="small" @focus="remoteMethodsystemId">
                     <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
