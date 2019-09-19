@@ -38,7 +38,7 @@ router.beforeEach((to, from, next) => {
   const token = cookies.get('access_token') // 通过cookie获取登录凭证token
   const roles = cookies.get('roles') ? cookies.get('roles').split(',') : [] // 通过cookie 获取权限 roles
 
-  const needCheckRoles = roles.length >= 1 && noRoleWhiteList.indexOf(to.path) === -1 // 判断是否需要权限 true 需要 false 不需要
+  const needCheckRoles = roles.length >= 1 && noRoleWhiteList.indexOf(to.path) === -1 && to.path.indexOf('/redirect') === -1 // 判断是否需要权限 true 需要 false 不需要
 
   const needLogin = noLoginWhitdList.indexOf(to.path) === -1 // 判断是否需要登录 false 需要 true 不需要
 
