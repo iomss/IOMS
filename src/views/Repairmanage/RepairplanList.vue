@@ -318,6 +318,14 @@
                 <el-button type="primary" @click="removeDatainfo">确 定</el-button>
               </span>
             </el-dialog>
+            <!-- 是否添加资产 -->
+            <el-dialog title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="AddVisible" width="220px">
+              <span>是否添加资产？</span>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="AddVisible = false">否</el-button>
+                <el-button type="primary" @click="AddDatainfo()">是</el-button>
+              </span>
+            </el-dialog>
           </div>
         </div>
       </el-col>
@@ -348,6 +356,7 @@ export default {
           children: node.children
         }
       },
+      AddVisible: false, // 是否添加资产弹框
       loading: false, // 远程搜索
       title: '新增计划',
       formSearchShow: false,
@@ -747,6 +756,11 @@ export default {
               this.multiple = ''
               // 更新表格数据
               this.getData()
+              // 显示是否添加资产弹框
+              this.AddVisible = true
+              // 一级弹框赋值
+              this.tableDatanewfirst = response
+              this.tableDatanewfirst.daterange = [response.start, response.end]
             })
           } else if (this.title === '编辑计划' || this.title === '计划详情') {
             this.$axios.put('/api/MaintenancePlan/' + this.itemid, this.tableDatanew).then(response => {
@@ -760,6 +774,12 @@ export default {
           }
         }
       })
+    },
+    AddDatainfo() { //
+      // 隐藏是否添加资产弹框
+      this.AddVisible = false
+      // 打开一级弹框
+      this.Visiblefirst = true
     },
     cancel() { // 新增或编辑弹框取消方法
       this.Visible = false
