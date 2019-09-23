@@ -54,7 +54,7 @@
             <el-dialog :title="titlename" :visible.sync="changeActiveVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px">
               <el-form ref="form" :model="formSearch" label-width="120px">
                 <el-form-item label="系统名称">
-                  <el-select v-model="formSearch.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" clearable="true" placeholder="系统名称" size="small" @focus="remoteMethodsystemId">
+                  <el-select v-model="formSearch.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" clearable placeholder="系统名称" size="small" @focus="remoteMethodsystemId">
                     <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>

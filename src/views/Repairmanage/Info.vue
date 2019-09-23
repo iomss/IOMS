@@ -11,7 +11,7 @@
             </div>
             <div class="toolsrt">
               <el-form ref="form" :model="formSearch">
-                <el-select v-model="formSearch.system" v-loadmore="loadMoresystem" filterable clearable="true" placeholder="系统名称" size="small">
+                <el-select v-model="formSearch.system" v-loadmore="loadMoresystem" filterable clearable placeholder="系统名称" size="small">
                   <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
                 <el-select v-model="formSearch.source" v-loadmore="loadMoresource" filterable placeholder="来源" size="small">
