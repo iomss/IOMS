@@ -36,10 +36,11 @@
                 <el-table-column prop="model.name" label="型号" />
                 <el-table-column prop="system.name" label="所属系统" />
                 <el-table-column prop="position.name" label="安装位置" />
-                <el-table-column prop="recommendedTime" label="报修次数" />
+                <el-table-column prop="repairOrderCount" label="报修次数" />
                 <el-table-column label="操作" width="100">
                   <template slot-scope="scope">
-                    <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="primary" @click="showerror(scope.row)">报修</el-button>
+                    <span v-if="scope.row.hasRepairOrder">已有报修单</span>
+                    <el-button v-else style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="primary" @click="showerror(scope.row)">报修</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -77,7 +78,8 @@ export default {
         pageSize: 10, // 展示条数
         pageNumber: 1, // 页码
         positionIds: [], // 树选中值
-        systemId: ''// 所属系统选中值
+        systemId: '', // 所属系统选中值
+        includeRepairinfo: true
       },
       totalCount: 0, // 数据总条数
       systemData: []// 所属系统数据
