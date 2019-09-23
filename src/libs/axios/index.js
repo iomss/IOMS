@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
 import cookies from '../cookies'
-
+import { ajax } from 'jquery'
 // 创建一个错误
 // function errorCreate(msg) {
 //   const error = new Error(msg)
@@ -23,21 +23,37 @@ function errorLog(error) {
   })
 }
 
-const encryptedAccessToken = cookies.get('encryptedAccessToken')
-const expireInSeconds = cookies.get('expireInSeconds')
-const tokenSetTime = cookies.get('tokenSetTime')
+const expireInSeconds = cookies.get('expireInSeconds') // cookie 有效时常
+const tokenSetTime = cookies.get('tokenSetTime') // cookie写入时间
 const token = {
   refreshToken() {
+    const _this = this
     const nowTime = new Date().getTime()
-    if (nowTime - parseInt(tokenSetTime) / 1000 > parseInt(expireInSeconds) - 500) {
-      console.log(encryptedAccessToken)
-      // 进行刷新token相关操作
-      // axios.post('').then((res:any) => {
-      //   console.log(res)
-      // })
+    if (nowTime - parseInt(tokenSetTime) / 1000 > parseInt(expireInSeconds) - 1000) {
+      const refresh_token = {
+        grant_type: 'refresh_token',
+        refresh_token: cookies.get('refresh_token')
+      }
+      ajax({
+        type: 'POST',
+        url: process.env.VUE_APP_API + '/oauth/token',
+        data: refresh_token,
+        success: res => {
+          const day = res.expires_in / 86400
+          // cookie 中写入相关登录凭证
+          for (const item in res) {
+            _this.$cookie.set(item, res[item], { expires: day })
+          }
+          _this.$cookie.set('tokenSetTime', new Date().getTime(), { expires: day })
+        },
+        error: err => {
+          this.$message.error(err.responseJSON.error_description)
+        }
+      })
     }
   },
   getToken() {
+    token.refreshToken()
     return cookies.get('token_type') + ' ' + cookies.get('access_token')
   }
 }
