@@ -256,7 +256,7 @@ export default {
     },
     getPositionData() {
       // 获取所属系统
-      this.$axios.get('/api/Tree/Position').then(res => {
+      this.$axios.get('/api/Tree/Position/All?secondThird=true').then(res => {
         this.positionData = res
       })
     },
