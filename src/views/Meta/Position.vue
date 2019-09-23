@@ -35,8 +35,8 @@
                 <el-form-item label="上级位置">
                   <treeselect v-model="positionForm.parentId" :normalizer="normalizer" :options="positionTreeData" :load-options="loadOptions" placeholder="请选择上级位置" no-results-text="未找到相关数据" />
                 </el-form-item>
-                <el-form-item label=" 位置类型" prop="positionTypeId">
-                  <el-select v-model="positionForm.positionTypeId" size="small" filterable placeholder="请选择">
+                <el-form-item label="位置类型" prop="positionTypeId">
+                  <el-select v-model="positionForm.positionTypeId" size="small" filterable remote :remote-method="remoteMethodType" :loading="loading" placeholder="请选择" @focus="remoteMethodType">
                     <el-option v-for="item in postiontTypeData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
@@ -83,6 +83,7 @@ export default {
           children: node.children
         }
       },
+      loading: false, // 远程搜索
       positionData: [], // 数据
       positionTreeData: [],
       postiontTypeData: [],
@@ -165,8 +166,8 @@ export default {
       this.$axios.get('/api/Tree/Position').then(res => {
         this.positionTreeData = res
       })
-      this.$axios.get('/api/Meta/PositionType').then(res => {
-        this.postiontTypeData = res.data
+      this.$axios.get('/api/Meta/PositionType', { params: { pageNumber: 1, pageSize: 50 }}).then(res => {
+        this.postiontTypeData = this.postiontTypeData.concat(res.data)
       })
     },
     // 分页
@@ -181,6 +182,15 @@ export default {
     // 表单关闭重置
     positionFormClose() {
       this.$refs.positionForm.resetFields()
+    },
+    remoteMethodType(query) {
+      this.loading = true
+      let querytext = ''
+      querytext = typeof (query) === 'string' ? query : ''
+      this.$axios.get('/api/Meta/PositionType?text=' + querytext).then(res => {
+        this.loading = false
+        this.postiontTypeData = res.data
+      })
     },
     // 添加
     addData() {
