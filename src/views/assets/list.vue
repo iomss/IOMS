@@ -107,7 +107,7 @@
               </el-table-column>
               <el-table-column prop="code" label="资产编码" sortable="custom" width="170">
                 <template slot-scope="scope">
-                  <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="primary" @click="UpdateStage(scope.row)">{{ scope.row.code }}</el-button>
+                  <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="primary" @click="UpdateInfo(scope.row)">{{ scope.row.code }}</el-button>
                 </template>
               </el-table-column>
               <el-table-column prop="equimentType.name" label="资产类别" sortable="custom" />
@@ -127,7 +127,7 @@
               <el-table-column prop="lastUpdateTime" label="更新时间" sortable="custom" :formatter="formatterDate" />
               <el-table-column label="操作" width="100">
                 <template slot-scope="scope">
-                  <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="primary" @click="UpdateStage(scope.row)">编辑</el-button>
+                  <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="primary" @click="UpdateEdit(scope.row)">编辑</el-button>
                   <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="danger" @click="deleteManage(scope.row)">删除</el-button>
                 </template>
               </el-table-column>
@@ -147,82 +147,82 @@
                 <el-tab-pane label="基本信息" name="first">
                   <el-form ref="form" :model="formData" :rules="formDatarules" label-width="90px">
                     <el-form-item label="使用单位" prop="useUnitId">
-                      <el-select v-model="formData.useUnitId" filterable remote :remote-method="remoteMethodUnit" :loading="loading" placeholder="使用单位" size="small" @focus="remoteMethodUnit">
+                      <el-select v-model="formData.useUnitId" filterable remote :remote-method="remoteMethodUnit" :disabled="showedit" :loading="loading" placeholder="使用单位" size="small" @focus="remoteMethodUnit">
                         <el-option v-for="item in unitData" :key="item.id" :label="item.name" :value="item.id" />
                       </el-select>
                     </el-form-item>
                     <el-form-item label="安装位置" prop="positionId" style="margin-bottom:-15px;">
-                      <treeselect v-model="formData.positionId" :disable-branch-nodes="true" :normalizer="normalizer" :options="positionTreeData" :load-options="loadOptions" placeholder="安装位置" no-results-text="未找到相关数据" />
+                      <treeselect v-model="formData.positionId" :disable-branch-nodes="true" :normalizer="normalizer" :disabled="showedit" :options="positionTreeData" :load-options="loadOptions" placeholder="安装位置" no-results-text="未找到相关数据" />
                     </el-form-item>
                     <el-form-item label="所属系统" prop="systemId">
                       <!-- <el-select v-model="formData.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" placeholder="所属系统" size="small" @focus="remoteMethodsystemId">
                         <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
                       </el-select> -->
-                      <treeselect v-model="formData.systemId" :normalizer="normalizer" :options="systemTreeData" :load-options="loadOptions" placeholder="所属系统" no-results-text="未找到相关数据" />
+                      <treeselect v-model="formData.systemId" :normalizer="normalizer" :options="systemTreeData" :disabled="showedit" :load-options="loadOptions" placeholder="所属系统" no-results-text="未找到相关数据" />
                     </el-form-item>
                     <el-form-item label="资产类别" prop="equipmentID">
-                      <el-select v-model="formData.equipmentID" filterable remote :remote-method="remoteMethodequipmentID" :loading="loading" placeholder="资产类别" size="small" @focus="remoteMethodequipmentID">
+                      <el-select v-model="formData.equipmentID" filterable remote :remote-method="remoteMethodequipmentID" :disabled="showedit" :loading="loading" placeholder="资产类别" size="small" @focus="remoteMethodequipmentID">
                         <el-option v-for="item in equipmentData" :key="item.id" :label="item.name" :value="item.id" />
                       </el-select>
                     </el-form-item>
                     <el-form-item label="集成商" prop="siId">
-                      <el-select v-model="formData.siId" filterable remote :remote-method="remoteMethodsiId" :loading="loading" placeholder="设备集成商" size="small" @focus="remoteMethodsiId">
+                      <el-select v-model="formData.siId" filterable remote :remote-method="remoteMethodsiId" :disabled="showedit" :loading="loading" placeholder="设备集成商" size="small" @focus="remoteMethodsiId">
                         <el-option v-for="item in siData" :key="item.id" :label="item.name" :value="item.id" />
                       </el-select>
                     </el-form-item>
                     <el-form-item label="资产名称" prop="alias">
-                      <el-input v-model="formData.alias" placeholder="资产名称" size="small" />
+                      <el-input v-model="formData.alias" :disabled="showedit" placeholder="资产名称" size="small" />
                     </el-form-item>
                     <el-form-item label="投用时间" prop="enableTime">
-                      <el-date-picker v-model="formData.enableTime" type="date" placeholder="投用时间" />
+                      <el-date-picker v-model="formData.enableTime" type="date" :disabled="showedit" placeholder="投用时间" />
                     </el-form-item>
                     <el-form-item label="品牌" prop="brandId">
-                      <el-select v-model="formData.brandId" filterable remote :remote-method="remoteMethodbrandId" :loading="loading" placeholder="品牌" size="small" @focus="remoteMethodbrandId" @change="changebrand">
+                      <el-select v-model="formData.brandId" filterable remote :remote-method="remoteMethodbrandId" :disabled="showedit" :loading="loading" placeholder="品牌" size="small" @focus="remoteMethodbrandId" @change="changebrand">
                         <el-option v-for="item in brandData" :key="item.id" :label="item.name" :value="item.id" />
                       </el-select>
                     </el-form-item>
                     <el-form-item label="型号" prop="modelId">
-                      <el-select v-model="formData.modelId" filterable remote :remote-method="remoteMethodmodelId" :loading="loading" placeholder="型号" size="small" @focus="remoteMethodmodelId">
+                      <el-select v-model="formData.modelId" filterable remote :remote-method="remoteMethodmodelId" :disabled="showedit" :loading="loading" placeholder="型号" size="small" @focus="remoteMethodmodelId">
                         <el-option v-for="item in modelData" :key="item.id" :label="item.name" :value="item.id" />
                       </el-select>
                     </el-form-item>
                     <el-form-item label="来源" prop="sourceId">
-                      <el-select v-model="formData.sourceId" filterable remote :remote-method="remoteMethodsourceId" :loading="loading" placeholder="来源" size="small" @focus="remoteMethodsourceId">
+                      <el-select v-model="formData.sourceId" filterable remote :remote-method="remoteMethodsourceId" :disabled="showedit" :loading="loading" placeholder="来源" size="small" @focus="remoteMethodsourceId">
                         <el-option v-for="item in sourceData" :key="item.id" :label="item.name" :value="item.id" />
                       </el-select>
                     </el-form-item>
                     <el-form-item label="购置年份" prop="purchaseYear">
-                      <el-input v-model="formData.purchaseYear" placeholder="购置年份" size="small" />
+                      <el-input v-model="formData.purchaseYear" :disabled="showedit" placeholder="购置年份" size="small" />
                     </el-form-item>
                     <el-form-item label="交工时间" prop="handoverDate">
-                      <el-date-picker v-model="formData.handoverDate" type="date" placeholder="交工时间" />
+                      <el-date-picker v-model="formData.handoverDate" type="date" :disabled="showedit" placeholder="交工时间" />
                     </el-form-item>
                     <el-form-item label="工程名称" prop="engineering">
-                      <el-input v-model="formData.engineering" placeholder="工程名称" size="small" />
+                      <el-input v-model="formData.engineering" :disabled="showedit" placeholder="工程名称" size="small" />
                     </el-form-item>
                     <el-form-item label="使用年限" prop="ratedLife">
-                      <el-input v-model="formData.ratedLife" placeholder="使用年限" size="small" />
+                      <el-input v-model="formData.ratedLife" :disabled="showedit" placeholder="使用年限" size="small" />
                     </el-form-item>
                     <el-form-item label="缺陷责任期" prop="liabilityPeriod">
-                      <el-input v-model="formData.liabilityPeriod" placeholder="缺陷责任期" size="small" />
+                      <el-input v-model="formData.liabilityPeriod" :disabled="showedit" placeholder="缺陷责任期" size="small" />
                     </el-form-item>
                     <el-form-item label="产权单位" prop="propertyUnitId">
-                      <el-select v-model="formData.propertyUnitId" filterable remote :remote-method="remoteMethodUnit" :loading="loading" placeholder="产权单位" size="small" @focus="remoteMethodUnit">
+                      <el-select v-model="formData.propertyUnitId" filterable remote :remote-method="remoteMethodUnit" :disabled="showedit" :loading="loading" placeholder="产权单位" size="small" @focus="remoteMethodUnit">
                         <el-option v-for="item in unitData" :key="item.id" :label="item.name" :value="item.id" />
                       </el-select>
                     </el-form-item>
                     <el-form-item label="资产原值" prop="original">
-                      <el-input v-model="formData.original" placeholder="资产原值" size="small" />
+                      <el-input v-model="formData.original" :disabled="showedit" placeholder="资产原值" size="small" />
                     </el-form-item>
                     <el-form-item label="计量单位" prop="uint">
-                      <el-select v-model="formData.uint" clearable placeholder="计量单位" size="small">
+                      <el-select v-model="formData.uint" clearable :disabled="showedit" placeholder="计量单位" size="small">
                         <el-option key="1" label="台" value="台" />
                         <el-option key="2" label="套" value="套" />
                         <el-option key="3" label="个" value="个" />
                       </el-select>
                     </el-form-item>
                     <el-form-item label="备注" class="form_mid" prop="comment">
-                      <el-input v-model="formData.comment" type="textarea" :rows="2" placeholder="请输入内容" />
+                      <el-input v-model="formData.comment" type="textarea" :rows="2" :disabled="showedit" placeholder="请输入内容" />
                     </el-form-item>
                     <el-form-item label="照片" class="form_mid">
                       <Uploadimg v-model="formData.image" :reset="formData.image" @uploadimg="uploadimgdata">aaa</Uploadimg>
@@ -230,6 +230,7 @@
                     <el-form-item class="form_total">
                       <el-button type="primary" @click="updataform()">确定</el-button>
                       <el-button type="primary" @click="showInfo = false">关闭</el-button>
+                      <el-button v-show="editshow" type="primary" @click="changeupdata()">编辑</el-button>
                     </el-form-item>
                   </el-form>
                 </el-tab-pane>
@@ -418,7 +419,9 @@ export default {
         pageNumber: 1,
         pageSize: 50,
         pageCount: ''
-      }
+      },
+      showedit: true,
+      editshow: true
     }
   },
   computed: {},
@@ -538,6 +541,20 @@ export default {
       this.gedata()
       // 获取日志
       this.getlogs()
+    },
+    UpdateInfo(val) { // 点击编码显示详情
+      this.showedit = true
+      this.editshow = true
+      this.UpdateStage(val)
+    },
+    UpdateEdit(val) { // 点击编辑显示详情
+      this.showedit = false
+      this.editshow = false
+      this.UpdateStage(val)
+    },
+    changeupdata() { // 详情转编辑
+      this.showedit = false
+      this.editshow = false
     },
     deleteManage(row) {
       this.removeData = row
