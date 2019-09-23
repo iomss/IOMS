@@ -7,7 +7,7 @@
           <div class="header">
             <div class="search">
               <el-input v-model="FaultFormSearch.text" placeholder="全局查询" size="small" />
-              <el-select v-model="FaultFormSearch.equipmentId" clearable placeholder="选择相关设备">
+              <el-select v-model="FaultFormSearch.equipmentId" filterable remote :remote-method="remoteMethodequipmentID" :loading="loading" clearable placeholder="选择相关设备" @focus="remoteMethodequipmentID">
                 <el-option v-for="item in Equipment" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
               <el-button type="primary" size="small" @click="getData()">查询</el-button>
@@ -31,7 +31,7 @@
                   <el-input v-model="FaultForm.name" placeholder="故障" size="small" />
                 </el-form-item>
                 <el-form-item label="相关设备" prop="equipmentId">
-                  <el-select v-model="FaultForm.equipmentId" placeholder="选择相关设备">
+                  <el-select v-model="FaultForm.equipmentId" filterable remote :remote-method="remoteMethodequipmentID" :loading="loading" placeholder="选择相关设备" @focus="remoteMethodequipmentID">
                     <el-option v-for="item in Equipment" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
@@ -65,6 +65,7 @@ export default {
   },
   data() {
     return {
+      loading: false, // 远程搜索
       FaultData: [], // 数据
       Equipment: [],
       FaultFormSearch: {
@@ -109,8 +110,8 @@ export default {
         this.FaultData = res.data
         this.FaultTotalCount = res.totalCount
       })
-      this.$axios.get('/api/Meta/Equipment', { params: { pageNumber: 1, pageSize: 999999 }}).then(res => {
-        this.Equipment = res.data
+      this.$axios.get('/api/Meta/Equipment', { params: { pageNumber: 1, pageSize: 50 }}).then(res => {
+        this.Equipment = this.Equipment.concat(res.data)
       })
     },
     // 分页
@@ -121,6 +122,15 @@ export default {
       this.FaultFormSearch.pageNumber = val.page
       // 调用获取数据
       this.getData()
+    },
+    remoteMethodequipmentID(query) {
+      this.loading = true
+      let querytext = ''
+      querytext = typeof (query) === 'string' ? query : ''
+      this.$axios.get('/api/Meta/Equipment?text=' + querytext).then(res => {
+        this.loading = false
+        this.Equipment = res.data
+      })
     },
     // 添加
     adddata() {
