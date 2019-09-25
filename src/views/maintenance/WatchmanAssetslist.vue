@@ -20,6 +20,7 @@
             <div class="toolsrt">
               <el-input v-model="tableDataSearch.text" placeholder="请输入查询内容" size="small" />
               <el-button type="primary" size="small" @click="getData()">查询</el-button>
+              <el-button type="primary" size="small" @click="resetForm()">重置</el-button>
             </div>
             <div class="content">
               <el-table :data="tableData" stripe border style="width: 100%" @selection-change="handleSelectionChange">
@@ -91,6 +92,11 @@ export default {
     this.getselect()
   },
   methods: {
+    resetForm() { // 搜索内容重置
+      this.tableDataSearch.text = ''
+      this.tableDataSearch.systemId = ''
+      this.getData()
+    },
     getselect() {
       this.$axios.get('/api/Meta/System').then(res => {
         this.systemData = res.data

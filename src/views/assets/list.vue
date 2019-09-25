@@ -41,7 +41,7 @@
             </div>
             <!--高级搜索表单-->
             <el-card v-if="formSearchShow" class="search" :body-style="{ padding: '20px' }">
-              <el-form ref="form" :model="tableDataSearch">
+              <el-form ref="tableDataSearch" :model="tableDataSearch">
                 <el-form-item>
                   <el-select v-model="tableDataSearch.useUnitId" filterable remote :remote-method="remoteMethodUnit" :loading="loading" placeholder="使用单位" size="small" @focus="remoteMethodUnit">
                     <el-option v-for="item in unitData" :key="item.id" :label="item.name" :value="item.id" />
@@ -89,6 +89,7 @@
                 </el-form-item>
                 <el-form-item class="form_total">
                   <el-button type="primary" size="small" icon="el-icon-search" @click="getData()">查询</el-button>
+                  <el-button type="primary" size="small" @click="resetForm()">重置</el-button>
                   <el-button size="small" icon="el-icon-close" @click="formSearchShow=false">取消</el-button>
                 </el-form-item>
               </el-form>
@@ -438,6 +439,25 @@ export default {
     this.getsiData()
   },
   methods: {
+    resetForm() { // 重置高级搜索
+      this.tableDataSearch = {
+        orderBy: '', // 排序字段
+        desc: undefined, // 倒叙  是否
+        state: null, // 资产状态
+        text: '', // 搜索文本
+        brandId: '',
+        modelId: '',
+        systemId: '',
+        positionId: null,
+        handoverDate: '',
+        useUnitId: '',
+        sourceId: '',
+        enableBegin: '',
+        enableEnd: '',
+        inLiability: '',
+        equipmentId: ''
+      }
+    },
     getlogs() { // 获取日志
       const _this = this
       this.$axios.get('/api/Assets/' + _this.formData.id + '/logs').then(res => {
