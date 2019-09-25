@@ -29,7 +29,6 @@
         </div>
         <div class="content">
           <el-button type="primary" size="small" @click="robwork()">抢单</el-button>
-          <el-button type="primary" size="small" @click="backworke()">退回</el-button>
           <el-button type="primary" size="small" @click="historywork()">历史详情</el-button>
           <el-button type="primary" size="small" @click="processrecord()">过程记录</el-button>
           <el-button type="danger" size="small" @click="closework()">关闭</el-button>
@@ -107,14 +106,6 @@ export default {
       this.updateData.dispatchType = 'Grab'// 抢单
       this.$axios.post('/api/RepairOrder/' + this.formData.id + '/Dispatch', this.updateData).then(res => {
         this.$message.success('工单抢单成功')
-        // 跳转个人工作页
-        this.$router.push('/Workorder/Watchmanlist')
-      })
-    },
-    backworke(val) { // 点击退回按钮
-      this.updateData.dispatchType = 'return'// 退回
-      this.$axios.post('/api/RepairOrder/' + this.formData.id + '/Dispatch', this.updateData).then(res => {
-        this.$message.success('工单退回成功')
         // 跳转个人工作页
         this.$router.push('/Workorder/Watchmanlist')
       })

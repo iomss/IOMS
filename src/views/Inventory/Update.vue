@@ -8,7 +8,6 @@
             <h4>设备管理</h4>
             <div class="select">
               <el-button type="primary" @click="create()">新增设备</el-button>
-              <el-button type="primary" @click="savelist()">保存设备清单</el-button>
               <el-button type="danger" @click="deletelist()">批量删除</el-button>
             </div>
             <div class="title">
@@ -209,9 +208,6 @@ export default {
         count: '',
         remark: ''
       }
-    },
-    savelist() {
-      // 保存设备清单
     },
     deletelist() {
       // 删除设备清单

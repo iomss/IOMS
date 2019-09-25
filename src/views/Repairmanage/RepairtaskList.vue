@@ -222,7 +222,7 @@
             <el-dialog title="录入维护记录" :visible.sync="Visiblethird" :close-on-press-escape="false" :close-on-click-modal="false" width="600px">
               <el-form ref="form" :model="tableDatathird" label-width="90px">
                 <el-form-item prop="maintenanceUserName" label="维护人">
-                  <el-input v-model="tableDatathird.maintenanceUserName" placeholder="维护人" size="small" />
+                  <el-input v-model="tableDatathird.maintenanceUserName" disabled placeholder="维护人" size="small" />
                 </el-form-item>
                 <el-form-item prop="maintenanceTime" label="维护时间">
                   <el-date-picker v-model="tableDatathird.maintenanceTime" type="datetime" placeholder="维护时间" :formatter="formatterDatethird" style="width:100%;" />
@@ -261,7 +261,7 @@ export default {
   data() {
     return {
       dangqianUser: {// 当前登陆用户
-        userName: this.$cookie.get('userName'),
+        userName: this.$cookie.get('trueName'),
         id: this.$cookie.get('id')
       },
       formSearchShow: false,

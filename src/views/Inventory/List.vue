@@ -17,7 +17,7 @@
               <el-button type="primary" plain size="small" @click="getData('true')">已生效清单</el-button>
             </div>
             <div class="toolsrt">
-              <el-form ref="form" :model="tableDataSearch">
+              <el-form ref="tableDataSearch" :model="tableDataSearch">
                 <el-select v-model="tableDataSearch.positionId" filterable placeholder="管理单位" size="small">
                   <el-option v-for="item in positionTreeData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
@@ -25,6 +25,7 @@
                   <el-option v-for="item in yearData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
                 <el-button type="primary" plain size="small" @click="getData()">查询</el-button>
+                <el-button type="primary" plain size="small" @click="resetForm()">重置</el-button>
               </el-form>
             </div>
           </div>
@@ -129,6 +130,11 @@ export default {
     this.getpositionData()
   },
   methods: {
+    resetForm() { // 重置搜索条件
+      this.tableDataSearch.positionId = ''
+      this.tableDataSearch.year = ''
+      this.getData()
+    },
     getpositionData() {
       // 获取安装位置
       this.$axios.get('/api/Meta/Position?secondThird=true').then(res => {

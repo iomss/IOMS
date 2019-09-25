@@ -62,7 +62,7 @@
         <div class="content">
           <h4>验收确认</h4>
           <div class="Infodata">
-            <el-form ref="checkData" :rules="checkDatarules" :model="checkData" style="width: 50%" label-width="100px">
+            <el-form ref="checkData" :model="checkData" style="width: 50%" label-width="100px">
               <el-form-item label="验收结果" prop="reviewStatus">
                 <el-radio-group v-model="checkData.reviewStatus">
                   <el-radio label="Applied">通过</el-radio>
@@ -126,11 +126,6 @@ export default {
       checkData: {// 验收表单数据
         reviewStatus: 'Applied',
         comment: ''
-      },
-      checkDatarules: {
-        comment: [
-          { required: true, message: '验收意见不可为空', trigger: 'change' }
-        ]
       }
     }
   },

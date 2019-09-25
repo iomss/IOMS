@@ -23,6 +23,7 @@
                 </el-select>
                 <el-input v-model="formSearch.text" placeholder="设备名称" size="small" />
                 <el-button type="primary" plain size="small" @click="getData()">查询</el-button>
+                <el-button type="primary" plain size="small" @click="resetForm()">重置</el-button>
               </el-form>
             </div>
           </div>
@@ -100,6 +101,16 @@ export default {
     this.getsourceData()
   },
   methods: {
+    resetForm() { // 重置搜索条件
+      this.formSearch = {
+        source: '',
+        system: '',
+        text: '', // 搜索文本
+        pageSize: 10, // 展示条数
+        pageNumber: 1// 页码
+      }
+      this.getData()
+    },
     getData() {
       this.id = window.location.href.split('/')[window.location.href.split('/').length - 1]
       this.$axios.get('/api/EquipmentList/' + this.id + '/Items', { params: this.formSearch }).then(res => {

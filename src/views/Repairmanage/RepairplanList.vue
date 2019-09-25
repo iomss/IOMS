@@ -21,6 +21,7 @@
                 </el-select>
                 <el-input v-model="tableDataSearch.text" placeholder="全局搜索" size="small" />
                 <el-button type="primary" plain size="small" @click="getData()">查询</el-button>
+                <el-button type="primary" plain size="small" @click="resetSearchForm()">重置</el-button>
               </el-form>
             </div>
           </div>
@@ -124,6 +125,7 @@
                   <el-col :span="24">
                     <el-form-item style="text-align:center;">
                       <el-button type="primary" size="small" icon="el-icon-search" @click="createorupdate()">保存</el-button>
+                      <el-button v-show="title='新增计划'" type="primary" size="small" @click="resetForm()">重置</el-button>
                       <el-button size="small" icon="el-icon-close" @click="cancel()">取消</el-button>
                     </el-form-item>
                   </el-col>
@@ -436,6 +438,15 @@ export default {
         ],
         daterange: [
           { required: true, message: '起止时间不可为空', trigger: 'change' }
+        ],
+        systemId: [
+          { required: true, message: '所属系统不可为空', trigger: 'change' }
+        ],
+        samplingRate: [
+          { required: true, message: '抽检率不可为空', trigger: 'change' }
+        ],
+        cyclic: [
+          { required: true, message: '维护频率不可为空', trigger: 'change' }
         ]
       },
       positionTreeData: [], // 位置数据
@@ -521,6 +532,12 @@ export default {
       this.$axios.get('/api/Tree/Position').then(res => {
         this.positionTreeData = this.checkhasChildren(res)
       })
+    },
+    resetSearchForm() { // 重置搜索条件
+      this.tableDataSearch.start = ''
+      this.tableDataSearch.end = ''
+      this.tableDataSearch.text = ''
+      this.getData()
     },
     getDates() { // 获取列表
       this.$axios.get('/api/MaintenancePlan/Dates').then(res => {
@@ -742,6 +759,20 @@ export default {
       this.getDatafirst()
     },
     //* *************************************************************************************************************** */
+    // 重置新增计划表单
+    resetForm() {
+      this.tableDatanew = {
+        daterange: [],
+        start: '',
+        end: '',
+        responsibleUser: '',
+        excuteUser: '',
+        samplingRate: '',
+        systemId: '',
+        name: '',
+        cyclic: ''
+      }
+    },
     // 新增或编辑计划弹框方法
     createorupdate() {
       this.$refs.tableDatanew.validate(valid => {
