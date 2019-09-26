@@ -8,7 +8,7 @@
             <div class="select">
               <el-button type="primary" size="small" @click="selectstate('')">任务列表</el-button>
               <el-button type="primary" size="small" @click="selectstate('Review')">待验收</el-button>
-              <el-button type="primary" size="small" @click="selectstate('Excute')">已完成</el-button>
+              <el-button type="primary" size="small" @click="selectstate('Done')">已完成</el-button>
               <el-button type="primary" size="small" @click="selectstate('Plan')">未完成</el-button>
             </div>
             <div class="toolsrt">
@@ -29,7 +29,7 @@
               <el-table-column type="index" label="序号" />
               <el-table-column label="操作">
                 <template slot-scope="scope">
-                  <el-button :key="scope.row.code" size="mini" type="primary" @click="showInfo(scope.row)">验收</el-button>
+                  <el-button v-show="scope.row.planState='Review'" :key="scope.row.code" size="mini" type="primary" @click="showInfo(scope.row)">验收</el-button>
                 </template>
               </el-table-column>
               <el-table-column label="完成状态" prop="planState ">
@@ -58,8 +58,12 @@
                   {{ scope.row.createUser.name }}
                 </template>
               </el-table-column>
-              <el-table-column prop="reviewUser" label="验收人" />
-              <el-table-column prop="reviewtime" label="验收时间" :formatter="formatterDate" />
+              <el-table-column prop="reviewUser" label="验收人">
+                <template slot-scope="scope">
+                  {{ scope.row.reviewUser.name }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="reviewTime" label="验收时间" :formatter="formatterDate" />
             </el-table>
             <!--分页-->
             <pagination v-show="totalCount>0" :total="totalCount" :page.sync="tableDataSearch.pageNumber" :limit.sync="tableDataSearch.pageSize" @pagination="getPage" />

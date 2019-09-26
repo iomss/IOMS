@@ -8,7 +8,6 @@
             <div class="select">
               <el-button type="primary" size="small" @click="addlist()">新增计划</el-button>
               <el-button type="primary" size="small" @click="setvalid()">导出计划</el-button>
-              <el-button type="success" size="small" @click="UpdateStage()">编辑</el-button>
               <el-button type="danger" size="small" @click="deletelist()">删除</el-button>
             </div>
             <div class="toolsrt">
