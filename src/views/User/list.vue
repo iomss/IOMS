@@ -18,6 +18,7 @@
               <el-table-column type="selection" width="40" />
               <el-table-column type="index" label="序号" />
               <el-table-column prop="userName" label="用户名称" />
+              <el-table-column prop="trueName" label="真实姓名" />
               <el-table-column prop="units" label="单位">
                 <template slot-scope="scope">
                   <span v-for="item in scope.row.units" :key="item.id" style="margin-right:10px;">{{ item.name }}</span>
@@ -38,6 +39,9 @@
                 <el-form-item label="用户名称" prop="userName">
                   <el-input v-model="UserForm.userName" placeholder="用户" userze="small" />
                 </el-form-item>
+                <el-form-item label="真实姓名" prop="trueName">
+                  <el-input v-model="UserForm.trueName" placeholder="真实姓名" userze="small" />
+                </el-form-item>
                 <el-form-item label="密码" prop="passWord">
                   <el-input v-model="UserForm.passWord" placeholder="用户" userze="small" />
                 </el-form-item>
@@ -56,8 +60,8 @@
                 </el-form-item>
               </el-form>
               <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="UserFormVisible=false">关闭</el-button>
-                <el-button type="primary" @click="submitUser()">提交更改</el-button>
+                <el-button type="" @click="UserFormVisible=false">关闭</el-button>
+                <el-button type="primary" @click="submitUser()">确定</el-button>
               </span>
             </el-dialog>
 
@@ -96,6 +100,7 @@ export default {
       UserFormVisible: false,
       UserForm: {
         id: undefined,
+        trueName: '',
         userName: '',
         password: '',
         units: [],
@@ -103,9 +108,14 @@ export default {
         contactNumber: ''
       },
       UserFormRules: {
+        trueName: {
+          required: true,
+          message: '真实姓名不可为空',
+          trigger: 'blur'
+        },
         userName: {
           required: true,
-          message: '用户不可为空',
+          message: '用户名不可为空',
           trigger: 'blur'
         },
         units: [
@@ -191,6 +201,7 @@ export default {
           this.UserFormVisible = true
           this.UserForm.id = this.multipleSelectionUser[0].id
           this.UserForm.userName = this.multipleSelectionUser[0].userName
+          this.UserForm.trueName = this.multipleSelectionUser[0].trueName
           this.UserForm.password = ''
           this.multipleSelectionUser[0].units.forEach(item => unitVal.push(item.id))
           this.UserForm.units = unitVal
@@ -202,6 +213,7 @@ export default {
         this.UserFormVisible = true
         this.UserForm.id = row.id
         this.UserForm.name = row.userName
+        this.UserForm.trueName = row.trueName
         this.UserForm.password = row.password
         row.units.forEach(item => unitVal.push(item.id))
         this.UserForm.units = row.units

@@ -73,7 +73,7 @@ export default {
       TypeFormRules: {
         name: {
           required: true,
-          message: '位置类型不可为空',
+          message: '设备类型不可为空',
           trigger: 'blur'
         }
       },
@@ -110,7 +110,7 @@ export default {
     // 添加
     adddata() {
       this.TypeFormVisible = true// 显示弹框
-      this.TypeFormTitle = '添加位置类型'
+      this.TypeFormTitle = '添加设备类型'
       this.TypeForm.id = undefined
       this.TypeForm.name = ''
     },

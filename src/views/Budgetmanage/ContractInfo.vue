@@ -4,18 +4,6 @@
     <el-row>
       <el-col>
         <div class="panel">
-          <div class="header">
-            <div class="toolsrt">
-              <el-form ref="form" :model="formSearch" label-width="60px">
-                <el-form-item label="版本号" prop="name">
-                  <el-input v-model="formSearch.name" placeholder="版本号" size="small" />
-                </el-form-item>
-                <el-form-item>
-                  <el-button type="primary" plain size="small" @click="getData()">查询</el-button>
-                </el-form-item>
-              </el-form>
-            </div>
-          </div>
           <div class="content">
             <el-table :data="tableData" stripe border style="width: 100%">
               <el-table-column prop="" label="操作">
