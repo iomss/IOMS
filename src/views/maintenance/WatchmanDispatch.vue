@@ -286,6 +286,13 @@ export default {
           this.changeActiveVisible = false
         }
       })
+    },
+    cancelWorker() { // 取消派单
+      // 关闭派单页面
+      console.log(this.$router.currentRoute.fullPath)
+      this.$store.dispatch('tagsView/delAllViews', this.$router.currentRoute.fullPath)
+      // 跳转维修单录入页面
+      this.$router.push('/maintenance/WatchmanAssetslist')
     }
   }
 }
