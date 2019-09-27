@@ -68,8 +68,7 @@ export default {
       tableDataSearch: {
         text: '', // 搜索文本
         pageSize: 10, // 展示条数
-        pageNumber: 1, // 页码
-        OrderState: 'Done'
+        pageNumber: 1 // 页码
       },
       totalCount: 0, // 数据总条数
       removeQuestionVisible: false, // 删除提示弹框隐藏
@@ -94,7 +93,7 @@ export default {
       if (this.tableDataSearch.text !== '') {
         this.tableDataSearch.pageNumber = 1
       }
-      this.$axios.get('/api/RepairOrder', { params: this.tableDataSearch }).then(res => {
+      this.$axios.get('/api/RepairOrder/All', { params: this.tableDataSearch }).then(res => {
         this.tableData = res.data
         this.totalCount = res.totalCount
       })
@@ -105,7 +104,7 @@ export default {
       // 页码
       this.tableDataSearch.pageNumber = val.page
       // 调用获取数据
-      this.$axios.get('/api/RepairOrder', { params: this.tableDataSearch }).then(res => {
+      this.$axios.get('/api/RepairOrder/All', { params: this.tableDataSearch }).then(res => {
         this.tableData = res.data
         this.totalCount = res.totalCount
       })

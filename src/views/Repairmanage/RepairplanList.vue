@@ -223,7 +223,7 @@
                     <el-row class="selfstyle">
                       <el-col :span="6">
                         <el-form-item>
-                          <treeselect v-model="tableDataSearchsecond.positionId" :disable-branch-nodes="true" :normalizer="normalizer" :options="positionTreeData" :load-options="loadOptions" placeholder="安装位置" no-results-text="未找到相关数据" />
+                          <treeselect v-model="tableDataSearchsecond.positionId" :normalizer="normalizer" :options="positionTreeData" :load-options="loadOptions" placeholder="安装位置" no-results-text="未找到相关数据" />
                         </el-form-item>
                       </el-col>
                       <el-col :span="6">
@@ -872,6 +872,9 @@ export default {
         this.Visiblesecond = true
         // 获取资产level列表
         this.getDatasecond()
+
+        // 遍历位置树，设置第一个可点positionId
+        this.gettreeposition(this.positionTreeData)
       })
     },
     //* *************************************************************************************************************** */
@@ -888,8 +891,6 @@ export default {
       }
     },
     getDatasecond() { // 获取列表
-      // 遍历位置树，设置第一个可点positionId
-      this.gettreeposition(this.positionTreeData)
       console.log(this.tableDataSearchsecond.positionId)
       this.$axios.get('/api/MaintenancePlan/Equipments', { params: this.tableDataSearchsecond }).then(res => {
         this.tableDatasecond = res.data

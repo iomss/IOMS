@@ -133,10 +133,10 @@
               </el-select>
             </el-form-item>
             <el-form-item label="预计开始时间" prop="startTime">
-              <el-date-picker v-model="formRcordd.startTime" type="datetime" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm" placeholder="维修开始时间" />
+              <el-date-picker v-model="formRcordd.startTime" type="datetime" placeholder="预计开始时间" />
             </el-form-item>
             <el-form-item label="预计结束时间" prop="endTime">
-              <el-date-picker v-model="formRcordd.endTime" type="datetime" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm" placeholder="维修结束时间" />
+              <el-date-picker v-model="formRcordd.endTime" type="datetime" placeholder="预计结束时间" />
             </el-form-item>
             <el-form-item label="维修过程" prop="description">
               <el-input v-model="formRcordd.description" placeholder="维修过程" size="small" />
@@ -427,6 +427,7 @@ export default {
       if (val === 'd') {
         this.$refs.formRcordd.validate(valid => {
           if (valid) {
+            debugger
             this.formRcordd.repairType = this.repairType
             this.formRcordd.repairerId = this.dangqianUser.id
             this.formRcordd.repairOrderId = window.location.href.split('/')[window.location.href.split('/').length - 1]

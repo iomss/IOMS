@@ -490,8 +490,7 @@ export const asyncRoutes = [
     meta: {
       title: '维护管理',
       icon: 'fa fa-puzzle-piece',
-      fullPath: '/Repairmanage',
-      roles: ['EnterSystem']
+      fullPath: '/Repairmanage'
     },
     component: Layout,
     redirect: '/Repairmanage/List',
@@ -502,7 +501,7 @@ export const asyncRoutes = [
       meta: {
         title: '维护计划',
         icon: 'fa fa-th-large',
-        roles: ['EnterSystem'],
+        roles: ['MaintenancePlan'],
         fullPath: '/Repairmanage/RepairplanList'
       }
     },
@@ -513,7 +512,7 @@ export const asyncRoutes = [
       meta: {
         title: '维护任务',
         icon: 'fa fa-th-large',
-        roles: ['EnterSystem'],
+        roles: ['MaintenanceTask'],
         fullPath: '/Repairmanage/RepairtaskList'
       }
     },
@@ -524,7 +523,7 @@ export const asyncRoutes = [
       meta: {
         title: '维护验收',
         icon: 'fa fa-th-large',
-        roles: ['EnterSystem'],
+        roles: ['MaintenanceReview'],
         fullPath: '/Repairmanage/RepaircheckList'
       }
     }
