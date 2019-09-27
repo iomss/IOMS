@@ -16,8 +16,11 @@
             <div class="select">
               <el-select v-model="tableDataSearch.state" clearable placeholder="工单状态" size="small">
                 <el-option key="0" label="全部" value="0" />
-                <el-option key="1" label="已指派" value="1" />
-                <el-option key="2" label="未指派" value="2" />
+                <el-option key="1" label="待处理" value="1" />
+                <el-option key="2" label="处理中" value="2" />
+                <el-option key="3" label="待验收" value="3" />
+                <el-option key="4" label="待审核" value="4" />
+                <el-option key="5" label="已完成" value="5" />
               </el-select>
             </div>
             <div class="toolsrt">
@@ -76,7 +79,7 @@
               <el-table-column prop="repairUser.name" label="维修员" />
               <el-table-column prop="orderState" label="状态">
                 <template slot-scope="scope">
-                  {{ scope.row.orderState==="Record"?"记录，等待指派或抢单":scope.row.orderState==='Dispatching'?"已分配给组长，等待分派工程师":scope.row.orderState==='Dispatched'?'已分配给工程师，工程师待确认':scope.row.orderState==='Repair'?'已分配工程师，等待维修':scope.row.orderState==='Suspend'?'暂缓':scope.row.orderState==='Check'?'维修完成待验收':scope.row.orderState==='Review'?'验收完成，待审核':scope.row.orderState==='Done'?'审核完成':'报修单流程被终止' }}
+                  {{ scope.row.orderState==="Record"?"待处理":scope.row.orderState==='Dispatching'?"待分配":scope.row.orderState==='Dispatched'?'已分配':scope.row.orderState==='Repair'?'处理中':scope.row.orderState==='Suspend'?'暂缓':scope.row.orderState==='Check'?'待验收':scope.row.orderState==='Review'?'待审核':scope.row.orderState==='Done'?'工单已完成':'报修单流程被终止' }}
                 </template>
               </el-table-column>
               <el-table-column prop="repairLevel.name" label="报修等级" />
