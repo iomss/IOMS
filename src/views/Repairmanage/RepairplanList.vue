@@ -791,6 +791,8 @@ export default {
               // 一级弹框赋值
               this.tableDatanewfirst = response
               this.tableDatanewfirst.daterange = [response.start, response.end]
+              // 存id
+              this.itemid = response.id
             })
           } else if (this.title === '编辑计划' || this.title === '计划详情') {
             this.$axios.put('/api/MaintenancePlan/' + this.itemid, this.tableDatanew).then(response => {
