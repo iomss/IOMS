@@ -30,6 +30,7 @@
                 </template>
               </el-table-column>
               <el-table-column prop="contactNumber" label="联系方式" />
+              <el-table-column prop="commpany.name" label="公司" />
               <el-table-column prop="lastLoginTime" label="最后登录时间" :formatter="formatterDate" />
             </el-table>
             <pagination v-show="UserTotalCount>0" :total="UserTotalCount" :page.sync="UserFormSearch.pageNumber" :limit.sync="UserFormSearch.pageUserze" @pagination="getUserPage" />
@@ -57,6 +58,11 @@
                 </el-form-item>
                 <el-form-item prop="contactNumber" label="联系电话">
                   <el-input v-model="UserForm.contactNumber" placeholder="联系电话" size="small" />
+                </el-form-item>
+                <el-form-item prop="commpanyId" label="公司">
+                  <el-select v-model="UserForm.commpanyId" clearable placeholder="公司" size="small">
+                    <el-option v-for="item in SIData" :key="item.id" :label="item.name" :value="item.id" />
+                  </el-select>
                 </el-form-item>
               </el-form>
               <span slot="footer" class="dialog-footer">
@@ -90,6 +96,7 @@ export default {
       UserData: [], // 数据
       unitData: [], // 单位数据
       roleData: [], // 角色数据
+      SIData: [], // 公司数据
       UserFormSearch: {
         text: '',
         pageSize: 20,
@@ -105,7 +112,8 @@ export default {
         password: '',
         units: [],
         roles: [],
-        contactNumber: ''
+        contactNumber: '',
+        commpanyId: null
       },
       UserFormRules: {
         trueName: {
@@ -165,6 +173,10 @@ export default {
       this.$axios.get('/api/Meta/Role').then(res => {
         this.roleData = res.data
       })
+      // 获取公司数据
+      this.$axios.get('/api/Meta/SI').then(res => {
+        this.SIData = res.data
+      })
     },
     // 分页
     getUserPage(val) {
@@ -208,6 +220,7 @@ export default {
           this.multipleSelectionUser[0].roles.forEach(item => rolesVal.push(item.id))
           this.UserForm.roles = rolesVal
           this.UserForm.contactNumber = this.multipleSelectionUser[0].contactNumber
+          this.UserForm.commpanyId = this.multipleSelectionUser[0].commpanyId
         }
       } else {
         this.UserFormVisible = true
@@ -220,6 +233,7 @@ export default {
         row.roles.forEach(item => rolesVal.push(item.id))
         this.UserForm.roles = rolesVal
         this.UserForm.contactNumber = row.contactNumber
+        this.UserForm.commpanyId = row.commpanyId
       }
     },
     // 表单提交
