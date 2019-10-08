@@ -19,6 +19,9 @@ import Layout from '@/layout'
   }
  */
 
+import emergencyRepairRoutes from './modules/emergencyRepair'
+import devopsAssessRoutes from './modules/devopsAssess'
+
 /**
  * constantRoutes
  * a base page that does not have permission requirements
@@ -917,7 +920,9 @@ export const asyncRoutes = [
     },
     redirect: '/404',
     hidden: true
-  }
+  },
+  emergencyRepairRoutes,
+  devopsAssessRoutes
 ]
 
 const routers = [...constantRoutes, ...asyncRoutes]
