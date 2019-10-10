@@ -26,7 +26,7 @@
                     <el-option v-for="(item,index) in yearData" :key="index" :label="item" :value="item" />
                   </el-select>
                 </el-form-item>
-                <el-form-item label="路段" prop="postionId">
+                <el-form-item label="路段" prop="postionId" style="margin-bottom:-12px;">
                   <treeselect v-model="formSearch.postionId" :normalizer="normalizer" :options="positionData" :load-options="loadOptions" placeholder="安装位置" no-results-text="未找到相关数据" />
                 </el-form-item>
                 <el-form-item label="状态" prop="isValid">
