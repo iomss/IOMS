@@ -24,7 +24,7 @@
             </div>
             <div class="content">
               <el-table :data="tableData" stripe border style="width: 100%" @selection-change="handleSelectionChange">
-                <el-table-column type="selection" />
+                <el-table-column type="selection" :selectable="checkSelectable" />
                 <el-table-column type="index" label="序号" />
                 <el-table-column prop="state" label="状态">
                   <template slot-scope="scope">
@@ -179,6 +179,10 @@ export default {
       } else {
         this.$message.error('请至少选择一条数据')
       }
+    },
+    checkSelectable(row) {
+      // 若返回为 true， 则可以选中，否则禁止选中
+      return !row.hasRepairOrder
     }
   }
 }
