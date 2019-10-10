@@ -13,17 +13,18 @@
               <el-button type="primary" plain @click="outputData()">导出</el-button>
             </div>
             <div class="tools">
-              <el-button type="primary" plain size="small" @click="getData('1')">备件库</el-button>
-              <el-button type="primary" plain size="small" @click="getData('2')">维修库</el-button>
-              <el-button type="primary" plain size="small" @click="getData('3')">报废库</el-button>
+              <el-button type="primary" plain size="small" @click="formSearch.type='spare';getData()">备件库</el-button>
+              <el-button type="primary" plain size="small" @click="formSearch.type='repair';getData()">维修库</el-button>
+              <el-button type="primary" plain size="small" @click="formSearch.type='scrap';getData()">报废库</el-button>
             </div>
             <div class="toolsrt">
               <el-form ref="form" :model="formSearch">
-                <el-select v-model="formSearch.end" filterable placeholder="全部库房" size="small">
-                  <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
+                <el-select v-model="formSearch.spareRepositoryId" filterable remote :remote-method="remoteMethodSpareRepository" :loading="loading" clearable placeholder="全部库房" size="small" @focus="remoteMethodSpareRepository">
+                  <el-option v-for="item in spareRepositoryData" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
-                <el-select v-model="formSearch.end" filterable placeholder="备件性质" size="small">
-                  <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
+                <el-select v-model="formSearch.consumable" clearable="" placeholder="备件性质" size="small">
+                  <el-option key="1" label="非易损易耗" value="false" />
+                  <el-option key="2" label="易损易耗" value="true" />
                 </el-select>
                 <el-input v-model="formSearch.text" placeholder="模糊搜索" size="small" />
                 <el-button type="primary" plain size="small" @click="getData()">查询</el-button>
@@ -206,10 +207,14 @@ export default {
       loading: false, // 远程搜索
       formSearch: {
         text: '', // 搜索文本
+        type: '', // 库存类型
+        spareRepositoryId: null, // 库房
+        consumable: null, // 易损易耗
         pageSize: 10, // 展示条数
         pageNumber: 1// 页码
       },
       totalCount: 0, // 数据总条数
+      spareRepositoryData: [], // 库房数据
       multipleSelection: '', // 表单选中行
       removeQuestionVisible: false, // 删除弹框
       tableData: [],
@@ -288,6 +293,24 @@ export default {
     this.getmodelData()
   },
   methods: {
+    // 获取即时库存数据
+    getData() {
+      this.$axios.get('/api/SpareStock/', { params: this.formSearch }).then(res => {
+        this.tableData = res.data
+        this.totalCount = res.totalCount
+      })
+    },
+    // 库房数据
+    remoteMethodSpareRepository(query) {
+      this.loading = true
+      let querytext = ''
+      querytext = typeof (query) === 'string' ? query : ''
+      this.$axios.get('/api/SpareRepository?text=' + querytext).then(res => {
+        this.loading = false
+        this.spareRepositoryData = res.data
+      })
+    },
+
     uploadresultImg(e) {
       console.log(e)
       this.EditForm.resultImg = e
@@ -329,12 +352,7 @@ export default {
         this.modelData = res.data
       })
     },
-    getData() {
-      this.$axios.get('/api/MatchEquipment/', { params: this.formSearch }).then(res => {
-        this.tableData = res.data
-        this.totalCount = res.totalCount
-      })
-    },
+
     getPage(val) { // page事件
       // 展示条数
       this.formSearch.pageSize = val.limit
