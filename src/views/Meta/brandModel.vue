@@ -325,23 +325,25 @@ export default {
       this.modelForm.brandId = undefined
     },
     updateModel(row) {
-      let hasbrandData = false
-      this.sertchBrandData.forEach(item => { item.id === row.brandId ? hasbrandData = true : '' })
-      hasbrandData ? '' : this.sertchBrandData.push({ id: row.brandId, name: row.brandName })
-
-      this.multipleSelectionModel = [row]
       this.modelFormTitle = '编辑型号名称'
       if (row === undefined) {
         // 判断当前按选中值是否存在，不存在插入
         if (this.multipleSelectionModel.length !== 1) {
           this.$message.error('请选择一项型号数据进行操作')
         } else {
+          let hasbrandData = false
+          this.sertchBrandData.forEach(item => { item.id === this.multipleSelectionModel[0].brandId ? hasbrandData = true : '' })
+          hasbrandData ? '' : this.sertchBrandData.push({ id: this.multipleSelectionModel[0].brandId, name: this.multipleSelectionModel[0].brandName })
           this.modelFormVisible = true
           this.modelForm.id = this.multipleSelectionModel[0].id
           this.modelForm.name = this.multipleSelectionModel[0].name
           this.modelForm.brandId = this.multipleSelectionModel[0].brandId
         }
       } else {
+        this.multipleSelectionModel = [row]
+        let hasbrandData = false
+        this.sertchBrandData.forEach(item => { item.id === row.brandId ? hasbrandData = true : '' })
+        hasbrandData ? '' : this.sertchBrandData.push({ id: row.brandId, name: row.brandName })
         this.modelFormVisible = true
         this.modelForm.id = row.id
         this.modelForm.name = row.name
@@ -399,8 +401,7 @@ export default {
       this.multipleSelectionModel = val
     },
     getModelRow(row) {
-      this.multipleSelectionModel = []
-      this.multipleSelectionModel.push(row)
+      this.multipleSelectionModel = [row]
     }
   }
 }
