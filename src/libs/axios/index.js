@@ -39,12 +39,11 @@ const token = {
         url: process.env.VUE_APP_API + '/oauth/token',
         data: refresh_token,
         success: res => {
-          const day = res.expires_in / 86400
           // cookie 中写入相关登录凭证
           for (const item in res) {
-            _this.$cookie.set(item, res[item], { expires: day })
+            _this.$cookie.set(item, res[item])
           }
-          _this.$cookie.set('tokenSetTime', new Date().getTime(), { expires: day })
+          _this.$cookie.set('tokenSetTime', new Date().getTime())
         },
         error: err => {
           this.$message.error(err.responseJSON.error_description)

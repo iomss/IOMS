@@ -8,9 +8,7 @@ const cookies = {
    * @param {Object} setting cookie setting
    */
   set: (name, value, cookieSetting = {}) => {
-    const currentCookieSetting = {
-      expires: 1
-    }
+    const currentCookieSetting = {}
     Object.assign(currentCookieSetting, cookieSetting)
     Cookies.set(`ioms-${name}`, value, currentCookieSetting)
   },
