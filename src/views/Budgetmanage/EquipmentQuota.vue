@@ -55,12 +55,12 @@
               </el-table-column> -->
               <el-table-column prop="code" label="定额编目">
                 <template slot-scope="scope">
-                  {{ scope.row.normEquipment===null?'':scope.row.normEquipment.code }}
+                  {{ scope.row.normEquipment===null || scope.row.normEquipment=== undefined ?'':scope.row.normEquipment.code }}
                 </template>
               </el-table-column>
               <el-table-column prop="count" label="定额设备名称">
                 <template slot-scope="scope">
-                  {{ scope.row.normEquipment===null?'':scope.row.normEquipment.name }}
+                  {{ scope.row.normEquipment===null|| scope.row.normEquipment=== undefined?'':scope.row.normEquipment.name }}
                 </template>
               </el-table-column>
               <el-table-column prop="matchType" label="匹配度">
@@ -70,7 +70,7 @@
               </el-table-column>
               <el-table-column prop="operationType" label="合同类型">
                 <template slot-scope="scope">
-                  {{ scope.row.normEquipment===null?'':scope.row.normEquipment.operationType=='HardMaintain'?'硬件维护':scope.row.normEquipment.operationType=='SoftMaintain'?'软件维护':scope.row.normEquipment.operationType=='InformationSecurity'?'信息安全':scope.row.normEquipment.operationType=='HardRepair'?'硬件维修':'软件维修' }}
+                  {{ scope.row.normEquipment===null|| scope.row.normEquipment=== undefined?'':scope.row.normEquipment.operationType=='HardMaintain'?'硬件维护':scope.row.normEquipment.operationType=='SoftMaintain'?'软件维护':scope.row.normEquipment.operationType=='InformationSecurity'?'信息安全':scope.row.normEquipment.operationType=='HardRepair'?'硬件维修':'软件维修' }}
                 </template>
               </el-table-column>
             </el-table>
