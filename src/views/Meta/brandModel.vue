@@ -90,8 +90,8 @@
                   <el-input v-model="modelForm.name" placeholder="型号名称" size="small" />
                 </el-form-item>
                 <el-form-item label="品牌" prop="brandId">
-                  <el-select v-model="modelForm.brandId" filterable placeholder="请选择">
-                    <el-option v-for="item in brandData" :key="item.id" :label="item.name" :value="item.id" />
+                  <el-select v-model="modelForm.brandId" filterable remote :remote-method="remoteMethodBrandData" :loading="loading" placeholder="请选择" size="small" @focus="remoteMethodBrandData">
+                    <el-option v-for="item in sertchBrandData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
               </el-form>
@@ -122,6 +122,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       brandRadio: '', // 品牌 table 单选按钮
       // 品牌
       brandData: [], // 数据
@@ -150,6 +151,7 @@ export default {
       /** **************************************************************************************************************************** */
       modelRadio: '', // 型号 table 单选按钮
       // 型号
+      sertchBrandData: [],
       modelData: [], // 数据
       modelFormSearch: {
         brandId: undefined,
@@ -212,8 +214,8 @@ export default {
       this.brandForm.name = ''
     },
     updateBrand(row) {
+      this.brandFormTitle = '编辑品牌名称'
       if (row === undefined) {
-        this.brandFormTitle = '编辑品牌名称'
         if (this.multipleSelectionBrand.length !== 1) {
           this.$message.error('请选择一项品牌数据进行操作')
         } else {
@@ -300,6 +302,20 @@ export default {
       // 调用获取数据
       this.getModelData()
     },
+    remoteMethodBrandData(query) {
+      this.loading = true
+      let querytext = ''
+      querytext = typeof (query) === 'string' ? query : ''
+      this.$axios.get('/api/Meta/Brand?text=' + querytext).then(res => {
+        this.loading = false
+        this.sertchBrandData = res.data
+        if (this.modelFormTitle === '编辑型号名称') {
+          let hasbrandData = false
+          this.sertchBrandData.forEach(item => { item.id === this.multipleSelectionModel[0].brandId ? hasbrandData = true : '' })
+          hasbrandData ? '' : this.sertchBrandData.push({ id: this.multipleSelectionModel[0].brandId, name: this.multipleSelectionModel[0].brandName })
+        }
+      })
+    },
     addModel() {
       // 添加方法
       this.modelFormVisible = true// 显示弹框
@@ -309,10 +325,16 @@ export default {
       this.modelForm.brandId = undefined
     },
     updateModel(row) {
+      let hasbrandData = false
+      this.sertchBrandData.forEach(item => { item.id === row.brandId ? hasbrandData = true : '' })
+      hasbrandData ? '' : this.sertchBrandData.push({ id: row.brandId, name: row.brandName })
+
+      this.multipleSelectionModel = [row]
+      this.modelFormTitle = '编辑型号名称'
       if (row === undefined) {
-        this.modelFormTitle = '编辑品牌名称'
+        // 判断当前按选中值是否存在，不存在插入
         if (this.multipleSelectionModel.length !== 1) {
-          this.$message.error('请选择一项品牌数据进行操作')
+          this.$message.error('请选择一项型号数据进行操作')
         } else {
           this.modelFormVisible = true
           this.modelForm.id = this.multipleSelectionModel[0].id
