@@ -33,7 +33,7 @@
                   <el-input v-model="formData.description" placeholder="故障描述" size="small" />
                 </el-form-item>
                 <el-form-item label="录入人" prop="reporterName">
-                  {{ dangqianUser.userName }}
+                  {{ dangqianUser.trueName }}
                 </el-form-item>
                 <el-form-item label="报修人" prop="reporterName">
                   <el-input v-model="formData.reporterName" placeholder="报修人" size="small" />
@@ -94,7 +94,8 @@ export default {
     return {
       dangqianUser: {// 当前登陆用户
         userName: this.$cookie.get('userName'),
-        id: this.$cookie.get('id')
+        id: this.$cookie.get('id'),
+        trueName: this.$cookie.get('trueName')
       },
       loading: false, // 远程搜索
       changeActiveVisible: false,

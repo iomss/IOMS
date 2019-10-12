@@ -87,6 +87,12 @@
               <el-form-item label="照片" class="form_mid" prop="img">
                 <Uploadimg v-model="formData.image" :reset="formData.image" @uploadimg="uploadimgdata">aaa</Uploadimg>
               </el-form-item>
+              <div>
+                <p>自定义属性：</p>
+                <el-form-item v-for="item in selfData" :key="item.id" :label="item.displayName" class="form_mid" :prop="item.name">
+                  <el-input :v-model="formData[item.name]" size="small" />
+                </el-form-item>
+              </div>
               <el-form-item class="form_total">
                 <el-button type="primary" size="small" icon="el-icon-search" @click="create()">保存</el-button>
                 <el-button size="small" icon="el-icon-close" @click="cancel()">取消</el-button>
@@ -151,6 +157,7 @@ export default {
       modelData: [], // 型号数据
       sourceData: [], // 设备来源
       siData: [], // 集成商来源
+      selfData: [], // 自定义属性
       formDatarules: {
         useUnitId: [
           { required: true, message: '使用单位不可为空', trigger: 'change' }
@@ -242,11 +249,19 @@ export default {
     this.getbrandData()
     this.getsourceData()
     this.getsiData()
+    this.getData()
   },
   methods: {
     // 上传图片 子传父的值
     uploadimgdata(e) {
       this.formData.image = e
+    },
+    getData() { // 获取自定义属性
+      this.$axios.get('/api/AssetField').then(res => {
+        res.data.forEach(item => { this.formData[item.name] = '' })
+        this.selfData = res.data
+        console.log(this.selfData)
+      })
     },
     getunitData() {
       // 获取使用单位信息
