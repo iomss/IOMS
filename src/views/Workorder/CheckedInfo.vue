@@ -36,8 +36,8 @@
               <li><span>设备编号:</span><b>{{ tableData.assetCode }}</b></li>
               <li><span>故障类型:</span><b>{{ tableData.equipmentFault? tableData.equipmentFault.name:'' }}</b></li>
               <li><span>维修级别:</span><b>{{ tableData.repairLevel===null?'':tableData.repairLevel.name }}</b></li>
-              <li><span>维修开始时间:</span><b>{{ tableData.startTime }}</b></li>
-              <li><span>维修结束时间:</span><b>{{ tableData.endTime }}</b></li>
+              <li><span>维修开始时间:</span><b>{{ tableData.startTime===null?'':tableData.startTime }}</b></li>
+              <li><span>维修结束时间:</span><b>{{ tableData.endTime===null?'':tableData.endTime }}</b></li>
               <li><span>维修过程:</span><b>{{ tableData.description }}</b></li>
               <!-- <li><span>建议:</span><b>null</b></li> -->
               <li><span>配件名称及数量:</span><b>{{ tableData.spareDescription }}</b></li>
@@ -135,8 +135,16 @@ export default {
     getrecord() {
       this.$axios.get('/api/RepairRecord/' + this.repairRecordId).then(res => {
         this.tableData = res
-        this.tableData.startTime = this.$moment(res.startTime).format('YYYY-MM-DD HH:mm')
-        this.tableData.endTime = this.$moment(res.endTime).format('YYYY-MM-DD HH:mm')
+        if (this.tableData.startTime === null) {
+          console.log(null)
+        } else {
+          this.tableData.startTime = this.$moment(res.startTime).format('YYYY-MM-DD HH:mm')
+        }
+        if (this.tableData.endTime === null) {
+          console.log(null)
+        } else {
+          this.tableData.endTime = this.$moment(res.endTime).format('YYYY-MM-DD HH:mm')
+        }
         this.tableData.resultImg = process.env.VUE_APP_API + res.resultImg
         this.tableData.signImg = process.env.VUE_APP_API + res.signImg
       })
