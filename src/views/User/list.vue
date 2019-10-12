@@ -44,15 +44,15 @@
                   <el-input v-model="UserForm.trueName" placeholder="真实姓名" userze="small" />
                 </el-form-item>
                 <el-form-item label="密码" prop="passWord">
-                  <el-input v-model="UserForm.passWord" placeholder="用户" userze="small" />
+                  <el-input v-model="UserForm.passWord" placeholder="密码" userze="small" />
                 </el-form-item>
                 <el-form-item prop="units" label="单位">
-                  <el-select v-model="UserForm.units" multiple placeholder="单位" size="small">
+                  <el-select v-model="UserForm.units" filterable remote multiple :remote-method="remoteMethodUnits" :loading="loading" placeholder="单位" size="small" @focus="remoteMethodUnits">
                     <el-option v-for="item in unitData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
                 <el-form-item prop="roles" label="角色">
-                  <el-select v-model="UserForm.roles" multiple placeholder="角色" size="small">
+                  <el-select v-model="UserForm.roles" filterable remote multiple :remote-method="remoteMethodRoles" :loading="loading" placeholder="角色" size="small" @focus="remoteMethodRoles">
                     <el-option v-for="item in roleData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
@@ -60,7 +60,7 @@
                   <el-input v-model="UserForm.contactNumber" placeholder="联系电话" size="small" />
                 </el-form-item>
                 <el-form-item prop="commpanyId" label="公司">
-                  <el-select v-model="UserForm.commpanyId" clearable placeholder="公司" size="small">
+                  <el-select v-model="UserForm.commpanyId" filterable remote :remote-method="remoteMethodCommpanyId" :loading="loading" placeholder="公司" size="small" @focus="remoteMethodCommpanyId">
                     <el-option v-for="item in SIData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
@@ -142,8 +142,8 @@ export default {
       },
       UserDeleteModelVisible: false,
       UserDeleteDataId: null,
-      multipleSelectionUser: []
-
+      multipleSelectionUser: [],
+      loading: false
     }
   },
   computed: {},
@@ -216,6 +216,7 @@ export default {
           this.UserForm.trueName = this.multipleSelectionUser[0].trueName
           this.UserForm.password = ''
           this.multipleSelectionUser[0].units.forEach(item => unitVal.push(item.id))
+          debugger
           this.UserForm.units = unitVal
           this.multipleSelectionUser[0].roles.forEach(item => rolesVal.push(item.id))
           this.UserForm.roles = rolesVal
@@ -281,6 +282,33 @@ export default {
     // 表单多选数据
     handleSelectionChangeUser(val) {
       this.multipleSelectionUser = val
+    },
+    remoteMethodUnits(query) {
+      this.loading = true
+      let querytext = ''
+      querytext = typeof (query) === 'string' ? query : ''
+      this.$axios.get('/api/Meta/Unit?text=' + querytext).then(res => {
+        this.loading = false
+        this.unitData = res.data
+      })
+    },
+    remoteMethodRoles(query) {
+      this.loading = true
+      let querytext = ''
+      querytext = typeof (query) === 'string' ? query : ''
+      this.$axios.get('/api/Meta/Role?text=' + querytext).then(res => {
+        this.loading = false
+        this.roleData = res.data
+      })
+    },
+    remoteMethodCommpanyId(query) {
+      this.loading = true
+      let querytext = ''
+      querytext = typeof (query) === 'string' ? query : ''
+      this.$axios.get('/api/Meta/SI?text=' + querytext).then(res => {
+        this.loading = false
+        this.SIData = res.data
+      })
     }
 
   }
