@@ -7,7 +7,7 @@
           <div class="header">
             <div class="tools">
               <el-button type="success" size="small" @click="FormVisible = true">新增备件入库</el-button>
-              <el-button type="primary" size="small" @click="updateData()">修改</el-button>
+              <!-- <el-button type="primary" size="small" @click="updateData()">修改</el-button> -->
               <el-button type="danger" size="small" @click="deleteData()">删除</el-button>
             </div>
             <div class="toolsrt">
@@ -42,9 +42,6 @@
             <!-- 新增备件入库 -->
             <el-dialog title="新增备件入库单" :visible.sync="FormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="1000px">
               <el-form ref="EditForm" :model="EditForm" :rules="FormRules" label-width="120px">
-                <el-form-item label="入库单号" prop="repairOrderCode">
-                  <el-input v-model="EditForm.repairOrderCode" placeholder="入库单号" size="small" />
-                </el-form-item>
                 <el-form-item label="入库单类型" prop="spareBoundSubType">
                   <el-select v-model="EditForm.spareBoundSubType" filterable placeholder="入库单类型" size="small">
                     <el-option key="PurchaseInBound" label="采购入库" value="PurchaseInBound" />
@@ -63,14 +60,14 @@
                 <el-form-item label="入库日期" prop="boundTime">
                   <el-date-picker v-model="EditForm.boundTime" type="date" placeholder="入库日期" />
                 </el-form-item>
-                <el-form-item label="单据状态" prop="name">
-                  <el-input v-model="EditForm.name" placeholder="单据状态" size="small" />
-                </el-form-item>
                 <el-form-item label="操作人" prop="opeartor">
-                  <el-input v-model="EditForm.opeartor" placeholder="操作人" size="small" />
+                  <el-input v-model="EditForm.opeartor" :disabled="true" placeholder="操作人" size="small" />
                 </el-form-item>
-                <el-form-item label="备注" prop="name" class="form_total">
-                  <el-input v-model="EditForm.name" type="textarea" placeholder="备注" size="small" />
+                <el-form-item label="维修单编号" prop="repairOrderCode">
+                  <el-input v-model="EditForm.repairOrderCode" placeholder="操作人" size="small" />
+                </el-form-item>
+                <el-form-item label="备注" prop="remark" class="form_total">
+                  <el-input v-model="EditForm.remark" type="textarea" placeholder="备注" size="small" />
                 </el-form-item>
               </el-form>
               <div class="header">
@@ -98,13 +95,25 @@
                     {{ scope.row.model.name }}
                   </template>
                 </el-table-column>
-                <el-table-column prop="remark" label="单价" />
-                <el-table-column prop="model" label="数量" />
-                <el-table-column prop="remark" label="总金额" />
+                <el-table-column prop="remark" label="单价">
+                  <template scope="scope">
+                    <el-input v-model="scope.row.unitPrice" size="small" placeholder="请输入内容" />
+                  </template>
+                </el-table-column>
+                <el-table-column prop="model" label="数量">
+                  <template scope="scope">
+                    <el-input v-model="scope.row.quantity" size="small" placeholder="请输入内容" />
+                  </template>
+                </el-table-column>
+                <el-table-column prop="remark" label="总金额">
+                  <template slot-scope="scope">
+                    {{ scope.row.unitPrice !==undefined && scope.row.quantity!==undefined ? scope.row.unitPrice*scope.row.quantity:'' }}
+                  </template>
+                </el-table-column>
               </el-table>
               <span slot="footer" class="dialog-footer">
-                <el-button type="primary" size="small" @click="update()">暂存</el-button>
-                <el-button type="success" size="small" @click="deleteData()">确认入库</el-button>
+                <el-button type="primary" size="small" @click="unsureDate()">暂存</el-button>
+                <el-button type="success" size="small" @click="sureData()">确认入库</el-button>
                 <el-button type="primary" plain size="small" @click="FormVisible = false">取消</el-button>
               </span>
             </el-dialog>
@@ -170,10 +179,15 @@ export default {
   data() {
     return {
       loading: false, // 远程搜索
+      dangqianUser: {
+        userName: this.$cookie.get('userName'),
+        id: this.$cookie.get('id')
+      },
       formSearch: {
         text: '', // 搜索文本
         pageSize: 10, // 展示条数
-        pageNumber: 1// 页码
+        pageNumber: 1, // 页码
+        spareBoundType: 'InBound'
       },
       formSearchselect: {
         text: '', // 搜索文本
@@ -192,12 +206,13 @@ export default {
       FormVisible: false, // 编辑弹框
       Visible: false,
       EditForm: {
-        opeartor: '',
+        opeartor: this.$cookie.get('userName'),
         repairOrderCode: '',
-        name: '',
         boundTime: '',
         spareStockRecordItems: '',
-        spareBoundSubType: ''
+        spareBoundSubType: '',
+        remark: '',
+        spareBoundType: 'InBound'
       },
       WarehouseData: [], // 仓库数据
       tableDatain: [], // 入库表格
@@ -207,14 +222,19 @@ export default {
         pageCount: ''
       },
       FormRules: {
-        name: {
+        spareBoundSubType: {
           required: true,
-          message: '设备名称不可为空',
+          message: '入库单类型不可为空',
           trigger: 'blur'
         },
-        brandId: {
+        spareRepositoryId: {
           required: true,
-          message: '定额编目不可为空',
+          message: '入库库房不可为空',
+          trigger: 'blur'
+        },
+        boundTime: {
+          required: true,
+          message: '入库日期不可为空',
           trigger: 'blur'
         }
       }
@@ -268,7 +288,12 @@ export default {
         if (this.multiple.length !== 1) {
           this.$message.error('请选择一项数据进行操作')
         } else {
-          this.removeQuestionVisible = true
+          if (this.multiple[0].confirmed) {
+            this.$message.error('已入库不可删')
+          } else {
+            this.removeData.id = this.multiple[0].id
+            this.removeQuestionVisible = true
+          }
         }
       } else {
         this.removeQuestionVisible = true
@@ -276,7 +301,7 @@ export default {
     },
     removeQuestion() { // 删除
       const _this = this
-      this.$axios.delete('/api/Assets/?Id=' + this.removeData.id).then(response => {
+      this.$axios.delete('/api/SpareStockRecord/' + this.removeData.id).then(response => {
         _this.$message.success('删除成功')
         _this.removeQuestionVisible = false
         this.getData()
@@ -307,6 +332,44 @@ export default {
     },
     handlefirstchange(val) {
       this.multiplefirst = val
+    },
+    unsureDate() { // 暂存
+      const spareStockRecordItems = []
+      this.tableDatain.forEach(item => spareStockRecordItems.push({
+        spareId: item.id,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+        totalPrice: item.quantity * item.unitPrice
+      }))
+      this.EditForm.spareStockRecordItems = spareStockRecordItems
+      this.$refs.EditForm.validate(valid => {
+        if (valid) {
+          this.$axios.post('/api/SpareStockRecord', this.EditForm).then(res => {
+            this.getData()
+            this.$message.success('入库单暂存')
+            this.FormVisible = false
+          })
+        }
+      })
+    },
+    sureData() { // 确认入库
+      const spareStockRecordItems = []
+      this.tableDatain.forEach(item => spareStockRecordItems.push({
+        spareId: item.id,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+        totalPrice: item.quantity * item.unitPrice
+      }))
+      this.EditForm.spareStockRecordItems = spareStockRecordItems
+      this.$refs.EditForm.validate(valid => {
+        if (valid) {
+          this.$axios.post('/api/SpareStockRecord/CreateAndSubmit', this.EditForm).then(res => {
+            this.getData()
+            this.$message.success('确认入库成功')
+            this.FormVisible = false
+          })
+        }
+      })
     },
     //* ******************************************************************************二级弹框******************************************************************** *//
     getDataselect() {
