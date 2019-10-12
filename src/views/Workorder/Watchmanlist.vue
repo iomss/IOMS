@@ -32,6 +32,14 @@
             <el-table :data="tableData" stripe border style="width: 100%" @selection-change="handleSelectionChange">
               <el-table-column type="selection" />
               <el-table-column type="index" label="序号" />
+              <el-table-column prop="code" label="维修单编号">
+                <template slot-scope="scope">
+                  <!-- 验收状态，审核状态，录入维修记录状态，完成状态可查看详情 -->
+                  <router-link v-if="scope.row.orderState==='Check'||scope.row.orderState==='Review'||scope.row.orderState==='Done'||scope.row.orderState==='Repair'" :to="'/Workorder/CheckedInfo/' +scope.row.id" tag="a" style="color:#409eff">{{ scope.row.code }}</router-link>
+                  <!-- 接单转单抢单不可查看详情 -->
+                  <div v-if="scope.row.orderState==='Dispatching'||scope.row.orderState==='Record'||scope.row.orderState==='Dispatched'">{{ scope.row.code }}</div>
+                </template>
+              </el-table-column>
               <el-table-column label="操作" width="200">
                 <template slot-scope="scope">
                   <!-- 删除权限 -->
@@ -64,7 +72,7 @@
                   </div>
                 </template>
               </el-table-column>
-              <el-table-column prop="code" label="维修单编号" />
+
               <el-table-column prop="position.crumbName" label="设备位置" width="200" />
               <el-table-column prop="position.name" label="资产名称" />
               <!-- <el-table-column prop="equipment.equimentType.name" label="设备种类" /> -->
