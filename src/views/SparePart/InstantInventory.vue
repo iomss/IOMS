@@ -6,8 +6,8 @@
         <el-row class="panel">
           <div class="header">
             <div class="tooltotal">
-              <el-button size="small" type="primary" @click="FormVisiblein = true">备件入库</el-button>
-              <el-button size="small" type="primary" @click="FormVisibleout = true">备件出库</el-button>
+              <el-button size="small" type="primary" @click="form('InBound')">备件入库</el-button>
+              <el-button size="small" type="primary" @click="form('OutBound')">备件出库</el-button>
               <el-button size="small" type="primary" plain @click="outputData()">导出</el-button>
             </div>
             <div class="tools">
@@ -49,23 +49,23 @@
               <el-table-column prop="remark" label="备注" />
             </el-table>
             <!-- 新增备件入库 -->
-            <el-dialog title="新增备件入库单" :visible.sync="FormVisiblein" :show-close="false" width="1000px">
+            <el-dialog :title="formTitle" :visible.sync="FormVisiblein" :show-close="false" width="1000px">
               <el-form ref="EditFormin" :model="EditFormin" :rules="FormRulesin" label-width="120px">
-                <el-form-item label="入库单号">
-                  <el-input value="系统自动生成" disabled placeholder="入库单号" size="small" />
+                <el-form-item :label="EditFormin.spareBoundType==='InBound'?'入库单号':'出库单号'">
+                  <el-input value="系统自动生成" disabled :placeholder="EditFormin.spareBoundType==='InBound'?'入库单号':'出库单号'" size="small" />
                 </el-form-item>
-                <el-form-item label="入库单类型" prop="spardBoundSubType">
-                  <el-select v-model="EditFormin.spardBoundSubType" filterable remote placeholder="入库单类型" size="small">
+                <el-form-item :label="EditFormin.spareBoundType==='InBound'?'入库类型':'出库类型'" prop="spardBoundSubType">
+                  <el-select v-model="EditFormin.spardBoundSubType" filterable remote :placeholder="EditFormin.spareBoundType==='InBound'?'入库类型':'出库类型'" size="small">
                     <el-option v-for="(item,index) in spardBoundSubType" :key="index" :label="item.name" :value="item.value" />
                   </el-select>
                 </el-form-item>
-                <el-form-item label="入库库房" prop="spareRepositoryId">
+                <el-form-item :label="EditFormin.spareBoundType==='InBound'?'入库库房':'出库库房'" prop="spareRepositoryId">
                   <el-select v-model="EditFormin.spareRepositoryId" filterable remote :remote-method="remoteMethodSpareRepository" :loading="loading" clearable placeholder="入库库房" size="small" @focus="remoteMethodSpareRepository">
                     <el-option v-for="item in spareRepositoryData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
                 <el-form-item label="库存类型" prop="spareStockType">
-                  <el-select v-model="EditFormin.spareStockType" filterable remote placeholder="入库单类型" size="small">
+                  <el-select v-model="EditFormin.spareStockType" filterable remote placeholder="库存类型" size="small">
                     <el-option v-for="(item,index) in spareStockType" :key="index" :label="item.name" :value="item.value" />
                   </el-select>
                 </el-form-item>
@@ -74,6 +74,9 @@
                 </el-form-item>
                 <el-form-item label="经办人">
                   <el-input value="系统自动生成" disabled placeholder="经办人" size="small" />
+                </el-form-item>
+                <el-form-item v-show="EditFormin.spareBoundType!=='InBound'" label="领用人">
+                  <el-input v-model="EditFormin.receive" :disabled="!EditFormin.spareBoundType==='InBound'" placeholder="领用人" size="small" />
                 </el-form-item>
                 <el-form-item label="备注" prop="name" class="form_total">
                   <el-input v-model="EditFormin.name" type="textarea" placeholder="备注" size="small" />
@@ -116,13 +119,13 @@
                 </el-table-column>
               </el-table>
               <span slot="footer" class="dialog-footer">
-                <el-button type="primary" size="small" @click="createData()">暂存</el-button>
-                <el-button type="success" size="small" @click="createandSubmitData()">确认入库</el-button>
+                <el-button type="primary" size="small" @click="createData()">{{ EditFormin.spareBoundType==='InBound'?'暂存':'出库' }}</el-button>
+                <el-button v-show="EditFormin.spareBoundType==='InBound'" type="success" size="small" @click="createandSubmitData()">确认入库</el-button>
                 <el-button type="primary" plain size="small" @click="closeSpare()">取消</el-button>
               </span>
             </el-dialog>
             <!--选择备件-->
-            <el-dialog width="40%" title="选择入库备件" :visible.sync="selectSpareVisible" append-to-body>
+            <el-dialog width="40%" title="选择备件" :visible.sync="selectSpareVisible" append-to-body>
               <el-row style="text-align:right;">
                 <el-input v-model="spareDataFormSearch.text" placeholder="输入搜索内容" size="small" style="width:200px;" />
                 <el-button type="success" size="small" @click="getSpare()">查询</el-button>
@@ -223,29 +226,30 @@ export default {
         }
       ], // 库存类型
       FormVisiblein: false, // 编辑弹框
+      formTitle: '', // 表单title
       EditFormin: {
         opeartor: '', // 经办人
         receive: '', // 领用人（出库）
         repairOrderCode: '', // 维修单编号
         boundTime: '', // 时间
-        spareBoundType: 'InBound', // 类型 【InBound:入库，OutBound:出库,ScrapBound 调拨】
-        spardBoundSubType: 'PurchaseInBound', // 子类型【PurchaseInBound：进货、采购, SpecialInBound：特别、专项, Repair：维修, Scrap：报废, ReceiveOutBound：接收出货】
-        spareStockType: 'Spare', // 库存类型【Spare：备用, Repair：维修, Scrap：报废】
+        spareBoundType: '', // 类型 【InBound:入库，OutBound:出库,ScrapBound 调拨】
+        spardBoundSubType: '', // 子类型【PurchaseInBound：进货、采购, SpecialInBound：特别、专项, Repair：维修, Scrap：报废, ReceiveOutBound：接收出货】
+        spareStockType: '', // 库存类型【Spare：备用, Repair：维修, Scrap：报废】
         spareRepositoryId: null, // 仓库
-        spareStockRecordItems: []// 备件
+        spareStockRecordItems: [] // 备件
       }, // 入库表单
       FormRulesin: {
         spardBoundSubType: [
           {
             required: true,
-            message: '入库单类型不可为空',
+            message: '单类型不可为空',
             trigger: 'change'
           }
         ],
         spareRepositoryId: [
           {
             required: true,
-            message: '入库库房不可为空',
+            message: '库房不可为空',
             trigger: 'change'
           }
         ],
@@ -286,6 +290,12 @@ export default {
     this.getSpare()// 获取备件数据
   },
   methods: {
+    form(type) {
+      this.FormVisiblein = true
+      this.EditFormin.spareBoundType = type
+      this.EditFormin.receive = ''
+      this.formTitle = type === 'InBound' ? '新增备件入库单' : '新增备件出库单'
+    },
     /** **********主table form 相关方法 start***************/
     // 获取即时库存数据
     getData() {
@@ -382,7 +392,7 @@ export default {
         if (valid) {
           this.$axios.post('/api/SpareStockRecord', this.EditFormin).then(res => {
             this.getData()
-            this.$message.success('入库单暂存')
+            this.$message.success(this.EditFormin.spareBoundType === 'InBound' ? '入库单暂存成功' : '出库成功')
             this.FormVisiblein = false
             this.closeSpare()
           })
