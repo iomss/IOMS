@@ -34,6 +34,9 @@ import moment from 'moment'
 // base64编解码
 import { Base64 } from 'js-base64'
 
+// 引入utils公共方法
+import utils from './libs/utils'
+
 Vue.use(Element)
 
 // Vue.use(directives)
@@ -52,6 +55,9 @@ Vue.prototype.$moment = moment
 
 // base64
 Vue.prototype.$base64 = Base64
+
+// 将utils挂载到vue原型属性中
+Vue.prototype.$utils = utils
 
 Vue.directive('loadmore', {
   bind(el, binding) {

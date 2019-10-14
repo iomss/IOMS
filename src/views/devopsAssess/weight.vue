@@ -8,7 +8,7 @@
       border
       fit
       highlight-current-row
-      style="width: 100%;margin-bottom: 66px;"
+      style="width: 100%;"
       size="small"
     >
       <el-table-column
@@ -17,20 +17,20 @@
       />
       <el-table-column
         label="权重"
-        prop="score"
+        prop="weight"
       />
       <el-table-column
         label="更新时间"
-        prop="createTime"
+        prop="updateTime"
       />
 
       <el-table-column
         label="更新人"
-        prop="username"
+        prop="createUser.name"
       />
       <el-table-column
         label="备注"
-        prop="note"
+        prop="remark"
       />
 
       <el-table-column label="操作">
@@ -45,11 +45,13 @@
       </el-table-column>
     </el-table>
 
+    <pagination v-show="tableData.total>0" :total="tableData.total" :page.sync="tableDataQueryData.pageNumber" :limit.sync="tableDataQueryData.pageSize" @pagination="getSubCenterData" />
+
     <el-divider content-position="left" class="el-divider-top">隧道所运维考核权重表</el-divider>
 
     <el-table
-      v-loading="tableData.listLoading"
-      :data="tableData.list"
+      v-loading="tunnelOfficeTableData.listLoading"
+      :data="tunnelOfficeTableData.list"
       border
       fit
       highlight-current-row
@@ -58,24 +60,24 @@
     >
       <el-table-column
         label="隧道所运维考核指标名称"
-        prop="name"
+        prop="system.name"
       />
       <el-table-column
         label="权重"
-        prop="score"
+        prop="weight"
       />
       <el-table-column
         label="更新时间"
-        prop="createTime"
+        prop="updateTime"
       />
 
       <el-table-column
         label="更新人"
-        prop="username"
+        prop="createUser.name"
       />
       <el-table-column
         label="备注"
-        prop="note"
+        prop="remark"
       />
 
       <el-table-column label="操作">
@@ -89,8 +91,9 @@
         </template>
       </el-table-column>
     </el-table>
+    <pagination v-show="tunnelOfficeTableData.total>0" :total="tunnelOfficeTableData.total" :page.sync="tunnelOfficeQueryData.pageNumber" :limit.sync="tunnelOfficeQueryData.pageSize" @pagination="getTunnelOfficeData" />
 
-    <edit-weight v-if="editWeightVisible" ref="editWeight" />
+    <edit-weight v-if="editWeightVisible" ref="editWeight" @refreshtabledata="refreshAllTabel" />
 
   </div>
 </template>
@@ -107,36 +110,121 @@
 
 </style>
 <script>
+import pagination from '@/components/Pagination'
 
 import editWeight from './components/edit_weight'
 
 export default {
   components: {
-    editWeight
+    editWeight,
+    pagination
   },
   data() {
     return {
       editWeightVisible: false,
 
       tableData: {
+        listLoading: false,
+        total: 0,
         list: [{
-          name: '监控系统',
-          score: 1,
-          createTime: '2019/09/02',
-          username: '管理员',
-          note: ''
-        }],
-        listLoading: false
+          system: {
+            name: ''
+          },
+          createUser: {
+            name: ''
+          },
+          weight: '',
+          updateTime: '',
+          remark: ''
+        }]
+      },
+
+      tableDataQueryData: {
+        type: 'SubCenter',
+        desc: false,
+        pageNumber: 1,
+        pageSize: 10
+      },
+
+      tunnelOfficeTableData: {
+        listLoading: false,
+        total: 0,
+        list: [{
+          system: {
+            name: ''
+          },
+          createUser: {
+            name: ''
+          },
+          weight: '',
+          updateTime: '',
+          remark: ''
+        }]
+      },
+
+      tunnelOfficeQueryData: {
+        type: 'TunnelOffice',
+        desc: false,
+        pageNumber: 1,
+        pageSize: 10
       }
     }
   },
+  mounted() {
+    this.getSubCenterData()
+    this.getTunnelOfficeData()
+  },
   methods: {
-    handleView() {
+
+    /**
+     * 获取分中心数据
+     * @return {[type]} [description]
+     */
+    getSubCenterData() {
+      this.tableData.listLoading = true
+
+      var queryData = this.$utils.objectToString(this.tableDataQueryData)
+
+      this.$axios.get('/api/AssessmentWeight' + queryData).then(res => {
+        this.tableData.list = res.data
+        this.tableData.listLoading = false
+        this.tableData.total = res.totalCount
+      })
+    },
+
+    /**
+     * 获取隧道所运维考核
+     * @return {[type]} [description]
+     */
+    getTunnelOfficeData() {
+      this.tunnelOfficeTableData.listLoading = true
+      var queryData = this.$utils.objectToString(this.tunnelOfficeQueryData)
+
+      this.$axios.get('/api/AssessmentWeight' + queryData).then(res => {
+        this.tunnelOfficeTableData.list = res.data
+        this.tunnelOfficeTableData.listLoading = false
+        this.tunnelOfficeTableData.total = res.totalCount
+      })
+    },
+
+    /**
+     * 点击编辑权重信息
+     * @param  {[type]} index [description]
+     * @param  {[type]} rows  [description]
+     * @return {[type]}       [description]
+     */
+    handleView(index, rows) {
       this.editWeightVisible = true
       this.$nextTick(() => {
-        this.$refs.editWeight.init()
+        this.$refs.editWeight.init(rows.id)
       })
+    },
+
+    refreshAllTabel() {
+      this.getSubCenterData()
+      this.getTunnelOfficeData()
     }
+
   }
 }
 </script>

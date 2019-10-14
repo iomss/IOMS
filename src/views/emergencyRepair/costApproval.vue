@@ -3,8 +3,8 @@
 
     <el-form v-show="isShowSearch" :inline="true" :model="formInline" class="demo-form-inline" size="small">
 
-      <el-form-item label="审批人">
-        <el-input v-model="formInline.user" placeholder="审批人" />
+      <el-form-item label="项目名或报修单位">
+        <el-input v-model="formInline.user" placeholder="项目名或报修单位" />
       </el-form-item>
 
       <el-form-item label="状态">
@@ -31,7 +31,6 @@
       <el-form-item>
         <el-button type="primary" @click="onSubmit">查询</el-button>
       </el-form-item>
-
     </el-form>
 
     <div class="filter-container">
@@ -55,15 +54,17 @@
       size="small"
       @sort-change="sortChange"
     >
+      <el-table-column type="selection" />
+
       <el-table-column label="编号" prop="id" sortable="custom" align="center" />
 
       <el-table-column label="状态" prop="status" class-name="status-col" />
 
-      <el-table-column label="紧急情况" prop="sos" align="center" />
-      <el-table-column label="工程名称" prop="name" align="center" />
-      <el-table-column label="报修单位" prop="company" align="center" />
+      <el-table-column label="项目名称" prop="name" align="center" />
+      <el-table-column label="抢修单位" prop="company" align="center" />
+      <el-table-column label="报修单位" prop="company_2" align="center" />
       <el-table-column label="接报单位" prop="company_2" align="center" />
-      <el-table-column label="报修时间" prop="createTime" align="center" :formatter="formatterDate" />
+      <el-table-column label="录入时间" prop="createTime" align="center" :formatter="formatterDate" />
 
       <el-table-column label="操作">
         <template slot-scope="scope">
@@ -80,7 +81,7 @@
 
     <pagination v-show="table.total>0" :total="table.total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
-    <approval-view v-if="viewVisible" ref="approvalView" />
+    <cost-view v-if="viewVisible" ref="costView" />
 
   </div>
 </template>
@@ -113,14 +114,14 @@
 <script>
 
 // https://blog.csdn.net/qq_29384639/article/details/80700882
-import approvalView from './components/approvalView'
+import costView from './components/cost-approval-view'
 
 import pagination from '@/components/Pagination'
 
 export default {
   components: {
     pagination,
-    approvalView
+    costView
   },
 
   data() {
@@ -146,7 +147,6 @@ export default {
           name: '工程名称',
           company: '报修单位',
           company_2: '接报单位'
-
         }],
 
         total: 20,
@@ -196,29 +196,21 @@ export default {
     },
 
     /**
-           * 显示查询条件
-           * @return {[type]} [description]
-           */
+     * 显示查询条件
+     * @return {[type]} [description]
+     */
     showSearchForm() {
       this.isShowSearch = !this.isShowSearch
     },
 
-    // 添加页面
-    addPage() {
-      this.addVisible = true
-      this.$nextTick(() => {
-        this.$refs.add.init()
-      })
-    },
-
     /**
-           * 处理显示试图
-           * @return {[type]} [description]
-           */
+     * 处理显示试图
+     * @return {[type]} [description]
+     */
     handleView() {
       this.viewVisible = true
       this.$nextTick(() => {
-        this.$refs.approvalView.init()
+        this.$refs.costView.init()
       })
     },
 

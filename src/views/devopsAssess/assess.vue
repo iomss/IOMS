@@ -4,18 +4,18 @@
     <el-form :inline="true" :model="formInline" class="demo-form-inline" size="small">
 
       <el-form-item label="单位">
-        <el-select v-model="formInline.region" placeholder="状态">
-          <el-option label="全部" value="shanghai" />
-          <el-option label="待审批" value="beijing" />
-          <el-option label="已批准" value="beijing" />
-        </el-select>
+        <el-cascader
+          v-model="formInline.positionId"
+          :options="formInline.companyOptions"
+          :props="{ expandTrigger: 'hover', value: 'id', label: 'name' }"
+        />
       </el-form-item>
 
       <el-form-item label="考核日期">
         <el-col :span="24">
           <el-date-picker
-            v-model="formInline.date1"
-            type="datetimerange"
+            v-model="formInline.date"
+            type="daterange"
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -37,19 +37,21 @@
       border
       fit
       highlight-current-row
+      show-summary
       style="width: 100%;"
       size="small"
       @sort-change="sortChange"
     >
       <el-table-column label="编号" prop="id" sortable="custom" align="center" />
 
-      <el-table-column label="指标名称" prop="sos" align="center" />
-      <el-table-column label="统计指标" prop="name" align="center" />
-      <el-table-column label="指标得分" prop="company" align="center" />
-      <el-table-column label="权重" prop="company_2" align="center" />
-      <el-table-column label="加权得分(指标得分*权重)" prop="company_2" width="200" align="center" />
+      <el-table-column label="指标名称" prop="assessmentWeight.name" align="center" />
+      <el-table-column label="统计指标" prop="equipmentIntegrityRate" align="center" />
+      <el-table-column label="指标得分" prop="rateScore" align="center" />
+      <el-table-column label="权重" prop="weight" align="center" />
+      <el-table-column label="加权得分(指标得分*权重)" prop="score" width="200" align="center" />
+      <el-table-column label="备注" prop="company_2" align="center" />
 
-      <el-table-column label="操作">
+      <el-table-column label="操作" align="center">
         <template slot-scope="scope">
           <el-button
             size="small"
@@ -62,9 +64,8 @@
 
     </el-table>
 
-    <editAssess v-if="editAssessVisible" ref="editAssess" />
+    <editAssess v-if="editAssessVisible" ref="editAssess" @refreshtabledata="onSubmit" />
 
-    <pagination v-show="table.total>0" :total="table.total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
   </div>
 </template>
 <style>
@@ -80,48 +81,55 @@
 </style>
 <script>
 
-import pagination from '@/components/Pagination'
 import editAssess from './components/edit_assess'
 
 export default {
   components: {
-    pagination,
     editAssess
   },
   data() {
     return {
       editAssessVisible: false,
 
-      listQuery: {
-        page: 1,
-        limit: 10
-      },
-
       formInline: {
-        user: '',
-        region: '',
-        date1: '',
-        date2: ''
+        positionId: '',
+        companyOptions: [],
+        date: ''
       },
 
       table: {
         tableKey: 0,
         listLoading: false,
-        list: [{
-          id: 10,
-          status: '正常',
-          sos: '无',
-          name: '工程名称',
-          company: '报修单位',
-          company_2: '接报单位'
-        }],
+        list: [],
         total: 20
       }
+
     }
   },
+  mounted() {
+    this.treeCompanyDataList()
+  },
   methods: {
-    getList() {
 
+    /**
+     * 获取单位信息
+     * @return {[type]} [description]
+     */
+    treeCompanyDataList() {
+      this.$axios.get('/api/Tree/Position/All?secondThird=true').then(res => {
+        this.formInline.companyOptions = res
+      })
+    },
+
+    getList(formData) {
+      if (!formData) return
+
+      this.table.listLoading = true
+      this.$axios.post('/api/AssessmentRecord', formData).then(res => {
+        // this.table.total = res.totalCount;
+        this.table.listLoading = false
+        this.table.list = res.assessmentRecordItems
+      })
     },
     sortChange() {
 
@@ -131,15 +139,33 @@ export default {
 		* 点击打开编辑页面
 		* @return {[type]} [description]
 		*/
-    handleEditView() {
+    handleEditView(index, rows) {
       this.editAssessVisible = true
-
       this.$nextTick(() => {
-        this.$refs.editAssess.init()
+        this.$refs.editAssess.init(rows.id)
       })
     },
-    onSubmit() {
 
+    /**
+     * 提交查询
+     * @return {[type]} [description]
+     */
+    onSubmit() {
+      if (this.formInline.positionId.length <= 0) {
+        this.$message.error('需要选择查询单位')
+        return
+      }
+
+      if (this.formInline.date.length <= 0) {
+        this.$message.error('请选择查询日期')
+        return
+      }
+
+      this.getList({
+        positionId: this.formInline.positionId[1],
+        beginDate: this.formInline.date[0],
+        endDate: this.formInline.date[1]
+      })
     }
   }
 }
