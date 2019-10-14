@@ -85,7 +85,7 @@
               <el-divider />
               <div class="header">
                 <div class="tools">
-                  <el-button type="primary" size="small" @click="selectSpareVisible=true">选择备件</el-button>
+                  <el-button type="primary" size="small" @click="selectSpareVisible=true;getSpare()">选择备件</el-button>
                   <el-button type="primary" size="small" @click="removeSelectSpare({spareData:selectSpareData,selectData:SelectSpareDataSelect})">删除备件</el-button>
                 </div>
               </div>
@@ -120,7 +120,7 @@
               </el-table>
               <span slot="footer" class="dialog-footer">
                 <el-button type="primary" size="small" @click="createData()">{{ EditFormin.spareBoundType==='InBound'?'暂存':'出库' }}</el-button>
-                <el-button v-show="EditFormin.spareBoundType==='InBound'" type="success" size="small" @click="createandSubmitData()">确认入库</el-button>
+                <el-button type="success" size="small" @click="createandSubmitData()">{{ EditFormin.spareBoundType==='InBound'?'确认入库':'确认出库' }}</el-button>
                 <el-button type="primary" plain size="small" @click="closeSpare()">取消</el-button>
               </span>
             </el-dialog>
@@ -354,11 +354,13 @@ export default {
     // 选择备件
     selectSpareDataEvent() {
       if (this.multipleSpareSelection) {
+        const newArray = []
         this.multipleSpareSelection.forEach(i => {
           let hasData = false
           this.selectSpareData.forEach(item => { item.id === i.id ? hasData = true : '' })
-          hasData ? '' : this.selectSpareData.push(i)
+          hasData ? '' : newArray.push(i)
         })
+        this.selectSpareData = Array.prototype.concat.apply(this.selectSpareData, newArray)
       }
 
       this.selectSpareVisible = false
