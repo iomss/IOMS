@@ -59,7 +59,7 @@
 
           <el-table-column label="所管辖路段和隧道" prop="position.name" width="150" align="center" />
           <el-table-column label="总评分" prop="totalScore" align="center" />
-          <el-table-column label="考评日期" prop="updateTime" align="center" />
+          <el-table-column label="考评日期" prop="updateTime" align="center" :formatter="formatterDate" />
 
           <el-table-column label="考评人" prop="createUser.name" align="center" />
           <el-table-column label="备注" prop="remark" align="center" />
@@ -99,16 +99,24 @@
             label="故障描述"
           />
           <el-table-column
-            prop="repairOrder.orderState"
+            prop="orderState"
             label="状态"
-          />
+          >
+            <template slot-scope="scope">
+              {{ scope.row.orderState==="Record"?"待处理":scope.row.orderState==='Dispatching'?"待分配":scope.row.orderState==='Dispatched'?'已分配':scope.row.orderState==='Repair'?'处理中':scope.row.orderState==='Suspend'?'暂缓':scope.row.orderState==='Check'?'待验收':scope.row.orderState==='Review'?'待审核':scope.row.orderState==='Done'?'工单已完成':'报修单流程被终止' }}
+            </template>
+
+          </el-table-column>
+
           <el-table-column
             prop="repairOrder.failureTime"
             label="故障时间"
+            :formatter="formatterDate"
           />
           <el-table-column
             prop="repairOrder.lastRepairRecord.startTime"
             label="修复时间"
+            :formatter="formatterDate"
           />
           <el-table-column
             prop="repairOrder.lastRepairRecord.repairer.name"
@@ -237,6 +245,20 @@ export default {
     }
   },
   methods: {
+    /**
+     * 日期格式化
+     * @param  {[type]} row       [description]
+     * @param  {[type]} column    [description]
+     * @param  {[type]} cellValue [description]
+     * @return {[type]}           [description]
+     */
+    formatterDate(row, column, cellValue) {
+      if (cellValue !== null) {
+        return this.$moment(cellValue).format('YYYY-MM-DD HH:mm:ss')
+      } else {
+        return cellValue
+      }
+    },
     init(id, avgScore, beginDate, endDate) {
       if (!id) return
       this.changeActiveVisible = true

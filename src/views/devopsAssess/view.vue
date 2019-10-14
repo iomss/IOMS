@@ -49,6 +49,7 @@
       <el-table-column
         label="考评日期"
         prop="updateTime"
+        :formatter="formatterDate"
       />
 
       <el-table-column label="操作">
@@ -175,6 +176,20 @@ export default {
   },
   methods: {
 
+    /**
+     * 日期格式化
+     * @param  {[type]} row       [description]
+     * @param  {[type]} column    [description]
+     * @param  {[type]} cellValue [description]
+     * @return {[type]}           [description]
+     */
+    formatterDate(row, column, cellValue) {
+      if (cellValue !== null) {
+        return this.$moment(cellValue).format('YYYY-MM-DD HH:mm:ss')
+      } else {
+        return cellValue
+      }
+    },
     /**
      * 查询所有汇总考核
      * @return {[type]} [description]

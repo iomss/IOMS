@@ -10,6 +10,8 @@
       highlight-current-row
       style="width: 100%;"
       size="small"
+      show-summary
+      :summary-method="getSummaries"
     >
       <el-table-column
         label="分中心运维考核指标名称"
@@ -22,6 +24,7 @@
       <el-table-column
         label="更新时间"
         prop="updateTime"
+        :formatter="formatterDate"
       />
 
       <el-table-column
@@ -45,7 +48,7 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="tableData.total>0" :total="tableData.total" :page.sync="tableDataQueryData.pageNumber" :limit.sync="tableDataQueryData.pageSize" @pagination="getSubCenterData" />
+    <pagination :hide-on-single-page="true" :total="tableData.total" :page.sync="tableDataQueryData.pageNumber" :limit.sync="tableDataQueryData.pageSize" @pagination="getSubCenterData" />
 
     <el-divider content-position="left" class="el-divider-top">隧道所运维考核权重表</el-divider>
 
@@ -57,6 +60,8 @@
       highlight-current-row
       style="width: 100%"
       size="small"
+      show-summary
+      :summary-method="getSummaries"
     >
       <el-table-column
         label="隧道所运维考核指标名称"
@@ -69,6 +74,7 @@
       <el-table-column
         label="更新时间"
         prop="updateTime"
+        :formatter="formatterDate"
       />
 
       <el-table-column
@@ -91,7 +97,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <pagination v-show="tunnelOfficeTableData.total>0" :total="tunnelOfficeTableData.total" :page.sync="tunnelOfficeQueryData.pageNumber" :limit.sync="tunnelOfficeQueryData.pageSize" @pagination="getTunnelOfficeData" />
+    <pagination :hide-on-single-page="true" :total="tunnelOfficeTableData.total" :page.sync="tunnelOfficeQueryData.pageNumber" :limit.sync="tunnelOfficeQueryData.pageSize" @pagination="getTunnelOfficeData" />
 
     <edit-weight v-if="editWeightVisible" ref="editWeight" @refreshtabledata="refreshAllTabel" />
 
@@ -143,7 +149,7 @@ export default {
         type: 'SubCenter',
         desc: false,
         pageNumber: 1,
-        pageSize: 10
+        pageSize: 20
       },
 
       tunnelOfficeTableData: {
@@ -166,7 +172,7 @@ export default {
         type: 'TunnelOffice',
         desc: false,
         pageNumber: 1,
-        pageSize: 10
+        pageSize: 20
       }
     }
   },
@@ -175,7 +181,20 @@ export default {
     this.getTunnelOfficeData()
   },
   methods: {
-
+    /**
+     * 日期格式化
+     * @param  {[type]} row       [description]
+     * @param  {[type]} column    [description]
+     * @param  {[type]} cellValue [description]
+     * @return {[type]}           [description]
+     */
+    formatterDate(row, column, cellValue) {
+      if (cellValue !== null) {
+        return this.$moment(cellValue).format('YYYY-MM-DD HH:mm:ss')
+      } else {
+        return cellValue
+      }
+    },
     /**
      * 获取分中心数据
      * @return {[type]} [description]
@@ -218,6 +237,37 @@ export default {
       this.$nextTick(() => {
         this.$refs.editWeight.init(rows.id)
       })
+    },
+
+    /**
+     * 自定义返回合计
+     * @return {[type]} [description]
+     */
+    getSummaries(param) {
+      const { columns, data } = param
+      const sums = []
+      columns.forEach((column, index) => {
+        if (index === 0) {
+          sums[index] = '总价'
+          return
+        }
+        const values = data.map(item => Number(item[column.property]))
+        if (!values.every(value => isNaN(value)) && (index === 1)) {
+          sums[index] = values.reduce((prev, curr) => {
+            const value = Number(curr)
+            if (!isNaN(value)) {
+              return prev + curr
+            } else {
+              return prev
+            }
+          }, 0)
+
+          sums[index] = sums[index].toFixed(2)
+        } else {
+          sums[index] = ''
+        }
+      })
+      return sums
     },
 
     refreshAllTabel() {

@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="修改指标得分" :visible.sync="changeActiveVisible" :close-on-press-escape="false" :close-on-click-modal="false">
+  <el-dialog title="修改指标得分" :visible.sync="changeActiveVisible" :close-on-press-escape="false" :close-on-click-modal="false" class="edit_assess_box">
     <el-form ref="form" :model="form" label-width="200px" size="small" :inline="true" class="demo-form-inline dialog-form-add">
       <el-row>
         <el-col :span="24">
@@ -48,7 +48,7 @@
 </template>
 
 <style>
-	.dialog-form-add{
+	.edit_assess_box .dialog-form-add{
 		height: 300px;
 	}
 </style>
