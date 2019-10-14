@@ -40,16 +40,20 @@
       show-summary
       style="width: 100%;"
       size="small"
+      :summary-method="getSummaries"
       @sort-change="sortChange"
     >
-      <el-table-column label="编号" prop="id" sortable="custom" align="center" />
 
       <el-table-column label="指标名称" prop="assessmentWeight.name" align="center" />
-      <el-table-column label="统计指标" prop="equipmentIntegrityRate" align="center" />
+      <el-table-column label="统计指标" prop="equipmentIntegrityRate" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.equipmentIntegrityRate?(scope.row.equipmentIntegrityRate+'%'):'-' }}
+        </template>
+      </el-table-column>
       <el-table-column label="指标得分" prop="rateScore" align="center" />
       <el-table-column label="权重" prop="weight" align="center" />
       <el-table-column label="加权得分(指标得分*权重)" prop="score" width="200" align="center" />
-      <el-table-column label="备注" prop="company_2" align="center" />
+      <el-table-column label="备注" prop="remark" align="center" />
 
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
@@ -131,6 +135,37 @@ export default {
         this.table.list = res.assessmentRecordItems
       })
     },
+    /**
+    * 自定义返回合计
+    * @return {[type]} [description]
+    */
+    getSummaries(param) {
+      const { columns, data } = param
+      const sums = []
+      columns.forEach((column, index) => {
+        if (index === 0) {
+          sums[index] = '总价'
+          return
+        }
+        const values = data.map(item => Number(item[column.property]))
+        if (!values.every(value => isNaN(value)) && (index === 3 || index === 4)) {
+          sums[index] = values.reduce((prev, curr) => {
+            const value = Number(curr)
+            if (!isNaN(value)) {
+              return prev + curr
+            } else {
+              return prev
+            }
+          }, 0)
+
+          sums[index] = sums[index].toFixed(2)
+        } else {
+          sums[index] = ''
+        }
+      })
+      return sums
+    },
+
     sortChange() {
 
     },
