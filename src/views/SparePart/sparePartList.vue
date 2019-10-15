@@ -72,6 +72,9 @@ Spare<!-- 库房管理页面 -->
                 <el-form-item label="供应商" prop="supplier">
                   <el-input v-model="SpareForm.supplier" placeholder="供应商" size="small" />
                 </el-form-item>
+                <el-form-item label="易损易耗" prop="consumable">
+                  <el-checkbox v-model="SpareForm.consumable">是</el-checkbox>
+                </el-form-item>
                 <el-form-item label="安全库存" prop="safetyStock">
                   <el-input v-model="SpareForm.safetyStock" type="number" placeholder="安全库存" size="small" />
                 </el-form-item>
@@ -144,7 +147,8 @@ export default {
         unit: '', // 计量单位
         supplier: null, // 供应商
         safetyStock: '', // 安全库存
-        image: ''// 图像
+        image: '', // 图像
+        consumable: false// 易损易耗
       },
       SpareFormRules: {
         name: {
@@ -296,6 +300,7 @@ export default {
           if (this.multipleSelectionpSpare[0].image !== '') {
             this.option.fileList = [{ url: this.url + this.multipleSelectionpSpare[0].image }]
           }
+          this.SpareForm.consumable = this.multipleSelectionpSpare[0].consumable
         }
       } else {
         const brand = [...[this.multipleSelectionpSpare[0].brand], ...this.brandData]
@@ -314,6 +319,7 @@ export default {
         if (row.image !== '') {
           this.option.fileList = [{ url: this.url + row.image }]
         }
+        this.SpareForm.consumable = row.consumable
       }
     },
     // 表单提交
