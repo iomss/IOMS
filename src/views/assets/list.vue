@@ -796,7 +796,7 @@ export default {
       })
     },
     assetsExport() {
-      this.$axios.post('/api/Assets/Export', this.formSearch, { Accept: {
+      this.$axios.post('/api/Assets/Export', this.tableDataSearch, { Accept: {
         'Content-Type': 'application/json;application/octet-stream'
       }, responseType: 'blob' }).then(res => {
         const url = window.URL.createObjectURL(new Blob([res.data]))
