@@ -6,7 +6,7 @@
         <div class="panel">
           <div class="header">
             <div class="select">
-              <el-button type="primary" size="small" @click="selectstate('')">任务列表</el-button>
+              <el-button type="primary" size="small" @click="selectstate()">任务列表</el-button>
               <el-button type="primary" size="small" @click="selectstate('Review')">待验收</el-button>
               <el-button type="primary" size="small" @click="selectstate('Done')">已完成</el-button>
               <el-button type="primary" size="small" @click="selectstate('Plan')">未完成</el-button>
@@ -25,15 +25,17 @@
             </div>
           </div>
           <div class="content">
-            <el-table :data="tableData" stripe border style="width: 100%">
+            <el-table :data="tableList" stripe border style="width: 100%">
               <el-table-column type="index" label="序号" />
               <el-table-column label="操作">
                 <template slot-scope="scope">
-                  <el-button v-show="scope.row.planState='Review'" :key="scope.row.code" size="mini" type="primary" @click="showInfo(scope.row)">验收</el-button>
+                  <el-button v-if="scope.row.planState==='Review'" size="mini" type="primary" @click="showInfo(scope.row)">验收</el-button>
+                  <div v-if="scope.row.planState==='Done'">已验收</div>
                 </template>
               </el-table-column>
-              <el-table-column label="完成状态" prop="planState ">
+              <el-table-column label="完成状态" prop="planState">
                 <template slot-scope="scope">
+                  {{ scope.row.planState }}
                   {{ scope.row.planState==='Plan'?'计划':scope.row.planState==='Excute'?'执行':scope.row.planState==='Review'?'待验收':'计划结束' }}
                 </template>
               </el-table-column>
@@ -60,7 +62,7 @@
               </el-table-column>
               <el-table-column prop="reviewUser" label="验收人">
                 <template slot-scope="scope">
-                  {{ scope.row.reviewUser.name }}
+                  {{ scope.row.reviewUser===null?'':scope.row.reviewUser.name }}
                 </template>
               </el-table-column>
               <el-table-column prop="reviewTime" label="验收时间" :formatter="formatterDate" />
@@ -153,7 +155,7 @@
               <!--分页-->
               <pagination v-show="totalCountfirst>0" :total="totalCountfirst" :page.sync="tableDataSearchfirst.pageNumber" :limit.sync="tableDataSearchfirst.pageSize" @pagination="getPagefirst" />
               <el-form ref="form" :model="tableDatathird" label-width="90px">
-                <el-form-item prop="reviewStatus" label="验收意见">
+                <el-form-item prop="reviewStatus" label="验收结果">
                   <el-radio-group v-model="tableDatathird.reviewStatus">
                     <el-radio key="Applied" val="Applied" label="Applied">通过</el-radio>
                     <el-radio key="Rejected" val="Rejected" label="Rejected">不通过</el-radio>
@@ -204,7 +206,7 @@ export default {
       },
       totalCount: 0, // 数据总条数
       totalCountfirst: 0, // 数据总条数
-      tableData: [],
+      tableList: [],
       tableDatafirst: [], // 一级弹框表单数据
       tableDatanew: {},
       tableDatanewfirst: {}, // 一级弹框搜索
@@ -281,11 +283,7 @@ export default {
       console.log(this.yearData)
     },
     selectstate(data) { // 列表筛选
-      if (data === '') {
-        this.tableDataSearch.planState = null
-      } else {
-        this.tableDataSearch.planState = data
-      }
+      data === undefined ? null : this.tableDataSearch.planState = data
       this.getData()
     },
     //* ******************************************************************************************************* */
@@ -293,7 +291,7 @@ export default {
 
     getData() { // 获取列表
       this.$axios.get('/api/MaintenancePlan', { params: this.tableDataSearch }).then(res => {
-        this.tableData = res.data
+        this.tableList = res.data
         this.totalCount = res.totalCount
       })
     },
@@ -304,7 +302,7 @@ export default {
       this.tableDataSearch.pageNumber = val.page
       // 调用获取数据
       this.$axios.get('/api/MaintenancePlan', { params: this.tableDataSearch }).then(res => {
-        this.tableData = res.data
+        this.tableList = res.data
       })
     },
 
@@ -316,16 +314,6 @@ export default {
         // 刷新数据
         this.getData()
       })
-    },
-    setvalid() {
-      // 设置有效
-      if (this.multipleSelection === '') {
-        this.$message.error('请至少选择一条数据')
-      } else {
-        this.$axios.post('/api/EquipmentList/' + this.multipleSelection[0].id + '/Valid').then(res => {
-          this.tableData = res.data
-        })
-      }
     },
     deletelist(data) {
       // 删除设备

@@ -55,7 +55,7 @@
                 </el-form-item>
                 <el-form-item label="指定工程师" prop="repairUserId">
                   <el-select v-model="formData.repairUserId" filterable remote :remote-method="remoteMethoduserId" :loading="loading" placeholder="指定工程师" size="small" @focus="remoteMethoduserId">
-                    <el-option v-for="item in userData" :key="item.id" :label="item.userName" :value="item.id" />
+                    <el-option v-for="item in userData" :key="item.id" :label="item.trueName" :value="item.id" />
                   </el-select>
                 </el-form-item>
                 <el-form-item class="total">
@@ -224,7 +224,7 @@ export default {
       this.loading = true
       let querytext = ''
       querytext = typeof (query) === 'string' ? query : ''
-      this.$axios.get('/api/User?text=' + querytext).then(res => {
+      this.$axios.get('/api/User?Dispatch=true&pageSize=' + this.userpage.pageSize + '&pageNumber=' + this.userpage.pageNumber + '&text=' + querytext).then(res => {
         this.loading = false
         this.userData = res.data
       })

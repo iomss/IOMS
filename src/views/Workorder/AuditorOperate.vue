@@ -85,7 +85,6 @@
             </el-form-item>
             <el-form-item class="form_total">
               <el-button type="primary" @click="sureright()">确定</el-button>
-              <el-button type="primary" @click="reset()">重置</el-button>
               <el-button type="primary" @click="close()">关闭</el-button>
             </el-form-item>
           </el-form>

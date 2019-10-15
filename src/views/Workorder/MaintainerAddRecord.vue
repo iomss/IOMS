@@ -72,7 +72,7 @@
               <el-input v-model="formRcorda.spareDescription" placeholder="配件名称及数量" size="small" />
             </el-form-item>
             <el-form-item label="维修人" prop="repairerId">
-              {{ dangqianUser.userName }}
+              {{ dangqianUser.trueName }}
             </el-form-item>
             <el-form-item label="协助人" prop="assist">
               <el-input v-model="formRcorda.assist" placeholder="协助人" size="small" />
@@ -100,7 +100,7 @@
               </el-radio-group>
             </el-form-item> -->
             <el-form-item label="维修人" prop="repairerId">
-              {{ dangqianUser.userName }}
+              {{ dangqianUser.trueName }}
             </el-form-item>
             <el-form-item label="备注" prop="comment">
               <el-input v-model="formRcordc.comment" placeholder="备注" size="small" />
@@ -145,7 +145,7 @@
               <el-input v-model="formRcordd.comment" placeholder="备注" size="small" />
             </el-form-item>
             <el-form-item label="维修人" prop="repairerId">
-              {{ dangqianUser.userName }}
+              {{ dangqianUser.trueName }}
             </el-form-item>
             <el-form-item label="协助人" prop="assist">
               <el-input v-model="formRcordd.assist" placeholder="协助人" size="small" />
@@ -195,7 +195,8 @@ export default {
       loading: false, // 远程搜索
       dangqianUser: {
         userName: this.$cookie.get('userName'),
-        id: this.$cookie.get('id')
+        id: this.$cookie.get('id'),
+        trueName: this.$cookie.get('trueName')
       },
       repairType: 'Done', // 维修单类型
       formData: {
