@@ -4,18 +4,16 @@
     <el-form :inline="true" :model="formInline" class="demo-form-inline" size="small">
 
       <el-form-item label="单位">
-        <el-select v-model="formInline.region" placeholder="状态">
-          <el-option label="全部" value="shanghai" />
-          <el-option label="待审批" value="beijing" />
-          <el-option label="已批准" value="beijing" />
+        <el-select v-model="formInline.type" placeholder="请选择单位">
+          <el-option v-for="item in selectOptions" :key="item.index" :value="item.value" :label="item.label" />
         </el-select>
       </el-form-item>
 
       <el-form-item label="考核日期">
         <el-col :span="24">
           <el-date-picker
-            v-model="formInline.date1"
-            type="datetimerange"
+            v-model="formInline.date"
+            type="daterange"
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -42,15 +40,16 @@
 
       <el-table-column
         label="运维管理单位"
-        prop="name"
+        prop="position.name"
       />
       <el-table-column
         label="总评分"
-        prop="score"
+        prop="avgScore"
       />
       <el-table-column
         label="考评日期"
-        prop="createTime"
+        prop="updateTime"
+        :formatter="formatterDate"
       />
 
       <el-table-column label="操作">
@@ -67,7 +66,7 @@
 
     <roadFraction v-if="roadFractionVisible" ref="roadFraction" />
 
-    <pagination v-show="tableData.total>0" :total="tableData.total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination v-show="tableData.total>0" :total="tableData.total" :page.sync="formInline.pageNumber" :limit.sync="formInline.pageSize" @pagination="getList" />
 
   </div>
 </template>
@@ -122,39 +121,113 @@ export default {
     return {
       roadFractionVisible: false,
 
+      selectOptions: [{
+        label: '全部',
+        value: '',
+        index: 1
+      }, {
+        label: '分中心',
+        value: 'SubCenter',
+        index: 2
+      }, {
+        label: '隧道所',
+        value: 'TunnelOffice',
+        index: 3
+      }],
+
       listQuery: {
         page: 1,
         limit: 10
       },
+
       tableData: {
         list: [{
-          name: '湟源中心',
-          score: 62,
-          createTime: '2019-10-09'
+          position: {
+            name: ''
+          },
+          avgScore: 0,
+          updateTime: ''
         }],
         listLoading: false,
         total: 0
       },
+
       formInline: {
-        region: '',
-        date1: ''
+        type: '',
+        beginDate: '',
+        endDate: '',
+        orderBy: 'positionId',
+        pageSize: 10,
+        pageNumber: 1,
+
+        date: []
       }
     }
   },
+  mounted() {
+    var nowDate = new Date()
+
+    this.formInline.date = [nowDate, nowDate]
+
+    this.formInline.beginDate = this.$utils.formatTime(nowDate.getTime(), 'Y-M-D')
+    this.formInline.endDate = this.$utils.formatTime(nowDate.getTime(), 'Y-M-D')
+
+    this.getList()
+  },
   methods: {
-    getList() {
 
+    /**
+     * 日期格式化
+     * @param  {[type]} row       [description]
+     * @param  {[type]} column    [description]
+     * @param  {[type]} cellValue [description]
+     * @return {[type]}           [description]
+     */
+    formatterDate(row, column, cellValue) {
+      if (cellValue !== null) {
+        return this.$moment(cellValue).format('YYYY-MM-DD HH:mm:ss')
+      } else {
+        return cellValue
+      }
     },
-    onSubmit() {
+    /**
+     * 查询所有汇总考核
+     * @return {[type]} [description]
+     */
+    getList() {
+      var queryString = this.$utils.objectToString(this.formInline)
 
+      this.tableData.listLoading = true
+      this.$axios.get('/api/AssessmentRecord/Avg' + queryString).then(res => {
+        this.tableData.list = res.data
+        this.tableData.total = res.totalCount
+        this.tableData.listLoading = false
+      })
+    },
+
+    /**
+     * 查询表格数据
+     * @return {[type]} [description]
+     */
+    onSubmit() {
+      if (this.formInline.date.length <= 0) {
+        this.$message.error('请选择查询日期')
+        return
+      }
+
+      this.formInline.beginDate = this.$utils.formatTime(this.formInline.date[0], 'Y-M-D  ')
+      this.formInline.endDate = this.$utils.formatTime(this.formInline.date[1], 'Y-M-D')
+
+      this.getList()
     },
     onExport() {
 
     },
-    handleView() {
+    handleView(index, rows) {
       this.roadFractionVisible = true
+
       this.$nextTick(() => {
-        this.$refs.roadFraction.init()
+        this.$refs.roadFraction.init(rows.positionId, rows.avgScore, this.formInline.beginDate, this.formInline.endDate)
       })
     }
   }

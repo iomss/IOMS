@@ -36,6 +36,28 @@ const emergencyRepairRoutes = {
         roles: ['ManageAsset'],
         fullPath: '/emergencyRepair/approval'
       }
+    },
+    {
+      path: 'cost',
+      component: () => import('@/views/emergencyRepair/cost'),
+      name: 'emergencyRepair-cost',
+      meta: {
+        title: '应急抢修费用申请',
+        icon: 'fa fa-circle-o',
+        roles: ['ManageAsset'],
+        fullPath: '/emergencyRepair/cost'
+      }
+    },
+    {
+      path: 'costApproval',
+      component: () => import('@/views/emergencyRepair/costApproval'),
+      name: 'emergencyRepair-costApproval',
+      meta: {
+        title: '应急抢修费用审批',
+        icon: 'fa fa-circle-o',
+        roles: ['ManageAsset'],
+        fullPath: '/emergencyRepair/costApproval'
+      }
     }
   ]
 }

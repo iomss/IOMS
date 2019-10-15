@@ -5,7 +5,7 @@
     <el-dialog title="运维指标查询-下属考核分数" :visible.sync="changeActiveVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="60%">
       <div class="app-road-fraction">
 
-        <el-row class="average">平均分：222</el-row>
+        <el-row class="average">平均分：{{ avgScore }}</el-row>
         <el-table
           v-loading="table.listLoading"
           :data="table.list"
@@ -21,48 +21,52 @@
             <template>
               <el-table :data="childnTable" style="width: 100%" size="mini" border fit show-summary>
                 <el-table-column
-                  prop="name"
+                  prop="assessmentWeight.name"
                   label="指标名称"
                 />
                 <el-table-column
-                  prop="flg1"
+                  prop="equipmentIntegrityRate"
                   label="统计指标"
                 />
                 <el-table-column
-                  prop="flg2"
+                  prop="rateScore"
                   label="指标得分"
                 />
                 <el-table-column
-                  prop="flg3"
+                  prop="weight"
                   label="权重"
                 />
                 <el-table-column
-                  prop="flg4"
+                  prop="score"
                   label="加权重得分(指标得分*权重)"
                   width="180"
                 />
                 <el-table-column label="操作">
-                  <el-button size="mini" type="text" @click="handlerOpenWorkOrder">查看工单</el-button>
+                  <template slot-scope="scope">
+                    <el-button size="mini" type="text" @click="handlerOpenWorkOrder(scope.index, scope.row)">查看工单</el-button>
+                  </template>
                 </el-table-column>
 
               </el-table>
               <el-row class="note">
                 <el-col :span="2" class="title">备注:</el-col>
-                <el-col :span="22" />
+                <el-col :span="22">{{ childnTable.remark }}</el-col>
               </el-row>
             </template>
           </el-table-column>
 
           <el-table-column label="编号" prop="id" sortable="custom" align="center" />
 
-          <el-table-column label="所管辖路段和隧道" prop="sos" width="150" align="center" />
-          <el-table-column label="总评分" prop="name" align="center" />
-          <el-table-column label="考评日期" prop="createTime" align="center" />
+          <el-table-column label="所管辖路段和隧道" prop="position.name" width="150" align="center" />
+          <el-table-column label="总评分" prop="totalScore" align="center" />
+          <el-table-column label="考评日期" prop="updateTime" align="center" :formatter="formatterDate" />
 
-          <el-table-column label="考评人" prop="company" align="center" />
-          <el-table-column label="备注" prop="company_2" align="center" />
+          <el-table-column label="考评人" prop="createUser.name" align="center" />
+          <el-table-column label="备注" prop="remark" align="center" />
 
         </el-table>
+
+        <pagination v-show="table.total>0" :total="table.total" :page.sync="listQuery.pageNumber" :limit.sync="listQuery.pageSize" @pagination="getTableData" />
 
       </div>
     </el-dialog>
@@ -71,54 +75,62 @@
       <div class="app-work-order">
         <el-button type="primary" size="small" class="btn-export">导出</el-button>
         <el-table
+          v-loading="workOrderTable.listLoading"
           :data="workOrderTable.list"
           border
           size="small"
           style="width: 100%"
         >
           <el-table-column
-            prop="date"
+            prop="repairOrderId"
             label="工单号"
           />
           <el-table-column
-            prop="name"
+            prop="repairOrder.position.name"
             label="位置"
             width="100"
           />
           <el-table-column
-            prop="address"
+            prop="repairOrder.equipment.name"
             label="设备名称"
           />
           <el-table-column
-            prop="address"
+            prop="repairOrder.description"
             label="故障描述"
           />
           <el-table-column
-            prop="address"
+            prop="orderState"
             label="状态"
-          />
+          >
+            <template slot-scope="scope">
+              {{ scope.row.orderState==="Record"?"待处理":scope.row.orderState==='Dispatching'?"待分配":scope.row.orderState==='Dispatched'?'已分配':scope.row.orderState==='Repair'?'处理中':scope.row.orderState==='Suspend'?'暂缓':scope.row.orderState==='Check'?'待验收':scope.row.orderState==='Review'?'待审核':scope.row.orderState==='Done'?'工单已完成':'报修单流程被终止' }}
+            </template>
+
+          </el-table-column>
+
           <el-table-column
-            prop="address"
+            prop="repairOrder.failureTime"
             label="故障时间"
+            :formatter="formatterDate"
           />
           <el-table-column
-            prop="address"
+            prop="repairOrder.lastRepairRecord.startTime"
             label="修复时间"
+            :formatter="formatterDate"
           />
           <el-table-column
-            prop="address"
+            prop="repairOrder.lastRepairRecord.repairer.name"
             label="维修员"
           />
           <el-table-column
-            prop="address"
+            prop="repairOrder.lastRepairRecord.checkUser.name"
             label="验收员"
           />
           <el-table-column
-            prop="address"
+            prop="faultMinutes"
             label="故障时常(分钟)"
           />
         </el-table>
-        <pagination v-show="workOrderTable.total>0" :total="workOrderTable.total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getWrokOrderList" />
       </div>
     </el-dialog>
 
@@ -158,61 +170,155 @@ export default {
     return {
       changeActiveVisible: false,
       workOrderVisible: false,
+      id: 0,
+      avgScore: 0,
+
+      // 总表
       table: {
         listLoading: false,
         total: 0,
         list: [{
+          position: {
+            name: ''
+          },
           id: 1,
-          sos: '贡茶一级公路',
-          name: 80,
-          createTime: '2018/12/23',
-          company: '系统管理员'
-        }, {
-          id: 2,
-          sos: '贡茶一级公路',
-          name: 80,
-          createTime: '2018/12/23',
-          company: '系统管理员'
+          totalScore: 0,
+          updateTime: '',
+          createUser: {
+            name: ''
+          },
+          remark: ''
         }]
       },
+
+      // 子表
       childnTable: [{
-        name: '嘿嘿',
-        flg1: 1,
-        flg2: 2,
-        flg3: 1,
-        flg4: 100
+        assessmentWeight: {
+          name: ''
+        },
+        equipmentIntegrityRate: 0,
+        weight: 0,
+        rateScore: 0,
+        score: 0,
+        remark: ''
       }],
+
+      // 工单表
       workOrderTable: {
         list: [{
-          date: '1',
-          name: '',
-          address: ''
-        }],
+          repairOrderId: 0,
+          faultMinutes: 0,
 
+          repairOrder: {
+            position: {
+              name: ''
+            },
+            equipment: {
+              name: ''
+            },
+            description: '',
+            orderState: '',
+            failureTime: '',
+            lastRepairRecord: {
+              startTime: '',
+              repairer: {
+                name: ''
+              },
+              checkUser: {
+                name: ''
+              }
+            }
+          }
+        }],
+        listLoading: false,
         total: 20
       },
 
       listQuery: {
-        page: 0,
-        limit: 10
+        beginDate: '',
+        endDate: '',
+
+        positionId: 0,
+        pageNumber: 1,
+        pageSize: 10
       }
     }
   },
   methods: {
-    init() {
+    /**
+     * 日期格式化
+     * @param  {[type]} row       [description]
+     * @param  {[type]} column    [description]
+     * @param  {[type]} cellValue [description]
+     * @return {[type]}           [description]
+     */
+    formatterDate(row, column, cellValue) {
+      if (cellValue !== null) {
+        return this.$moment(cellValue).format('YYYY-MM-DD HH:mm:ss')
+      } else {
+        return cellValue
+      }
+    },
+    init(id, avgScore, beginDate, endDate) {
+      if (!id) return
       this.changeActiveVisible = true
+      this.listQuery.positionId = id
+      this.listQuery.beginDate = beginDate
+      this.listQuery.endDate = endDate
+
+      this.avgScore = avgScore
+
+      this.getTableData()
+      // this.getWrokOrderList();
     },
 
+    /**
+     * 查看子路段数据
+     * @param  {[type]} opt [description]
+     * @return {[type]}     [description]
+     */
     changeExpand(opt) {
-      console.log(opt)
+      // console.log(opt)
+      this.childnTable = opt.assessmentRecordItems
     },
 
-    handlerOpenWorkOrder() {
+    /**
+     * 查看工单数据
+     * @return {[type]} [description]
+     */
+    handlerOpenWorkOrder(index, rows) {
+      // debugger
       this.workOrderVisible = true
+      this.getWrokOrderList(rows.id)
     },
 
-    getWrokOrderList() {
+    /**
+     * 获取表格数据
+     * @return {[type]} [description]
+     */
+    getTableData() {
+      this.table.listLoading = true
+      const queryString = this.$utils.objectToString(this.listQuery)
 
+      this.$axios.get('/api/AssessmentRecord/' + queryString).then(res => {
+        this.table.list = res.data
+        this.table.total = res.totalCount
+        this.table.listLoading = false
+      })
+    },
+
+    /**
+     * 获取工单数据
+     * @param  {[type]} id [description]
+     * @return {[type]}    [description]
+     */
+    getWrokOrderList(id) {
+      if (!id) return
+      this.workOrderTable.listLoading = true
+      this.$axios.get('/api/AssessmentRecordItem/' + id).then(res => {
+        this.workOrderTable.list = res.assessmentRecordItemRepairOrderMappings
+        this.workOrderTable.listLoading = false
+      })
     }
   }
 }
