@@ -196,11 +196,11 @@ export default {
         },
         {
           value: 'Repair',
-          name: '维修入库'
+          name: '维修出入库'
         },
         {
           value: 'Scrap',
-          name: '报废入库'
+          name: '报废出入库'
         },
         {
           value: 'ReceiveOutBound',

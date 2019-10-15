@@ -88,17 +88,17 @@
                 </el-table-column>
                 <el-table-column prop="brand.name" label="品牌" />
                 <el-table-column prop="model.name" label="型号" />
-                <el-table-column prop="remark" label="单价">
-                  <template scope="scope">
+                <el-table-column prop="unitPrice" label="单价">
+                  <template slot-scope="scope">
                     <el-input v-model="scope.row.unitPrice" size="small" placeholder="请输入内容" />
                   </template>
                 </el-table-column>
-                <el-table-column prop="model" label="数量">
-                  <template scope="scope">
+                <el-table-column prop="quantity" label="数量">
+                  <template slot-scope="scope">
                     <el-input v-model="scope.row.quantity" size="small" placeholder="请输入内容" />
                   </template>
                 </el-table-column>
-                <el-table-column prop="remark" label="总金额">
+                <el-table-column prop="totalPrice" label="总金额">
                   <template slot-scope="scope">
                     {{ scope.row.unitPrice !==undefined && scope.row.quantity!==undefined ? scope.row.unitPrice*scope.row.quantity:'' }}
                   </template>
