@@ -35,9 +35,9 @@
               <el-table-column prop="code" label="维修单编号">
                 <template slot-scope="scope">
                   <!-- 验收状态，审核状态，录入维修记录状态，完成状态可查看详情 -->
-                  <router-link v-if="scope.row.orderState==='Check'||scope.row.orderState==='Review'||scope.row.orderState==='Done'||scope.row.orderState==='Repair'" :to="'/Workorder/CheckedInfo/' +scope.row.id" tag="a" style="color:#409eff">{{ scope.row.code }}</router-link>
+                  <router-link v-if="scope.row.orderState==='Check'||scope.row.orderState==='Review'||scope.row.orderState==='Done'" :to="'/Workorder/CheckedInfo/' +scope.row.id" tag="a" style="color:#409eff">{{ scope.row.code }}</router-link>
                   <!-- 接单转单抢单不可查看详情 -->
-                  <div v-if="scope.row.orderState==='Dispatching'||scope.row.orderState==='Record'||scope.row.orderState==='Dispatched'">{{ scope.row.code }}</div>
+                  <div v-if="scope.row.orderState==='Dispatching'||scope.row.orderState==='Record'||scope.row.orderState==='Dispatched'||scope.row.orderState==='Repair'">{{ scope.row.code }}</div>
                 </template>
               </el-table-column>
               <el-table-column label="操作" width="200">
