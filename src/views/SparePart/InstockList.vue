@@ -7,6 +7,7 @@
           <div class="header">
             <div class="tools">
               <el-button type="success" size="small" @click="FormVisible = true">新增备件入库</el-button>
+              <el-button type="primary" size="small" @click="inForm()">确认入库</el-button>
               <!-- <el-button type="primary" size="small" @click="updateData()">修改</el-button> -->
               <el-button type="danger" size="small" @click="deleteData()">删除</el-button>
             </div>
@@ -40,7 +41,7 @@
               <el-table-column prop="remark" label="备注" />
             </el-table>
             <!-- 新增备件入库 -->
-            <el-dialog title="新增备件入库单" :visible.sync="FormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="1000px">
+            <el-dialog title="新增备件入库单" :visible.sync="FormVisible" :close-on-press-escape="false" :show-close="false" :close-on-click-modal="false" width="1000px">
               <el-form ref="EditForm" :model="EditForm" :rules="FormRules" label-width="120px">
                 <el-form-item label="入库单类型" prop="spareBoundSubType">
                   <el-select v-model="EditForm.spareBoundSubType" filterable placeholder="入库单类型" size="small">
@@ -73,7 +74,7 @@
               <div class="header">
                 <div class="tools">
                   <el-button type="primary" size="small" @click="addAssets()">选择备件</el-button>
-                  <el-button type="primary" size="small" @click="removeEquip()">删除备件</el-button>
+                  <el-button type="primary" size="small" @click="removeSelectSpare()">删除备件</el-button>
                 </div>
               </div>
               <el-table :data="tableDatain" stripe border style="width: 1500px" @selection-change="handlefirstchange">
@@ -85,16 +86,8 @@
                     {{ scope.row.consumable?"易损易耗品":"非易损易耗品" }}
                   </template>
                 </el-table-column>
-                <el-table-column prop="brand" label="品牌">
-                  <template slot-scope="scope">
-                    {{ scope.row.brand.name }}
-                  </template>
-                </el-table-column>
-                <el-table-column prop="model" label="型号">
-                  <template slot-scope="scope">
-                    {{ scope.row.model.name }}
-                  </template>
-                </el-table-column>
+                <el-table-column prop="brand.name" label="品牌" />
+                <el-table-column prop="model.name" label="型号" />
                 <el-table-column prop="remark" label="单价">
                   <template scope="scope">
                     <el-input v-model="scope.row.unitPrice" size="small" placeholder="请输入内容" />
@@ -114,7 +107,7 @@
               <span slot="footer" class="dialog-footer">
                 <el-button type="primary" size="small" @click="unsureDate()">暂存</el-button>
                 <el-button type="success" size="small" @click="sureData()">确认入库</el-button>
-                <el-button type="primary" plain size="small" @click="FormVisible = false">取消</el-button>
+                <el-button type="primary" plain size="small" @click="closeSpare()">取消</el-button>
               </span>
             </el-dialog>
             <!-- 选择备件 -->
@@ -134,16 +127,8 @@
                     {{ scope.row.consumable?"易损易耗品":"非易损易耗品" }}
                   </template>
                 </el-table-column>
-                <el-table-column prop="brand" label="品牌">
-                  <template slot-scope="scope">
-                    {{ scope.row.brand.name }}
-                  </template>
-                </el-table-column>
-                <el-table-column prop="model" label="型号">
-                  <template slot-scope="scope">
-                    {{ scope.row.model.name }}
-                  </template>
-                </el-table-column>
+                <el-table-column prop="brand.name" label="品牌" />
+                <el-table-column prop="model.name" label="型号" />
                 <el-table-column prop="unit" label="单位" />
                 <el-table-column prop="supplier" label="供应商" />
               </el-table>
@@ -151,7 +136,7 @@
               <pagination v-show="totalCountselect>0" :total="totalCountselect" :page.sync="formSearchselect.pageNumber" :limit.sync="formSearchselect.pageSize" @pagination="getPageselect" />
               <span slot="footer" class="dialog-footer">
                 <el-button type="primary" size="small" @click="updateselect()">选择</el-button>
-                <el-button type="primary" plain size="small" @click="Visible = false">取消</el-button>
+                <el-button type="primary" plain size="small" @click="Visible=false;multipleselect=''">取消</el-button>
               </span>
             </el-dialog>
             <!--分页-->
@@ -268,9 +253,7 @@ export default {
       // 页码
       this.formSearch.pageNumber = val.page
       // 调用获取数据
-      this.$axios.get('/api/EquipmentList/', { params: this.formSearch }).then(res => {
-        this.tableData = res.data
-      })
+      this.getData()
     },
     updateData(row) {
       if (row === undefined) {
@@ -333,6 +316,11 @@ export default {
     handlefirstchange(val) {
       this.multiplefirst = val
     },
+    removeSelectSpare() {
+      this.multiplefirst.forEach(item => {
+        this.tableDatain.splice(this.tableDatain.findIndex(i => i.id === item.id), 1)
+      })
+    },
     unsureDate() { // 暂存
       const spareStockRecordItems = []
       this.tableDatain.forEach(item => spareStockRecordItems.push({
@@ -347,7 +335,7 @@ export default {
           this.$axios.post('/api/SpareStockRecord', this.EditForm).then(res => {
             this.getData()
             this.$message.success('入库单暂存')
-            this.FormVisible = false
+            this.closeSpare()
           })
         }
       })
@@ -366,10 +354,16 @@ export default {
           this.$axios.post('/api/SpareStockRecord/CreateAndSubmit', this.EditForm).then(res => {
             this.getData()
             this.$message.success('确认入库成功')
-            this.FormVisible = false
+            this.closeSpare()
           })
         }
       })
+    },
+    closeSpare() {
+      this.$refs.EditForm.resetFields()
+      this.FormVisible = false
+      this.tableDatain = []
+      this.multipleselect = ''
     },
     //* ******************************************************************************二级弹框******************************************************************** *//
     getDataselect() {
@@ -384,9 +378,7 @@ export default {
       // 页码
       this.formSearchselect.pageNumber = val.page
       // 调用获取数据
-      this.$axios.get('/api/EquipmentList/', { params: this.formSearchselect }).then(res => {
-        this.tableDataselect = res.data
-      })
+      this.getDataselect()
     },
 
     submitData() {
@@ -409,6 +401,21 @@ export default {
       this.tableDatain = this.tableDatain.concat(this.multipleselect)
       // this.EditForm.spareStockRecordItems=this.multipleselect
       console.log(this.tableDatain)
+    },
+    // 单独确认入库
+    inForm() {
+      if (this.multiple.length !== 1) {
+        this.$message.error('请选择一项数据进行操作')
+      } else {
+        if (this.multiple[0].confirmed) {
+          this.$message.error('已入库')
+        } else {
+          this.$axios.post('/api/SpareStockRecord/' + this.multiple[0].id).then(res => {
+            this.$message.success('入库成功')
+            this.getData()
+          })
+        }
+      }
     }
   }
 }
