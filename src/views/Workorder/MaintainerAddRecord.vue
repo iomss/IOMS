@@ -72,7 +72,7 @@
               <el-input v-model="formRcorda.spareDescription" placeholder="配件名称及数量" size="small" />
             </el-form-item>
             <el-form-item label="维修人" prop="repairerId">
-              {{ dangqianUser.userName }}
+              {{ dangqianUser.trueName }}
             </el-form-item>
             <el-form-item label="协助人" prop="assist">
               <el-input v-model="formRcorda.assist" placeholder="协助人" size="small" />
@@ -100,7 +100,7 @@
               </el-radio-group>
             </el-form-item> -->
             <el-form-item label="维修人" prop="repairerId">
-              {{ dangqianUser.userName }}
+              {{ dangqianUser.trueName }}
             </el-form-item>
             <el-form-item label="备注" prop="comment">
               <el-input v-model="formRcordc.comment" placeholder="备注" size="small" />
@@ -145,7 +145,7 @@
               <el-input v-model="formRcordd.comment" placeholder="备注" size="small" />
             </el-form-item>
             <el-form-item label="维修人" prop="repairerId">
-              {{ dangqianUser.userName }}
+              {{ dangqianUser.trueName }}
             </el-form-item>
             <el-form-item label="协助人" prop="assist">
               <el-input v-model="formRcordd.assist" placeholder="协助人" size="small" />
@@ -169,11 +169,34 @@ export default {
     Uploadimg
   },
   data() {
+    var compareEndTime = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请选择维修结束时间'))
+      } else if (this.formRcorda.startTime !== '') {
+        if (this.formRcorda.startTime >= this.formRcorda.endTime) {
+          callback(new Error('结束时间需大于开始时间'))
+        } else {
+          callback()
+        }
+      }
+    }
+    var compareEndTimed = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请选择预计结束时间'))
+      } else if (this.formRcordd.startTime !== '') {
+        if (this.formRcordd.startTime >= this.formRcordd.endTime) {
+          callback(new Error('结束时间需大于开始时间'))
+        } else {
+          callback()
+        }
+      }
+    }
     return {
       loading: false, // 远程搜索
       dangqianUser: {
         userName: this.$cookie.get('userName'),
-        id: this.$cookie.get('id')
+        id: this.$cookie.get('id'),
+        trueName: this.$cookie.get('trueName')
       },
       repairType: 'Done', // 维修单类型
       formData: {
@@ -237,10 +260,10 @@ export default {
           { required: true, message: '维修过程不可为空', trigger: 'change' }
         ],
         startTime: [
-          { type: 'date', required: true, message: '请选择维修开始时间', trigger: 'change' }
+          { required: true, message: '维修开始时间不可为空', trigger: 'change' }
         ],
         endTime: [
-          { type: 'date', required: true, message: '请选择维修结束时间', trigger: 'change' }
+          { validator: compareEndTime, trigger: 'blur' }
         ]
       },
       formRcordcrules: {// 误报验证规则
@@ -265,7 +288,7 @@ export default {
           { type: 'date', required: true, message: '请选择预计开始时间', trigger: 'change' }
         ],
         endTime: [
-          { type: 'date', required: true, message: '请选择预计结束时间', trigger: 'change' }
+          { validator: compareEndTimed, trigger: 'blur' }
         ]
       },
       equipmentpage: {// 设备种类分页

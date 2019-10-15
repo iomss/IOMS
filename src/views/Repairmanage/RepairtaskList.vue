@@ -1,4 +1,4 @@
-<!-- 资产管理页面 -->
+<!-- 维护任务页面 -->
 <template>
   <div>
     <el-row>
@@ -160,7 +160,6 @@
               <!--分页-->
               <pagination v-show="totalCountfirst>0" :total="totalCountfirst" :page.sync="tableDataSearchfirst.pageNumber" :limit.sync="tableDataSearchfirst.pageSize" @pagination="getPagefirst" />
               <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="creatlist">保存</el-button>
                 <el-button type="primary" @click="creatchecklist">提交验收</el-button>
                 <el-button type="success" @click="Visiblefirst=false">取消</el-button>
               </span>
@@ -407,14 +406,6 @@ export default {
       this.$axios.get('/api/MaintenancePlan', { params: this.tableDataSearch }).then(res => {
         this.tableData = res.data
       })
-    },
-
-    creatlist() {
-      if (this.multipleSelection === '') {
-        this.$message.error('请至少选择一条数据')
-      } else {
-        // ajax
-      }
     },
     setvalid() {
       // 设置有效

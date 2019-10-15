@@ -56,6 +56,7 @@
                 </b>
               </li>
               <li><span>协助人:</span><b>{{ tableData.assist }}</b></li>
+              <li><span>备注:</span><b>{{ tableData.comment }}</b></li>
             </ul>
           </div>
         </div>
