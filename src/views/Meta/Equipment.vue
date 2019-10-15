@@ -29,7 +29,7 @@
             <el-dialog :title="equipmentFormTitle" :visible.sync="equipmentFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="equipmentFormClose">
               <el-form ref="equipmentForm" :model="equipmentForm" :rules="equipmentFormRules" label-width="120px">
                 <el-form-item label="设备类型" prop="equimentTypeId">
-                  <el-select v-model="equipmentForm.equimentTypeId" filterable placeholder="请选择">
+                  <el-select v-model="equipmentForm.equimentTypeId" filterable remote :remote-method="remoteMethodequipmentTypeData" placeholder="请选择" size="small" @focus="remoteMethodequipmentTypeData">
                     <el-option v-for="item in equipmentTypeData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
@@ -66,6 +66,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       equipmentData: [], // 数据
       equipmentTypeData: [], // 设备类型
       equipmentFormSearch: {
@@ -113,6 +114,20 @@ export default {
         this.equipmentTypeData = res.data
       })
     },
+    remoteMethodequipmentTypeData(query) {
+      this.loading = true
+      let querytext = ''
+      querytext = typeof (query) === 'string' ? query : ''
+      this.$axios.get('/api/Meta/Type?text=' + querytext).then(res => {
+        this.loading = false
+        this.equipmentTypeData = res.data
+        if (this.equipmentFormTitle === '编辑设备' && query === '') {
+          let hasData = false
+          this.equipmentTypeData.forEach(item => { item.id === this.multipleSelectionEquipment[0].equimentType.id ? hasData = true : '' })
+          hasData ? '' : this.equipmentTypeData.push({ id: this.multipleSelectionEquipment[0].equimentType.id, name: this.multipleSelectionEquipment[0].equimentType.name })
+        }
+      })
+    },
     // 分页
     getequipmentPage(val) {
       // 展示条数
@@ -137,6 +152,10 @@ export default {
         if (this.multipleSelectionEquipment.length !== 1) {
           this.$message.error('请选择一项数据进行操作')
         } else {
+          let hasData = false
+          this.equipmentTypeData.forEach(item => { item.id === this.multipleSelectionEquipment[0].equimentType.id ? hasData = true : '' })
+          hasData ? '' : this.equipmentTypeData.push({ id: this.multipleSelectionEquipment[0].equimentType.id, name: this.multipleSelectionEquipment[0].equimentType.name })
+
           this.equipmentFormVisible = true
           this.equipmentForm.id = this.multipleSelectionEquipment[0].id
           this.equipmentForm.name = this.multipleSelectionEquipment[0].name
