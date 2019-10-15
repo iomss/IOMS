@@ -275,7 +275,7 @@ export default {
       data.forEach((item, index) => {
         if (item.children === null) {
           item.children = undefined
-        } else {
+        } else if (item.children !== undefined) {
           this.checkhasChildren(item.children)
         }
       })
