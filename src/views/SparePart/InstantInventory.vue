@@ -49,7 +49,7 @@
               <el-table-column prop="remark" label="备注" />
             </el-table>
             <!-- 新增备件入库 -->
-            <el-dialog :title="formTitle" :visible.sync="FormVisiblein" :show-close="false" width="1000px">
+            <el-dialog :title="formTitle" :visible.sync="FormVisiblein" :close-on-press-escape="false" :show-close="false" :close-on-click-modal="false" width="1000px">
               <el-form ref="EditFormin" :model="EditFormin" :rules="FormRulesin" label-width="120px">
                 <el-form-item :label="EditFormin.spareBoundType==='InBound'?'入库单号':'出库单号'">
                   <el-input value="系统自动生成" disabled :placeholder="EditFormin.spareBoundType==='InBound'?'入库单号':'出库单号'" size="small" />
