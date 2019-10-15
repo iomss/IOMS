@@ -264,9 +264,7 @@ export default {
       // 页码
       this.formSearch.pageNumber = val.page
       // 调用获取数据
-      this.$axios.get('/api/EquipmentList/', { params: this.formSearch }).then(res => {
-        this.tableData = res.data
-      })
+      this.getData()
     },
     updateData(row) {
       if (row === undefined) {
@@ -391,9 +389,7 @@ export default {
       // 页码
       this.formSearchselect.pageNumber = val.page
       // 调用获取数据
-      this.$axios.get('/api/EquipmentList/', { params: this.formSearchselect }).then(res => {
-        this.tableDataselect = res.data
-      })
+      this.getPageselect()
     },
 
     submitData() {
