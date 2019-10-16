@@ -10,7 +10,7 @@
             <h2 style="margin:0">{{ userName }}</h2>
           </div>
           <div style="padding:15px 0;display:flex;text-align:center">
-            <div style="width:49%;padding:0 10px;">青海省高等级公路建设管理局</div>
+            <div style="width:49%;padding:0 10px;">{{ userUnit.name }}</div>
             <div style="width:49%;padding:0 10px;">系统管理员</div>
           </div>
           <hr>
@@ -74,6 +74,7 @@ export default {
     return {
       Logo: Logo,
       userName: this.$cookie.get('trueName'),
+      userUnit: JSON.parse(this.$cookie.get('unit')),
       changeUserFormVisible: false,
       UserForm: {
         trueName: this.$cookie.get('trueName'),
