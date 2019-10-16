@@ -3,7 +3,7 @@
   <div>
     <el-row>
       <el-col>
-        <div v-if="roles.indexOf('BeingDispatched')!==-1||roles.indexOf('CreateRepairRecord')!==-1||roles.indexOf('GrabOrder')!==-1" class="panel">
+        <div class="panel">
           <div class="header">
             <h4>维修单详情</h4>
             <div v-if="formData.assetCode!==''" class="Infodata">
@@ -26,7 +26,7 @@
             </div>
           </div>
         </div>
-        <div v-if="roles.indexOf('CheckRepairRecord')!==-1||roles.indexOf('ReviewRepairRecord')!==-1" class="content">
+        <div class="content">
           <h4>维修记录</h4>
           <div class="Infodata">
             <ul v-if="tableData.repairType!==''">
@@ -59,13 +59,23 @@
             </ul>
           </div>
         </div>
-        <div v-if="roles.indexOf('ReviewRepairRecord')!==-1" class="mid">
+        <div class="mid">
           <h4>验收确认</h4>
           <div class="Infodata">
-            <ul v-if="tableData.checkUser!==null">
+            <ul>
               <li><span>验收结果:</span><b>{{ tableData.checkStatus ==='Applied'?'通过':tableData.checkStatus ==='Rejected'?'不通过':'' }}</b></li>
               <li><span>验收意见:</span><b>{{ tableData.checkComment }}</b></li>
-              <li><span>验收人:</span><b>{{ tableData.checkUser.name }}</b></li>
+              <li><span>验收人:</span><b>{{ tableData.checkUser?tableData.checkUser.name:'' }}</b></li>
+            </ul>
+          </div>
+        </div>
+        <div class="mid">
+          <h4>审核信息</h4>
+          <div class="Infodata">
+            <ul>
+              <li><span>审核结果:</span><b>{{ tableData.reviewStatus ==='Applied'?'通过':tableData.reviewStatus ==='Rejected'?'不通过':'' }}</b></li>
+              <li><span>审核意见:</span><b>{{ tableData.reviewComment }}</b></li>
+              <li><span>审核人:</span><b>{{ tableData.reviewUser ?tableData.reviewUser .name:'' }}</b></li>
             </ul>
           </div>
         </div>
