@@ -108,7 +108,7 @@
               </el-table-column>
               <el-table-column prop="code" label="资产编码" sortable="custom" width="170">
                 <template slot-scope="scope">
-                  <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="primary" @click="UpdateInfo(scope.row)">{{ scope.row.code }}</el-button>
+                  <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="text" @click="UpdateInfo(scope.row)">{{ scope.row.code }}</el-button>
                 </template>
               </el-table-column>
               <el-table-column prop="equimentType.name" label="资产类别" sortable="custom" />
