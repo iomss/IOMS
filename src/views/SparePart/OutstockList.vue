@@ -6,9 +6,7 @@
         <el-row class="panel">
           <div class="header">
             <div class="tools">
-              <el-button type="success" size="small" @click="FormVisible = true">新建出库单</el-button>
               <el-button type="primary" size="small" @click="outForm()">确认出库</el-button>
-              <!-- <el-button type="primary" size="small" @click="updateData()">修改</el-button> -->
               <el-button type="danger" size="small" @click="deleteData()">删除</el-button>
             </div>
             <div class="toolsrt">
@@ -40,116 +38,6 @@
               </el-table-column>
               <el-table-column prop="remark" label="备注" />
             </el-table>
-            <!-- 新增备件出库 -->
-            <el-dialog title="新增备件出库单" :visible.sync="FormVisible" :close-on-press-escape="false" :show-close="false" :close-on-click-modal="false" width="1000px">
-              <el-form ref="EditForm" :model="EditForm" :rules="FormRules" label-width="120px">
-                <el-form-item label="出库类型" prop="spareBoundSubType">
-                  <el-select v-model="EditForm.spareBoundSubType" filterable placeholder="出库单类型" size="small">
-                    <el-option key="PurchaseInBound" label="采购入库" value="PurchaseInBound" />
-                    <el-option key="SpecialInBound" label="专项入库" value="SpecialInBound" />
-                    <el-option key="Repair" label="维修出入库" value="Repair" />
-                    <el-option key="Scrap" label="报废出入库" value="Scrap" />
-                    <el-option key="ReceiveOutBound" label="领用出库" value="ReceiveOutBound" />
-                    <el-option key="TransferApplication" label="调拨申请单" value="TransferApplication" />
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="库房" prop="spareRepositoryId">
-                  <el-select v-model="EditForm.spareRepositoryId" filterable remote :remote-method="remoteMethodWarehouse" :loading="loading" placeholder="入库库房" size="small" @focus="remoteMethodWarehouse">
-                    <el-option v-for="item in WarehouseData" :key="item.id" :label="item.name" :value="item.id" />
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="出库日期" prop="boundTime">
-                  <el-date-picker v-model="EditForm.boundTime" type="date" placeholder="入库日期" />
-                </el-form-item>
-                <el-form-item label="经办人" prop="opeartor">
-                  <el-input v-model="EditForm.opeartor" placeholder="经办人" size="small" />
-                </el-form-item>
-                <el-form-item label="领用人" prop="receive">
-                  <el-input v-model="EditForm.receive" placeholder="领用人" size="small" />
-                </el-form-item>
-                <el-form-item label="维修单编号" prop="repairOrderCode">
-                  <el-input v-model="EditForm.repairOrderCode" placeholder="操作人" size="small" />
-                </el-form-item>
-                <el-form-item label="备注" prop="remark" class="form_total">
-                  <el-input v-model="EditForm.remark" type="textarea" placeholder="备注" size="small" />
-                </el-form-item>
-              </el-form>
-              <div class="header">
-                <div class="tools">
-                  <el-button type="primary" size="small" @click="addAssets()">选择备件</el-button>
-                  <el-button type="primary" size="small" @click="removeSelectSpare()">删除备件</el-button>
-                </div>
-              </div>
-              <el-table :data="tableDataout" stripe border style="width: 1500px" @selection-change="handlefirstchange">
-                <el-table-column type="selection" />
-                <el-table-column prop="number" label="编码" />
-                <el-table-column prop="name" label="备件名称" />
-                <el-table-column prop="consumable" label="备件分类">
-                  <template slot-scope="scope">
-                    {{ scope.row.consumable?"易损易耗品":"非易损易耗品" }}
-                  </template>
-                </el-table-column>
-                <el-table-column prop="brand.name" label="品牌" />
-                <el-table-column prop="model.name" label="型号" />
-                <el-table-column prop="unitPrice" label="单价">
-                  <template slot-scope="scope">
-                    <el-input v-model="scope.row.unitPrice" size="small" placeholder="请输入内容" />
-                  </template>
-                </el-table-column>
-                <el-table-column prop="quantity" label="数量">
-                  <template slot-scope="scope">
-                    <el-input v-model="scope.row.quantity" size="small" placeholder="请输入内容" />
-                  </template>
-                </el-table-column>
-                <el-table-column prop="totalPrice" label="总金额">
-                  <template slot-scope="scope">
-                    {{ scope.row.unitPrice !==undefined && scope.row.quantity!==undefined ? scope.row.unitPrice*scope.row.quantity:'' }}
-                  </template>
-                </el-table-column>
-              </el-table>
-              <span slot="footer" class="dialog-footer">
-                <el-button type="primary" size="small" @click="unsureDate()">暂存</el-button>
-                <el-button type="success" size="small" @click="sureData()">确认出库</el-button>
-                <el-button type="primary" plain size="small" @click="closeSpare()">取消</el-button>
-              </span>
-            </el-dialog>
-            <!-- 选择备件 -->
-            <el-dialog title="选择备件" :visible.sync="Visible" :close-on-press-escape="false" :close-on-click-modal="false" width="1000px">
-              <div class="toolsrt">
-                <el-form ref="form" :model="formSearchselect" label-width="70px">
-                  <el-input v-model="formSearchselect.text" placeholder="全局搜索" size="small" />
-                  <el-button type="primary" plain size="small" @click="getDataselect()">查询</el-button>
-                </el-form>
-              </div>
-              <el-table :data="tableDataselect" stripe border style="width: 1500px" @selection-change="handleSelection">
-                <el-table-column type="selection" />
-                <el-table-column prop="number" label="编码" />
-                <el-table-column prop="name" label="备件名称" />
-                <el-table-column prop="consumable" label="备件分类">
-                  <template slot-scope="scope">
-                    {{ scope.row.consumable?"易损易耗品":"非易损易耗品" }}
-                  </template>
-                </el-table-column>
-                <el-table-column prop="brand" label="品牌">
-                  <template slot-scope="scope">
-                    {{ scope.row.brand.name }}
-                  </template>
-                </el-table-column>
-                <el-table-column prop="model" label="型号">
-                  <template slot-scope="scope">
-                    {{ scope.row.model.name }}
-                  </template>
-                </el-table-column>
-                <el-table-column prop="unit" label="单位" />
-                <el-table-column prop="supplier" label="供应商" />
-              </el-table>
-              <!--分页-->
-              <pagination v-show="totalCountselect>0" :total="totalCountselect" :page.sync="formSearchselect.pageNumber" :limit.sync="formSearchselect.pageSize" @pagination="getPageselect" />
-              <span slot="footer" class="dialog-footer">
-                <el-button type="primary" size="small" @click="updateselect()">选择</el-button>
-                <el-button type="primary" plain size="small" @click="Visible=false;multipleselect=''">取消</el-button>
-              </span>
-            </el-dialog>
             <!--分页-->
             <pagination v-show="totalCount>0" :total="totalCount" :page.sync="formSearch.pageNumber" :limit.sync="formSearch.pageSize" @pagination="getPage" />
             <!--删除-->
