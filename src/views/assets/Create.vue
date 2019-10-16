@@ -92,7 +92,7 @@
               <div>
                 <p>自定义属性：</p>
                 <el-form-item v-for="item in selfData" :key="item.id" :label="item.displayName" class="form_mid" :prop="item.name">
-                  <el-input :v-model="formData[item.name]" size="small" />
+                  <el-input v-model="formData[item.name]" size="small" />
                 </el-form-item>
               </div>
               <el-form-item class="form_total">
@@ -260,9 +260,10 @@ export default {
     },
     getData() { // 获取自定义属性
       this.$axios.get('/api/AssetField').then(res => {
-        res.data.forEach(item => { this.formData[item.name] = '' })
+        const newattribute = {}
+        res.data.forEach(item => { newattribute[item.name] = '' })
+        this.formData = { ... this.formData, ...newattribute }
         this.selfData = res.data
-        console.log(this.selfData)
       })
     },
     getunitData() {

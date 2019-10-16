@@ -115,7 +115,7 @@
               <el-table-column prop="alias" label="资产名称" sortable="custom" />
               <el-table-column prop="brand.name" label="品牌" sortable="custom" />
               <el-table-column prop="model.name" label="型号" sortable="custom" />
-              <el-table-column prop="parentSystem" label="所属系统" sortable="custom" />
+              <el-table-column prop="parentSystem.name" label="所属系统" sortable="custom" />
               <el-table-column prop="system.name" label="所属子系统" sortable="custom" />
               <el-table-column prop="position.name" label="安装位置" sortable="custom" />
               <el-table-column prop="enableTime" label="投用时间" sortable="custom" :formatter="formatterstartDate" />
@@ -230,6 +230,12 @@
                     <el-form-item label="照片" class="form_mid">
                       <Uploadimg v-model="formData.image" :reset="formData.image" @uploadimg="uploadimgdata">aaa</Uploadimg>
                     </el-form-item>
+                    <div>
+                      <p>自定义属性：</p>
+                      <el-form-item v-for="item in selfData" :key="item.id" :label="item.displayName" class="form_mid" :prop="item.name">
+                        <el-input v-model="formData[item.name]" :disabled="showedit" size="small" />
+                      </el-form-item>
+                    </div>
                     <el-form-item class="form_total">
                       <el-button type="primary" @click="updataform()">确定</el-button>
                       <el-button type="primary" @click="showInfo = false">关闭</el-button>
@@ -424,11 +430,13 @@ export default {
         pageCount: ''
       },
       showedit: true,
-      editshow: true
+      editshow: true,
+      selfData: []// 自定义属性
     }
   },
   computed: {},
   mounted() {
+    this.getCustomData()// 获取自定义属性
     this.getData()
     // 获取下拉菜单数据
     this.getunitData()
@@ -441,6 +449,14 @@ export default {
     this.getsiData()
   },
   methods: {
+    getCustomData() { // 获取自定义属性
+      this.$axios.get('/api/AssetField').then(res => {
+        const newattribute = {}
+        res.data.forEach(item => { newattribute[item.name] = '' })
+        this.formData = { ... this.formData, ...newattribute }
+        this.selfData = res.data
+      })
+    },
     resetForm() { // 重置高级搜索
       this.tableDataSearch = {
         orderBy: '', // 排序字段
@@ -792,6 +808,7 @@ export default {
       })
     },
     updataform() {
+      delete this.formData.supplementaryData
       this.$axios.put('/api/Assets?id=' + this.formData.id, this.formData).then(res => {
         // 关掉编辑或详情弹框
         this.showInfo = false
