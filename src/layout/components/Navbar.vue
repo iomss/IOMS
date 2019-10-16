@@ -16,8 +16,8 @@
           <hr>
           <div>
             <el-button-group>
-              <el-button size="small">修改密码</el-button>
-              <el-button size="small">修改信息</el-button>
+              <el-button size="small" @click="changePW()">修改密码</el-button>
+              <el-button size="small" @click="changeUserInfo()">修改信息</el-button>
             </el-button-group>
             <el-button size="small" style="float:right" @click="logout">注销</el-button>
           </div>
@@ -27,7 +27,36 @@
         </div>
       </el-popover>
     </div>
+    <el-dialog title="修改信息" :visible.sync="changeUserFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="changeUserFormClose">
+      <el-form ref="UserForm" :model="UserForm" :rules="UserFormRules" label-width="120px">
+        <el-form-item label="真实姓名" prop="trueName">
+          <el-input v-model="UserForm.trueName" disabled placeholder="真实姓名" userze="small" />
+        </el-form-item>
+        <el-form-item label="用户名称" prop="userName">
+          <el-input v-model="UserForm.userName" placeholder="用户" userze="small" />
+        </el-form-item>
+        <el-form-item prop="contactNumber" label="联系电话">
+          <el-input v-model="UserForm.contactNumber" placeholder="联系电话" size="small" />
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="" @click="changeUserFormVisible=false">关闭</el-button>
+        <el-button type="primary" @click="submit()">提交</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="修改密码" :visible.sync="changePassWordVisibale" :close-on-press-escape="false" :close-on-click-modal="false" width="450px">
+      <el-form ref="changePassWord" :model="changePassWord" :rules="changePassWordRules" label-width="120px">
+        <el-form-item prop="password" label="密码">
+          <el-input v-model="changePassWord.password" placeholder="密码" size="small" />
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="" @click="changePassWordVisibale=false">关闭</el-button>
+        <el-button type="primary" @click="submitChangePassWord()">提交</el-button>
+      </span>
+    </el-dialog>
   </div>
+
 </template>
 
 <script>
@@ -44,7 +73,39 @@ export default {
   data() {
     return {
       Logo: Logo,
-      userName: this.$cookie.get('trueName')
+      userName: this.$cookie.get('trueName'),
+      changeUserFormVisible: false,
+      UserForm: {
+        trueName: this.$cookie.get('trueName'),
+        userName: '',
+        contactNumber: ''
+      },
+      UserFormRules: {
+        userName: {
+          required: true,
+          message: '用户名不可为空',
+          trigger: 'blur'
+        },
+        contactNumber: {
+          required: true,
+          message: '联系方式不可为空',
+          trigger: 'blur'
+        }
+      },
+      changePassWordVisibale: false,
+      changePassWord: {
+        trueName: this.$cookie.get('trueName'),
+        userName: '',
+        contactNumber: '',
+        password: ''
+      },
+      changePassWordRules: {
+        password: {
+          required: true,
+          message: '密码不可为空',
+          trigger: 'blur'
+        }
+      }
     }
   },
   computed: {
@@ -55,6 +116,41 @@ export default {
     ])
   },
   methods: {
+    changeUserInfo() {
+      this.changeUserFormVisible = true
+      this.UserForm.userName = this.$cookie.get('userName')
+      this.UserForm.contactNumber = this.$cookie.get('contactNumber')
+    },
+    changeUserFormClose() {
+      this.$refs.UserForm.resetFields()
+    },
+    submit() {
+      this.$refs.UserForm.validate(valid => {
+        if (valid) {
+          this.$axios.put('/api/Account', this.UserForm).then(res => {
+            this.$message.success('修改成功')
+            this.$cookie.set('userName', res.userName)
+            this.$cookie.set('contactNumber', res.contactNumber)
+            this.changeUserFormVisible = false
+          })
+        }
+      })
+    },
+    changePW() {
+      this.changePassWordVisibale = true
+      this.changePassWord.userName = this.$cookie.get('userName')
+      this.changePassWord.contactNumber = this.$cookie.get('contactNumber')
+    },
+    submitChangePassWord() {
+      this.$refs.changePassWord.validate(valid => {
+        if (valid) {
+          this.$axios.put('/api/Account', this.changePassWord).then(res => {
+            this.$message.success('密码修改成功,需重新登录。')
+            this.logout()
+          })
+        }
+      })
+    },
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },
