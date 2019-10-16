@@ -144,21 +144,17 @@ export default {
       this.$refs.FaultForm.resetFields()
     },
     updateFault(row) {
-      if (row === undefined) {
-        this.FaultFormTitle = '编辑'
-        if (this.multipleSelectionFault.length !== 1) {
-          this.$message.error('请选择一项数据进行操作')
-        } else {
-          this.FaultFormVisible = true
-          this.FaultForm.id = this.multipleSelectionFault[0].id
-          this.FaultForm.name = this.multipleSelectionFault[0].name
-          this.FaultForm.equipmentId = this.multipleSelectionFault[0].equipmentId
-        }
+      this.FaultFormTitle = '编辑'
+      if (this.multipleSelectionFault.length !== 1) {
+        this.$message.error('请选择一项数据进行操作')
       } else {
+        let hasData = false
+        this.Equipment.forEach(item => { item.id === this.multipleSelectionFault[0].equipmentId ? hasData = true : '' })
+        hasData ? '' : this.Equipment.push({ id: this.multipleSelectionFault[0].equipmentId, name: this.multipleSelectionFault[0].equipmentName })
         this.FaultFormVisible = true
-        this.FaultForm.id = row.id
-        this.FaultForm.name = row.name
-        this.FaultForm.equipmentId = row.equipmentId
+        this.FaultForm.id = this.multipleSelectionFault[0].id
+        this.FaultForm.name = this.multipleSelectionFault[0].name
+        this.FaultForm.equipmentId = this.multipleSelectionFault[0].equipmentId
       }
     },
     // 表单提交

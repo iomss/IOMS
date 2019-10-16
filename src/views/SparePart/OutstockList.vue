@@ -7,6 +7,7 @@
           <div class="header">
             <div class="tools">
               <el-button type="success" size="small" @click="FormVisible = true">新建出库单</el-button>
+              <el-button type="primary" size="small" @click="outForm()">确认出库</el-button>
               <!-- <el-button type="primary" size="small" @click="updateData()">修改</el-button> -->
               <el-button type="danger" size="small" @click="deleteData()">删除</el-button>
             </div>
@@ -22,12 +23,12 @@
               <el-table-column type="selection" />
               <el-table-column prop="confirmed " label="单据状态">
                 <template slot-scope="scope">
-                  {{ scope.row.confirmed?'已入库':'未入库' }}
+                  {{ scope.row.confirmed?'已出库':'未出库' }}
                 </template>
               </el-table-column>
-              <el-table-column prop="code" label="入库单号" />
-              <el-table-column prop="boundTime" label="入库日期" :formatter="formatterstartDate" />
-              <el-table-column prop="spareBoundSubType" label="入库类型">
+              <el-table-column prop="code" label="出库单号" />
+              <el-table-column prop="boundTime" label="出库日期" :formatter="formatterstartDate" />
+              <el-table-column prop="spareBoundSubType" label="出库类型">
                 <template slot-scope="scope">
                   {{ scope.row.spareBoundSubType=='PurchaseInBound'?'采购入库':scope.row.spareBoundSubType=='SpecialInBound'?'专项入库':scope.row.spareBoundSubType=='Repair'?'维修出入库':scope.row.spareBoundSubType=='Scrap'?'报废出入库':scope.row.spareBoundSubType=='ReceiveOutBound'?'领用出库':'调拨申请单' }}
                 </template>
@@ -40,10 +41,10 @@
               <el-table-column prop="remark" label="备注" />
             </el-table>
             <!-- 新增备件出库 -->
-            <el-dialog title="新增备件出库单" :visible.sync="FormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="1000px">
+            <el-dialog title="新增备件出库单" :visible.sync="FormVisible" :close-on-press-escape="false" :show-close="false" :close-on-click-modal="false" width="1000px">
               <el-form ref="EditForm" :model="EditForm" :rules="FormRules" label-width="120px">
                 <el-form-item label="出库类型" prop="spareBoundSubType">
-                  <el-select v-model="EditForm.spareBoundSubType" filterable placeholder="入库单类型" size="small">
+                  <el-select v-model="EditForm.spareBoundSubType" filterable placeholder="出库单类型" size="small">
                     <el-option key="PurchaseInBound" label="采购入库" value="PurchaseInBound" />
                     <el-option key="SpecialInBound" label="专项入库" value="SpecialInBound" />
                     <el-option key="Repair" label="维修出入库" value="Repair" />
@@ -60,11 +61,11 @@
                 <el-form-item label="出库日期" prop="boundTime">
                   <el-date-picker v-model="EditForm.boundTime" type="date" placeholder="入库日期" />
                 </el-form-item>
-                <el-form-item label="经办人" prop="name">
-                  <el-input v-model="EditForm.name" placeholder="经办人" size="small" />
+                <el-form-item label="经办人" prop="opeartor">
+                  <el-input v-model="EditForm.opeartor" placeholder="经办人" size="small" />
                 </el-form-item>
-                <el-form-item label="领用人" prop="name">
-                  <el-input v-model="EditForm.name" placeholder="领用人" size="small" />
+                <el-form-item label="领用人" prop="receive">
+                  <el-input v-model="EditForm.receive" placeholder="领用人" size="small" />
                 </el-form-item>
                 <el-form-item label="维修单编号" prop="repairOrderCode">
                   <el-input v-model="EditForm.repairOrderCode" placeholder="操作人" size="small" />
@@ -76,7 +77,7 @@
               <div class="header">
                 <div class="tools">
                   <el-button type="primary" size="small" @click="addAssets()">选择备件</el-button>
-                  <el-button type="primary" size="small" @click="removeEquip()">删除备件</el-button>
+                  <el-button type="primary" size="small" @click="removeSelectSpare()">删除备件</el-button>
                 </div>
               </div>
               <el-table :data="tableDataout" stripe border style="width: 1500px" @selection-change="handlefirstchange">
@@ -88,27 +89,19 @@
                     {{ scope.row.consumable?"易损易耗品":"非易损易耗品" }}
                   </template>
                 </el-table-column>
-                <el-table-column prop="brand" label="品牌">
+                <el-table-column prop="brand.name" label="品牌" />
+                <el-table-column prop="model.name" label="型号" />
+                <el-table-column prop="unitPrice" label="单价">
                   <template slot-scope="scope">
-                    {{ scope.row.brand.name }}
-                  </template>
-                </el-table-column>
-                <el-table-column prop="model" label="型号">
-                  <template slot-scope="scope">
-                    {{ scope.row.model.name }}
-                  </template>
-                </el-table-column>
-                <el-table-column prop="remark" label="单价">
-                  <template scope="scope">
                     <el-input v-model="scope.row.unitPrice" size="small" placeholder="请输入内容" />
                   </template>
                 </el-table-column>
-                <el-table-column prop="model" label="数量">
-                  <template scope="scope">
+                <el-table-column prop="quantity" label="数量">
+                  <template slot-scope="scope">
                     <el-input v-model="scope.row.quantity" size="small" placeholder="请输入内容" />
                   </template>
                 </el-table-column>
-                <el-table-column prop="remark" label="总金额">
+                <el-table-column prop="totalPrice" label="总金额">
                   <template slot-scope="scope">
                     {{ scope.row.unitPrice !==undefined && scope.row.quantity!==undefined ? scope.row.unitPrice*scope.row.quantity:'' }}
                   </template>
@@ -117,7 +110,7 @@
               <span slot="footer" class="dialog-footer">
                 <el-button type="primary" size="small" @click="unsureDate()">暂存</el-button>
                 <el-button type="success" size="small" @click="sureData()">确认出库</el-button>
-                <el-button type="primary" plain size="small" @click="FormVisible = false">取消</el-button>
+                <el-button type="primary" plain size="small" @click="closeSpare()">取消</el-button>
               </span>
             </el-dialog>
             <!-- 选择备件 -->
@@ -154,7 +147,7 @@
               <pagination v-show="totalCountselect>0" :total="totalCountselect" :page.sync="formSearchselect.pageNumber" :limit.sync="formSearchselect.pageSize" @pagination="getPageselect" />
               <span slot="footer" class="dialog-footer">
                 <el-button type="primary" size="small" @click="updateselect()">选择</el-button>
-                <el-button type="primary" plain size="small" @click="Visible = false">取消</el-button>
+                <el-button type="primary" plain size="small" @click="Visible=false;multipleselect=''">取消</el-button>
               </span>
             </el-dialog>
             <!--分页-->
@@ -271,9 +264,7 @@ export default {
       // 页码
       this.formSearch.pageNumber = val.page
       // 调用获取数据
-      this.$axios.get('/api/EquipmentList/', { params: this.formSearch }).then(res => {
-        this.tableData = res.data
-      })
+      this.getData()
     },
     updateData(row) {
       if (row === undefined) {
@@ -313,6 +304,12 @@ export default {
     handlechange(val) {
       this.multiple = val
     },
+    closeSpare() {
+      this.$refs.EditForm.resetFields()
+      this.FormVisible = false
+      this.tableDataout = []
+      this.multipleselect = ''
+    },
     //* ******************************************************************一级弹框********************************************************************************* *//
     getWarehouseData() {
       this.$axios.get('/api/SpareRepository/', { params: this.WarehouseSearch }).then(res => {
@@ -336,6 +333,11 @@ export default {
     handlefirstchange(val) {
       this.multiplefirst = val
     },
+    removeSelectSpare() {
+      this.multiplefirst.forEach(item => {
+        this.tableDataout.splice(this.tableDataout.findIndex(i => i.id === item.id), 1)
+      })
+    },
     unsureDate() { // 暂存
       const spareStockRecordItems = []
       this.tableDataout.forEach(item => spareStockRecordItems.push({
@@ -350,7 +352,7 @@ export default {
           this.$axios.post('/api/SpareStockRecord', this.EditForm).then(res => {
             this.getData()
             this.$message.success('出库单暂存')
-            this.FormVisible = false
+            this.closeSpare()
           })
         }
       })
@@ -369,7 +371,7 @@ export default {
           this.$axios.post('/api/SpareStockRecord/CreateAndSubmit', this.EditForm).then(res => {
             this.getData()
             this.$message.success('确认出库成功')
-            this.FormVisible = false
+            this.closeSpare()
           })
         }
       })
@@ -387,9 +389,7 @@ export default {
       // 页码
       this.formSearchselect.pageNumber = val.page
       // 调用获取数据
-      this.$axios.get('/api/EquipmentList/', { params: this.formSearchselect }).then(res => {
-        this.tableDataselect = res.data
-      })
+      this.getPageselect()
     },
 
     submitData() {
@@ -412,6 +412,21 @@ export default {
       this.tableDataout = this.tableDataout.concat(this.multipleselect)
       // this.EditForm.spareStockRecordItems=this.multipleselect
       console.log(this.tableDataout)
+    },
+    // 单独确认出库
+    outForm() {
+      if (this.multiple.length !== 1) {
+        this.$message.error('请选择一项数据进行操作')
+      } else {
+        if (this.multiple[0].confirmed) {
+          this.$message.error('已出库')
+        } else {
+          this.$axios.post('/api/SpareStockRecord/' + this.multiple[0].id).then(res => {
+            this.$message.success('出库成功')
+            this.getData()
+          })
+        }
+      }
     }
   }
 }

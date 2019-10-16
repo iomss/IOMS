@@ -10,13 +10,20 @@
               <el-button type="primary" userze="small" @click="getData()">查询</el-button>
               <el-button type="success" userze="small" @click="adddata()">添加</el-button>
               <el-button type="warning" userze="small" @click="updateUser()">修改</el-button>
-              <el-button type="danger" userze="small" @click="deleteUser()">删除</el-button>
+              <el-button type="success" userze="small" @click="enableUser()">启用</el-button>
+              <el-button type="danger" userze="small" @click="disableUser()">停用</el-button>
+              <!-- <el-button type="danger" userze="small" @click="deleteUser()">删除</el-button> -->
             </div>
           </div>
           <div class="content">
             <el-table :data="UserData" stripe border style="width: 100%" @selection-change="handleSelectionChangeUser">
               <el-table-column type="selection" width="40" />
-              <el-table-column type="index" label="序号" />
+              <el-table-column type="index" label="序号" width="60" />
+              <el-table-column prop="disabled" label="状态" width="60">
+                <template slot-scope="scope">
+                  {{ scope.row.disabled?'停用':'启用' }}
+                </template>
+              </el-table-column>
               <el-table-column prop="userName" label="用户名称" />
               <el-table-column prop="trueName" label="真实姓名" />
               <el-table-column prop="units" label="单位">
@@ -71,6 +78,20 @@
               </span>
             </el-dialog>
 
+            <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="DisableUserVisibale" width="220px">
+              <span>您确定要停用此用户？</span>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="DisableUserVisibale = false">取 消</el-button>
+                <el-button type="primary" @click="submitDisableUser">确 定</el-button>
+              </span>
+            </el-dialog>
+            <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="EnableUserVisibale" width="220px">
+              <span>您确定要启用此用户？</span>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="EnableUserVisibale = false">取 消</el-button>
+                <el-button type="primary" @click="submitEnableUser">确 定</el-button>
+              </span>
+            </el-dialog>
             <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="UserDeleteModelVisible" width="220px">
               <span>您确定要删除此条数据？</span>
               <span slot="footer" class="dialog-footer">
@@ -143,7 +164,10 @@ export default {
       UserDeleteModelVisible: false,
       UserDeleteDataId: null,
       multipleSelectionUser: [],
-      loading: false
+      loading: false,
+      EnableUserVisibale: false,
+      DisableUserVisibale: false,
+      userSelectId: null
     }
   },
   computed: {},
@@ -308,6 +332,50 @@ export default {
       this.$axios.get('/api/Meta/SI?text=' + querytext).then(res => {
         this.loading = false
         this.SIData = res.data
+      })
+    },
+    // 启用
+    enableUser(row) {
+      if (row === undefined) {
+        if (this.multipleSelectionUser.length !== 1) {
+          this.$message.error('请选择一项数据进行操作')
+        } else {
+          this.EnableUserVisibale = true
+          this.userSelectId = this.multipleSelectionUser[0].id
+        }
+      } else {
+        this.EnableUserVisibale = true
+        this.userSelectId = row.id
+      }
+    },
+    // 启用用户
+    submitEnableUser() {
+      this.$axios.post('/api/User/' + this.userSelectId + '/Enable').then(res => {
+        this.getData()
+        this.$message.success('用户启用成功')
+        this.EnableUserVisibale = false
+      })
+    },
+    // 停用
+    disableUser(row) {
+      if (row === undefined) {
+        if (this.multipleSelectionUser.length !== 1) {
+          this.$message.error('请选择一项数据进行操作')
+        } else {
+          this.DisableUserVisibale = true
+          this.userSelectId = this.multipleSelectionUser[0].id
+        }
+      } else {
+        this.DisableUserVisibale = true
+        this.userSelectId = row.id
+      }
+    },
+    // 停用用户
+    submitDisableUser() {
+      this.$axios.post('/api/User/' + this.userSelectId + '/Disable').then(res => {
+        this.getData()
+        this.$message.success('用户停用成功')
+        this.DisableUserVisibale = false
       })
     }
 

@@ -108,7 +108,7 @@
               </el-table-column>
               <el-table-column prop="code" label="资产编码" sortable="custom" width="170">
                 <template slot-scope="scope">
-                  <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="primary" @click="UpdateInfo(scope.row)">{{ scope.row.code }}</el-button>
+                  <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="text" @click="UpdateInfo(scope.row)">{{ scope.row.code }}</el-button>
                 </template>
               </el-table-column>
               <el-table-column prop="equimentType.name" label="资产类别" sortable="custom" />
@@ -153,7 +153,9 @@
                       </el-select>
                     </el-form-item>
                     <el-form-item label="安装位置" prop="positionId" style="margin-bottom:-15px;">
-                      <treeselect v-model="formData.positionId" :disable-branch-nodes="true" :normalizer="normalizer" :disabled="showedit" :options="positionTreeData" :load-options="loadOptions" placeholder="安装位置" no-results-text="未找到相关数据" />
+                      <treeselect v-model="formData.positionId" :disable-branch-nodes="true" :normalizer="normalizer" :disabled="showedit" :options="positionTreeData" :load-options="loadOptions" placeholder="安装位置" no-results-text="未找到相关数据">
+                        <div slot="value-label" slot-scope="{ node }">{{ node.raw.crumbsName }}</div>
+                      </treeselect>
                     </el-form-item>
                     <el-form-item label="所属系统" prop="systemId">
                       <!-- <el-select v-model="formData.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" placeholder="所属系统" size="small" @focus="remoteMethodsystemId">
@@ -796,7 +798,7 @@ export default {
       })
     },
     assetsExport() {
-      this.$axios.post('/api/Assets/Export', this.formSearch, { Accept: {
+      this.$axios.post('/api/Assets/Export', this.tableDataSearch, { Accept: {
         'Content-Type': 'application/json;application/octet-stream'
       }, responseType: 'blob' }).then(res => {
         const url = window.URL.createObjectURL(new Blob([res.data]))

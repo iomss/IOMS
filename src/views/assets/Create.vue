@@ -13,7 +13,9 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="安装位置" prop="positionId" style="margin-bottom:-20px;">
-                <treeselect v-model="formData.positionId" :disable-branch-nodes="true" :normalizer="normalizer" :options="positionTreeData" :load-options="loadOptions" placeholder="安装位置" no-results-text="未找到相关数据" />
+                <treeselect v-model="formData.positionId" :disable-branch-nodes="true" :normalizer="normalizer" :options="positionTreeData" :load-options="loadOptions" placeholder="安装位置" no-results-text="未找到相关数据">
+                  <div slot="value-label" slot-scope="{ node }">{{ node.raw.crumbsName }}</div>
+                </treeselect>
               </el-form-item>
               <el-form-item label="所属系统" prop="systemId">
                 <el-select v-model="formData.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" placeholder="所属系统" size="small" @focus="remoteMethodsystemId">
@@ -275,7 +277,7 @@ export default {
       data.forEach((item, index) => {
         if (item.children === null) {
           item.children = undefined
-        } else {
+        } else if (item.children !== undefined) {
           this.checkhasChildren(item.children)
         }
       })
