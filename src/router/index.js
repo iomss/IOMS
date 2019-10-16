@@ -171,7 +171,7 @@ export const asyncRoutes = [
       meta: {
         title: '已验收列表详情',
         icon: 'fa fa-home',
-        roles: ['GrabOrder'],
+        roles: ['EnterSystem'],
         hidden: true,
         fullPath: '/Workorder/CheckedInfo'
       }
