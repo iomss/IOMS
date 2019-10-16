@@ -44,7 +44,7 @@ export default {
   data() {
     return {
       Logo: Logo,
-      userName: this.$cookie.get('userName')
+      userName: this.$cookie.get('trueName')
     }
   },
   computed: {

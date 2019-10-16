@@ -194,7 +194,7 @@ export default {
     return {
       loading: false, // 远程搜索
       dangqianUser: {
-        userName: this.$cookie.get('userName'),
+        userName: this.$cookie.get('trueName'),
         id: this.$cookie.get('id'),
         trueName: this.$cookie.get('trueName')
       },

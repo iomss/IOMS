@@ -91,7 +91,7 @@ export default {
     return {
       roles: this.$cookie.get('roles').split(','),
       dangqianUser: {// 当前登陆用户
-        userName: this.$cookie.get('userName'),
+        userName: this.$cookie.get('trueName'),
         id: this.$cookie.get('id')
       },
       repairRecordId: '', // 维修记录id

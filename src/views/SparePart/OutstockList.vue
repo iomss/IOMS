@@ -176,7 +176,7 @@ export default {
     return {
       loading: false, // 远程搜索
       dangqianUser: {
-        userName: this.$cookie.get('userName'),
+        userName: this.$cookie.get('trueName'),
         id: this.$cookie.get('id')
       },
       formSearch: {
@@ -202,7 +202,7 @@ export default {
       FormVisible: false, // 编辑弹框
       Visible: false,
       EditForm: {
-        opeartor: this.$cookie.get('userName'),
+        opeartor: this.$cookie.get('trueName'),
         repairOrderCode: '',
         boundTime: '',
         spareStockRecordItems: '',
