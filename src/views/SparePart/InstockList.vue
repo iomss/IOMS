@@ -43,6 +43,9 @@
             <!-- 新增备件入库 -->
             <el-dialog title="新增备件入库单" :visible.sync="FormVisible" :close-on-press-escape="false" :show-close="false" :close-on-click-modal="false" width="1000px">
               <el-form ref="EditForm" :model="EditForm" :rules="FormRules" label-width="120px">
+                <el-form-item label="入库单号">
+                  <el-input value="系统自动生成" disabled />
+                </el-form-item>
                 <el-form-item label="入库单类型" prop="spareBoundSubType">
                   <el-select v-model="EditForm.spareBoundSubType" filterable placeholder="入库单类型" size="small">
                     <el-option key="PurchaseInBound" label="采购入库" value="PurchaseInBound" />
@@ -65,7 +68,7 @@
                   <el-input v-model="EditForm.opeartor" :disabled="true" placeholder="操作人" size="small" />
                 </el-form-item>
                 <el-form-item label="维修单编号" prop="repairOrderCode">
-                  <el-input v-model="EditForm.repairOrderCode" placeholder="操作人" size="small" />
+                  <el-input v-model="EditForm.repairOrderCode" placeholder="维修单编号" size="small" />
                 </el-form-item>
                 <el-form-item label="备注" prop="remark" class="form_total">
                   <el-input v-model="EditForm.remark" type="textarea" placeholder="备注" size="small" />
@@ -90,12 +93,12 @@
                 <el-table-column prop="model.name" label="型号" />
                 <el-table-column prop="unitPrice" label="单价">
                   <template slot-scope="scope">
-                    <el-input v-model="scope.row.unitPrice" size="small" placeholder="请输入内容" />
+                    <el-input v-model="scope.row.unitPrice" type="number" size="small" placeholder="请输入内容" />
                   </template>
                 </el-table-column>
                 <el-table-column prop="quantity" label="数量">
                   <template slot-scope="scope">
-                    <el-input v-model="scope.row.quantity" size="small" placeholder="请输入内容" />
+                    <el-input v-model="scope.row.quantity" type="number" size="small" placeholder="请输入内容" />
                   </template>
                 </el-table-column>
                 <el-table-column prop="totalPrice" label="总金额">
@@ -111,7 +114,7 @@
               </span>
             </el-dialog>
             <!-- 选择备件 -->
-            <el-dialog title="选择备件" :visible.sync="Visible" :close-on-press-escape="false" :close-on-click-modal="false" width="1000px">
+            <el-dialog title="选择备件" :visible.sync="Visible" :close-on-press-escape="false" :show-close="false" :close-on-click-modal="false" width="1000px">
               <div class="toolsrt">
                 <el-form ref="form" :model="formSearchselect" label-width="70px">
                   <el-input v-model="formSearchselect.text" placeholder="全局搜索" size="small" />
@@ -395,12 +398,19 @@ export default {
     handleSelection(val) {
       this.multipleselect = val
     },
+    // 选择备件弹窗选择
     updateselect() { // 二级弹框点选择
       this.Visible = false
       // 数据插入一级弹框表格
-      this.tableDatain = this.tableDatain.concat(this.multipleselect)
-      // this.EditForm.spareStockRecordItems=this.multipleselect
-      console.log(this.tableDatain)
+      if (this.multipleselect) {
+        const newArray = []
+        this.multipleselect.forEach(i => {
+          let hasData = false
+          this.tableDatain.forEach(item => { item.id === i.id ? hasData = true : '' })
+          hasData ? '' : newArray.push(i)
+        })
+        this.tableDatain = Array.prototype.concat.apply(this.tableDatain, newArray)
+      }
     },
     // 单独确认入库
     inForm() {
