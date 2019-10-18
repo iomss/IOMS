@@ -175,6 +175,8 @@ export default {
       beforeUnitName: '', // 备件单位
       beforeSparRepository: '', // 备件库房
       allocationForm: {
+        fromUnitId: null, // 原单位
+        fromRepositoryId: null, // 原仓库
         boundTime: '', // 时间
         spareBoundType: 'TransferApplication', // 出入库类型
         spareBoundSubType: 'TransferApplication', // 出入库子类型
@@ -292,9 +294,10 @@ export default {
           item.unitId === this.multipleSpareData[0].unitId && item.spareRepositoryId === this.multipleSpareData[0].spareRepositoryId ? '' : hasData = false
         })
         if (hasData) {
-          console.log(hasData)
           this.beforeUnitName = this.multipleSpareData[0].unit.name
           this.beforeSparRepository = this.multipleSpareData[0].spareRepository.name
+          this.allocationForm.fromUnitId = this.multipleSpareData[0].unitId
+          this.allocationForm.fromRepositoryId = this.multipleSpareData[0].spareRepositoryId
           this.allocationVisibale = true
         } else {
           this.$message.warning('请选择同一单位、同一库房备件')
@@ -317,10 +320,8 @@ export default {
       this.multipleSpareData.forEach(item => {
         this.allocationForm.spareStockRecordItems.push({ stockId: item.id, quantity: item.allocationQuantity, unitPrice: item.unitPrice, totalPrice: item.unitPrice * item.allocationQuantity, remark: item.remark })
       })
-      debugger
       this.$refs.allocationForm.validate(valid => {
         if (valid) {
-          console.log(valid)
           this.$axios.post('/api/SpareStockRecord', this.allocationForm).then(res => {
             this.$message.success('调拨申请成功')
             this.allocationVisibale = false

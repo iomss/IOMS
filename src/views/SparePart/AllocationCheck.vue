@@ -6,116 +6,123 @@
         <el-row class="panel">
           <div class="header">
             <div class="tools">
-              <el-button type="primary" size="small" @click="FormVisible = true">审批</el-button>
+              <el-button type="primary" size="small" @click="check()">审批</el-button>
             </div>
             <div class="toolsrt">
               <el-form ref="form" :model="formSearch">
-                <el-select v-model="formSearch.start" filterable placeholder="开始时间" size="small">
-                  <el-option v-for="item in startdateData" :key="item" :label="item" :value="item" />
-                </el-select>
-                <el-select v-model="formSearch.end" filterable placeholder="结束时间" size="small">
-                  <el-option v-for="item in enddateData" :key="item" :label="item" :value="item" />
-                </el-select>
+                起止时间：
+                <el-date-picker v-model="formSearch.beginTime" size="small" type="date" placeholder="开始时间" />
+                ——
+                <el-date-picker v-model="formSearch.endTime" size="small" type="date" placeholder="结束时间" />
                 <el-input v-model="formSearch.text" placeholder="模糊搜索" size="small" />
                 <el-button type="primary" plain size="small" @click="getData()">查询</el-button>
               </el-form>
             </div>
           </div>
           <el-col class="content">
-            <el-table :data="tableData" stripe border style="width: 1000px" @selection-change="handleSelectionChange">
+            <el-table :data="tableData" stripe border @selection-change="handleSelectionChange">
               <el-table-column type="selection" />
-              <el-table-column prop="source" label="单据状态">
+              <el-table-column prop="reviewStatus" label="单据状态">
                 <template slot-scope="scope">
-                  {{ scope.row.source==='Automatic'?"待审核":scope.row.source==='Automa'?'已拒绝':"已批准" }}
+                  {{ scope.row.reviewStatus ==='Pending'?'等待审批':scope.row.reviewStatus ==='Applied'?'已批准':'已拒绝' }}
                 </template>
               </el-table-column>
-              <el-table-column label="调拨单号" prop="name">
+              <el-table-column label="调拨单号" prop="code">
                 <template slot-scope="scope">
-                  <el-button type="primary" plain size="small" @click="FormVisibleInfo = true">{{ scope.row.name }}</el-button>
+                  <el-button type="text" size="small" @click="getInfo(scope.row.id)">{{ scope.row.code }}</el-button>
                 </template>
               </el-table-column>
-              <el-table-column prop="remark" label="创建时间" :formatter="formatterstartDate" />
-              <el-table-column prop="remark" label="申请单位" />
-              <el-table-column prop="remark" label="操作人" />
+              <el-table-column prop="createTime" label="创建时间" :formatter="formatterstartDate" />
+              <el-table-column prop="unit.name" label="申请单位" />
+              <el-table-column prop="createUser.name" label="操作人" />
               <el-table-column prop="remark" label="备注" />
+              <el-table-column prop="reviewComment" label="审批备注" />
             </el-table>
             <!-- 调拨审批 -->
-            <el-dialog title="调拨审批" :visible.sync="FormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="600px">
-              <el-form ref="EditForm" :model="EditForm" :rules="FormRules" label-width="100px">
-                <el-form-item label="审批意见" prop="name" class="form_total_lf">
-                  <el-radio-group v-model="EditForm.reviewStatus">
+            <el-dialog title="调拨审批" :visible.sync="checkVisibale" :close-on-press-escape="false" :show-close="false" :close-on-click-modal="false" width="600px">
+              <el-form ref="checkForm" :model="checkForm" :rules="checkFormRules" label-width="100px">
+                <el-form-item label="审批意见" prop="reviewStatus">
+                  <el-radio-group v-model="checkForm.reviewStatus">
                     <el-radio label="Applied">通过</el-radio>
                     <el-radio label="Rejected">不通过</el-radio>
                   </el-radio-group>
                 </el-form-item>
-              </el-form>
-              <span slot="footer" class="dialog-footer">
-                <el-button type="primary" size="small" @click="updateData()">确定</el-button>
-                <el-button type="primary" plain size="small" @click="FormVisible = false">取消</el-button>
-              </span>
-            </el-dialog>
-            <!-- 调拨详情 -->
-            <el-dialog title="调拨申请" :visible.sync="FormVisibleInfo" :close-on-press-escape="false" :close-on-click-modal="false" width="1000px">
-              <el-form ref="EditFormInfo" :model="EditFormInfo" :rules="FormRules" label-width="120px">
-                <el-form-item label="调拨单号" prop="name">
-                  <el-input v-model="EditFormInfo.name" placeholder="调拨单号" size="small" />
-                </el-form-item>
-                <el-form-item label="调拨前单位" prop="name">
-                  <el-select v-model="EditFormInfo.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" placeholder="调拨前单位" size="small" @focus="remoteMethodsystemId">
-                    <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="调拨前库房" prop="name">
-                  <el-select v-model="EditFormInfo.brandId" filterable remote :remote-method="remoteMethodbrandId" :loading="loading" placeholder="调拨前库房" size="small" @focus="remoteMethodbrandId" @change="changeBrand">
-                    <el-option v-for="item in brandData" :key="item.id" :label="item.name" :value="item.id" />
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="调拨后单位" prop="name">
-                  <el-select v-model="EditFormInfo.modelId" filterable remote :remote-method="remoteMethodmodelId" :loading="loading" placeholder="调拨后单位" size="small" @focus="remoteMethodsystemId">
-                    <el-option v-for="item in modelData" :key="item.id" :label="item.name" :value="item.id" />
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="调拨后库房" prop="name">
-                  <el-input v-model="EditFormInfo.name" placeholder="调拨后库房" size="small" />
-                </el-form-item>
-                <el-form-item label="经办人" prop="name">
-                  <el-input v-model="EditFormInfo.name" placeholder="经办人" size="small" />
-                </el-form-item>
-                <el-form-item label="备注" prop="name" class="form_total">
-                  <el-input v-model="EditFormInfo.name" type="textarea" placeholder="备注" size="small" />
+                <el-form-item label="备注" prop="reviewComment">
+                  <el-input v-model="checkForm.reviewComment" type="textarea" />
                 </el-form-item>
               </el-form>
-              <el-table :data="tableDataInfo" stripe border style="width: 1500px" @selection-change="handleSelectionChange">
-                <el-table-column type="selection" />
-                <el-table-column prop="equipment" label="编码">
-                  <template slot-scope="scope">
-                    {{ scope.row.equipment.name }}
-                  </template>
-                </el-table-column>
-                <el-table-column label="备件名称" prop="system" />
-                <el-table-column prop="source" label="备件分类">
-                  <template slot-scope="scope">
-                    {{ scope.row.source==='Automatic'?"自动汇总":"人工修订" }}
-                  </template>
-                </el-table-column>
-                <el-table-column prop="brand" label="品牌" />
-                <el-table-column prop="model" label="型号" />
-                <el-table-column prop="model" label="数量" />
-              </el-table>
               <span slot="footer" class="dialog-footer">
-                <el-button type="primary" size="small" @click="FormVisibleInfo = false">确定</el-button>
-                <el-button type="primary" plain size="small" @click="FormVisibleInfo = false">取消</el-button>
+                <el-button type="primary" size="small" @click="submitCheck()">确定</el-button>
+                <el-button type="primary" plain size="small" @click="closeCheck()">取消</el-button>
               </span>
             </el-dialog>
             <!--分页-->
             <pagination v-show="totalCount>0" :total="totalCount" :page.sync="formSearch.pageNumber" :limit.sync="formSearch.pageSize" @pagination="getPage" />
-            <!--删除-->
-            <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeQuestionVisible" width="220px">
-              <span>您确定要删除此条数据？</span>
-              <span slot="footer" class="dialog-footer">
-                <el-button @click="removeQuestionVisible = false">取 消</el-button>
-                <el-button type="primary" @click="removeQuestion">确 定</el-button>
-              </span>
+            <el-dialog title="调拨申请单详情" :visible.sync="infoVisible" width="1000">
+              <el-row>
+
+                <el-form v-if="Info!==''" label-width="120px">
+                  <el-col :span="8">
+                    <el-form-item label="调拨单号">
+                      {{ Info.code }}
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="调拨前单位">
+                      {{ Info.fromUnit!==null?Info.fromUnit.name:'' }}
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="调拨前库房">
+                      {{ Info.fromRepository!==null?Info.fromRepository.name:'' }}
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="调拨后单位">
+                      {{ Info.unit!==null?Info.unit.name:'' }}
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="调拨后库房">
+                      {{ Info.spareRepository!==null ? Info.spareRepository.name:'' }}
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="经办人">
+                      {{ Info.opeartor }}
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="24">
+                    <el-form-item label="备注">
+                      {{ Info.remark }}
+                    </el-form-item>
+                  </el-col>
+                  <el-divider />
+                  <el-table :data="Info.spareStockRecordItems" stripe border style="width: 100%" @selection-change="handleSelection">
+                    <el-table-column type="index" label="序号" width="50" />
+                    <el-table-column prop="spare.number" label="编码" />
+                    <el-table-column prop="spare.name" label="备件名称" />
+                    <el-table-column prop="spare.consumable" label="备件分类">
+                      <template slot-scope="scope">
+                        {{ scope.row.spare.consumable?'易损易耗':'非易损易耗' }}
+                      </template>
+                    </el-table-column>
+                    <el-table-column prop="spare.brand.name" label="品牌" />
+                    <el-table-column prop="spare.model.name" label="型号" />
+                    <el-table-column prop="spare.unit" label="单位" />
+                    <el-table-column prop="spare.supplier" label="供应商" />
+                    <el-table-column prop="unitPrice" label="单价" />
+                    <el-table-column prop="quantity" label="数量" />
+                    <el-table-column prop="totalPrice" label="总价" />
+                    <el-table-column prop="remark" label="备注" />
+                  </el-table>
+                </el-form>
+                <el-col :span="24" style="text-align:center;margin-top:20px;">
+                  <el-button size="small" type="primary" @click="infoVisible=false">确 定</el-button>
+                  <el-button size="small" @click="infoVisible=false">取 消</el-button>
+                </el-col>
+              </el-row>
+
             </el-dialog>
           </el-col>
         </el-row>
@@ -133,77 +140,36 @@ export default {
     return {
       loading: false, // 远程搜索
       formSearch: {
+        beginTime: '',
+        endTime: '',
         text: '', // 搜索文本
+        spareBoundType: 'TransferApplication',
+        spareBoundSubType: 'TransferApplication',
         pageSize: 10, // 展示条数
         pageNumber: 1// 页码
       },
-      totalCount: 0, // 数据总条数
-      multipleSelection: '', // 表单选中行
-      removeQuestionVisible: false, // 删除弹框
       tableData: [],
-      removeData: [],
-      systemData: [],
-      sourceData: [],
-      FormVisible: false, // 编辑弹框
-      FormVisibleInfo: false,
-      EditForm: {// 编辑表单数据
-        modelId: '',
-        brandId: '',
-        name: ''
+      totalCount: 0, // 数据总条数
+      multipleSelection: '',
+      checkVisibale: false,
+      checkForm: {
+        reviewStatus: '',
+        reviewComment: ''
       },
-      EditFormInfo: {
-        modelId: '',
-        brandId: '',
-        name: ''
-      },
-      brandData: [], // 品牌数据
-      modelData: [], // 型号数据
-      tableDataInfo: [],
-      startdateData: [],
-      enddateData: [],
-      sourcepage: {// 匹配度分页
-        pageNumber: 1,
-        pageSize: 999999,
-        pageCount: ''
-      },
-      systempage: {// 所属系统分页
-        pageNumber: 1,
-        pageSize: 999999,
-        pageCount: ''
-      },
-      brandpage: {// 品牌分页
-        pageNumber: 1,
-        pageSize: 50,
-        pageCount: ''
-      },
-      modelpage: {// 型号分页
-        pageNumber: 1,
-        pageSize: 50,
-        brandId: undefined,
-        pageCount: ''
-      },
-      FormRules: {
-        name: {
+      checkFormRules: {
+        reviewStatus: {
           required: true,
-          message: '设备名称不可为空',
-          trigger: 'blur'
-        },
-        brandId: {
-          required: true,
-          message: '定额编目不可为空',
-          trigger: 'blur'
+          message: '请选择审批意见',
+          trigger: 'change'
         }
-      }
+      },
+      infoVisible: false,
+      Info: ''
     }
   },
   computed: {},
   mounted() {
     this.getData()
-    this.getsystemData()
-    this.getsourceData()
-    this.getbrandData()
-    this.getmodelData()
-    this.getDates()
   },
   methods: {
     // 日期时间格式化
@@ -214,51 +180,8 @@ export default {
         return cellValue
       }
     },
-    getDates() { // 获取列表
-      this.$axios.get('/api/MaintenancePlan/Dates').then(res => {
-        this.startdateData = res.startDates
-        this.enddateData = res.endDates
-      })
-    },
-    getbrandData() {
-      // 获取品牌
-      this.$axios.get('/api/Meta/Brand?pageSize=' + this.brandpage.pageSize + '&pageNumber=' + this.brandpage.pageNumber).then(res => {
-        this.brandData = this.brandData.concat(res.data)
-      })
-    },
-    changeBrand() {
-      this.formData.modelId = ''
-      this.modelpage.brandId = this.formData.brandId
-      this.$axios.get('/api/Meta/Model?brandId=' + this.formData.brandId).then(res => {
-        this.modelData = res.data
-      })
-    },
-    getmodelData() {
-      // 获取型号
-      this.$axios.get('/api/Meta/Model', { params: this.modelpage }).then(res => {
-        this.modelData = this.modelData.concat(res.data)
-      })
-    },
-    remoteMethodbrandId(query) {
-      this.loading = true
-      let querytext = ''
-      querytext = typeof (query) === 'string' ? query : ''
-      this.$axios.get('/api/Meta/Brand?text=' + querytext).then(res => {
-        this.loading = false
-        this.brandData = res.data
-      })
-    },
-    remoteMethodmodelId(query) {
-      this.loading = true
-      let querytext = ''
-      querytext = typeof (query) === 'string' ? query : ''
-      this.$axios.get('/api/Meta/Model?brandId=' + this.formData.brandId + '&text=' + querytext).then(res => {
-        this.loading = false
-        this.modelData = res.data
-      })
-    },
-    getData() {
-      this.$axios.get('/api/MatchEquipment/', { params: this.formSearch }).then(res => {
+    getData() { // 获取列表
+      this.$axios.get('/api/SpareStockRecord', { params: this.formSearch }).then(res => {
         this.tableData = res.data
         this.totalCount = res.totalCount
       })
@@ -269,84 +192,41 @@ export default {
       // 页码
       this.formSearch.pageNumber = val.page
       // 调用获取数据
-      this.$axios.get('/api/EquipmentList/', { params: this.formSearch }).then(res => {
-        this.tableData = res.data
-      })
+      this.getData()
     },
-    getsystemData() {
-      // 获取所属系统
-      this.$axios.get('/api/Meta/System?pageSize=' + this.systempage.pageSize + '&pageNumber=' + this.systempage.pageNumber).then(res => {
-        this.systemData = this.systemData.concat(res.data)
-      })
+    handleSelectionChange(val) {
+      this.multipleSelection = val
     },
-    getsourceData() {
-      // 获取匹配度
-      this.$axios.get('/api/Meta/Source?pageSize=' + this.sourcepage.pageSize + '&pageNumber=' + this.sourcepage.pageNumber).then(res => {
-        this.sourceData = this.sourceData.concat(res.data)
-      })
-    },
-    remoteMethodsystemId(query) {
-      this.loading = true
-      let querytext = ''
-      querytext = typeof (query) === 'string' ? query : ''
-      this.$axios.get('/api/Meta/System?text=' + querytext).then(res => {
-        this.loading = false
-        this.systemData = res.data
-      })
-    },
-    remoteMethodsourceId(query) {
-      this.loading = true
-      let querytext = ''
-      querytext = typeof (query) === 'string' ? query : ''
-      this.$axios.get('/api/Meta/source?text=' + querytext).then(res => {
-        this.loading = false
-        this.sourceData = res.data
-      })
-    },
-    updateData(row) {
-      if (row === undefined) {
-        if (this.multipleSelection.length !== 1) {
-          this.$message.error('请选择一项数据进行操作')
+    check() {
+      if (this.multipleSelection.length === 1) {
+        if (this.multipleSelection[0].reviewStatus !== 'Pending') {
+          this.$message.warning('此调拨申请状态不正确不可进行审批')
         } else {
-          this.FormVisible = true
+          this.checkVisibale = true
         }
       } else {
-        this.FormVisible = true
+        this.$message.warning('请选择一条数据进行审批操作')
       }
     },
-    deleteData(row) {
-      if (row === undefined) {
-        if (this.multipleSelection.length !== 1) {
-          this.$message.error('请选择一项数据进行操作')
-        } else {
-          this.removeQuestionVisible = true
-        }
-      } else {
-        this.removeQuestionVisible = true
-      }
-    },
-    submitData() {
-      this.$refs.EditForm.validate(valid => {
+    submitCheck() {
+      this.$refs.checkForm.validate(valid => {
         if (valid) {
-          this.$axios.put('/api/Meta/Brand/' + this.EditForm.id, this.EditForm).then(res => {
-            this.getData()
-            this.$message.success('修改成功')
-            this.FormVisible = false
+          this.$axios.post('/api/SpareStockRecord/' + this.multipleSelection[0].id, this.checkForm).then(res => {
+            this.$message.success('审批操作成功')
+            this.closeCheck()
           })
         }
       })
     },
-    // 删除
-    removeQuestion() {
-      const _this = this
-      this.$axios.delete('/api/Assets/?Id=' + this.removeData.id).then(response => {
-        _this.$message.success('删除成功')
-        _this.removeQuestionVisible = false
-        this.getData()
-      })
+    closeCheck() {
+      this.checkVisibale = false
+      this.$refs.checkForm.resetFields()
     },
-    handleSelectionChange(val) {
-      this.multipleSelection = val
+    getInfo(id) {
+      this.$axios.get('/api/SpareStockRecord/' + id).then(res => {
+        this.Info = res
+        this.infoVisible = true
+      })
     }
   }
 }
@@ -369,33 +249,14 @@ export default {
     width: 200px;
   }
 }
-.el-form-item {
-  width: 33%;
-  display: inline-block;
-  .el-select {
-    width: 100%;
-  }
-  .el-date-editor {
-    width: 100%;
-  }
-}
-.form_total {
-  width: 100%;
-  text-align: center;
-}
-.form_total_lf {
-  width: 100%;
-  text-align: left;
-}
-.dialog-footer {
-  display: block;
-  width: 100%;
-  text-align: center;
-}
-.content {
-  .el-table th,
-  .el-table td {
-    padding: 5px;
-  }
-}
+// .el-form-item {
+//   width: 33%;
+//   display: inline-block;
+//   .el-select {
+//     width: 100%;
+//   }
+//   .el-date-editor {
+//     width: 100%;
+//   }
+// }
 </style>
