@@ -23,7 +23,7 @@
               <el-table-column type="selection" />
               <el-table-column prop="confirmed " label="单据状态">
                 <template slot-scope="scope">
-                  {{ scope.row.confirmed?'已入库':'未入库' }}
+                  {{ scope.row.reviewStatus ==='Pending'?'未入库':scope.row.reviewStatus ==='Applied'?'已入库':'' }}
                 </template>
               </el-table-column>
               <el-table-column prop="code" label="入库单号" />
@@ -50,10 +50,8 @@
                   <el-select v-model="EditForm.spareBoundSubType" filterable placeholder="入库单类型" size="small">
                     <el-option key="PurchaseInBound" label="采购入库" value="PurchaseInBound" />
                     <el-option key="SpecialInBound" label="专项入库" value="SpecialInBound" />
-                    <el-option key="Repair" label="维修出入库" value="Repair" />
-                    <el-option key="Scrap" label="报废出入库" value="Scrap" />
-                    <el-option key="ReceiveOutBound" label="领用出库" value="ReceiveOutBound" />
-                    <el-option key="TransferApplication" label="调拨申请单" value="TransferApplication" />
+                    <el-option key="Repair" label="维修入库" value="Repair" />
+                    <el-option key="Scrap" label="报废入库" value="Scrap" />
                   </el-select>
                 </el-form-item>
                 <el-form-item label="入库库房" prop="spareRepositoryId">
@@ -417,13 +415,13 @@ export default {
       if (this.multiple.length !== 1) {
         this.$message.error('请选择一项数据进行操作')
       } else {
-        if (this.multiple[0].confirmed) {
-          this.$message.error('已入库')
-        } else {
-          this.$axios.post('/api/SpareStockRecord/' + this.multiple[0].id).then(res => {
+        if (this.multiple[0].reviewStatus === 'Pending') {
+          this.$axios.post('/api/SpareStockRecord/' + this.multiple[0].id, { reviewStatus: 'Applied' }).then(res => {
             this.$message.success('入库成功')
             this.getData()
           })
+        } else {
+          this.$message.error('已入库')
         }
       }
     }
