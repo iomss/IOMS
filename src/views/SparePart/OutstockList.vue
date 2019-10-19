@@ -21,16 +21,17 @@
               <el-table-column type="selection" />
               <el-table-column prop="confirmed " label="单据状态">
                 <template slot-scope="scope">
-                  {{ scope.row.confirmed?'已出库':'未出库' }}
+                  {{ scope.row.reviewStatus ==='Pending'?'未出库':scope.row.reviewStatus ==='Applied'?'已出库':'' }}
                 </template>
               </el-table-column>
               <el-table-column prop="code" label="出库单号" />
               <el-table-column prop="boundTime" label="出库日期" :formatter="formatterstartDate" />
               <el-table-column prop="spareBoundSubType" label="出库类型">
                 <template slot-scope="scope">
-                  {{ scope.row.spareBoundSubType=='PurchaseInBound'?'采购入库':scope.row.spareBoundSubType=='SpecialInBound'?'专项入库':scope.row.spareBoundSubType=='Repair'?'维修出入库':scope.row.spareBoundSubType=='Scrap'?'报废出入库':scope.row.spareBoundSubType=='ReceiveOutBound'?'领用出库':'调拨申请单' }}
+                  {{ scope.row.spareBoundSubType=='PurchaseInBound'?'采购入库':scope.row.spareBoundSubType=='SpecialInBound'?'专项入库':scope.row.spareBoundSubType=='Repair'?'维修出库':scope.row.spareBoundSubType=='Scrap'?'报废出库':scope.row.spareBoundSubType=='ReceiveOutBound'?'领用出库':scope.row.spareBoundSubType=='TransferApplication'?'调拨申请单':'' }}
                 </template>
               </el-table-column>
+              <el-table-column prop="receive" label="领用人" />
               <el-table-column prop="createUser" label="操作人">
                 <template slot-scope="scope">
                   {{ scope.row.createUser.name }}
@@ -306,13 +307,13 @@ export default {
       if (this.multiple.length !== 1) {
         this.$message.error('请选择一项数据进行操作')
       } else {
-        if (this.multiple[0].confirmed) {
-          this.$message.error('已出库')
-        } else {
-          this.$axios.post('/api/SpareStockRecord/' + this.multiple[0].id).then(res => {
+        if (this.multiple[0].reviewStatus === 'Pending') {
+          this.$axios.post('/api/SpareStockRecord/' + this.multiple[0].id, { reviewStatus: 'Applied', reviewComment: '' }).then(res => {
             this.$message.success('出库成功')
             this.getData()
           })
+        } else {
+          this.$message.error('已出库')
         }
       }
     }
