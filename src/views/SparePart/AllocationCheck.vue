@@ -98,7 +98,7 @@
                     </el-form-item>
                   </el-col>
                   <el-divider />
-                  <el-table :data="Info.spareStockRecordItems" stripe border style="width: 100%" @selection-change="handleSelection">
+                  <el-table :data="Info.spareStockRecordItems" stripe border style="width: 100%">
                     <el-table-column type="index" label="序号" width="50" />
                     <el-table-column prop="spare.number" label="编码" />
                     <el-table-column prop="spare.name" label="备件名称" />
