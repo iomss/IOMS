@@ -6,15 +6,16 @@
         <el-row class="panel">
           <div class="header">
             <div class="tooltotal">
-              <el-button size="small" type="primary" @click="rukushow('InBound')">备件入库</el-button>
-              <el-button size="small" type="primary" @click="rukushow('OutBound')">备件出库</el-button>
-              <el-button v-show="formSearch.type==='scrap'" size="small" type="danger" @click="form('ScrapBound')">报废归档</el-button>
+              <el-button size="small" type="primary" @click="rukushow('InBound','Spare')">备件入库</el-button>
+              <el-button size="small" type="primary" @click="rukushow('OutBound','Spare')">备件出库</el-button>
+              <el-button size="small" type="primary" @click="rukushow('InBound','Scrap')">报废入库</el-button>
+              <el-button v-show="formSearch.type==='scrap'" size="small" type="danger" @click="baofei()">报废归档</el-button>
               <el-button size="small" type="primary" plain @click="outputData()">导出</el-button>
             </div>
             <div class="tools">
               {{ formSearch.typ }}
               <el-button type="primary" :plain="formSearch.type==='spare'?false:true" size="small" @click="formSearch.type='spare';getData()">备件库</el-button>
-              <el-button type="primary" :plain="formSearch.type==='repair'?false:true" size="small" @click="formSearch.type='repair';getData()">维修库</el-button>
+              <!-- <el-button type="primary" :plain="formSearch.type==='repair'?false:true" size="small" @click="formSearch.type='repair';getData()">维修库</el-button> -->
               <el-button type="primary" :plain="formSearch.type==='scrap'?false:true" size="small" @click="formSearch.type='scrap';getData()">报废库</el-button>
             </div>
             <div class="toolsrt">
@@ -32,7 +33,7 @@
             </div>
           </div>
           <el-col class="content">
-            <el-table :data="tableData" stripe border @selection-change="xuanzekucunSelect">
+            <el-table :data="tableData" stripe border :row-class-name="baofeiclass" @selection-change="xuanzekucunSelect">
               <el-table-column type="selection" />
               <el-table-column prop="unit.name" label="管理单位" />
               <el-table-column label="库房名称" prop="spareRepository.name" />
@@ -78,16 +79,19 @@
                   <el-input value="系统自动生成" disabled />
                 </el-form-item>
                 <el-form-item :label="title+'单类型'" prop="spareBoundSubType">
-                  <el-select v-if="rukuForm.spareBoundType==='InBound'" v-model="rukuForm.spareBoundSubType" filterable placeholder="入库单类型" size="small">
+                  <el-select v-if="rukuForm.spareBoundType==='InBound'&& rukuForm.spareStockType === 'Spare'" v-model="rukuForm.spareBoundSubType" filterable placeholder="入库单类型" size="small">
                     <el-option key="PurchaseInBound" label="采购入库" value="PurchaseInBound" />
                     <el-option key="SpecialInBound" label="专项入库" value="SpecialInBound" />
                     <el-option key="Repair" label="维修入库" value="Repair" />
-                    <el-option key="Scrap" label="报废入库" value="Scrap" />
+                    <!-- <el-option key="Scrap" label="报废入库" value="Scrap" /> -->
                   </el-select>
-                  <el-select v-if="rukuForm.spareBoundType==='OutBound'" v-model="rukuForm.spareBoundSubType" filterable placeholder="出库单类型" size="small">
+                  <el-select v-if="rukuForm.spareBoundType==='OutBound'&& rukuForm.spareStockType === 'Spare'" v-model="rukuForm.spareBoundSubType" filterable placeholder="出库单类型" size="small">
                     <el-option key="ReceiveOutBound" label="领用出库" value="ReceiveOutBound" />
                     <el-option key="Repair" label="维修出库" value="Repair" />
-                    <el-option key="Scrap" label="报废出库" value="Scrap" />
+                    <!-- <el-option key="Scrap" label="报废出库" value="Scrap" /> -->
+                  </el-select>
+                  <el-select v-if="rukuForm.spareBoundType==='InBound'&& rukuForm.spareStockType === 'Scrap'" v-model="rukuForm.spareBoundSubType" filterable placeholder="报废单类型" size="small">
+                    <el-option key="Scrap" label="报废入库" value="Scrap" />
                   </el-select>
                 </el-form-item>
                 <el-form-item :label="title+'库房'" prop="spareRepositoryId">
@@ -113,7 +117,7 @@
               </el-form>
               <div class="header">
                 <div class="tools">
-                  <el-button v-show="rukuForm.spareBoundType!=='OutBound'" type="primary" size="small" @click="xuanzerukubeijian()">选择备件</el-button>
+                  <el-button v-show="rukuForm.spareBoundType!=='OutBound'&&rukuForm.spareStockType === 'Spare'" type="primary" size="small" @click="xuanzerukubeijian()">选择备件</el-button>
                   <el-button type="primary" size="small" @click="shanchurukubeijian()">删除备件</el-button>
                 </div>
               </div>
@@ -179,6 +183,14 @@
                 <el-button type="primary" plain size="small" @click="xuanzebeijianVisible=false;xuanzebeijianData=''">取消</el-button>
               </span>
             </el-dialog>
+            <!--报废归档-->
+            <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="baofeiVisibale" width="220px">
+              <span>您确定要报废此设备？</span>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="baofeiVisibale = false">取 消</el-button>
+                <el-button type="primary" @click="submitBaofei">确 定</el-button>
+              </span>
+            </el-dialog>
           </el-col>
         </el-row>
       </el-col>
@@ -228,6 +240,7 @@ export default {
       // 入库
       title: '', // 标题
       rukuForm: {
+        spareStockType: 'Spare', // 库存类型
         spareBoundType: 'InBound', // 出入库类型
         spareBoundSubType: '', // 出入库子类型
         opeartor: this.$cookie.get('trueName'), // 经办人
@@ -261,10 +274,14 @@ export default {
       rukubeijianselectData: [], // 被选中的入库备件
       /* ******* 选择备件开始 ****** */
       xuanzebeijianVisible: false,
-      xuanzebeijianData: ''
+      xuanzebeijianData: '',
       /* ******* 选择备件结束 ****** */
 
       /* ****************  入库结束  ******************** */
+
+      /* ****************  报废归档开始  ******************** */
+      baofeiVisibale: false// 报废归档提示
+      /* ****************  报废归档结束  ******************** */
 
     }
   },
@@ -334,13 +351,23 @@ export default {
     },
     /* ****************  摘要结束  ******************** */
     /* ****************  入库开始  ******************** */
-    rukushow(type) {
+    /**
+     * rukushow 出入库单添加
+     * spareBoundType 出入库类型
+     * spareStockType 库存类型
+     */
+    rukushow(spareBoundType, spareStockType) {
       this.xuanzekucunSelectData.forEach(item => {
         this.rukubeijian.push({ kucunId: item.id, ...item.spare, unitPrice: item.unitPrice, quantity: item.quantity })
       })
-      this.rukuForm.spareBoundType = type
-      type === 'InBound' ? this.title = '入库' : type === 'OutBound' ? this.title = '出库' : ''
-      this.rukuVisible = true
+      this.rukuForm.spareBoundType = spareBoundType
+      this.rukuForm.spareStockType = spareStockType
+      spareBoundType === 'InBound' && spareStockType === 'Spare' ? this.title = '入库' : spareBoundType === 'OutBound' && spareStockType === 'Spare' ? this.title = '出库' : spareBoundType === 'InBound' && spareStockType === 'Scrap' ? this.title = '报废入库' : ''
+      if ((spareBoundType === 'OutBound' || spareStockType === 'Scrap') && !this.xuanzekucunSelectData.length >= 1) {
+        this.$message.warning('请选择相关库存进行操作')
+      } else {
+        this.rukuVisible = true
+      }
     },
     // 选择库存
     xuanzekucunSelect(val) {
@@ -378,7 +405,7 @@ export default {
           this.$axios.post('/api/SpareStockRecord', this.rukuForm).then(res => {
             this.getData()
             this.$message.success('入库单暂存')
-            this.closeSpare()
+            this.closeruku()
           })
         }
       })
@@ -400,7 +427,7 @@ export default {
           this.$axios.post('/api/SpareStockRecord/CreateAndSubmit', this.rukuForm).then(res => {
             this.getData()
             this.$message.success('确认入库成功')
-            this.closeSpare()
+            this.closeruku()
           })
         }
       })
@@ -422,9 +449,30 @@ export default {
         this.rukubeijian.push({ ...item, kucunId: item.id })
       })
       this.xuanzebeijianVisible = false
-    }
+    },
     /* *****选择备件结束***** */
     /* ****************  入库结束  ******************** */
+    /* ****************  报废归档开始  ******************** */
+    baofei() {
+      if (this.xuanzekucunSelectData.length >= 1) {
+        this.baofeiVisibale = true
+      } else {
+        this.$message.warning('请选择相关库存进行操作')
+      }
+    },
+    submitBaofei() {
+      const baofei = []
+      this.xuanzekucunSelectData.forEach(item => baofei.push(item.id))
+      this.$axios.delete('/api/SpareStock', { data: { ids: baofei }}).then(res => {
+        this.baofeiVisibale = false
+        this.$message.success('报废归档成功')
+      })
+    },
+    baofeiclass({ row, rowIndex }) {
+      console.log(row.scrapped)
+      return row.scrapped ? 'scrapped' : ''
+    }
+    /* ****************  报废归档结束  ******************** */
   }
 }
 </script>
@@ -469,5 +517,11 @@ export default {
   .el-table td {
     padding: 5px;
   }
+}
+//报废归档样式
+</style>
+<style>
+.scrapped {
+  color: #ccc;
 }
 </style>
