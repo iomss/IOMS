@@ -30,7 +30,7 @@
               <el-table-column prop="boundTime" label="入库日期" :formatter="formatterstartDate" />
               <el-table-column prop="spareBoundSubType" label="入库类型">
                 <template slot-scope="scope">
-                  {{ scope.row.spareBoundSubType=='PurchaseInBound'?'采购入库':scope.row.spareBoundSubType=='SpecialInBound'?'专项入库':scope.row.spareBoundSubType=='Repair'?'维修出入库':scope.row.spareBoundSubType=='Scrap'?'报废出入库':scope.row.spareBoundSubType=='ReceiveOutBound'?'领用出库':'调拨申请单' }}
+                  {{ scope.row.spareBoundSubType=='PurchaseInBound'?'采购入库':scope.row.spareBoundSubType=='SpecialInBound'?'专项入库':scope.row.spareBoundSubType=='Repair'?'维修入库':scope.row.spareBoundSubType=='Scrap'?'报废入库':scope.row.spareBoundSubType=='ReceiveOutBound'?'领用出库':'调拨申请单' }}
                 </template>
               </el-table-column>
               <el-table-column prop="createUser" label="操作人">

@@ -469,7 +469,6 @@ export default {
       })
     },
     baofeiclass({ row, rowIndex }) {
-      console.log(row.scrapped)
       return row.scrapped ? 'scrapped' : ''
     }
     /* ****************  报废归档结束  ******************** */
