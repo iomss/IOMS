@@ -24,11 +24,15 @@
                   {{ scope.row.reviewStatus ==='Pending'?'未出库':scope.row.reviewStatus ==='Applied'?'已出库':'' }}
                 </template>
               </el-table-column>
-              <el-table-column prop="code" label="出库单号" />
+              <el-table-column prop="code" label="出库单号">
+                <template slot-scope="scope">
+                  <el-button type="text" size="small" @click="getInfo(scope.row.id)">{{ scope.row.code }}</el-button>
+                </template>
+              </el-table-column>
               <el-table-column prop="boundTime" label="出库日期" :formatter="formatterstartDate" />
               <el-table-column prop="spareBoundSubType" label="出库类型">
                 <template slot-scope="scope">
-                  {{ scope.row.spareBoundSubType=='PurchaseInBound'?'采购入库':scope.row.spareBoundSubType=='SpecialInBound'?'专项入库':scope.row.spareBoundSubType=='Repair'?'维修出库':scope.row.spareBoundSubType=='Scrap'?'报废出库':scope.row.spareBoundSubType=='ReceiveOutBound'?'领用出库':scope.row.spareBoundSubType=='TransferApplication'?'调拨申请单':'' }}
+                  {{ scope.row.spareBoundSubType=='PurchaseInBound'?'采购出库':scope.row.spareBoundSubType=='SpecialInBound'?'专项出库':scope.row.spareBoundSubType=='Repair'?'维修出库':scope.row.spareBoundSubType=='Scrap'?'报废出库':scope.row.spareBoundSubType=='ReceiveOutBound'?'领用出库':scope.row.spareBoundSubType=='TransferApplication'?'调拨申请单':'' }}
                 </template>
               </el-table-column>
               <el-table-column prop="receive" label="领用人" />
@@ -48,6 +52,75 @@
                 <el-button @click="removeQuestionVisible = false">取 消</el-button>
                 <el-button type="primary" @click="removeQuestion">确 定</el-button>
               </span>
+            </el-dialog>
+            <!--出库单详情-->
+            <el-dialog title="出库单详情" :visible.sync="infoVisible" width="1000">
+              <el-row>
+                <el-form v-if="Info!==''" label-width="120px">
+                  <el-col :span="8">
+                    <el-form-item label="出库单号">
+                      {{ Info.code }}
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="出库单类型">
+                      {{ Info.spareBoundSubType=='PurchaseInBound'?'采购出库':Info.spareBoundSubType=='SpecialInBound'?'专项出库':Info.spareBoundSubType=='Repair'?'维修出库':Info.spareBoundSubType=='Scrap'?'报废出库':Info.spareBoundSubType=='ReceiveOutBound'?'领用出库':'调拨申请单' }}
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="出库库房">
+                      {{ Info.spareRepository!==null?Info.spareRepository.name:'' }}
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="出库日期">
+                      {{ Info.boundTime!==null?Info.boundTime:'' }}
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="操作人">
+                      {{ Info.opeartor }}
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="领用人">
+                      {{ Info.receive }}
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="维修单编号">
+                      {{ Info.repairOrderCode }}
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="24">
+                    <el-form-item label="备注">
+                      {{ Info.remark }}
+                    </el-form-item>
+                  </el-col>
+                  <el-table :data="Info.spareStockRecordItems" stripe border style="width: 100%" max-height="580px" @selection-change="handleSelection">
+                    <el-table-column type="index" label="序号" width="50" />
+                    <el-table-column prop="spare.number" label="编码" />
+                    <el-table-column prop="spare.name" label="备件名称" />
+                    <el-table-column prop="spare.consumable" label="备件分类">
+                      <template slot-scope="scope">
+                        {{ scope.row.spare.consumable?'易损易耗':'非易损易耗' }}
+                      </template>
+                    </el-table-column>
+                    <el-table-column prop="spare.brand.name" label="品牌" />
+                    <el-table-column prop="spare.model.name" label="型号" />
+                    <el-table-column prop="spare.unit" label="单位" />
+                    <el-table-column prop="spare.supplier" label="供应商" />
+                    <el-table-column prop="unitPrice" label="单价" />
+                    <el-table-column prop="quantity" label="数量" />
+                    <el-table-column prop="totalPrice" label="总价" />
+                    <el-table-column prop="remark" label="备注" />
+                  </el-table>
+                </el-form>
+                <el-col :span="24" style="text-align:center;margin-top:20px;">
+                  <el-button size="small" type="primary" @click="infoVisible=false">确 定</el-button>
+                  <el-button size="small" @click="infoVisible=false">取 消</el-button>
+                </el-col>
+              </el-row>
             </el-dialog>
           </el-col>
         </el-row>
@@ -100,7 +173,7 @@ export default {
         spareBoundType: 'OutBound'
       },
       WarehouseData: [], // 仓库数据
-      tableDataout: [], // 入库表格
+      tableDataout: [], // 出库表格
       WarehouseSearch: {// 品牌分页
         pageNumber: 1,
         pageSize: 50,
@@ -122,7 +195,9 @@ export default {
           message: '出库日期不可为空',
           trigger: 'blur'
         }
-      }
+      },
+      infoVisible: false,
+      Info: ''
     }
   },
   computed: {},
@@ -172,7 +247,7 @@ export default {
           this.$message.error('请选择一项数据进行操作')
         } else {
           if (this.multiple[0].confirmed) {
-            this.$message.error('已入库不可删')
+            this.$message.error('已出库不可删')
           } else {
             this.removeData.id = this.multiple[0].id
             this.removeQuestionVisible = true
@@ -246,7 +321,7 @@ export default {
         }
       })
     },
-    sureData() { // 确认入库
+    sureData() { // 确认出库
       const spareStockRecordItems = []
       this.tableDataout.forEach(item => spareStockRecordItems.push({
         spareId: item.id,
@@ -316,6 +391,13 @@ export default {
           this.$message.error('已出库')
         }
       }
+    },
+    // 入库单详情
+    getInfo(id) {
+      this.$axios.get('/api/SpareStockRecord/' + id).then(res => {
+        this.Info = res
+        this.infoVisible = true
+      })
     }
   }
 }
@@ -338,16 +420,16 @@ export default {
     width: 200px;
   }
 }
-.el-form-item {
-  width: 33%;
-  display: inline-block;
-  .el-select {
-    width: 100%;
-  }
-  .el-date-editor {
-    width: 100%;
-  }
-}
+// .el-form-item {
+//   width: 33%;
+//   display: inline-block;
+//   .el-select {
+//     width: 100%;
+//   }
+//   .el-date-editor {
+//     width: 100%;
+//   }
+// }
 .form_total {
   width: 100%;
   text-align: center;
