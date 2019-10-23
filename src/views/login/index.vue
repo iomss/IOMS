@@ -1,74 +1,84 @@
 <template>
-  <div class="login-container">
-
-    <div v-if="showForm==='login'">
-      <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" label-position="left">
-        <div class="title-container">
-          <h3 class="title">{{ showForm==='login'?'用户登录': showForm==='register'?'用户注册':'找回密码' }}</h3>
-        </div>
-        <el-form-item prop="username">
-          <el-input v-model="loginForm.username" placeholder="请输入用户名" prefix-icon="fa fa-user" />
-        </el-form-item>
-        <el-form-item prop="password">
-          <el-input v-model="loginForm.password" placeholder="请输入密码" type="password" prefix-icon="fa fa-key" />
-        </el-form-item>
-        <el-button type="primary" style="width:100%;" @click="login">登 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 录</el-button>
-        <div class="tips">
-          <el-button v-if="showForm!=='forget'" class="reset-button" type="text" @click="showForm='forget'">
+  <div class="login-container" :style="loginbj">
+    <el-row>
+      <el-col :span="12">&nbsp;</el-col>
+      <el-col :md="12" :sm="24">
+        <div v-if="showForm==='login'">
+          <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" label-position="left">
+            <div class="title-container">
+              <h3 class="title">{{ showForm==='login'?'管理系统登录': showForm==='register'?'用户注册':'找回密码' }}</h3>
+            </div>
+            <el-form-item prop="username">
+              <el-input v-model="loginForm.username" placeholder="请输入用户名" prefix-icon="fa fa-user" />
+            </el-form-item>
+            <el-form-item prop="password">
+              <el-input v-model="loginForm.password" placeholder="请输入密码" type="password" prefix-icon="fa fa-key" />
+            </el-form-item>
+            <el-button type="primary" style="width:100%;" @click="login">登 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 录</el-button>
+            <div class="tips">
+              <!-- <el-button v-if="showForm!=='forget'" class="reset-button" type="text" @click="showForm='forget'">
             忘记密码
-          </el-button>
-          <el-button v-if="showForm!=='register'" class="register-button" type="text" @click="showForm='register'">
-            注册账户
-          </el-button>
-          <el-button v-if="showForm!=='login'" class="register-button" type="text" @click="showForm='login'">
-            已有账号，登录
-          </el-button>
+          </el-button> -->
+              <el-button v-if="showForm!=='register'" class="register-button" type="text" @click="showForm='register'">
+                注册账户
+              </el-button>
+              <el-button v-if="showForm!=='login'" class="register-button" type="text" @click="showForm='login'">
+                已有账号，登录
+              </el-button>
+            </div>
+          </el-form>
         </div>
-      </el-form>
-    </div>
-    <div v-if="showForm==='register'">
-      <el-form ref="registerForm" :model="registerForm" :rules="registeroginRules" class="login-form" label-position="left">
-        <div class="title-container">
-          <h3 class="title">{{ showForm==='login'?'用户登录': showForm==='register'?'用户注册':'找回密码' }}</h3>
+        <div v-if="showForm==='register'">
+          <el-form ref="registerForm" :model="registerForm" :rules="registeroginRules" class="login-form" label-position="left">
+            <div class="title-container">
+              <h3 class="title">{{ showForm==='login'?'用户登录': showForm==='register'?'用户注册':'找回密码' }}</h3>
+            </div>
+            <el-form-item prop="name">
+              <el-input v-model="registerForm.name" placeholder="请输入名称" prefix-icon="fa fa-user" />
+            </el-form-item>
+            <el-form-item prop="username">
+              <el-input v-model="registerForm.username" placeholder="请输入用户名" prefix-icon="fa fa-user" />
+            </el-form-item>
+            <el-form-item prop="password">
+              <el-input v-model="registerForm.password" placeholder="请输入密码" type="password" prefix-icon="fa fa-key" />
+            </el-form-item>
+            <el-form-item prop="contact">
+              <el-input v-model="registerForm.contact" placeholder="请输入联系人" prefix-icon="fa fa-user" />
+            </el-form-item>
+            <el-form-item prop="contactNumber">
+              <el-input v-model="registerForm.contactNumber" placeholder="请输入联系方式" prefix-icon="fa fa-user" />
+            </el-form-item>
+            <el-button type="primary" style="width:100%;" @click="register">注 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 册</el-button>
+            <div class="tips">
+              <!-- <el-button v-if="showForm!=='forget'" class="reset-button" type="text" @click="showForm='forget'">
+                忘记密码
+              </el-button> -->
+              <el-button v-if="showForm!=='register'" class="register-button" type="text" @click="showForm='register'">
+                注册账户
+              </el-button>
+              <el-button v-if="showForm!=='login'" class="register-button" type="text" @click="showForm='login'">
+                已有账号，登录
+              </el-button>
+            </div>
+          </el-form>
         </div>
-        <el-form-item prop="name">
-          <el-input v-model="registerForm.name" placeholder="请输入名称" prefix-icon="fa fa-user" />
-        </el-form-item>
-        <el-form-item prop="username">
-          <el-input v-model="registerForm.username" placeholder="请输入用户名" prefix-icon="fa fa-user" />
-        </el-form-item>
-        <el-form-item prop="password">
-          <el-input v-model="registerForm.password" placeholder="请输入密码" type="password" prefix-icon="fa fa-key" />
-        </el-form-item>
-        <el-form-item prop="contact">
-          <el-input v-model="registerForm.contact" placeholder="请输入联系人" prefix-icon="fa fa-user" />
-        </el-form-item>
-        <el-form-item prop="contactNumber">
-          <el-input v-model="registerForm.contactNumber" placeholder="请输入联系方式" prefix-icon="fa fa-user" />
-        </el-form-item>
-        <el-button type="primary" style="width:100%;" @click="register">注 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 册</el-button>
-        <div class="tips">
-          <el-button v-if="showForm!=='forget'" class="reset-button" type="text" @click="showForm='forget'">
-            忘记密码
-          </el-button>
-          <el-button v-if="showForm!=='register'" class="register-button" type="text" @click="showForm='register'">
-            注册账户
-          </el-button>
-          <el-button v-if="showForm!=='login'" class="register-button" type="text" @click="showForm='login'">
-            已有账号，登录
-          </el-button>
-        </div>
-      </el-form>
-    </div>
-
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
+import loginbjimg from '@/assets/login_bj.jpg'
 export default {
   name: 'Login',
   data() {
     return {
+      // 背景样式
+      loginbj: {
+        backgroundImage: 'url(' + loginbjimg + ')',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover'
+      },
       loginForm: {
         grant_type: 'password',
         username: '',
@@ -91,7 +101,6 @@ export default {
         password: [{ required: true, message: '密码不可为空', trigger: 'blur' }],
         contact: [{ required: true, message: '联系人不可为空', trigger: 'blur' }],
         contactNumber: [{ required: true, message: '联系人联系方式不可为空', trigger: 'blur' }]
-
       },
       showForm: 'login'
     }
@@ -180,7 +189,7 @@ $cursor: #fff;
   .el-input {
     display: inline-block;
     height: 47px;
-    width: 85%;
+    // width: 85%;
 
     input {
       background: transparent;
@@ -216,14 +225,14 @@ $light_gray: #eee;
 .login-container {
   min-height: 100%;
   width: 100%;
-  background-color: $bg;
+  min-width: 645px;
   overflow: hidden;
 
   .login-form {
     position: relative;
-    width: 520px;
+    width: 550px;
     max-width: 100%;
-    padding: 160px 35px 0;
+    padding: 250px 35px 0;
     margin: 0 auto;
     overflow: hidden;
   }
