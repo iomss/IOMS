@@ -46,7 +46,7 @@
             </el-form-item>
             <el-form-item label="设备编码" prop="assetCode">
               <el-select v-model="formRcorda.assetCode" filterable remote :remote-method="remoteMethodecodeID" :loading="loading" placeholder="设备编码" size="small" @focus="remoteMethodecodeID">
-                <el-option v-for="item in assetsData" :key="item.name" :label="item.name" :value="item.name" />
+                <el-option v-for="item in assetsData" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
             <el-form-item label="故障类型" prop="equipmentFaultId">
@@ -396,6 +396,25 @@ export default {
         this.faultpage.positionId = res.position.id
         this.assetspage.positionId = res.position.id
         this.getAssetsData()// 根据位置筛选设备编码
+
+        // 为维修记录表单添加默认值
+        // 先判断下拉菜单是否有这条数据
+        let hasbrandDataa = false
+        this.equipmentData.forEach(item => { item.id === res.equipment.id ? hasbrandDataa = true : '' })
+        hasbrandDataa ? '' : this.equipmentData.push({ id: res.equipment.id, name: res.equipment.name })
+        let hasbrandDatab = false
+        this.faultData.forEach(item => { item.id === res.equipmentFault.id ? hasbrandDatab = true : '' })
+        hasbrandDatab ? '' : this.faultData.push({ id: res.equipmentFault.id, name: res.equipmentFault.name })
+        let hasbrandDatac = false
+        this.assetsData.forEach(item => { item.id === res.assetId ? hasbrandDatac = true : '' })
+        hasbrandDatac ? '' : this.assetsData.push({ id: res.assetId, name: res.assetCode })
+        // 在设置选中
+        this.formRcorda.equipmentId = res.equipment.id
+        this.formRcordd.equipmentId = res.equipment.id
+        this.formRcorda.equipmentFaultId = res.equipmentFault.id
+        this.formRcordd.equipmentFaultId = res.equipmentFault.id
+        this.formRcorda.assetCode = res.assetId
+        this.formRcordd.assetCode = res.assetId
       })
     },
     changeEquipment() { // 设备种类筛选设备编码

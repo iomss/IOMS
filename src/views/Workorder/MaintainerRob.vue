@@ -156,7 +156,7 @@ export default {
     },
     historywork() { // 点击历史详情
       this.showInfo = true
-      this.$axios.get('/api/RepairOrder/All').then(res => {
+      this.$axios.get('/api/RepairOrder/All?assetId=' + this.formData.assetId).then(res => {
         this.logsData = res.data
       })
     },

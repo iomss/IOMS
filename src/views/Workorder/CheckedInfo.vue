@@ -26,7 +26,7 @@
             </div>
           </div>
         </div>
-        <div class="content">
+        <div v-show="repairState!=='Pending'" class="content">
           <h4>维修记录</h4>
           <div class="Infodata">
             <ul v-if="tableData.repairType!==''">
@@ -59,17 +59,18 @@
             </ul>
           </div>
         </div>
-        <div class="mid">
+        <div v-show="checkStatus!=='Pending'" class="mid">
           <h4>验收确认</h4>
           <div class="Infodata">
             <ul>
               <li><span>验收结果:</span><b>{{ tableData.checkStatus ==='Applied'?'通过':tableData.checkStatus ==='Rejected'?'不通过':'' }}</b></li>
               <li><span>验收意见:</span><b>{{ tableData.checkComment }}</b></li>
               <li><span>验收人:</span><b>{{ tableData.checkUser?tableData.checkUser.name:'' }}</b></li>
+              <li><span>验收时间:</span><b>{{ tableData.checkTime?tableData.checkTime:'' }}</b></li>
             </ul>
           </div>
         </div>
-        <div class="mid">
+        <div v-show="reviewStatus!=='Pending'" class="mid">
           <h4>审核信息</h4>
           <div class="Infodata">
             <ul>
@@ -120,7 +121,10 @@ export default {
       tableData: {// 维修记录数据
         assetId: '',
         repairType: ''
-      }
+      },
+      repairState: '',
+      checkStatus: '',
+      reviewStatus: ''
     }
   },
   computed: {},
@@ -136,27 +140,19 @@ export default {
         this.repairRecordId = res.repairRecordId
         this.formData.failureTime = this.$moment(res.failureTime).format('YYYY-MM-DD HH:mm')
         this.formData.reportTime = this.$moment(res.reportTime).format('YYYY-MM-DD HH:mm:ss')
-        // 验收或审核状态显示维修记录
-        if (this.roles.indexOf('CheckRepairRecord') !== -1 || this.roles.indexOf('ReviewRepairRecord') !== -1) {
-          this.getrecord()
-        }
-      })
-    },
-    getrecord() {
-      this.$axios.get('/api/RepairRecord/' + this.repairRecordId).then(res => {
-        this.tableData = res
-        if (this.tableData.startTime === null) {
-          console.log(null)
+        if (res.lastRepairRecord === null) {
+          this.repairState = 'Pending'
+          this.checkStatus = 'Pending'
+          this.reviewStatus = 'Pending'
         } else {
-          this.tableData.startTime = this.$moment(res.startTime).format('YYYY-MM-DD HH:mm')
+          this.tableData = res.lastRepairRecord
+          if (res.lastRepairRecord.checkStatus === 'Pending') {
+            this.checkStatus = 'Pending'
+          }
+          if (res.lastRepairRecord.reviewStatus === 'Pending') {
+            this.reviewStatus = 'Pending'
+          }
         }
-        if (this.tableData.endTime === null) {
-          console.log(null)
-        } else {
-          this.tableData.endTime = this.$moment(res.endTime).format('YYYY-MM-DD HH:mm')
-        }
-        this.tableData.resultImg = process.env.VUE_APP_API + res.resultImg
-        this.tableData.signImg = process.env.VUE_APP_API + res.signImg
       })
     }
   }

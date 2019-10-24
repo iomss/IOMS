@@ -64,7 +64,8 @@
             <ul v-if="tableData.repairType!==''">
               <li><span>验收结果:</span><b>{{ tableData.checkStatus ==='Applied'?'通过':tableData.checkStatus ==='Rejected'?'不通过':'' }}</b></li>
               <li><span>验收意见:</span><b>{{ tableData.checkComment }}</b></li>
-              <li><span>验收人:</span><b>{{ tableData.checkUser.name }}</b></li>
+              <li><span>验收人:</span><b>{{ tableData.checkUser?tableData.checkUser.name:'' }}</b></li>
+              <li><span>验收时间:</span><b>{{ tableData.checkTime }}</b></li>
             </ul>
           </div>
         </div>
