@@ -106,10 +106,11 @@
       </el-row>
     </el-form>
 
-    <el-row class="btn-tool">
+    <div slot="footer" class="dialog-footer" style="text-align: center;display: block;">
+      <el-button size="small" @click="changeActiveVisible = false">取 消</el-button>
       <el-button type="primary" size="small" @click="onSubmit">导出打印</el-button>
       <el-button type="primary" size="small" @click="onSubmit">上传附件</el-button>
-    </el-row>
+    </div>
 
   </el-dialog>
 </template>

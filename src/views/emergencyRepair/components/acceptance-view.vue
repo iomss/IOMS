@@ -1,7 +1,7 @@
 <template>
 
   <el-dialog
-    title="青海省高等级公路机电工程应急抢修工程数量及费用审核表"
+    title="青海省高等级公路机电工程数量确认及质量验收确认表"
     :visible.sync="changeActiveVisible"
     :close-on-press-escape="false"
     :close-on-click-modal="false"
@@ -10,21 +10,7 @@
   >
     <el-form ref="form" :model="form" label-width="110px" size="small" :inline="true" class="demo-form-inline dialog-form-const-add" :disabled="true">
 
-      <el-form-item label="项目名称">
-        <el-select v-model="form.region" placeholder="请选择报修单位" style="width:240px">
-          <el-option label="区域一" value="shanghai" />
-          <el-option label="区域二" value="beijing" />
-        </el-select>
-      </el-form-item>
-
-      <el-form-item label="抢修单位名称">
-        <el-select v-model="form.region" placeholder="请选择报修单位" style="width:240px">
-          <el-option label="区域一" value="shanghai" />
-          <el-option label="区域二" value="beijing" />
-        </el-select>
-      </el-form-item>
-
-      <el-form-item label="报修时间">
+      <el-form-item label="施工日期">
         <el-col>
           <el-date-picker
             v-model="form.date1"
@@ -108,7 +94,29 @@
       </el-form-item>
 
       <!-- 审批信息 -->
-      <el-form-item label="审批信息" style="display:block;" class="applicationform-box">
+      <el-form-item label="抢修工程数量核实意见" style="display:block;" class="applicationform-box">
+
+        <el-table
+          :key="examineTable.tableKey"
+          v-loading="examineTable.listLoading"
+          :data="examineTable.list"
+          border
+          fit
+          highlight-current-row
+          style="width: 100%;"
+          size="mini"
+          class="table-applicationform"
+        >
+          <el-table-column label="审批单位" prop="name" align="center" />
+          <el-table-column label="审批意见" prop="company_2" align="center" />
+          <el-table-column label="审批人" prop="createTime" align="center" />
+          <el-table-column label="审批时间" prop="createTime" align="center" />
+
+        </el-table>
+      </el-form-item>
+
+      <!-- 审批信息 -->
+      <el-form-item label="工程质量验收意见" style="display:block;" class="applicationform-box">
 
         <el-table
           :key="examineTable.tableKey"
@@ -167,7 +175,7 @@
 </style>
 <script>
 export default {
-  name: 'CostAdd',
+  name: 'AcceptanceView',
   data: function() {
     return {
       changeActiveVisible: false,
@@ -267,7 +275,6 @@ export default {
       })
       return sums
     },
-
     onSubmit() {
 
     },

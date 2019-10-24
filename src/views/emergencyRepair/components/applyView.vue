@@ -1,8 +1,7 @@
 <template>
 
   <el-dialog
-    title="
-青海省高等级公路机电工程应急抢修申请表"
+    title="青海省高等级公路机电工程应急抢修申请表"
     :visible.sync="changeActiveVisible"
     :close-on-press-escape="false"
     :close-on-click-modal="false"
@@ -44,11 +43,11 @@
       </el-col>
     </el-row>
 
-    <el-row class="btn-tool">
+    <div slot="footer" class="dialog-footer" style="text-align: center;display: block;">
+      <el-button size="small" @click="changeActiveVisible = false">取 消</el-button>
       <el-button type="primary" size="small" @click="onSubmit">导出打印</el-button>
       <el-button type="primary" size="small" @click="onSubmit">上传附件</el-button>
-    </el-row>
-
+    </div>
   </el-dialog>
 </template>
 

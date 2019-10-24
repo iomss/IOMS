@@ -1,11 +1,11 @@
 <template>
 
   <el-dialog
-    title="
-青海省高等级公路机电工程应急抢修申请表"
+    title="青海省高等级公路机电工程应急抢修申请表"
     :visible.sync="changeActiveVisible"
     :close-on-press-escape="false"
     :close-on-click-modal="false"
+    top="10px"
   >
     <el-form ref="form" :model="form" label-width="80px" size="small" :inline="true" class="demo-form-inline dialog-form-add">
 
@@ -76,7 +76,7 @@
       </el-form-item>
 
       <el-form-item label="费用" style="display:block;">
-        <el-radio-group v-model="form.resource">
+        <el-radio-group v-model="form.money">
           <el-radio label="是" />
           <el-radio label="否" />
         </el-radio-group>
@@ -123,10 +123,12 @@
         </el-upload>
       </el-form-item>
 
-      <el-form-item style="text-align: center;display: block;">
-        <el-button type="primary" @click="onSubmit">立即创建</el-button>
-      </el-form-item>
     </el-form>
+
+    <div slot="footer" class="dialog-footer" style="text-align: center;display: block;">
+      <el-button size="small" @click="changeActiveVisible = false">取 消</el-button>
+      <el-button size="small" type="primary" @click="onSubmit">确 定</el-button>
+    </div>
   </el-dialog>
 </template>
 <style>
@@ -169,7 +171,8 @@ export default {
         date2: '',
         delivery: '',
         type: '',
-        resource: '',
+        resource: '一般',
+        money: '否',
         desc: '',
 
         fileList: [{

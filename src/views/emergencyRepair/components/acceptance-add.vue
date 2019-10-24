@@ -1,8 +1,7 @@
 <template>
-
   <div class="djalog-box">
     <el-dialog
-      title="青海省高等级公路机电工程应急抢修工程数量及费用审核表"
+      title="青海省高等级公路机电工程数量确认及质量验收确认表"
       :visible.sync="changeActiveVisible"
       :close-on-press-escape="false"
       :close-on-click-modal="false"
@@ -11,21 +10,7 @@
     >
       <el-form ref="form" :model="form" label-width="110px" size="small" :inline="true" class="demo-form-inline dialog-form-const-add">
 
-        <el-form-item label="项目名称">
-          <el-select v-model="form.region" placeholder="请选择报修单位" style="width:240px">
-            <el-option label="区域一" value="shanghai" />
-            <el-option label="区域二" value="beijing" />
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="抢修单位名称">
-          <el-select v-model="form.region" placeholder="请选择报修单位" style="width:240px">
-            <el-option label="区域一" value="shanghai" />
-            <el-option label="区域二" value="beijing" />
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="报修时间">
+        <el-form-item label="施工日期">
           <el-col>
             <el-date-picker
               v-model="form.date1"
@@ -69,10 +54,7 @@
         </el-form-item>
 
         <!-- 工程清单 -->
-        <el-form-item label="工程清单" style="display:block;" class="applicationform-box">
-
-          <el-button type="primary" icon="el-icon-plus" size="mini" class="btn-xs" @click="openProjectPage" />
-          <el-button type="danger" size="mini" icon="el-icon-delete" class="btn-xs" />
+        <el-form-item label="抢修单位数量" style="display:block;" class="applicationform-box">
 
           <el-table
             :key="projectTable.tableKey"
@@ -111,22 +93,24 @@
           </el-upload>
         </el-form-item>
 
-        <el-form-item label="抢修单位意见" style="display:block;" class="applicationform-box">
+        <el-form-item label="抢修工程数量核实意见" style="display:block;" class="applicationform-box">
           <el-input v-model="form.desc" type="textarea" />
-          <div>提示：时间、地点、预算书、数量、抢修技术方案、主要材料设备、实际完成情况</div>
+        </el-form-item>
+
+        <el-form-item label="维修单位自评意见" style="display:block;" class="applicationform-box">
+          <el-input v-model="form.desc" type="textarea" />
         </el-form-item>
 
       </el-form>
 
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" size="small" @click="centerDialogVisible = false">提交审核</el-button>
-        <el-button type="primary" size="small" @click="onSubmit">导出打印</el-button>
+        <el-button type="primary" size="small" @click="onSubmit">暂存</el-button>
         <el-button size="small" @click="changeActiveVisible = false">取 消</el-button>
 
       </span>
 
     </el-dialog>
-
     <costAddApply v-if="applyVisible" ref="applyView" />
     <costAddProject v-if="projectVisible" ref="projectView" />
   </div>
@@ -166,7 +150,7 @@ import costAddApply from './cost-add-apply'
 import costAddProject from './cost-add-project'
 
 export default {
-  name: 'CostAdd',
+  name: 'AcceptancAdd',
   components: {
     costAddApply,
     costAddProject
@@ -281,17 +265,6 @@ export default {
       this.applyVisible = true
       this.$nextTick(() => {
         this.$refs.applyView.init()
-      })
-    },
-
-    /**
-     *
-     * @return {[type]} [description]
-     */
-    openProjectPage() {
-      this.projectVisible = true
-      this.$nextTick(() => {
-        this.$refs.projectView.init()
       })
     }
   }

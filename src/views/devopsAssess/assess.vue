@@ -52,7 +52,11 @@
       </el-table-column>
       <el-table-column label="指标得分" prop="rateScore" align="center" />
       <el-table-column label="权重" prop="weight" align="center" />
-      <el-table-column label="加权得分(指标得分*权重)" prop="score" width="200" align="center" />
+      <el-table-column label="加权得分(指标得分*权重)" prop="score" width="200" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.score.toFixed(2) }}
+        </template>
+      </el-table-column>
       <el-table-column label="备注" prop="remark" align="center" />
 
       <el-table-column label="操作" align="center">
