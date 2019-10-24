@@ -74,7 +74,7 @@
               </span>
             </el-dialog>
             <!-- 新增或编辑计划-->
-            <el-dialog :title="title" :visible.sync="Visible" :close-on-press-escape="false" :close-on-click-modal="false" width="1200px">
+            <el-dialog :title="titlea" :visible.sync="Visible" :close-on-press-escape="false" :close-on-click-modal="false" width="1200px">
               <el-form ref="tableDatanew" :model="tableDatanew" :rules="tableDatanewrules" label-width="120px">
                 <el-row class="selfstyle">
                   <el-col :span="12">
@@ -124,7 +124,7 @@
                   <el-col :span="24">
                     <el-form-item style="text-align:center;">
                       <el-button type="primary" size="small" icon="el-icon-search" @click="createorupdate()">保存</el-button>
-                      <el-button v-show="title='新增计划'" type="primary" size="small" @click="resetForm()">重置</el-button>
+                      <el-button v-show="titlea='新增计划'" type="primary" size="small" @click="resetForm()">重置</el-button>
                       <el-button size="small" icon="el-icon-close" @click="cancel()">取消</el-button>
                     </el-form-item>
                   </el-col>
@@ -132,7 +132,7 @@
               </el-form>
             </el-dialog>
             <!-- 一级弹框开始******************************************************* -->
-            <el-dialog title="编辑资产" :visible.sync="Visiblefirst" :close-on-press-escape="false" :close-on-click-modal="false" width="1200px">
+            <el-dialog title="编辑资产" :visible.sync="Visiblefirst" :close-on-press-escape="false" :close-on-click-modal="false" width="1200px" @close="updatelist()">
               <el-form ref="form" :model="tableDatanewfirst" label-width="120px">
                 <el-row class="selfstyle">
                   <el-col :span="12">
@@ -247,7 +247,7 @@
                   </el-form>
                   <el-form ref="RepairRecord" :model="RepairRecord" label-width="50px;">
                     <el-row>
-                      <el-col :span="24">录入维护记录</el-col>
+                      <el-col :span="24">需维护的等级及次数</el-col>
                     </el-row>
                     <el-row>
                       <el-col :span="3">
@@ -359,7 +359,7 @@ export default {
       },
       AddVisible: false, // 是否添加资产弹框
       loading: false, // 远程搜索
-      title: '新增计划',
+      titlea: '',
       formSearchShow: false,
       removeQuestionVisible: false, // 删除计划弹框
       removeVisible: false, // 删除计划子项弹框
@@ -612,6 +612,7 @@ export default {
         name: '',
         cyclic: ''
       }
+      this.titlea = '新增计划'
       this.Visible = true
     },
     deletelist(data) { // 删除计划
@@ -659,7 +660,7 @@ export default {
         name: '',
         cyclic: ''
       }
-      this.title = '计划详情'
+      this.titlea = '计划详情'
       // 判断当前按选中值是否存在，不存在插入
       let hasSystemData = false
       this.systemData.forEach(item => { item.id === row.system.id ? hasSystemData = true : '' })
@@ -681,6 +682,7 @@ export default {
       this.tableDatanew.end = val[1]
     },
     UpdateStage(row) { // 点击编辑按钮
+      const _this = this
       if (row) {
         // 重置表单数据
         this.tableDatanew = {
@@ -694,7 +696,6 @@ export default {
           name: '',
           cyclic: ''
         }
-        this.title = '编辑计划'
         // 判断当前按选中值是否存在，不存在插入
         let hasSystemData = false
         this.systemData.forEach(item => { item.id === row.system.id ? hasSystemData = true : '' })
@@ -707,6 +708,8 @@ export default {
         this.tableDatanew.samplingRate = row.samplingRate
         this.tableDatanew.responsibleUser = row.responsibleUser
         this.tableDatanew.excuteUser = row.excuteUser
+
+        _this.titlea = '编辑计划'
         // 显示弹框
         this.Visible = true
         this.itemid = row.id
@@ -774,34 +777,35 @@ export default {
     },
     // 新增或编辑计划弹框方法
     createorupdate() {
+      const _this = this
       this.$refs.tableDatanew.validate(valid => {
         if (valid) {
-          this.tableDatanew.start = this.tableDatanew.daterange[0]
-          this.tableDatanew.end = this.tableDatanew.daterange[1]
-          if (this.title === '新增计划') {
+          _this.tableDatanew.start = _this.tableDatanew.daterange[0]
+          _this.tableDatanew.end = _this.tableDatanew.daterange[1]
+          if (_this.titlea === '新增计划') {
             this.$axios.post('/api/MaintenancePlan', this.tableDatanew).then(response => {
-              this.$message.success('添加成功')
-              this.Visible = false
+              _this.$message.success('添加成功')
+              _this.Visible = false
               // 清空选中值
-              this.multiple = ''
+              _this.multiple = ''
               // 更新表格数据
-              this.getData()
+              _this.getData()
               // 显示是否添加资产弹框
-              this.AddVisible = true
+              _this.AddVisible = true
               // 一级弹框赋值
-              this.tableDatanewfirst = response
-              this.tableDatanewfirst.daterange = [response.start, response.end]
+              _this.tableDatanewfirst = response
+              _this.tableDatanewfirst.daterange = [response.start, response.end]
               // 存id
-              this.itemid = response.id
+              _this.itemid = response.id
             })
-          } else if (this.title === '编辑计划' || this.title === '计划详情') {
-            this.$axios.put('/api/MaintenancePlan/' + this.itemid, this.tableDatanew).then(response => {
-              this.$message.success('编辑成功')
-              this.Visible = false
+          } else if (_this.titlea === '编辑计划' || _this.titlea === '计划详情') {
+            _this.$axios.put('/api/MaintenancePlan/' + _this.itemid, _this.tableDatanew).then(response => {
+              _this.$message.success('编辑成功')
+              _this.Visible = false
               // 清空选中值
-              this.multiple = ''
+              _this.multiple = ''
               // 更新表格数据
-              this.getData()
+              _this.getData()
             })
           }
         }
@@ -878,6 +882,11 @@ export default {
         // 遍历位置树，设置第一个可点positionId
         this.gettreeposition(this.positionTreeData)
       })
+    },
+    updatelist() {
+      console.log('弹框关闭')
+      // 刷新列表数据
+      this.getData()
     },
     //* *************************************************************************************************************** */
     // 二级弹框方法

@@ -59,7 +59,7 @@
                 </template>
               </el-table-column>
               <el-table-column prop="reviewUser" label="验收人" />
-              <el-table-column prop="reviewtime" label="验收时间" :formatter="formatterDate" />
+              <el-table-column prop="reviewTime" label="验收时间" :formatter="formatterDate" />
 
             </el-table>
             <!--分页-->
