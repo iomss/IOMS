@@ -25,7 +25,7 @@
                 </template>
               </el-table-column>
               <el-table-column prop="userName" label="用户名称" />
-              <el-table-column prop="trueName" label="真实姓名" />
+              <el-table-column prop="trueName" label="登录账号" />
               <el-table-column prop="units" label="单位">
                 <template slot-scope="scope">
                   <span v-for="item in scope.row.units" :key="item.id" style="margin-right:10px;">{{ item.name }}</span>
@@ -36,7 +36,7 @@
                   <span v-for="item in scope.row.roles" :key="item.id" style="margin-right:10px;">{{ item.name }}</span>
                 </template>
               </el-table-column>
-              <el-table-column prop="contactNumber" label="联系方式" />
+              <el-table-column prop="contactNumber" label="联系电话" />
               <el-table-column prop="commpany.name" label="公司" />
               <el-table-column prop="lastLoginTime" label="最后登录时间" :formatter="formatterDate" />
             </el-table>
@@ -44,11 +44,12 @@
 
             <el-dialog :title="UserFormTitle" :visible.sync="UserFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="UserFormClose">
               <el-form ref="UserForm" :model="UserForm" :rules="UserFormRules" label-width="120px">
-                <el-form-item label="用户名称" prop="userName">
-                  <el-input v-model="UserForm.userName" placeholder="用户" userze="small" />
+
+                <el-form-item label="登录账号" prop="trueName">
+                  <el-input v-model="UserForm.trueName" placeholder="登录账号" userze="small" />
                 </el-form-item>
-                <el-form-item label="真实姓名" prop="trueName">
-                  <el-input v-model="UserForm.trueName" placeholder="真实姓名" userze="small" />
+                <el-form-item label="用户名称" prop="userName">
+                  <el-input v-model="UserForm.userName" placeholder="用户名称" userze="small" />
                 </el-form-item>
                 <el-form-item label="密码" prop="passWord">
                   <el-input v-model="UserForm.passWord" placeholder="密码" userze="small" />
@@ -139,12 +140,12 @@ export default {
       UserFormRules: {
         trueName: {
           required: true,
-          message: '真实姓名不可为空',
+          message: '登录账号不可为空',
           trigger: 'blur'
         },
         userName: {
           required: true,
-          message: '用户名不可为空',
+          message: '用户名称不可为空',
           trigger: 'blur'
         },
         units: [

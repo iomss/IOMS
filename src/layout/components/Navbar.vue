@@ -5,9 +5,9 @@
     <div class="right-menu">
       <el-popover placement="bottom" width="280" trigger="click">
         <div>
-          <div style="height:175px;background:#2e8cff47;text-align:center;padding-top:20px;">
+          <div style="height:175px;background:#2e8cff47;text-align:center;padding-top:40px;">
             <img :src="Logo" style="width:90px;height:90px;border-radius:50%;">
-            <h2 style="margin:0">{{ userName }}</h2>
+            <!-- <h2 style="margin:0">{{ userName }}</h2> -->
           </div>
           <div style="padding:15px 0;display:flex;text-align:center">
             <div style="width:49%;padding:0 10px;">{{ userUnit.name }}</div>
@@ -29,11 +29,11 @@
     </div>
     <el-dialog title="修改信息" :visible.sync="changeUserFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="changeUserFormClose">
       <el-form ref="UserForm" :model="UserForm" :rules="UserFormRules" label-width="120px">
-        <el-form-item label="真实姓名" prop="trueName">
-          <el-input v-model="UserForm.trueName" disabled placeholder="真实姓名" userze="small" />
+        <el-form-item label="登录账号" prop="trueName">
+          <el-input v-model="UserForm.trueName" disabled placeholder="登录账号" userze="small" />
         </el-form-item>
         <el-form-item label="用户名称" prop="userName">
-          <el-input v-model="UserForm.userName" placeholder="用户" userze="small" />
+          <el-input v-model="UserForm.userName" placeholder="用户名称" userze="small" />
         </el-form-item>
         <el-form-item prop="contactNumber" label="联系电话">
           <el-input v-model="UserForm.contactNumber" placeholder="联系电话" size="small" />
