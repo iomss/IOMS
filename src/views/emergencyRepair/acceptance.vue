@@ -3,8 +3,8 @@
 
     <el-form v-show="isShowSearch" :inline="true" :model="formInline" class="demo-form-inline" size="small">
 
-      <el-form-item label="审批人">
-        <el-input v-model="formInline.user" placeholder="审批人" />
+      <el-form-item label="项目名或报修单位">
+        <el-input v-model="formInline.user" placeholder="项目名或报修单位" />
       </el-form-item>
 
       <el-form-item label="状态">
@@ -56,17 +56,17 @@
       size="small"
       @sort-change="sortChange"
     >
-      <el-table-column type="selection" :selectable="checkTypeIsSelect" />
+      <el-table-column type="selection" />
 
       <el-table-column label="编号" prop="id" sortable="custom" align="center" />
 
       <el-table-column label="状态" prop="status" class-name="status-col" />
 
-      <el-table-column label="紧急情况" prop="sos" align="center" />
       <el-table-column label="工程名称" prop="name" align="center" />
-      <el-table-column label="报修单位" prop="company" align="center" />
-      <el-table-column label="接报单位" prop="company_2" align="center" />
-      <el-table-column label="报修时间" prop="createTime" align="center" :formatter="formatterDate" />
+      <el-table-column label="抢修单位" prop="company" align="center" />
+      <el-table-column label="报修单位" prop="company_2" align="center" />
+      <el-table-column label="录入人" prop="company_2" align="center" />
+      <el-table-column label="录入时间" prop="createTime" align="center" :formatter="formatterDate" />
 
       <el-table-column label="操作">
         <template slot-scope="scope">
@@ -83,8 +83,8 @@
 
     <pagination v-show="table.total>0" :total="table.total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
-    <add v-if="addVisible" ref="add" />
-    <apply-view v-if="viewVisible" ref="applyView" />
+    <acceptanc-add v-if="addVisible" ref="add" />
+    <acceptance-view v-if="viewVisible" ref="acceptanceView" />
 
   </div>
 </template>
@@ -117,16 +117,16 @@
 <script>
 
 // https://blog.csdn.net/qq_29384639/article/details/80700882
-import add from './components/add'
-import applyView from './components/applyView'
+import acceptancAdd from './components/acceptance-add'
+import acceptanceView from './components/acceptance-view'
 
 import pagination from '@/components/Pagination'
 
 export default {
   components: {
     pagination,
-    add,
-    applyView
+    acceptancAdd,
+    acceptanceView
   },
 
   data() {
@@ -223,16 +223,12 @@ export default {
     handleView() {
       this.viewVisible = true
       this.$nextTick(() => {
-        this.$refs.applyView.init()
+        this.$refs.acceptanceView.init()
       })
     },
 
     onSubmit() {
 
-    },
-
-    checkTypeIsSelect() {
-      return false
     }
 
   }

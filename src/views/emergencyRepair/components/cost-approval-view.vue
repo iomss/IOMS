@@ -55,7 +55,7 @@
             size="mini"
             class="table-applicationform"
           >
-            <el-table-column label="序号" prop="id" sortable="custom" align="center" />
+            <el-table-column label="序号" prop="id" align="center" />
             <el-table-column label="编号" prop="number" align="center" />
             <el-table-column label="报修单位" prop="name" align="center" />
             <el-table-column label="接报单位" prop="company_2" align="center" />
@@ -73,11 +73,13 @@
             fit
             highlight-current-row
             show-summary
+            :summary-method="getSummaries"
+
             style="width: 100%;"
             size="mini"
             class="table-applicationform"
           >
-            <el-table-column label="序号" prop="id" sortable="custom" align="center" />
+            <el-table-column label="序号" prop="id" align="center" />
             <el-table-column label="名称" prop="name" align="center" />
             <el-table-column label="单位" prop="unit" align="center" />
             <el-table-column label="数量" prop="number" align="center" />
@@ -100,7 +102,7 @@
             size="mini"
             class="table-applicationform"
           >
-            <el-table-column label="序号" prop="id" sortable="custom" align="center" />
+            <el-table-column label="序号" prop="id" align="center" />
             <el-table-column label="名称" prop="number" align="center" />
             <el-table-column label="上传" prop="createTime" align="center" />
 
@@ -274,6 +276,37 @@ export default {
   methods: {
     init() {
       this.changeActiveVisible = true
+    },
+
+    /**
+     * 自定义返回合计
+     * @return {[type]} [description]
+     */
+    getSummaries(param) {
+      const { columns, data } = param
+      const sums = []
+      columns.forEach((column, index) => {
+        if (index === 0) {
+          sums[index] = '总价'
+          return
+        }
+        const values = data.map(item => Number(item[column.property]))
+        if (!values.every(value => isNaN(value)) && (index === 5)) {
+          sums[index] = values.reduce((prev, curr) => {
+            const value = Number(curr)
+            if (!isNaN(value)) {
+              return prev + curr
+            } else {
+              return prev
+            }
+          }, 0)
+
+          sums[index] = sums[index].toFixed(2)
+        } else {
+          sums[index] = ''
+        }
+      })
+      return sums
     },
 
     onSubmit() {

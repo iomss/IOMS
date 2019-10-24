@@ -19,15 +19,17 @@
 
           <el-table-column type="expand">
             <template>
-              <el-table :data="childnTable" style="width: 100%" size="mini" border fit show-summary>
+              <el-table :data="childnTable" style="width: 100%" size="mini" border fit show-summary :summary-method="getSummaries">
                 <el-table-column
                   prop="assessmentWeight.name"
                   label="指标名称"
                 />
-                <el-table-column
-                  prop="equipmentIntegrityRate"
-                  label="统计指标"
-                />
+                <el-table-column label="统计指标" prop="equipmentIntegrityRate" align="center">
+                  <template slot-scope="scope">
+                    {{ scope.row.equipmentIntegrityRate?(scope.row.equipmentIntegrityRate+'%'):'-' }}
+                  </template>
+                </el-table-column>
+
                 <el-table-column
                   prop="rateScore"
                   label="指标得分"
@@ -36,11 +38,11 @@
                   prop="weight"
                   label="权重"
                 />
-                <el-table-column
-                  prop="score"
-                  label="加权重得分(指标得分*权重)"
-                  width="180"
-                />
+                <el-table-column label="加权得分" prop="score" align="center">
+                  <template slot-scope="scope">
+                    {{ scope.row.score.toFixed(2) }}
+                  </template>
+                </el-table-column>
                 <el-table-column label="操作">
                   <template slot-scope="scope">
                     <el-button size="mini" type="text" @click="handlerOpenWorkOrder(scope.index, scope.row)">查看工单</el-button>
@@ -319,6 +321,36 @@ export default {
         this.workOrderTable.list = res.assessmentRecordItemRepairOrderMappings
         this.workOrderTable.listLoading = false
       })
+    },
+    /**
+    * 自定义返回合计
+    * @return {[type]} [description]
+    */
+    getSummaries(param) {
+      const { columns, data } = param
+      const sums = []
+      columns.forEach((column, index) => {
+        if (index === 0) {
+          sums[index] = '总价'
+          return
+        }
+        const values = data.map(item => Number(item[column.property]))
+        if (!values.every(value => isNaN(value)) && (index === 3 || index === 4)) {
+          sums[index] = values.reduce((prev, curr) => {
+            const value = Number(curr)
+            if (!isNaN(value)) {
+              return prev + curr
+            } else {
+              return prev
+            }
+          }, 0)
+
+          sums[index] = sums[index].toFixed(2)
+        } else {
+          sums[index] = ''
+        }
+      })
+      return sums
     }
   }
 }

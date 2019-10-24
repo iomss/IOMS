@@ -43,7 +43,7 @@
             <el-card v-if="formSearchShow" class="search" :body-style="{ padding: '20px' }">
               <el-form ref="tableDataSearch" :model="tableDataSearch">
                 <el-form-item>
-                  <el-select v-model="tableDataSearch.useUnitId" filterable remote :remote-method="remoteMethodUnit" :loading="loading" placeholder="使用单位" size="small" @focus="remoteMethodUnit">
+                  <el-select v-model="tableDataSearch.useUnitId" filterable remote :remote-method="remoteMethodUnit" clearable :loading="loading" placeholder="使用单位" size="small" @focus="remoteMethodUnit">
                     <el-option v-for="item in unitData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
@@ -51,23 +51,23 @@
                   <treeselect v-model="tableDataSearch.positionId" :disable-branch-nodes="true" :normalizer="normalizer" :options="positionTreeData" :load-options="loadOptions" placeholder="安装位置" no-results-text="未找到相关数据" />
                 </el-form-item>
                 <el-form-item>
-                  <el-select v-model="tableDataSearch.equipmentId" filterable remote :remote-method="remoteMethodequipmentID" :loading="loading" placeholder="资产类别" size="small" @focus="remoteMethodequipmentID">
+                  <el-select v-model="tableDataSearch.equipmentId" filterable remote :remote-method="remoteMethodequipmentID" clearable :loading="loading" placeholder="资产类别" size="small" @focus="remoteMethodequipmentID">
                     <el-option v-for="item in equipmentData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
                 <el-form-item>
-                  <el-select v-model="tableDataSearch.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" clearable placeholder="所属系统" size="small" @focus="remoteMethodsystemId">
+                  <el-select v-model="tableDataSearch.systemId" filterable remote :remote-method="remoteMethodsystemId" clearable :loading="loading" placeholder="所属系统" size="small" @focus="remoteMethodsystemId">
                     <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
                 <el-form-item>
-                  <el-date-picker v-model="tableDataSearch.enableBegin" type="date" placeholder="投用开始时间" />
+                  <el-date-picker v-model="tableDataSearch.enableBegin" type="date" clearable placeholder="投用开始时间" />
                 </el-form-item>
                 <el-form-item>
-                  <el-date-picker v-model="tableDataSearch.enableEnd" type="date" placeholder="投用截止时间" />
+                  <el-date-picker v-model="tableDataSearch.enableEnd" type="date" clearable placeholder="投用截止时间" />
                 </el-form-item>
                 <el-form-item>
-                  <el-select v-model="tableDataSearch.sourceId" filterable remote :remote-method="remoteMethodsourceId" :loading="loading" placeholder="资产来源" size="small" @focus="remoteMethodsourceId">
+                  <el-select v-model="tableDataSearch.sourceId" filterable remote :remote-method="remoteMethodsourceId" clearable :loading="loading" placeholder="资产来源" size="small" @focus="remoteMethodsourceId">
                     <el-option v-for="item in sourceData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
@@ -78,12 +78,12 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item>
-                  <el-select v-model="tableDataSearch.brandId" filterable remote :remote-method="remoteMethodbrandId" :loading="loading" placeholder="品牌" size="small" @focus="remoteMethodbrandId" @change="changebrand">
+                  <el-select v-model="tableDataSearch.brandId" filterable remote :remote-method="remoteMethodbrandId" :loading="loading" clearable placeholder="品牌" size="small" @focus="remoteMethodbrandId" @change="changebrand">
                     <el-option v-for="item in brandData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
                 <el-form-item>
-                  <el-select v-model="tableDataSearch.modelId" filterable remote :remote-method="remoteMethodmodelId" :loading="loading" placeholder="型号" size="small" @focus="remoteMethodmodelId">
+                  <el-select v-model="tableDataSearch.modelId" filterable remote :remote-method="remoteMethodmodelId" :loading="loading" clearable placeholder="型号" size="small" @focus="remoteMethodmodelId">
                     <el-option v-for="item in modelData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
