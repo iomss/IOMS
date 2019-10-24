@@ -19,9 +19,9 @@
               <!-- <el-button v-if="showForm!=='forget'" class="reset-button" type="text" @click="showForm='forget'">
             忘记密码
           </el-button> -->
-              <el-button v-if="showForm!=='register'" class="register-button" type="text" @click="showForm='register'">
+              <!-- <el-button v-if="showForm!=='register'" class="register-button" type="text" @click="showForm='register'">
                 注册账户
-              </el-button>
+              </el-button> -->
               <el-button v-if="showForm!=='login'" class="register-button" type="text" @click="showForm='login'">
                 已有账号，登录
               </el-button>
@@ -53,9 +53,9 @@
               <!-- <el-button v-if="showForm!=='forget'" class="reset-button" type="text" @click="showForm='forget'">
                 忘记密码
               </el-button> -->
-              <el-button v-if="showForm!=='register'" class="register-button" type="text" @click="showForm='register'">
+              <!-- <el-button v-if="showForm!=='register'" class="register-button" type="text" @click="showForm='register'">
                 注册账户
-              </el-button>
+              </el-button> -->
               <el-button v-if="showForm!=='login'" class="register-button" type="text" @click="showForm='login'">
                 已有账号，登录
               </el-button>
