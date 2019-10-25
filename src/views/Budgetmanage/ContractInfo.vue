@@ -118,7 +118,7 @@ export default {
   methods: {
     // 获取数据
     getData() {
-      this.$axios.get('/api/Budget/' + this.$route.params.id, this.formSearch).then(res => {
+      this.$axios.get('/api/Budget/' + this.$route.params.id, { params: this.formSearch }).then(res => {
         this.tableData = res.data
         this.totalCount = res.totalCount
       })
