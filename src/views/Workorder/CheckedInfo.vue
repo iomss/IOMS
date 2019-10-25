@@ -44,14 +44,20 @@
               <li><span>维修人:</span><b>{{ tableData.repairer? tableData.repairer.name:'' }}</b></li>
               <li>
                 <span>维修结果图片:</span>
-                <b>
-                  <img alt="" :src="tableData.resultImg" style="width:100px;height:100px;">
-                </b>
+                <el-image style="width: 100px; height: 100px" :src="url+tableData.resultImg" :preview-src-list="[url+tableData.resultImg]">
+                  <div slot="error" class="el-image__error">
+                    暂无图片
+                  </div>
+                </el-image>
               </li>
               <li>
                 <span>现场验收签字:</span>
                 <b>
-                  <img alt="" :src="tableData.signImg " style="width:100px;height:100px;">
+                  <el-image style="width: 100px; height: 100px" :src="url+tableData.signImg" :preview-src-list="[url+tableData.signImg]">
+                    <div slot="error" class="el-image__error">
+                      暂无图片
+                    </div>
+                  </el-image>
                 </b>
               </li>
               <li><span>协助人:</span><b>{{ tableData.assist }}</b></li>
@@ -90,6 +96,7 @@ export default {
   },
   data() {
     return {
+      url: process.env.VUE_APP_API,
       roles: this.$cookie.get('roles').split(','),
       dangqianUser: {// 当前登陆用户
         userName: this.$cookie.get('trueName'),
