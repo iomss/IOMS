@@ -111,8 +111,12 @@
                   <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="text" @click="UpdateInfo(scope.row)">{{ scope.row.code }}</el-button>
                 </template>
               </el-table-column>
-              <el-table-column prop="equimentType.name" label="资产类别" sortable="custom" />
-              <el-table-column prop="alias" label="资产名称" sortable="custom" />
+              <el-table-column prop="equipmentType.name" label="资产类别" sortable="custom" />
+              <el-table-column prop="alias" label="资产名称" sortable="custom">
+                <template slot-scope="scope">
+                  {{ scope.row.alias===null?scope.row.equipment===null?'':scope.row.equipment.name: scope.row.alias }}
+                </template>
+              </el-table-column>
               <el-table-column prop="brand.name" label="品牌" sortable="custom" />
               <el-table-column prop="model.name" label="型号" sortable="custom" />
               <el-table-column prop="parentSystem.name" label="所属系统" sortable="custom" />
@@ -124,7 +128,7 @@
               <el-table-column prop="original" label="资产原值" sortable="custom" />
               <el-table-column prop="source.name" label="增加方式" sortable="custom" />
               <el-table-column prop="si.name" label="集成商" sortable="custom" />
-              <el-table-column prop="recordUser" label="录入人" sortable="custom" />
+              <el-table-column prop="recordUser.name" label="录入人" sortable="custom" />
               <el-table-column prop="lastUpdateTime" label="更新时间" sortable="custom" :formatter="formatterDate" />
               <el-table-column label="操作" width="100">
                 <template slot-scope="scope">
