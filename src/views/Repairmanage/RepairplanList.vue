@@ -27,9 +27,9 @@
           <div class="content">
             <el-table :data="tableData" stripe border style="width: 100%" @selection-change="handleChange">
               <el-table-column type="selection" />
-              <el-table-column label="完成状态" prop="planState ">
+              <el-table-column label="完成状态" prop="planState">
                 <template slot-scope="scope">
-                  <el-button size="mini" type="text" @click="showInfo(scope.row)">{{ scope.row.planState }}</el-button>
+                  {{ scope.row.planState==='Plan'?'计划':scope.row.planState==='Excute'?'执行':scope.row.planState==='Review'?'待验收':scope.row.planState==='Done'?'验收通过':'验收未通过' }}
                 </template>
               </el-table-column>
               <el-table-column prop="name" label="维护计划名名称" />
