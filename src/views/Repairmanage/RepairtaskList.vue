@@ -58,7 +58,12 @@
                   {{ scope.row.createUser.name }}
                 </template>
               </el-table-column>
-              <el-table-column prop="reviewUser" label="验收人" />
+              <el-table-column prop="reviewUser" label="验收人">
+                <template slot-scope="scope">
+                  {{ scope.row.reviewUser===null?'':scope.row.reviewUser.name }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="reviewComment" label="验收意见" />
               <el-table-column prop="reviewTime" label="验收时间" :formatter="formatterDate" />
 
             </el-table>
