@@ -7,11 +7,13 @@
           <div class="header">
             <div class="search">
               <el-input v-model="UserFormSearch.text" placeholder="全局查询" userze="small" />
-              <el-button type="primary" userze="small" @click="getData()">查询</el-button>
-              <el-button type="success" userze="small" @click="adddata()">添加</el-button>
-              <el-button type="warning" userze="small" @click="updateUser()">修改</el-button>
-              <el-button type="success" userze="small" @click="enableUser()">启用</el-button>
-              <el-button type="danger" userze="small" @click="disableUser()">停用</el-button>
+              <el-button size="small" type="primary" userze="small" @click="getData()">查询</el-button>
+              <el-button size="small" type="success" userze="small" @click="adddata()">添加</el-button>
+              <el-button size="small" type="warning" userze="small" @click="updateUser()">修改</el-button>
+              <el-button size="small" type="success" userze="small" @click="enableUser()">启用</el-button>
+              <el-button size="small" type="danger" userze="small" @click="disableUser()">停用</el-button>
+              <el-button size="small" type="danger" userze="small" @click="resetPassword()">重置密码</el-button>
+
               <!-- <el-button type="danger" userze="small" @click="deleteUser()">删除</el-button> -->
             </div>
           </div>
@@ -51,9 +53,7 @@
                 <el-form-item label="用户名称" prop="userName">
                   <el-input v-model="UserForm.userName" placeholder="用户名称" userze="small" />
                 </el-form-item>
-                <el-form-item label="密码" prop="passWord">
-                  <el-input v-model="UserForm.passWord" placeholder="密码" userze="small" />
-                </el-form-item>
+
                 <el-form-item prop="units" label="单位">
                   <el-select v-model="UserForm.units" filterable remote multiple :remote-method="remoteMethodUnits" :loading="loading" placeholder="单位" size="small" @focus="remoteMethodUnits">
                     <el-option v-for="item in unitData" :key="item.id" :label="item.name" :value="item.id" />
@@ -100,6 +100,13 @@
                 <el-button type="primary" @click="submitDeleteUser">确 定</el-button>
               </span>
             </el-dialog>
+            <el-dialog ref="resetPassword" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="resetPasswordVisible" width="220px">
+              <span>您确定要重置此用户密码？</span>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="resetPasswordVisible = false">取 消</el-button>
+                <el-button type="primary" @click="submitResetPassword">确 定</el-button>
+              </span>
+            </el-dialog>
           </div>
         </div>
       </el-col>
@@ -131,7 +138,6 @@ export default {
         id: undefined,
         trueName: '',
         userName: '',
-        password: '',
         units: [],
         roles: [],
         contactNumber: '',
@@ -168,7 +174,8 @@ export default {
       loading: false,
       EnableUserVisibale: false,
       DisableUserVisibale: false,
-      userSelectId: null
+      userSelectId: null,
+      resetPasswordVisible: false
     }
   },
   computed: {},
@@ -241,7 +248,6 @@ export default {
           this.UserForm.trueName = this.multipleSelectionUser[0].trueName
           this.UserForm.password = ''
           this.multipleSelectionUser[0].units.forEach(item => unitVal.push(item.id))
-          debugger
           this.UserForm.units = unitVal
           this.multipleSelectionUser[0].roles.forEach(item => rolesVal.push(item.id))
           this.UserForm.roles = rolesVal
@@ -377,6 +383,27 @@ export default {
         this.getData()
         this.$message.success('用户停用成功')
         this.DisableUserVisibale = false
+      })
+    },
+    // 重置密码
+    resetPassword(row) {
+      if (row === undefined) {
+        if (this.multipleSelectionUser.length !== 1) {
+          this.$message.error('请选择一项数据进行操作')
+        } else {
+          this.resetPasswordVisible = true
+          this.userSelectId = this.multipleSelectionUser[0].id
+        }
+      } else {
+        this.resetPasswordVisible = true
+        this.userSelectId = row.id
+      }
+    },
+    // 提交重置密码
+    submitResetPassword() {
+      this.$axios.post('/api/User/' + this.userSelectId + '/reset').then(res => {
+        this.$message.success('用户密码重置成功')
+        this.resetPasswordVisible = false
       })
     }
 
