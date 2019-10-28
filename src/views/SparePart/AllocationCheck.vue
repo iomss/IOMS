@@ -214,6 +214,7 @@ export default {
           this.$axios.post('/api/SpareStockRecord/' + this.multipleSelection[0].id, this.checkForm).then(res => {
             this.$message.success('审批操作成功')
             this.closeCheck()
+            this.getData()
           })
         }
       })
