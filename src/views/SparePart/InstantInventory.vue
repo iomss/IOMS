@@ -108,7 +108,7 @@
                 <el-form-item v-if="rukuForm.spareBoundType==='OutBound'" label="领用人" prop="receive">
                   <el-input v-model="rukuForm.receive" placeholder="领用人" size="small" />
                 </el-form-item>
-                <el-form-item label="维修单编号" prop="repairOrderCode">
+                <el-form-item v-if="rukuForm.spareBoundType==='InBound'&& rukuForm.spareStockType === 'Spare'" label="维修单编号" prop="repairOrderCode">
                   <el-input v-model="rukuForm.repairOrderCode" placeholder="维修单编号" size="small" />
                 </el-form-item>
                 <el-form-item label="备注" prop="remark" class="form_total">
@@ -123,7 +123,7 @@
               </div>
               <el-table :data="rukubeijian" stripe border style="width: 1500px" max-height="650px" @selection-change="rukubeijianselect">
                 <el-table-column type="selection" />
-                <el-table-column prop="number" label="编码" />
+                <!-- <el-table-column prop="number" label="编码" /> -->
                 <el-table-column prop="name" label="备件名称" />
                 <el-table-column prop="consumable" label="备件分类">
                   <template slot-scope="scope">
