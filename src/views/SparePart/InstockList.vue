@@ -175,7 +175,7 @@
                   </el-col>
                   <el-col :span="8">
                     <el-form-item label="入库日期">
-                      {{ Info.boundTime!==null?Info.boundTime:'' }}
+                      {{ Info.boundTime!==null?this.$moment(Info.boundTime).format('YYYY-MM-DD'):'' }}
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
