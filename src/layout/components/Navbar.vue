@@ -46,8 +46,14 @@
     </el-dialog>
     <el-dialog title="修改密码" :visible.sync="changePassWordVisibale" :close-on-press-escape="false" :close-on-click-modal="false" width="450px">
       <el-form ref="changePassWord" :model="changePassWord" :rules="changePassWordRules" label-width="120px">
-        <el-form-item prop="password" label="密码">
-          <el-input v-model="changePassWord.password" placeholder="密码" size="small" />
+        <el-form-item prop="oldPassword" label="旧密码">
+          <el-input v-model="changePassWord.oldPassword" placeholder="旧密码" size="small" />
+        </el-form-item>
+        <el-form-item prop="newPassword" label="新密码">
+          <el-input v-model="changePassWord.newPassword" type="password" placeholder="新密码" size="small" />
+        </el-form-item>
+        <el-form-item prop="confirmPassword" label="确认密码">
+          <el-input v-model="changePassWord.confirmPassword" type="password" placeholder="确认密码" size="small" />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -71,6 +77,28 @@ export default {
     Hamburger
   },
   data() {
+    const validateNewPass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入密码'))
+      } else {
+        const regNum = new RegExp(/^\d*$/)
+        const regStr = new RegExp(/^[a-z\d]*$/i)
+        if (regNum.test(value) && regStr.test(value)) {
+          callback(new Error('密码格式不正确，必须同时包含数字和字母'))
+        } else {
+          callback()
+        }
+      }
+    }
+    const validateConfirmPassword = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码密码'))
+      } else if (value !== this.changePassWord.newPassword) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
+    }
     return {
       Logo: Logo,
       userName: this.$cookie.get('trueName'),
@@ -95,17 +123,33 @@ export default {
       },
       changePassWordVisibale: false,
       changePassWord: {
-        trueName: this.$cookie.get('trueName'),
-        userName: '',
-        contactNumber: '',
-        password: ''
+        oldPassword: '',
+        newPassword: '',
+        confirmPassword: ''
       },
       changePassWordRules: {
-        password: {
+        oldPassword: {
           required: true,
-          message: '密码不可为空',
+          message: '旧密码不可为空',
           trigger: 'blur'
-        }
+        },
+        newPassword: [
+          {
+            required: true,
+            message: '请输入新密码',
+            trigger: 'blur'
+          },
+          { min: 6, message: '密码长度不可少于6位', trigger: 'blur' },
+          { validator: validateNewPass, trigger: 'blur' }
+        ],
+        confirmPassword: [
+          {
+            required: true,
+            message: '请再次输入密码',
+            trigger: 'blur'
+          },
+          { validator: validateConfirmPassword, trigger: 'blur' }
+        ]
       }
     }
   },
@@ -139,13 +183,11 @@ export default {
     },
     changePW() {
       this.changePassWordVisibale = true
-      this.changePassWord.userName = this.$cookie.get('userName')
-      this.changePassWord.contactNumber = this.$cookie.get('contactNumber')
     },
     submitChangePassWord() {
       this.$refs.changePassWord.validate(valid => {
         if (valid) {
-          this.$axios.put('/api/Account', this.changePassWord).then(res => {
+          this.$axios.post('/api/Account/UpdatePassword', this.changePassWord).then(res => {
             this.$message.success('密码修改成功,需重新登录。')
             this.logout()
           })
