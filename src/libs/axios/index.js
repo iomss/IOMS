@@ -76,7 +76,7 @@ axios.interceptors.request.use(
     config.baseURL = url.indexOf('/easymock') !== -1 ? (process.env.NODE_ENV !== 'development' ? process.env.VUE_APP_API_Easy_Mock : '/') : process.env.NODE_ENV !== 'development' ? process.env.VUE_APP_API : '/'
 
     // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
-    config.headers['Authorization'] = token.getToken()
+    config.headers['Authorization'] = config.headers.Authorization || token.getToken()
     return config
   },
   error => {
