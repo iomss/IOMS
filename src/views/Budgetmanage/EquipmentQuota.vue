@@ -36,7 +36,6 @@
                 </el-form-item>
               </el-form>
             </div>
-            <h4>维修单</h4>
             <div class="tools">
               <el-button type="success" size="small" @click="getData()">刷新</el-button>
               <el-button type="primary" size="small" @click="updateData()">编辑</el-button>
