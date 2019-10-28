@@ -286,7 +286,7 @@ export default {
         pageNumber: 1// 页码
       },
       tableDataSearchsecond: {// 二级弹框搜索
-        pageSize: 10, // 展示条数
+        pageSize: 50, // 展示条数
         pageNumber: 1// 页码
       },
       totalCount: 0, // 数据总条数
@@ -501,32 +501,29 @@ export default {
         }
       })
     },
-    showsecond(id) { // 点击一级弹框维修记录
+    showsecond(id) {
+      // 点击一级弹框维修记录
+      // 获取列表
       this.itemidfirst = id
-      this.$axios.get('/api/MaintenancePlan/' + this.itemid + '/' + this.itemidfirst + '/ItemRecords').then(res => {
+      this.$axios.get('/api/MaintenancePlan/' + this.itemid + '/' + this.itemidfirst + '/ItemRecords', { params: this.tableDataSearchsecond }).then(res => {
         this.tableDatasecond = res.data
         // 打开二级弹框
         this.Visiblesecond = true
+        this.totalCountsecond = res.totalCount
       })
     },
 
     //* *************************************************************************************************************** */
     // 二级弹框方法
-
-    getDatasecond(data) { // 获取列表
-      this.$axios.get('/api/EquipmentList', { params: this.tableDataSearchsecond }).then(res => {
-        this.tableDatasecond = res.data
-        this.totalCountsecond = res.totalCount
-      })
-    },
     getPagesecond(val) { // page事件
       // 展示条数
       this.tableDataSearchsecond.pageSize = val.limit
       // 页码
       this.tableDataSearchsecond.pageNumber = val.page
       // 调用获取数据
-      this.$axios.get('/api/EquipmentList', { params: this.tableDataSearchsecond }).then(res => {
+      this.$axios.get('/api/MaintenancePlan/' + this.itemid + '/' + this.itemidfirst + '/ItemRecords', { params: this.tableDataSearchsecond }).then(res => {
         this.tableDatasecond = res.data
+        this.totalCountsecond = res.totalCount
       })
     },
     handleChangesecond(val) {
