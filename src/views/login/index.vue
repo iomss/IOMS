@@ -130,7 +130,7 @@ export default {
               }
               _this.$cookie.set('tokenSetTime', new Date().getTime())
               // 获取用户数据
-              _this.$axios.get('/api/Account/LoginInfo').then(res => {
+              _this.$axios.get('/api/Account/LoginInfo', { headers: { Authorization: res.token_type + ' ' + res.access_token }}).then(res => {
                 // cookie 中写入相关用户数据
                 for (const item in res) {
                   _this.$cookie.set(item, res[item])
