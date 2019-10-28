@@ -79,7 +79,7 @@
               </span>
             </el-dialog>
             <!-- 新增或编辑计划-->
-            <el-dialog :title="titlea" :visible.sync="Visible" :close-on-press-escape="false" :close-on-click-modal="false" width="1200px">
+            <el-dialog :title="titlea" :visible.sync="Visible" :close-on-press-escape="false" :close-on-click-modal="false" width="1300px">
               <el-form ref="tableDatanew" :model="tableDatanew" :rules="tableDatanewrules" label-width="120px">
                 <el-row class="selfstyle">
                   <el-col :span="12">
@@ -129,7 +129,7 @@
                   <el-col :span="24">
                     <el-form-item style="text-align:center;">
                       <el-button type="primary" size="small" icon="el-icon-search" @click="createorupdate()">保存</el-button>
-                      <el-button v-show="titlea='新增计划'" type="primary" size="small" @click="resetForm()">重置</el-button>
+                      <el-button v-if="titlea==='新增计划'" type="primary" size="small" @click="resetForm()">重置</el-button>
                       <el-button size="small" icon="el-icon-close" @click="cancel()">取消</el-button>
                     </el-form-item>
                   </el-col>
@@ -714,6 +714,7 @@ export default {
         this.tableDatanew.responsibleUser = row.responsibleUser
         this.tableDatanew.excuteUser = row.excuteUser
 
+        _this.titlea = ''
         _this.titlea = '编辑计划'
         // 显示弹框
         this.Visible = true
