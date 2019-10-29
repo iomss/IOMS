@@ -73,7 +73,7 @@
             </el-dialog>
             <!--入库-->
             <!-- 新增备件入库 -->
-            <el-dialog :title="'新增备件' + title + '单'" :visible.sync="rukuVisible" :close-on-press-escape="false" :show-close="false" :close-on-click-modal="false" width="1000px">
+            <el-dialog :title="'新增备件' + title + '单'" :visible.sync="rukuVisible" :close-on-press-escape="false" :show-close="false" :close-on-click-modal="false" width="1300px">
               <el-form ref="rukuForm" :model="rukuForm" :rules="rukuRules" label-width="120px">
                 <el-form-item :label="title+'单号'">
                   <el-input value="系统自动生成" disabled />
@@ -118,7 +118,7 @@
                 <el-form-item v-if="rukuForm.spareBoundType==='OutBound'" label="领用人" prop="receive">
                   <el-input v-model="rukuForm.receive" placeholder="领用人" size="small" />
                 </el-form-item>
-                <el-form-item v-if="rukuForm.spareBoundType==='InBound'&& rukuForm.spareStockType === 'Spare'" label="维修单编号" prop="repairOrderCode">
+                <el-form-item v-if="rukuForm.spareBoundType==='InBound'&& rukuForm.spareStockType === 'Spare' && rukuForm.spareBoundSubType==='Repair'" label="维修单编号" prop="repairOrderCode">
                   <el-input v-model="rukuForm.repairOrderCode" placeholder="维修单编号" size="small" />
                 </el-form-item>
                 <el-form-item label="备注" prop="remark" class="form_total">
@@ -142,14 +142,16 @@
                 </el-table-column>
                 <el-table-column prop="brand.name" label="品牌" />
                 <el-table-column prop="model.name" label="型号" />
+                <el-table-column v-show="rukuForm.spareBoundType==='OutBound' && rukuForm.spareStockType === 'Spare'" prop="safetyStock" label="安全库存" />
                 <el-table-column prop="unitPrice" label="单价">
                   <template slot-scope="scope">
-                    <el-input v-model="scope.row.unitPrice" type="number" size="small" placeholder="请输入内容" />
+                    <el-input v-model="scope.row.unitPrice" :disabled="!(rukuForm.spareBoundType==='InBound' && rukuForm.spareStockType === 'Spare')" type="number" size="small" placeholder="请输入内容" />
                   </template>
                 </el-table-column>
+                <el-table-column v-if="rukuForm.spareBoundType==='OutBound' && rukuForm.spareStockType === 'Spare'" prop="kucun" label="库存" />
                 <el-table-column prop="quantity" label="数量">
                   <template slot-scope="scope">
-                    <el-input v-model="scope.row.quantity" type="number" size="small" placeholder="请输入内容" />
+                    <el-input-number v-model="scope.row.quantity" controls-position="right" :max="rukuForm.spareBoundType==='OutBound' && rukuForm.spareStockType === 'Spare'?scope.row.kucun:Infinity" size="small" placeholder="请输入内容" style="width:100%;" />
                   </template>
                 </el-table-column>
                 <el-table-column prop="totalPrice" label="总金额">
@@ -369,7 +371,7 @@ export default {
      */
     rukushow(spareBoundType, spareStockType) {
       this.xuanzekucunSelectData.forEach(item => {
-        this.rukubeijian.push({ kucunId: item.id, ...item.spare, unitPrice: item.unitPrice, quantity: item.quantity })
+        this.rukubeijian.push({ kucunId: item.id, ...item.spare, unitPrice: item.unitPrice, kucun: item.quantity })
       })
       this.rukuForm.spareBoundType = spareBoundType
       this.rukuForm.spareStockType = spareStockType
