@@ -95,7 +95,17 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item :label="title+'库房'" prop="spareRepositoryId">
-                  <el-select v-model="rukuForm.spareRepositoryId" filterable remote :remote-method="getKufang" :loading="loading" :placeholder="title+'库房'" size="small" @focus="getKufang">
+                  <el-select
+                    v-model="rukuForm.spareRepositoryId"
+                    :disabled="rukuForm.spareBoundType==='OutBound' && rukuForm.spareStockType === 'Spare'"
+                    filterable
+                    remote
+                    :remote-method="getKufang"
+                    :loading="loading"
+                    :placeholder="title+'库房'"
+                    size="small"
+                    @focus="getKufang"
+                  >
                     <el-option v-for="item in kufangData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
@@ -248,6 +258,7 @@ export default {
         repairOrderCode: '', // 维修单编号
         boundTime: '', // 出入口时间
         spareStockRecordItems: '', // 备件
+        spareRepositoryId: null, // 库房
         remark: '' // 备注
       },
       // 入库表单验证
@@ -366,7 +377,22 @@ export default {
       if ((spareBoundType === 'OutBound' || spareStockType === 'Scrap') && !this.xuanzekucunSelectData.length >= 1) {
         this.$message.warning('请选择相关库存进行操作')
       } else {
-        this.rukuVisible = true
+        if (this.rukuForm.spareBoundType === 'OutBound' && this.rukuForm.spareStockType === 'Spare') {
+          let hasData = true
+          this.xuanzekucunSelectData.forEach(item => {
+            item.unitId === this.xuanzekucunSelectData[0].unitId && item.spareRepositoryId === this.xuanzekucunSelectData[0].spareRepositoryId ? '' : hasData = false
+          })
+          if (hasData) {
+            if (this.rukuForm.spareBoundType === 'OutBound' && this.rukuForm.spareStockType === 'Spare') {
+              this.rukuForm.spareRepositoryId = this.xuanzekucunSelectData[0].spareRepositoryId
+            }
+            this.rukuVisible = true
+          } else {
+            this.$message.warning('请选择同一单位、同一库房备件')
+          }
+        } else {
+          this.rukuVisible = true
+        }
       }
     },
     // 选择库存
