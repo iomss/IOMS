@@ -26,8 +26,8 @@
                   {{ scope.row.disabled?'停用':'启用' }}
                 </template>
               </el-table-column>
-              <el-table-column prop="userName" label="用户名称" />
-              <el-table-column prop="trueName" label="登录账号" />
+              <el-table-column prop="trueName" label="用户名称" />
+              <el-table-column prop="userName" label="登录账号" />
               <el-table-column prop="units" label="单位">
                 <template slot-scope="scope">
                   <span v-for="item in scope.row.units" :key="item.id" style="margin-right:10px;">{{ item.name }}</span>
@@ -47,11 +47,11 @@
             <el-dialog :title="UserFormTitle" :visible.sync="UserFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="UserFormClose">
               <el-form ref="UserForm" :model="UserForm" :rules="UserFormRules" label-width="120px">
 
-                <el-form-item label="登录账号" prop="trueName">
-                  <el-input v-model="UserForm.trueName" placeholder="登录账号" userze="small" />
+                <el-form-item label="用户名称" prop="trueName">
+                  <el-input v-model="UserForm.trueName" placeholder="用户名称" userze="small" />
                 </el-form-item>
-                <el-form-item label="用户名称" prop="userName">
-                  <el-input v-model="UserForm.userName" placeholder="用户名称" userze="small" />
+                <el-form-item label="登录账号" prop="userName">
+                  <el-input v-model="UserForm.userName" placeholder="登录账号" userze="small" />
                 </el-form-item>
 
                 <el-form-item prop="units" label="单位">
@@ -146,12 +146,12 @@ export default {
       UserFormRules: {
         trueName: {
           required: true,
-          message: '登录账号不可为空',
+          message: '用户名称不可为空',
           trigger: 'blur'
         },
         userName: {
           required: true,
-          message: '用户名称不可为空',
+          message: '登录账号不可为空',
           trigger: 'blur'
         },
         units: [

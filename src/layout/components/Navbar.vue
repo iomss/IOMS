@@ -29,11 +29,11 @@
     </div>
     <el-dialog title="修改信息" :visible.sync="changeUserFormVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px" @close="changeUserFormClose">
       <el-form ref="UserForm" :model="UserForm" :rules="UserFormRules" label-width="120px">
-        <el-form-item label="登录账号" prop="trueName">
-          <el-input v-model="UserForm.trueName" disabled placeholder="登录账号" userze="small" />
+        <el-form-item label="登录账号" prop="userName">
+          <el-input v-model="UserForm.userName" disabled placeholder="登录账号" userze="small" />
         </el-form-item>
-        <el-form-item label="用户名称" prop="userName">
-          <el-input v-model="UserForm.userName" placeholder="用户名称" userze="small" />
+        <el-form-item label="用户名称" prop="trueName">
+          <el-input v-model="UserForm.trueName" placeholder="用户名称" userze="small" />
         </el-form-item>
         <el-form-item prop="contactNumber" label="联系电话">
           <el-input v-model="UserForm.contactNumber" placeholder="联系电话" size="small" />
