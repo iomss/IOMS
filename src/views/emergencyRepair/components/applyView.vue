@@ -1,54 +1,56 @@
 <template>
 
-  <el-dialog
-    title="青海省高等级公路机电工程应急抢修申请表"
-    :visible.sync="changeActiveVisible"
-    :close-on-press-escape="false"
-    :close-on-click-modal="false"
-    class="e-dialog-applyview"
-  >
+  <div v-if="changeActiveVisible">
 
-    <formView ref="formView" />
+    <el-dialog
+      title="青海省高等级公路机电工程应急抢修申请表"
+      :visible.sync="changeActiveVisible"
+      :close-on-press-escape="false"
+      :close-on-click-modal="false"
+      class="e-dialog-applyview"
+    >
 
-    <el-divider>审核信息</el-divider>
+      <formView ref="formView" v-bind="viewData" @func="getMsgFormSon" />
 
-    <el-row>
-      <el-col :span="24">
-        <el-table
-          :data="tableData"
-          border
-          size="mini"
-          style="width: 100%"
-        >
-          <el-table-column
-            prop="company"
-            label="审批单位"
-            width="180"
-          />
-          <el-table-column
-            prop="content"
-            label="审批意见"
-            width="180"
-          />
-          <el-table-column
-            prop="username"
-            label="审批人"
-          />
+      <el-divider>审核信息</el-divider>
+      <el-row>
+        <el-col :span="24">
+          <el-table
+            :data="viewDesc.audits"
+            border
+            size="mini"
+            style="width: 100%"
+          >
+            <el-table-column
+              prop="emergencyRequisitionId"
+              label="审批单位"
+              width="180"
+            />
+            <el-table-column label="审批意见" prop="reviewComment" width="180">
+              <template slot-scope="scope">
+                <a href="javascript:;">{{ scope.row.reviewComment !== null ? scope.row.reviewComment : scope.row.remark }}</a>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="createUser.name"
+              label="审批人"
+            />
 
-          <el-table-column
-            prop="createTime"
-            label="审批时间"
-          />
-        </el-table>
-      </el-col>
-    </el-row>
+            <el-table-column
+              prop="createTime"
+              label="审批时间"
+            />
+          </el-table>
+        </el-col>
+      </el-row>
 
-    <div slot="footer" class="dialog-footer" style="text-align: center;display: block;">
-      <el-button size="small" @click="changeActiveVisible = false">取 消</el-button>
-      <el-button type="primary" size="small" @click="onSubmit">导出打印</el-button>
-      <el-button type="primary" size="small" @click="onSubmit">上传附件</el-button>
-    </div>
-  </el-dialog>
+      <div slot="footer" class="dialog-footer" style="text-align: center;display: block;">
+        <el-button size="small" @click="changeActiveVisible = false">取 消</el-button>
+        <el-button type="primary" size="small" @click="onSubmit">导出打印</el-button>
+        <el-button type="primary" size="small" @click="onSubmit">上传附件</el-button>
+      </div>
+    </el-dialog>
+  </div>
 </template>
 
 <style>
@@ -75,17 +77,18 @@ export default {
     return {
       changeActiveVisible: false,
 
-      tableData: [{
-        company: '路网中心',
-        content: '维修内容属实，***方案合理，要求3日内完成',
-        username: '工程师姓名',
-        createTime: '2019-09-11 13:00'
-      }]
+      viewData: {
+        id: ''
+      },
+
+      viewDesc: {} // 详情数据
+
     }
   },
   methods: {
-    init() {
+    init(id) {
       this.changeActiveVisible = true
+      this.viewData.id = id
     },
 
     onSubmit() {
@@ -93,6 +96,10 @@ export default {
     },
     handleChange() {
 
+    },
+    // 获取子组件的值
+    getMsgFormSon(data) {
+      this.viewDesc = data
     }
   }
 }

@@ -29,14 +29,15 @@
       style="width: 100%;"
       size="mini"
       class="table-applicationform"
+      @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="80" align="center" />
 
       <el-table-column label="序号" prop="id" width="50" align="center" />
       <el-table-column label="编号" prop="number" align="center" />
-      <el-table-column label="报修单位" prop="name" align="center" />
-      <el-table-column label="接报单位" prop="company_2" align="center" />
-      <el-table-column label="报修时间" prop="createTime" align="center" />
+      <el-table-column label="报修单位" prop="reportUnit.name" align="center" />
+      <el-table-column label="接报单位" prop="receiveUnit.name" align="center" />
+      <el-table-column label="报修时间" prop="createTime" align="center" :formatter="formatterDate" />
     </el-table>
 
     <span slot="footer" class="dialog-footer">
@@ -53,30 +54,71 @@ export default {
     return {
       applyVisible: false,
       formInline: {
-        data: ''
+        date: ''
       },
       applicationTable: {
         listLoading: false,
-        list: [{
-          id: 1,
-          number: 222,
-          name: '家堡东收费站',
-          company_2: '韵家口分中心',
-          createTime: '2019-10-02'
-        }]
+        list: []
+      },
+      multipleSelection: [],
+
+      form: {
+
+        beginTime: '', // 报修时间晚于
+        endTime: '' //  报修时间早于
       }
+
     }
   },
   methods: {
     init() {
       this.applyVisible = true
+
+      this.getList()
     },
 
+    getList() {
+      this.$axios.get(`/api/EmergencyRequisition?state=${3}&beginTime=${this.form.beginTime}&endTime=${this.form.endTime}`).then(res => {
+        this.applicationTable.list = res.data
+      })
+    },
+    // 日期时间格式化
+    formatterDate(row, column, cellValue) {
+      if (cellValue !== null) {
+        return this.$moment(cellValue).format('YYYY-MM-DD')
+      } else {
+        return cellValue
+      }
+    },
+
+    // 查询
     onSubmit() {
+      if (this.formInline.date.length === 0) {
+        this.$message.error('请选择日期')
 
+        return
+      }
+
+      this.form.beginTime = this.formatterDate(1, 1, this.formInline.date[0])
+      this.form.endTime = this.formatterDate(1, 1, this.formInline.date[1])
+
+      this.getList()
     },
-    handleChange() {
+    onSubmitOk() {
+      if (this.multipleSelection.length === 0) {
+        this.$message.error('请选择申请单')
 
+        return
+      }
+
+      this.applyVisible = false
+
+      // 给 父组件传值
+      this.$emit('func', this.multipleSelection)
+    },
+    // 获取选中的值
+    handleSelectionChange(val) {
+      this.multipleSelection = val
     }
   }
 }

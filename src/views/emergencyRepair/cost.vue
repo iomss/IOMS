@@ -60,12 +60,21 @@
 
       <el-table-column label="编号" prop="id" sortable="custom" align="center" />
 
-      <el-table-column label="状态" prop="status" class-name="status-col" />
+      <el-table-column label="状态" prop="isEmergency" align="center">
+        <template slot-scope="scope">
+          <a v-if="scope.row.emergencyState == 'Record'" href="javascript:;" style="color: #1890ff;">暂存</a>
+          <a v-if="scope.row.emergencyState == 'Pending'" href="javascript:;" style="color: #1890ff;">待审批</a>
+          <a v-if="scope.row.emergencyState == 'PendingSubCenter'" href="javascript:;" style="color: #1890ff;">待分中心审批</a>
+          <a v-if="scope.row.emergencyState == 'PendingNetCenter'" href="javascript:;" style="color: #1890ff;">待路网中心审批</a>
+          <a v-if="scope.row.emergencyState == 'Applied'" href="javascript:;" style="color: #13ce66;">已批准</a>
+          <a v-if="scope.row.emergencyState == 'Rejected'" href="javascript:;" style="color: #ff4949">驳回</a>
+        </template>
+      </el-table-column>
 
-      <el-table-column label="项目名称" prop="name" align="center" />
-      <el-table-column label="抢修单位" prop="company" align="center" />
-      <el-table-column label="报修单位" prop="company_2" align="center" />
-      <el-table-column label="接报单位" prop="company_2" align="center" />
+      <el-table-column label="项目名称" prop="emergencyRequisition.engineering" align="center" />
+      <!-- <el-table-column label="抢修单位" prop="company" align="center" /> -->
+      <el-table-column label="报修单位" prop="emergencyRequisition.reportUnit.name" align="center" />
+      <el-table-column label="接报单位" prop="emergencyRequisition.receiveUnit.name" align="center" />
       <el-table-column label="录入时间" prop="createTime" align="center" :formatter="formatterDate" />
 
       <el-table-column label="操作">
@@ -145,16 +154,9 @@ export default {
 
         tableKey: 0,
         listLoading: false,
-        list: [{
-          id: 10,
-          status: '正常',
-          sos: '无',
-          name: '工程名称',
-          company: '报修单位',
-          company_2: '接报单位'
-        }],
+        list: [],
 
-        total: 20,
+        total: 0,
 
         tableColumns: [
           { field: 'id', title: '编号', sortable: 'custom' },
@@ -177,6 +179,9 @@ export default {
 
     }
   },
+  mounted() {
+    this.getList()
+  },
   methods: {
 
     sortChange() {
@@ -184,7 +189,10 @@ export default {
     },
 
     getList() {
-
+      this.$axios.get('/api/EmergencyWorkCost').then(res => {
+        this.table.list = res.data
+        this.table.total = res.data.length
+      })
     },
 
     // 日期时间格式化

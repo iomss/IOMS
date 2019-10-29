@@ -12,17 +12,11 @@
       <el-form ref="form" :model="form" label-width="110px" size="small" :inline="true" class="demo-form-inline dialog-form-const-add">
 
         <el-form-item label="项目名称">
-          <el-select v-model="form.region" placeholder="请选择报修单位" style="width:240px">
-            <el-option label="区域一" value="shanghai" />
-            <el-option label="区域二" value="beijing" />
-          </el-select>
+          <el-input v-model="form.name" placeholder="项目名称" style="width:240px" />
         </el-form-item>
 
         <el-form-item label="抢修单位名称">
-          <el-select v-model="form.region" placeholder="请选择报修单位" style="width:240px">
-            <el-option label="区域一" value="shanghai" />
-            <el-option label="区域二" value="beijing" />
-          </el-select>
+          <el-input v-model="form.name" placeholder="抢修单位名称" style="width:240px" />
         </el-form-item>
 
         <el-form-item label="报修时间">
@@ -59,12 +53,11 @@
             class="table-applicationform"
           >
             <el-table-column type="selection" width="80" align="center" />
-
             <el-table-column label="序号" prop="id" width="50" align="center" />
             <el-table-column label="编号" prop="number" align="center" />
-            <el-table-column label="报修单位" prop="name" align="center" />
-            <el-table-column label="接报单位" prop="company_2" align="center" />
-            <el-table-column label="报修时间" prop="createTime" align="center" />
+            <el-table-column label="报修单位" prop="reportUnit.name" align="center" />
+            <el-table-column label="接报单位" prop="receiveUnit.name" align="center" />
+            <el-table-column label="报修时间" prop="createTime" align="center" :formatter="formatterDate" />
           </el-table>
         </el-form-item>
 
@@ -72,7 +65,7 @@
         <el-form-item label="工程清单" style="display:block;" class="applicationform-box">
 
           <el-button type="primary" icon="el-icon-plus" size="mini" class="btn-xs" @click="openProjectPage" />
-          <el-button type="danger" size="mini" icon="el-icon-delete" class="btn-xs" />
+          <el-button type="danger" size="mini" icon="el-icon-delete" class="btn-xs" @click="delAndleSelection" />
 
           <el-table
             :key="projectTable.tableKey"
@@ -80,21 +73,21 @@
             :data="projectTable.list"
             border
             fit
-            highlight-current-row
             show-summary
             :summary-method="getSummaries"
             style="width: 100%;"
             size="mini"
             class="table-applicationform"
+            @selection-change="handleSelectionChange"
           >
             <el-table-column type="selection" width="80" align="center" />
 
-            <el-table-column label="序号" prop="id" align="center" width="50" />
+            <el-table-column label="序号" type="index" align="center" width="50" />
             <el-table-column label="名称" prop="name" align="center" />
             <el-table-column label="单位" prop="unit" align="center" />
-            <el-table-column label="数量" prop="number" align="center" />
-            <el-table-column label="单价(元)" prop="price" align="center" />
-            <el-table-column label="总价(元)" prop="total" align="center" />
+            <el-table-column label="数量" prop="quantity" align="center" />
+            <el-table-column label="单价(元)" prop="unitPrice" align="center" />
+            <el-table-column label="总价(元)" prop="totalPrice" align="center" />
 
           </el-table>
         </el-form-item>
@@ -127,8 +120,8 @@
 
     </el-dialog>
 
-    <costAddApply v-if="applyVisible" ref="applyView" />
-    <costAddProject v-if="projectVisible" ref="projectView" />
+    <costAddApply v-if="applyVisible" ref="applyView" @func="getMsgFormSon" />
+    <costAddProject v-if="projectVisible" ref="projectView" @func="getCostAddProject" />
   </div>
 
 </template>
@@ -200,32 +193,12 @@ export default {
 
       applicationTable: {
         listLoading: false,
-        list: [{
-          id: 1,
-          number: 2220912,
-          name: '家堡东收费站',
-          company_2: '韵家口分中心',
-          createTime: '2019-10-02'
-        }]
+        list: []
       },
 
       projectTable: {
         listLoading: false,
-        list: [{
-          id: 1,
-          name: '高杆200W LED投光灯',
-          unit: '盏',
-          number: 20,
-          price: 10,
-          total: 200
-        }, {
-          id: 2,
-          name: '人工费',
-          unit: '人',
-          number: 8,
-          price: 200,
-          total: 1200
-        }]
+        list: []
       }
     }
   },
@@ -273,6 +246,15 @@ export default {
 
     },
 
+    // 日期时间格式化
+    formatterDate(row, column, cellValue) {
+      if (cellValue !== null) {
+        return this.$moment(cellValue).format('YYYY-MM-DD')
+      } else {
+        return cellValue
+      }
+    },
+
     /**
      * 打开应急抢修表清单
      * @return {[type]} [description]
@@ -293,6 +275,41 @@ export default {
       this.$nextTick(() => {
         this.$refs.projectView.init()
       })
+    },
+
+    // 获取应急抢修申请表传来的值
+    getMsgFormSon(data) {
+      if (data) {
+        this.applyVisible = false
+        this.applicationTable.list = data
+      }
+    },
+    // 获取工程清单表传来的值
+    getCostAddProject(data) {
+      if (data) {
+        this.projectVisible = false
+        this.projectTable.list.push(data)
+      }
+    },
+
+    // 选中工程清单
+    handleSelectionChange(val) {
+      this.selectedProject = val
+    },
+
+    // 删除工程清单
+    delAndleSelection() {
+      this.projectTable.list.forEach((v, k) => {
+        this.selectedProject.forEach((j, i) => {
+          if (v.name === j.name) {
+            this.projectTable.list.splice(k, 1)
+          }
+        })
+      })
+    },
+
+    getTemplateRow(data) {
+      console.log(data)
     }
   }
 }
