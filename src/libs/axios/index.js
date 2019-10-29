@@ -60,7 +60,7 @@ const token = {
 // 创建一个 axios 实例
 axios.create({
   baseURL: process.env.VUE_APP_API,
-  timeout: 10000, // 请求超时时间
+  timeout: 20000, // 请求超时时间
   withCredentials: false
 })
 

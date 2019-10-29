@@ -34,7 +34,7 @@
               </el-table-column>
               <el-table-column label="完成状态" prop="planState">
                 <template slot-scope="scope">
-                  {{ scope.row.planState==='Plan'?'计划':scope.row.planState==='Excute'?'执行':scope.row.planState==='Review'?'待验收':'计划结束' }}
+                  {{ scope.row.planState==='Plan'?'计划':scope.row.planState==='Excute'?'执行':scope.row.planState==='Review'?'待验收':scope.row.planState==='Done'?'计划结束':'验收不通过' }}
                 </template>
               </el-table-column>
               <el-table-column prop="name" label="维护计划名名称" />
