@@ -428,6 +428,7 @@ export default {
       const spareStockRecordItems = []
       this.rukubeijian.forEach(item => {
         spareStockRecordItems.push({
+          stockId: item.kucunId,
           spareId: item.id,
           quantity: item.quantity,
           unitPrice: item.unitPrice,
@@ -450,6 +451,7 @@ export default {
       const spareStockRecordItems = []
       this.rukubeijian.forEach(item => {
         spareStockRecordItems.push({
+          stockId: item.kucunId,
           spareId: item.id,
           quantity: item.quantity,
           unitPrice: item.unitPrice,
