@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
 import cookies from '../cookies'
-import { ajax } from 'jquery'
 // 创建一个错误
 // function errorCreate(msg) {
 //   const error = new Error(msg)
@@ -23,32 +22,24 @@ function errorLog(error) {
   })
 }
 
-const expireInSeconds = cookies.get('expireInSeconds') // cookie 有效时常
-const tokenSetTime = cookies.get('tokenSetTime') // cookie写入时间
+const clearCookie = () => {
+  document.cookie.match(/[^ =;]+(?=\=)/g).forEach(item => {
+    cookies.remove(item.replace('ioms-', ''))
+  })
+}
+
 const token = {
   refreshToken() {
-    const _this = this
-    const nowTime = new Date().getTime()
-    if (nowTime - parseInt(tokenSetTime) / 1000 > parseInt(expireInSeconds) - 1000) {
-      const refresh_token = {
-        grant_type: 'refresh_token',
-        refresh_token: cookies.get('refresh_token')
-      }
-      ajax({
-        type: 'POST',
-        url: process.env.VUE_APP_API + '/oauth/token',
-        data: refresh_token,
-        success: res => {
-          // cookie 中写入相关登录凭证
-          for (const item in res) {
-            _this.$cookie.set(item, res[item])
-          }
-          _this.$cookie.set('tokenSetTime', new Date().getTime())
-        },
-        error: err => {
-          this.$message.error(err.responseJSON.error_description)
-        }
+    const cookieSetLong = (new Date().getTime() - parseInt(cookies.get('tokenSetTime'))) / 1000 // cookie 写入时长
+    const beforeTime = parseInt(cookies.get('expires_in')) - 1000 // 提前时长
+    if (cookieSetLong > beforeTime) {
+      Message({
+        message: '登录已失效，请重新登录',
+        type: 'error',
+        duration: 5 * 1000
       })
+      clearCookie()
+      location.href = '/login'
     }
   },
   getToken() {
@@ -129,6 +120,8 @@ axios.interceptors.response.use(
           break
         case 401:
           error.message = '未授权，请登录'
+          clearCookie()
+          location.href = '/login'
           break
         case 403:
           error.message = '拒绝访问'
