@@ -3,6 +3,10 @@
     <logo v-if="showLogo" :collapse="isCollapse" />
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu :default-active="getActiveMenu" class="el-menu-vertical-demo menu" router :collapse="isCollapse" background-color="#304156" text-color="#fff" active-text-color="#409eff">
+        <el-menu-item v-show="roles.includes('EnterSystem')" index="/">
+          <i class="fa fa-map" />
+          <span slot="title"><a :href="url">运维平台概览展示</a></span>
+        </el-menu-item>
         <el-submenu v-for="(item,index) in routers" v-show="!item.meta.hidden && isShowParentMenu(item.children)" :key="index" :index="item.meta.fullPath" :class="isCollapse? 'menu_shrink':''">
           <template slot="title">
             <i :class="item.meta.icon" />
@@ -26,6 +30,7 @@ export default {
   components: { Logo },
   data() {
     return {
+      url: process.env.VUE_APP_WEBURL,
       routers: routers,
       roles: this.$cookie.get('roles')
     }
