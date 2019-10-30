@@ -36,8 +36,8 @@
               <li><span>设备编号:</span><b>{{ tableData.assetCode }}</b></li>
               <li><span>故障类型:</span><b>{{ tableData.equipmentFault? tableData.equipmentFault.name:'' }}</b></li>
               <li><span>维修级别:</span><b>{{ tableData.repairLevel===null?'':tableData.repairLevel.name }}</b></li>
-              <li><span>维修开始时间:</span><b>{{ tableData.startTime===null?'':tableData.startTime }}</b></li>
-              <li><span>维修结束时间:</span><b>{{ tableData.endTime===null?'':tableData.endTime }}</b></li>
+              <li><span>维修开始时间:</span><b>{{ tableData.startTime===null?'':this.$moment(tableData.startTime).format('YYYY-MM-DD HH:MM:SS') }}</b></li>
+              <li><span>维修结束时间:</span><b>{{ tableData.endTime===null?'':this.$moment(tableData.endTime).format('YYYY-MM-DD HH:MM:SS') }}</b></li>
               <li><span>维修过程:</span><b>{{ tableData.description }}</b></li>
               <!-- <li><span>建议:</span><b>null</b></li> -->
               <li><span>配件名称及数量:</span><b>{{ tableData.spareDescription }}</b></li>
@@ -72,7 +72,7 @@
               <li><span>验收结果:</span><b>{{ tableData.checkStatus ==='Applied'?'通过':tableData.checkStatus ==='Rejected'?'不通过':'' }}</b></li>
               <li><span>验收意见:</span><b>{{ tableData.checkComment }}</b></li>
               <li><span>验收人:</span><b>{{ tableData.checkUser?tableData.checkUser.name:'' }}</b></li>
-              <li><span>验收时间:</span><b>{{ tableData.checkTime?tableData.checkTime:'' }}</b></li>
+              <li><span>验收时间:</span><b>{{ tableData.checkTime?this.$moment(tableData.checkTime).format('YYYY-MM-DD HH:MM:SS'):'' }}</b></li>
             </ul>
           </div>
         </div>
