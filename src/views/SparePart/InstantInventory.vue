@@ -151,7 +151,14 @@
                 <el-table-column v-if="rukuForm.spareBoundType==='OutBound' && rukuForm.spareStockType === 'Spare'" prop="kucun" label="库存" />
                 <el-table-column prop="quantity" label="数量">
                   <template slot-scope="scope">
-                    <el-input-number v-model="scope.row.quantity" controls-position="right" :max="rukuForm.spareBoundType==='OutBound' && rukuForm.spareStockType === 'Spare'?scope.row.kucun:Infinity" size="small" placeholder="请输入内容" style="width:100%;" />
+                    <el-input-number
+                      v-model="scope.row.quantity"
+                      controls-position="right"
+                      :max="rukuForm.spareBoundType==='OutBound' && rukuForm.spareStockType === 'Spare'?scope.row.kucun:Infinity"
+                      size="small"
+                      placeholder="请输入内容"
+                      style="width:100%;"
+                    />
                   </template>
                 </el-table-column>
                 <el-table-column prop="totalPrice" label="总金额">
@@ -192,7 +199,7 @@
               <pagination v-show="beijianTotalCount>0" :total="beijianTotalCount" :page.sync="beijianFormSearch.pageNumber" :limit.sync="beijianFormSearch.pageSize" @pagination="getbeijianpage" />
               <span slot="footer" class="dialog-footer">
                 <el-button type="primary" size="small" @click="jiarurukubeijian()">选择</el-button>
-                <el-button type="primary" plain size="small" @click="xuanzebeijianVisible=false;xuanzebeijianData=''">取消</el-button>
+                <el-button type="primary" plain size="small" @click="xuanzebeijianVisible=false;xuanzebeijianData=[]">取消</el-button>
               </span>
             </el-dialog>
             <!--报废归档-->
@@ -287,7 +294,7 @@ export default {
       rukubeijianselectData: [], // 被选中的入库备件
       /* ******* 选择备件开始 ****** */
       xuanzebeijianVisible: false,
-      xuanzebeijianData: '',
+      xuanzebeijianData: [],
       /* ******* 选择备件结束 ****** */
 
       /* ****************  入库结束  ******************** */
@@ -469,7 +476,7 @@ export default {
     /* *****选择备件开始***** */
     // 从备件中选择备件
     handleBeijianSelection(val) {
-      this.xuanzebeijianData = val
+      this.xuanzebeijianData.push(...val)
     },
     // 选中备件加入rukubeijian
     jiarurukubeijian() {
