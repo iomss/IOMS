@@ -5,7 +5,7 @@
     <el-dialog title="运维指标查询-下属考核分数" :visible.sync="changeActiveVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="60%">
       <div class="app-road-fraction">
 
-        <el-row class="average">平均分：{{ avgScore }}</el-row>
+        <el-row class="average">平均分：{{ avgScore.toFixed(2) }}</el-row>
         <el-table
           v-loading="table.listLoading"
           :data="table.list"
@@ -26,7 +26,7 @@
                 />
                 <el-table-column label="统计指标" prop="equipmentIntegrityRate" align="center">
                   <template slot-scope="scope">
-                    {{ scope.row.equipmentIntegrityRate?(scope.row.equipmentIntegrityRate+'%'):'-' }}
+                    {{ scope.row.equipmentIntegrityRate?((scope.row.equipmentIntegrityRate*100).toFixed(2)+'%'):'-' }}
                   </template>
                 </el-table-column>
 
@@ -37,7 +37,11 @@
                 <el-table-column
                   prop="weight"
                   label="权重"
-                />
+                >
+                  <template slot-scope="scope">
+                    {{ scope.row.weight.toFixed(2) }}
+                  </template>
+                </el-table-column>
                 <el-table-column label="加权得分" prop="score" align="center">
                   <template slot-scope="scope">
                     {{ scope.row.score.toFixed(2) }}
@@ -60,7 +64,9 @@
           <el-table-column label="编号" prop="id" sortable="custom" align="center" />
 
           <el-table-column label="所管辖路段和隧道" prop="position.name" width="150" align="center" />
-          <el-table-column label="总评分" prop="totalScore" align="center" />
+          <el-table-column label="总评分" prop="totalScore" align="center">
+            <template slot-scope="scope">{{ scope.row.totalScore.toFixed(2) }}</template>
+          </el-table-column>
           <el-table-column label="考评日期" prop="updateTime" align="center" :formatter="formatterDate" />
 
           <el-table-column label="考评人" prop="createUser.name" align="center" />
@@ -84,7 +90,7 @@
           style="width: 100%"
         >
           <el-table-column
-            prop="repairOrderId"
+            prop="repairOrder.code"
             label="工单号"
           />
           <el-table-column

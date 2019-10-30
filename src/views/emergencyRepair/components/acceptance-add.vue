@@ -14,9 +14,8 @@
           <el-col>
             <el-date-picker
               v-model="form.date1"
-              type="daterange"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+              type="date"
+              placeholder="施工日期"
               style="width:240px"
             />
           </el-col>
@@ -30,7 +29,7 @@
         <el-form-item label="应急抢修申请表" style="display:block;" class="applicationform-box">
 
           <el-button type="primary" icon="el-icon-plus" size="mini" class="btn-xs" @click="openApplyPage" />
-          <el-button type="danger" size="mini" icon="el-icon-delete" class="btn-xs" />
+          <el-button type="danger" size="mini" icon="el-icon-delete" class="btn-xs" @click="delApply" />
 
           <el-table
             :key="applicationTable.tableKey"
@@ -49,7 +48,7 @@
             <el-table-column label="编号" prop="number" align="center" />
             <el-table-column label="报修单位" prop="name" align="center" />
             <el-table-column label="接报单位" prop="company_2" align="center" />
-            <el-table-column label="报修时间" prop="createTime" align="center" />
+            <el-table-column label="报修时间" prop="createTime" align="center" :formatter="formatterDate" />
           </el-table>
         </el-form-item>
 
@@ -71,12 +70,12 @@
           >
             <el-table-column type="selection" width="80" align="center" />
 
-            <el-table-column label="序号" prop="id" align="center" width="50" />
+            <el-table-column label="序号" type="index" align="center" width="50" />
             <el-table-column label="名称" prop="name" align="center" />
             <el-table-column label="单位" prop="unit" align="center" />
-            <el-table-column label="数量" prop="number" align="center" />
-            <el-table-column label="单价(元)" prop="price" align="center" />
-            <el-table-column label="总价(元)" prop="total" align="center" />
+            <el-table-column label="数量" prop="quantity" align="center" />
+            <el-table-column label="单价(元)" prop="unitPrice" align="center" />
+            <el-table-column label="总价(元)" prop="totalPrice" align="center" />
 
           </el-table>
         </el-form-item>
@@ -84,7 +83,8 @@
         <el-form-item label="附件" style="display:block;">
           <el-upload
             class="upload-demo"
-            action="https://jsonplaceholder.typicode.com/posts/"
+            action="/"
+            :http-request="upload"
             :on-change="handleChange"
             :file-list="form.fileList"
           >
@@ -111,8 +111,7 @@
       </span>
 
     </el-dialog>
-    <costAddApply v-if="applyVisible" ref="applyView" />
-    <costAddProject v-if="projectVisible" ref="projectView" />
+    <costAddApply v-if="applyVisible" ref="applyView" @func="getEmergencyRepairData" />
   </div>
 
 </template>
@@ -147,13 +146,11 @@
 </style>
 <script>
 import costAddApply from './cost-add-apply'
-import costAddProject from './cost-add-project'
 
 export default {
   name: 'AcceptancAdd',
   components: {
-    costAddApply,
-    costAddProject
+    costAddApply
   },
   data: function() {
     return {
@@ -172,44 +169,18 @@ export default {
         resource: '',
         desc: '',
 
-        fileList: [{
-          name: 'food.jpeg',
-          url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-        }, {
-          name: 'food2.jpeg',
-          url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-        }]
+        fileList: []
 
       },
 
       applicationTable: {
         listLoading: false,
-        list: [{
-          id: 1,
-          number: 2220912,
-          name: '家堡东收费站',
-          company_2: '韵家口分中心',
-          createTime: '2019-10-02'
-        }]
+        list: []
       },
 
       projectTable: {
         listLoading: false,
-        list: [{
-          id: 1,
-          name: '高杆200W LED投光灯',
-          unit: '盏',
-          number: 20,
-          price: 10,
-          total: 200
-        }, {
-          id: 2,
-          name: '人工费',
-          unit: '人',
-          number: 8,
-          price: 200,
-          total: 1200
-        }]
+        list: []
       }
     }
   },
@@ -253,8 +224,31 @@ export default {
 
     },
 
-    handleChange() {
+    // 日期时间格式化
+    formatterDate(row, column, cellValue) {
+      if (cellValue !== null) {
+        return this.$moment(cellValue).format('YYYY-MM-DD')
+      } else {
+        return cellValue
+      }
+    },
 
+    /**
+     * 上传文件
+     * @return {[type]} [description]
+     */
+    upload(file) {
+      const formdata = new FormData()
+      formdata.append('path', file.file)
+
+      this.$axios.post('/api/File/Attachment', formdata, { headers: { 'Content-Type': 'multipart/form-data' }}).then(res => {
+        console.log(res)
+      })
+    },
+
+    handleChange(file, fileList) {
+      console.log(file)
+      // console.log(fileList.slice(-3))
     },
 
     /**
@@ -266,7 +260,44 @@ export default {
       this.$nextTick(() => {
         this.$refs.applyView.init()
       })
+    },
+
+    /**
+     * 获取应急抢修申请
+     * @param  {[type]} data [description]
+     * @return {[type]}      [description]
+     */
+    getEmergencyRepairData(data) {
+      if (data) {
+        this.applyVisible = false
+        this.applicationTable.list = data
+        this.getRushRepairUnitData(data[0].id)
+      }
+    },
+
+    /**
+     * 获取抢修单位数量
+     * @param  {[type]} id [description]
+     * @return {[type]}    [description]
+     */
+    getRushRepairUnitData(id) {
+      if (!id) return
+
+      this.$axios.get('api/EmergencyRequisition/' + id).then(res => {
+        if (res && res.emergencyWorkCost && res.emergencyWorkCost.project) {
+          this.projectTable.list = res.emergencyWorkCost.project
+        }
+      })
+    },
+
+    /**
+     * 删除表单
+     * @return {[type]} [description]
+     */
+    delApply() {
+
     }
+
   }
 }
 </script>

@@ -17,10 +17,14 @@
         label="分中心运维考核指标名称"
         prop="name"
       />
+
       <el-table-column
         label="权重"
         prop="weight"
-      />
+      >
+        <template slot-scope="scope">{{ scope.row.weight }}</template>
+      </el-table-column>
+
       <el-table-column
         label="更新时间"
         prop="updateTime"
@@ -65,12 +69,14 @@
     >
       <el-table-column
         label="隧道所运维考核指标名称"
-        prop="system.name"
+        prop="name"
       />
+
       <el-table-column
         label="权重"
         prop="weight"
       />
+
       <el-table-column
         label="更新时间"
         prop="updateTime"

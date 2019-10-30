@@ -12,24 +12,17 @@
 
       <el-form-item label="施工日期">
         <el-col>
-          <el-date-picker
-            v-model="form.date1"
-            type="daterange"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            style="width:240px"
-          />
+          <el-input v-model="form.createTime" placeholder="施工日期" style="width:240px" />
         </el-col>
       </el-form-item>
 
       <el-form-item label="录入人">
-        <el-input v-model="form.name" placeholder="录入人" style="width:240px" />
+        <el-input v-model="form.createUser.name" placeholder="录入人" style="width:240px" />
       </el-form-item>
 
       <!-- 应急抢修申请表 -->
       <el-form-item label="应急抢修申请表" style="display:block;" class="applicationform-box">
         <el-table
-          :key="applicationTable.tableKey"
           v-loading="applicationTable.listLoading"
           :data="applicationTable.list"
           border
@@ -50,7 +43,6 @@
       <!-- 工程清单 -->
       <el-form-item label="工程清单" style="display:block;" class="applicationform-box">
         <el-table
-          :key="projectTable.tableKey"
           v-loading="projectTable.listLoading"
           :data="projectTable.list"
           border
@@ -179,10 +171,14 @@ export default {
   data: function() {
     return {
       changeActiveVisible: false,
+      acceptanceId: 0,
 
       form: {
-        name: '',
-        region: '',
+        createTime: '',
+        createUser: {
+          name: ''
+        },
+
         date1: '',
         date2: '',
         delivery: '',
@@ -241,10 +237,36 @@ export default {
       }
     }
   },
+
   methods: {
-    init() {
+    init(id) {
       this.changeActiveVisible = true
+      this.acceptanceId = id
+
+      this.getAcceptanceDataDesc()
     },
+
+    /**
+     * 获取验收申请单详细内容
+     * @return {[type]} [description]
+     */
+    getAcceptanceDataDesc() {
+      this.applicationTable.listLoading = true
+      this.projectTable.listLoading = true
+
+      this.$axios.get('/api/EmergencyAcceptance/' + this.acceptanceId).then(res => {
+        this.form.createTime = this.$moment(res.createTime).format('YYYY-MM-DD')
+        this.form.createUser.name = res.createUser.name
+
+        this.applicationTable.listLoading = false
+        this.applicationTable.list[0] = res.emergencyRequisition
+
+        this.projectTable.listLoading = false
+        // this.projectTable.list
+        // this.form.rateScore = res.rateScore
+      })
+    },
+
     /**
      * 自定义返回合计
      * @return {[type]} [description]
@@ -275,9 +297,11 @@ export default {
       })
       return sums
     },
+
     onSubmit() {
 
     },
+
     handleChange() {
 
     }
