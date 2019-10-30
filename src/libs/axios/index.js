@@ -58,7 +58,7 @@ axios.create({
 const ajaxUrl = process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging' ? process.env.VUE_APP_API : undefined
 axios.defaults.baseURL = ajaxUrl
 // axios 配置
-axios.defaults.timeout = 10000
+axios.defaults.timeout = 30000
 // 请求拦截器
 axios.interceptors.request.use(
   config => {
@@ -133,7 +133,7 @@ axios.interceptors.response.use(
           error.message = '请求超时'
           break
         case 500:
-          error.message = `服务器内部错误： ${error.response.data.message}`
+          error.message = `请求异常： ${error.response.data.message}`
           break
         case 501:
           error.message = '服务未实现'
