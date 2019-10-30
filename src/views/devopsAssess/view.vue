@@ -165,12 +165,24 @@ export default {
     }
   },
   mounted() {
-    var nowDate = new Date()
+    const nowDate = new Date()
+    const cloneNowDate = new Date()
 
-    this.formInline.date = [nowDate, nowDate]
+    const fullYear = nowDate.getFullYear()
+    const month = nowDate.getMonth() + 1
+    const endDay = new Date(fullYear, month, 0).getDate()
 
-    this.formInline.beginDate = this.$utils.formatTime(nowDate.getTime(), 'Y-M-D')
-    this.formInline.endDate = this.$utils.formatTime(nowDate.getTime(), 'Y-M-D')
+    const starDate = cloneNowDate.setDate(1)
+    const endDate = cloneNowDate.setDate(endDay)
+
+    // 当月最后一天
+    const str_starDate = this.$utils.formatTime(starDate, 'Y-M-D')
+    const str_endDate = this.$utils.formatTime(endDate, 'Y-M-D')
+
+    this.formInline.date = [new Date(starDate), new Date(endDate)]
+
+    this.formInline.beginDate = str_starDate
+    this.formInline.endDate = str_endDate
 
     this.getList()
   },
@@ -215,7 +227,7 @@ export default {
         return
       }
 
-      this.formInline.beginDate = this.$utils.formatTime(this.formInline.date[0], 'Y-M-D  ')
+      this.formInline.beginDate = this.$utils.formatTime(this.formInline.date[0], 'Y-M-D')
       this.formInline.endDate = this.$utils.formatTime(this.formInline.date[1], 'Y-M-D')
 
       this.getList()

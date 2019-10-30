@@ -35,7 +35,7 @@
 
     <div class="filter-container">
       <div class="toolbar pull-left">
-        <el-button type="info" size="small" icon="el-icon-refresh" />
+        <el-button type="info" size="small" icon="el-icon-refresh" @click="onRefresh" />
       </div>
 
       <div class="columns-right pull-right">
@@ -44,7 +44,6 @@
     </div>
 
     <el-table
-      :key="table.tableKey"
       v-loading="table.listLoading"
       :data="table.list"
       border
@@ -52,18 +51,17 @@
       highlight-current-row
       style="width: 100%;"
       size="small"
-      @sort-change="sortChange"
     >
       <el-table-column type="selection" />
 
       <el-table-column label="编号" prop="id" sortable="custom" align="center" />
 
-      <el-table-column label="状态" prop="status" class-name="status-col" />
+      <el-table-column label="状态" prop="emergencyState" class-name="status-col" :formatter="statusFilter" />
 
-      <el-table-column label="项目名称" prop="name" align="center" />
-      <el-table-column label="抢修单位" prop="company" align="center" />
-      <el-table-column label="报修单位" prop="company_2" align="center" />
-      <el-table-column label="接报单位" prop="company_2" align="center" />
+      <el-table-column label="项目名称" prop="emergencyRequisition.engineering" align="center" />
+      <el-table-column label="抢修单位" prop="emergencyRequisition.repairUnit.name" align="center" />
+      <el-table-column label="报修单位" prop="emergencyRequisition.reportUnit" align="center" />
+      <el-table-column label="接报单位" prop="emergencyRequisition.receiveUnit" align="center" />
       <el-table-column label="录入时间" prop="createTime" align="center" :formatter="formatterDate" />
 
       <el-table-column label="操作">
@@ -136,31 +134,12 @@ export default {
         limit: 10
       },
 
+      emergencyState: [],
+
       table: {
-
-        tableKey: 0,
+        total: 0,
         listLoading: false,
-        list: [{
-          id: 10,
-          status: '正常',
-          sos: '无',
-          name: '工程名称',
-          company: '报修单位',
-          company_2: '接报单位'
-        }],
-
-        total: 20,
-
-        tableColumns: [
-          { field: 'id', title: '编号', sortable: 'custom' },
-          { field: 'status', title: '状态' },
-          { field: 'sos', title: '紧急情况' },
-          { field: 'name', title: '工程名称' },
-          { field: 'company', title: '报修单位' },
-          { field: 'company_2', title: '接报单位' },
-          { field: 'createTime', title: '报修时间' }
-        ]
-
+        list: []
       },
 
       formInline: {
@@ -172,14 +151,35 @@ export default {
 
     }
   },
+  mounted() {
+    this.getOrderStatus()
+    this.getList()
+  },
   methods: {
 
-    sortChange() {
-
+    /**
+     * 获取订单状态
+     * @return {[type]} [description]
+     */
+    getOrderStatus() {
+      this.$axios.get('api/Enum/EmergencyState').then(res => {
+        this.emergencyState = res
+      })
     },
 
+    /**
+     * 获取列表数据
+     * @return {[type]} [description]
+     */
     getList() {
+      var queryString = this.$utils.objectToString(this.formInline)
 
+      this.table.listLoading = true
+      this.$axios.get('/api/EmergencyAcceptance' + queryString).then(res => {
+        this.table.list = res.data
+        this.table.total = res.totalCount
+        this.table.listLoading = false
+      })
     },
 
     // 日期时间格式化
@@ -191,8 +191,23 @@ export default {
       }
     },
 
-    statusFilter() {
-
+    /**
+     * 状态筛选
+     * @param  {[type]} row       [description]
+     * @param  {[type]} column    [description]
+     * @param  {[type]} cellValue [description]
+     * @return {[type]}           [description]
+     */
+    statusFilter(row, column, cellValue) {
+      if (cellValue !== null) {
+        for (var i = 0, len = this.emergencyState.length; i < len; i++) {
+          if (this.emergencyState[i]['key'] === cellValue) {
+            return this.emergencyState[i]['description']
+          }
+        }
+      } else {
+        return cellValue
+      }
     },
 
     /**
@@ -216,6 +231,10 @@ export default {
 
     onSubmit() {
 
+    },
+
+    onRefresh() {
+      this.getList()
     }
 
   }

@@ -64,7 +64,7 @@ const emergencyRepairRoutes = {
       component: () => import('@/views/emergencyRepair/acceptance'),
       name: 'emergencyRepair-acceptance',
       meta: {
-        title: '应急抢修验收确认申请',
+        title: '应急抢修验收申请',
         icon: 'fa fa-circle-o',
         roles: ['ManageAsset'],
         fullPath: '/emergencyRepair/acceptance'
@@ -75,7 +75,7 @@ const emergencyRepairRoutes = {
       component: () => import('@/views/emergencyRepair/acceptanceApproval'),
       name: 'emergencyRepair-acceptanceApproval',
       meta: {
-        title: '应急抢修验收确认审批',
+        title: '应急抢修验收审批',
         icon: 'fa fa-circle-o',
         roles: ['ManageAsset'],
         fullPath: '/emergencyRepair/acceptanceApproval'
