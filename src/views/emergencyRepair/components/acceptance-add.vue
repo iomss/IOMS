@@ -13,9 +13,11 @@
         <el-form-item label="施工日期">
           <el-col>
             <el-date-picker
-              v-model="form.date1"
-              type="date"
-              placeholder="施工日期"
+              v-model="form.date"
+              type="daterange"
+              range-separator="-"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
               style="width:240px"
             />
           </el-col>
@@ -41,6 +43,7 @@
             style="width: 100%;"
             size="mini"
             class="table-applicationform"
+            @selection-change="handleSelectionChange"
           >
             <el-table-column type="selection" width="80" align="center" />
 
@@ -53,7 +56,7 @@
         </el-form-item>
 
         <!-- 工程清单 -->
-        <el-form-item label="抢修单位数量" style="display:block;" class="applicationform-box">
+        <el-form-item label="工程清单" style="display:block;" class="applicationform-box">
 
           <el-table
             :key="projectTable.tableKey"
@@ -89,23 +92,22 @@
             :file-list="form.fileList"
           >
             <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">大小不能超过500kb</div>
           </el-upload>
         </el-form-item>
 
         <el-form-item label="抢修工程数量核实意见" style="display:block;" class="applicationform-box">
-          <el-input v-model="form.desc" type="textarea" />
+          <el-input v-model="form.remark" type="textarea" />
         </el-form-item>
 
         <el-form-item label="维修单位自评意见" style="display:block;" class="applicationform-box">
-          <el-input v-model="form.desc" type="textarea" />
+          <el-input v-model="form.reviewComment" type="textarea" />
         </el-form-item>
 
       </el-form>
 
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" size="small" @click="centerDialogVisible = false">提交审核</el-button>
-        <el-button type="primary" size="small" @click="onSubmit">暂存</el-button>
+        <el-button type="primary" size="small" @click="onSubmit(1)">提交审核</el-button>
+        <el-button type="primary" size="small" @click="onSubmit(2)">暂存</el-button>
         <el-button size="small" @click="changeActiveVisible = false">取 消</el-button>
 
       </span>
@@ -160,22 +162,24 @@ export default {
       projectVisible: false,
 
       form: {
+        emergencyRequisitionId: 0,
+        remark: '',
+        reviewComment: '',
+        repairBeginTime: '',
+        repairEndTime: '',
+        attachments: [],
+        submit: false,
+
         name: '',
         region: '',
-        date1: '',
-        date2: '',
-        delivery: '',
-        type: '',
-        resource: '',
-        desc: '',
-
+        date: [],
         fileList: []
-
       },
 
       applicationTable: {
         listLoading: false,
-        list: []
+        list: [],
+        multipleSelection: []
       },
 
       projectTable: {
@@ -187,6 +191,7 @@ export default {
   methods: {
     init() {
       this.changeActiveVisible = true
+      this.form.name = this.$cookie.get('userName')
     },
 
     /**
@@ -220,8 +225,30 @@ export default {
       return sums
     },
 
-    onSubmit() {
+    /**
+     * 提交申请单
+     * @param  {[type]} type [description]
+     * @return {[type]}      [description]
+     */
+    onSubmit(type) {
+      if (type === 1) {
+        this.form.submit = true
+      }
 
+      if (this.applicationTable.list.length <= 0) {
+        this.$message.error('请先选择一个申请单')
+        return
+      }
+
+      if (this.form.date.length >= 1) {
+        this.form.repairBeginTime = this.$utils.formatTime(this.form.date[0], 'Y-M-D')
+        this.form.repairEndTime = this.$utils.formatTime(this.form.date[1], 'Y-M-D')
+      }
+
+      this.$axios.post('api/EmergencyAcceptance/', this.form).then(res => {
+        this.changeActiveVisible = false
+        this.$emit('func')
+      })
     },
 
     // 日期时间格式化
@@ -242,7 +269,8 @@ export default {
       formdata.append('path', file.file)
 
       this.$axios.post('/api/File/Attachment', formdata, { headers: { 'Content-Type': 'multipart/form-data' }}).then(res => {
-        console.log(res)
+        this.form.attachments.push(res.content.id)
+        // console.log(res)
       })
     },
 
@@ -286,6 +314,14 @@ export default {
       this.$axios.get('api/EmergencyRequisition/' + id).then(res => {
         if (res && res.emergencyWorkCost && res.emergencyWorkCost.project) {
           this.projectTable.list = res.emergencyWorkCost.project
+
+          const strBeginTime = res.emergencyWorkCost.repairBeginTime.split('T')[0]
+          const strEndTime = res.emergencyWorkCost.repairEndTime.split('T')[0]
+
+          this.form.date = [new Date(strBeginTime.replace(/-/g, '/')), new Date(strEndTime.replace(/-/g, '/'))]
+          this.form.emergencyRequisitionId = res.emergencyWorkCost.emergencyRequisitionId
+          this.form.repairBeginTime = res.emergencyWorkCost.repairBeginTime
+          this.form.repairEndTime = res.emergencyWorkCost.repairEndTime
         }
       })
     },
@@ -295,7 +331,22 @@ export default {
      * @return {[type]} [description]
      */
     delApply() {
+      if (this.applicationTable.multipleSelection.length <= 0) {
+        this.$message.error('请先选择一条表格')
+        return
+      }
 
+      this.applicationTable.list = []
+      this.projectTable.list = []
+    },
+
+    /**
+     * 处理表格选择
+     * @param  {[type]} val [description]
+     * @return {[type]}     [description]
+     */
+    handleSelectionChange(val) {
+      this.applicationTable.multipleSelection = val
     }
 
   }

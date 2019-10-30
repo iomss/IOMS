@@ -4,14 +4,15 @@
     <el-form v-show="isShowSearch" :inline="true" :model="formInline" class="demo-form-inline" size="small">
 
       <el-form-item label="项目名或报修单位">
-        <el-input v-model="formInline.user" placeholder="项目名或报修单位" />
+        <el-input v-model="formInline.text" placeholder="项目名或报修单位" />
       </el-form-item>
 
       <el-form-item label="状态">
-        <el-select v-model="formInline.region" placeholder="状态">
-          <el-option label="全部" value="shanghai" />
-          <el-option label="待审批" value="beijing" />
-          <el-option label="已批准" value="beijing" />
+        <el-select v-model="formInline.state" placeholder="状态">
+          <el-option label="全部" value="0" />
+          <el-option label="暂存" value="1" />
+          <el-option label="待审批" value="2" />
+          <el-option label="已批准" value="3" />
         </el-select>
       </el-form-item>
 
@@ -143,10 +144,13 @@ export default {
       },
 
       formInline: {
-        user: '',
-        region: '',
-        date1: '',
-        date2: ''
+        text: '',
+        state: '',
+        date1: [],
+        beginTime: '',
+        endTime: '',
+        pageSize: 10,
+        pageNumber: 1
       }
 
     }
@@ -229,10 +233,23 @@ export default {
       })
     },
 
+    /**
+     * 数据提交
+     * @return {[type]} [description]
+     */
     onSubmit() {
+      if (this.formInline.date1.length >= 1) {
+        this.formInline.beginTime = this.$utils.formatTime(this.formInline.date1[0], 'Y-M-D')
+        this.formInline.endTime = this.$utils.formatTime(this.formInline.date1[1], 'Y-M-D')
+      }
 
+      this.onRefresh()
     },
 
+    /**
+     * 刷新
+     * @return {[type]} [description]
+     */
     onRefresh() {
       this.getList()
     }

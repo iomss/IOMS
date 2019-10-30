@@ -38,7 +38,7 @@
       <div class="toolbar pull-left">
         <el-button type="info" size="small" icon="el-icon-refresh" @click="onRefresh" />
         <el-button type="primary" size="small" icon="el-icon-plus" @click="addPage" />
-        <el-button type="danger" size="small" icon="el-icon-delete" />
+        <el-button type="danger" size="small" icon="el-icon-delete" @click="onDelPage" />
       </div>
 
       <div class="columns-right pull-right">
@@ -56,6 +56,7 @@
       style="width: 100%;"
       size="small"
       @sort-change="sortChange"
+      @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" />
 
@@ -84,7 +85,7 @@
 
     <pagination v-show="table.total>0" :total="table.total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
-    <acceptanc-add v-if="addVisible" ref="add" />
+    <acceptanc-add v-if="addVisible" ref="add" @func="onRefresh" />
     <acceptance-view v-if="viewVisible" ref="acceptanceView" />
 
   </div>
@@ -149,6 +150,7 @@ export default {
         list: []
       },
       emergencyState: [],
+      multipleSelection: [],
 
       formInline: {
         text: '',
@@ -251,8 +253,17 @@ export default {
       })
     },
 
+    /**
+     * 提交数据
+     * @return {[type]} [description]
+     */
     onSubmit() {
+      if (this.formInline.date1.length >= 1) {
+        this.formInline.beginTime = this.$utils.formatTime(this.formInline.date1[0], 'Y-M-D')
+        this.formInline.endTime = this.$utils.formatTime(this.formInline.date1[1], 'Y-M-D')
+      }
 
+      this.onRefresh()
     },
 
     /**
@@ -261,6 +272,44 @@ export default {
      */
     onRefresh() {
       this.getList()
+    },
+
+    /**
+     * 删除列表数据
+     * @return {[type]} [description]
+     */
+    onDelPage() {
+      if (this.multipleSelection.length <= 0) {
+        this.$message.error('请选择要删除的数据')
+        return
+      }
+      if (this.multipleSelection.length >= 2) {
+        this.$message.error('一次只能删除一条数据')
+        return
+      }
+
+      this.$confirm('确认删除?').then(_ => {
+        this.handleDeleteList()
+      }).catch(_ => {})
+    },
+
+    /**
+     * 处理删除列表数据
+     * @return {[type]} [description]
+     */
+    handleDeleteList() {
+      this.$axios.delete('api/EmergencyAcceptance/' + this.multipleSelection[0]['id']).then(res => {
+        this.onRefresh()
+      })
+    },
+
+    /**
+     * 处理选择
+     * @param  {[type]} val [description]
+     * @return {[type]}     [description]
+     */
+    handleSelectionChange(val) {
+      this.multipleSelection = val
     }
 
   }
