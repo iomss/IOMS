@@ -48,7 +48,7 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item style="margin-bottom:-10px;">
-                  <treeselect v-model="tableDataSearch.positionId" :disable-branch-nodes="true" :normalizer="normalizer" :options="positionTreeData" :load-options="loadOptions" placeholder="安装位置" no-results-text="未找到相关数据" />
+                  <treeselect v-model="tableDataSearch.positionId" :normalizer="normalizer" :options="positionTreeData" :load-options="loadOptions" placeholder="安装位置" no-results-text="未找到相关数据" />
                 </el-form-item>
                 <el-form-item>
                   <el-select v-model="tableDataSearch.equipmentId" filterable remote :remote-method="remoteMethodequipmentID" clearable :loading="loading" placeholder="资产类别" size="small" @focus="remoteMethodequipmentID">
