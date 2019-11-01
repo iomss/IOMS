@@ -8,7 +8,7 @@
             <div class="select">
               <el-button type="primary" size="small" @click="selectstate('')">任务列表</el-button>
               <el-button type="primary" size="small" @click="selectstate('Review')">待验收</el-button>
-              <el-button type="primary" size="small" @click="selectstate('Excute')">已完成</el-button>
+              <el-button type="primary" size="small" @click="selectstate('Done')">已完成</el-button>
               <el-button type="primary" size="small" @click="selectstate('Plan')">未完成</el-button>
             </div>
             <div class="toolsrt">
@@ -29,7 +29,8 @@
               <el-table-column type="selection" />
               <el-table-column label="操作">
                 <template slot-scope="scope">
-                  <el-button :key="scope.row.code" size="mini" type="primary" @click="showInfo(scope.row)">维护记录</el-button>
+                  <span v-if="scope.row.planState==='Review'" />
+                  <el-button v-else :key="scope.row.code" size="mini" type="primary" @click="showInfo(scope.row)">维护记录</el-button>
                 </template>
               </el-table-column>
               <el-table-column label="完成状态" prop="planState">
