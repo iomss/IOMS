@@ -1,24 +1,24 @@
 <template>
   <div class="app-container">
 
-    <el-form v-show="isShowSearch" :inline="true" :model="formInline" class="demo-form-inline" size="small">
+    <el-form v-show="isShowSearch" :inline="true" :model="formData" class="demo-form-inline" size="small">
 
       <el-form-item label="项目名或报修单位">
-        <el-input v-model="formInline.user" placeholder="项目名或报修单位" />
+        <el-input v-model="formData.text" placeholder="项目名或报修单位" />
       </el-form-item>
 
       <el-form-item label="状态">
-        <el-select v-model="formInline.region" placeholder="状态">
-          <el-option label="全部" value="shanghai" />
-          <el-option label="待审批" value="beijing" />
-          <el-option label="已批准" value="beijing" />
+        <el-select v-model="formData.state" placeholder="状态">
+          <el-option label="全部" value="" />
+          <el-option label="待审批" value="2" />
+          <el-option label="已批准" value="3" />
         </el-select>
       </el-form-item>
 
       <el-form-item label="报修时间">
         <el-col :span="24">
           <el-date-picker
-            v-model="formInline.date1"
+            v-model="formData.date"
             type="daterange"
             range-separator="至"
             start-placeholder="开始日期"
@@ -58,12 +58,21 @@
 
       <el-table-column label="编号" prop="id" sortable="custom" align="center" />
 
-      <el-table-column label="状态" prop="status" class-name="status-col" />
+      <el-table-column label="状态" prop="isEmergency" align="center">
+        <template slot-scope="scope">
+          <a v-if="scope.row.emergencyState == 'Record'" href="javascript:;" style="color: #1890ff;">暂存</a>
+          <a v-if="scope.row.emergencyState == 'Pending'" href="javascript:;" style="color: #1890ff;">待审批</a>
+          <a v-if="scope.row.emergencyState == 'PendingSubCenter'" href="javascript:;" style="color: #1890ff;">待分中心审批</a>
+          <a v-if="scope.row.emergencyState == 'PendingNetCenter'" href="javascript:;" style="color: #1890ff;">待路网中心审批</a>
+          <a v-if="scope.row.emergencyState == 'Applied'" href="javascript:;" style="color: #13ce66;">已批准</a>
+          <a v-if="scope.row.emergencyState == 'Rejected'" href="javascript:;" style="color: #ff4949">驳回</a>
+        </template>
+      </el-table-column>
 
-      <el-table-column label="项目名称" prop="name" align="center" />
-      <el-table-column label="抢修单位" prop="company" align="center" />
-      <el-table-column label="报修单位" prop="company_2" align="center" />
-      <el-table-column label="接报单位" prop="company_2" align="center" />
+      <el-table-column label="项目名称" prop="emergencyRequisition.engineering" align="center" />
+      <el-table-column label="抢修单位" prop="emergencyRequisition.repairUnit.name" align="center" />
+      <el-table-column label="报修单位" prop="emergencyRequisition.reportUnit.name" align="center" />
+      <el-table-column label="接报单位" prop="emergencyRequisition.receiveUnit.name" align="center" />
       <el-table-column label="录入时间" prop="createTime" align="center" :formatter="formatterDate" />
 
       <el-table-column label="操作">
@@ -137,20 +146,10 @@ export default {
       },
 
       table: {
-
         tableKey: 0,
         listLoading: false,
-        list: [{
-          id: 10,
-          status: '正常',
-          sos: '无',
-          name: '工程名称',
-          company: '报修单位',
-          company_2: '接报单位'
-        }],
-
-        total: 20,
-
+        list: [],
+        total: 0,
         tableColumns: [
           { field: 'id', title: '编号', sortable: 'custom' },
           { field: 'status', title: '状态' },
@@ -160,26 +159,33 @@ export default {
           { field: 'company_2', title: '接报单位' },
           { field: 'createTime', title: '报修时间' }
         ]
-
       },
 
-      formInline: {
-        user: '',
-        region: '',
-        date1: '',
-        date2: ''
+      formData: {
+        text: '',
+        beginTime: '',
+        endTime: '',
+        state: '',
+        date: []
       }
 
     }
   },
+  mounted() {
+    this.getList()
+  },
   methods: {
 
     sortChange() {
-
     },
 
     getList() {
-
+      this.table.listLoading = true
+      this.$axios.get(`/api/EmergencyWorkCost?text=${this.formData.text}&state=${2}&beginTime=${this.formData.beginTime}&endTime=${this.formData.endTime}`).then(res => {
+        this.table.listLoading = false
+        this.table.list = res.data
+        this.table.total = res.data.length
+      })
     },
 
     // 日期时间格式化
@@ -192,7 +198,6 @@ export default {
     },
 
     statusFilter() {
-
     },
 
     /**
@@ -207,15 +212,17 @@ export default {
      * 处理显示试图
      * @return {[type]} [description]
      */
-    handleView() {
+    handleView(index, row) {
       this.viewVisible = true
       this.$nextTick(() => {
-        this.$refs.costView.init()
+        this.$refs.costView.init(row.id)
       })
     },
 
     onSubmit() {
-
+      this.formData.beginTime = this.formData.date.length !== 0 ? this.formatterDate(1, 1, this.formData.date[0]) : ''
+      this.formData.endTime = this.formData.date.length !== 0 ? this.formatterDate(1, 1, this.formData.date[1]) : ''
+      this.getList()
     }
 
   }

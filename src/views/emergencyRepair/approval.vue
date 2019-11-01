@@ -1,24 +1,24 @@
 <template>
   <div class="app-container">
 
-    <el-form v-show="isShowSearch" :inline="true" :model="formInline" class="demo-form-inline" size="small">
+    <el-form v-show="isShowSearch" :inline="true" :model="formData" class="demo-form-inline" size="small">
 
       <el-form-item label="审批人">
-        <el-input v-model="formInline.user" placeholder="审批人" />
+        <el-input v-model="formData.user" placeholder="审批人" />
       </el-form-item>
 
       <el-form-item label="状态">
-        <el-select v-model="formInline.region" placeholder="状态">
-          <el-option label="全部" value="shanghai" />
-          <el-option label="待审批" value="beijing" />
-          <el-option label="已批准" value="beijing" />
+        <el-select v-model="formData.region" placeholder="状态">
+          <el-option label="全部" value="" />
+          <el-option label="待审批" value="2" />
+          <el-option label="已批准" value="3" />
         </el-select>
       </el-form-item>
 
       <el-form-item label="报修时间">
         <el-col :span="24">
           <el-date-picker
-            v-model="formInline.date1"
+            v-model="formData.date"
             type="daterange"
             range-separator="至"
             start-placeholder="开始日期"
@@ -164,11 +164,12 @@ export default {
 
       },
 
-      formInline: {
+      formData: {
         user: '',
-        region: '',
-        date1: '',
-        date2: ''
+        beginTime: '',
+        endTime: '',
+        state: '',
+        date: []
       }
 
     }
@@ -183,7 +184,10 @@ export default {
     },
 
     getList() {
-      this.$axios.get(`/api/EmergencyRequisition?state=${2}`).then(res => {
+      this.table.listLoading = true
+
+      this.$axios.get(`/api/EmergencyRequisition?state=${2}&beginTime=${this.formData.beginTime}&endTime=${this.formData.endTime}`).then(res => {
+        this.table.listLoading = false
         this.table.list = res.data
         this.table.total = res.data.length
       })
@@ -232,9 +236,11 @@ export default {
     },
 
     onSubmit() {
+      this.formData.beginTime = this.formData.date.length !== 0 ? this.formatterDate(1, 1, this.formData.date[0]) : ''
+      this.formData.endTime = this.formData.date.length !== 0 ? this.formatterDate(1, 1, this.formData.date[1]) : ''
 
+      this.getList()
     }
-
   }
 }
 </script>

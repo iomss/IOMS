@@ -1,24 +1,24 @@
 <template>
   <div class="app-container">
 
-    <el-form v-show="isShowSearch" :inline="true" :model="formInline" class="demo-form-inline" size="small">
+    <el-form v-show="isShowSearch" :inline="true" :model="formData" class="demo-form-inline" size="small">
 
       <el-form-item label="项目名或报修单位">
-        <el-input v-model="formInline.user" placeholder="项目名或报修单位" />
+        <el-input v-model="formData.text" placeholder="项目名或报修单位" />
       </el-form-item>
 
       <el-form-item label="状态">
-        <el-select v-model="formInline.region" placeholder="状态">
-          <el-option label="全部" value="shanghai" />
-          <el-option label="待审批" value="beijing" />
-          <el-option label="已批准" value="beijing" />
+        <el-select v-model="formData.state" placeholder="状态">
+          <el-option label="全部" value="" />
+          <el-option label="待审批" value="2" />
+          <el-option label="已批准" value="3" />
         </el-select>
       </el-form-item>
 
       <el-form-item label="报修时间">
         <el-col :span="24">
           <el-date-picker
-            v-model="formInline.date1"
+            v-model="formData.date"
             type="daterange"
             range-separator="至"
             start-placeholder="开始日期"
@@ -37,7 +37,7 @@
       <div class="toolbar pull-left">
         <el-button type="info" size="small" icon="el-icon-refresh" />
         <el-button type="primary" size="small" icon="el-icon-plus" @click="addPage" />
-        <el-button type="danger" size="small" icon="el-icon-delete" />
+        <!-- <el-button type="danger" size="small" icon="el-icon-delete" /> -->
       </div>
 
       <div class="columns-right pull-right">
@@ -72,7 +72,7 @@
       </el-table-column>
 
       <el-table-column label="项目名称" prop="emergencyRequisition.engineering" align="center" />
-      <!-- <el-table-column label="抢修单位" prop="company" align="center" /> -->
+      <el-table-column label="抢修单位" prop="emergencyRequisition.repairUnit.name" align="center" />
       <el-table-column label="报修单位" prop="emergencyRequisition.reportUnit.name" align="center" />
       <el-table-column label="接报单位" prop="emergencyRequisition.receiveUnit.name" align="center" />
       <el-table-column label="录入时间" prop="createTime" align="center" :formatter="formatterDate" />
@@ -85,9 +85,15 @@
             type="danger"
             @click="handleView(scope.$index, scope.row)"
           ><i class="el-icon-document" /></el-button>
+          <el-button
+            v-if="scope.row.emergencyState == 'Record'"
+            size="small"
+            class="btn-xs"
+            type="danger"
+            @click="handleViewDel(scope.$index, scope.row)"
+          ><i class="el-icon-delete" /></el-button>
         </template>
       </el-table-column>
-
     </el-table>
 
     <pagination v-show="table.total>0" :total="table.total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
@@ -151,13 +157,10 @@ export default {
       },
 
       table: {
-
         tableKey: 0,
         listLoading: false,
         list: [],
-
         total: 0,
-
         tableColumns: [
           { field: 'id', title: '编号', sortable: 'custom' },
           { field: 'status', title: '状态' },
@@ -167,16 +170,15 @@ export default {
           { field: 'company_2', title: '接报单位' },
           { field: 'createTime', title: '报修时间' }
         ]
-
       },
 
-      formInline: {
-        user: '',
-        region: '',
-        date1: '',
-        date2: ''
+      formData: {
+        text: '',
+        beginTime: '',
+        endTime: '',
+        state: '',
+        date: []
       }
-
     }
   },
   mounted() {
@@ -189,7 +191,9 @@ export default {
     },
 
     getList() {
-      this.$axios.get('/api/EmergencyWorkCost').then(res => {
+      this.table.listLoading = true
+      this.$axios.get(`/api/EmergencyWorkCost?text=${this.formData.text}&state=${this.formData.state}&beginTime=${this.formData.beginTime}&endTime=${this.formData.endTime}`).then(res => {
+        this.table.listLoading = false
         this.table.list = res.data
         this.table.total = res.data.length
       })
@@ -205,7 +209,6 @@ export default {
     },
 
     statusFilter() {
-
     },
 
     /**
@@ -228,17 +231,48 @@ export default {
      * 处理显示试图
      * @return {[type]} [description]
      */
-    handleView() {
-      this.viewVisible = true
-      this.$nextTick(() => {
-        this.$refs.costView.init()
+    handleView(index, row) {
+      // 暂存
+      if (row.emergencyState === 'Record') {
+        this.addVisible = true
+        this.$nextTick(() => {
+          this.$refs.add.init(2, row.id)
+        })
+      } else {
+        this.viewVisible = true
+        this.$nextTick(() => {
+          this.$refs.costView.init(row.id)
+        })
+      }
+    },
+    // 删除
+    handleViewDel(index, row) {
+      this.$confirm('是否要删除？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$axios.delete('/api/EmergencyWorkCost/' + row.id).then(res => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          this.getList()
+        })
+      }).catch(() => {
       })
     },
 
     onSubmit() {
+      this.formData.beginTime = this.formData.date.length !== 0 ? this.formatterDate(1, 1, this.formData.date[0]) : ''
+      this.formData.endTime = this.formData.date.length !== 0 ? this.formatterDate(1, 1, this.formData.date[1]) : ''
+      this.getList()
+    },
 
+    // 关闭添加组件
+    closeDialog() {
+      this.addVisible = false
     }
-
   }
 }
 </script>

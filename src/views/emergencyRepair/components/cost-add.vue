@@ -8,21 +8,22 @@
       :close-on-click-modal="false"
       center
       width="800px"
+      @close="closeDialog"
     >
       <el-form ref="form" :model="form" label-width="110px" size="small" :inline="true" class="demo-form-inline dialog-form-const-add">
 
         <el-form-item label="项目名称">
-          <el-input v-model="form.name" placeholder="项目名称" style="width:240px" />
+          <el-input v-model="engineering" placeholder="项目名称" :disabled="true" style="width:240px" />
         </el-form-item>
 
         <el-form-item label="抢修单位名称">
-          <el-input v-model="form.name" placeholder="抢修单位名称" style="width:240px" />
+          <el-input v-model="repairUnitId" placeholder="抢修单位名称" :disabled="true" style="width:240px" />
         </el-form-item>
 
         <el-form-item label="报修时间">
           <el-col>
             <el-date-picker
-              v-model="form.date1"
+              v-model="date"
               type="daterange"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
@@ -32,7 +33,7 @@
         </el-form-item>
 
         <el-form-item label="录入人">
-          <el-input v-model="form.name" placeholder="录入人" style="width:240px" />
+          <el-input v-model="createUser" placeholder="录入人" :disabled="true" style="width:240px" />
         </el-form-item>
 
         <!-- 应急抢修申请表 -->
@@ -47,14 +48,17 @@
             :data="applicationTable.list"
             border
             fit
-            highlight-current-row
             style="width: 100%;"
             size="mini"
             class="table-applicationform"
           >
-            <el-table-column type="selection" width="80" align="center" />
-            <el-table-column label="序号" prop="id" width="50" align="center" />
-            <el-table-column label="编号" prop="number" align="center" />
+            <el-table-column label="选择" width="50" align="center">
+              <template scope="scope">
+                <el-radio v-model="form.emergencyRequisitionId" class="radio" :label="scope.row.id" @change.native="getTemplateRow(scope.$index,scope.row)">&nbsp;</el-radio>
+              </template>
+            </el-table-column>
+            <el-table-column label="序号" type="index" width="50" align="center" />
+            <el-table-column label="编号" prop="id" align="center" />
             <el-table-column label="报修单位" prop="reportUnit.name" align="center" />
             <el-table-column label="接报单位" prop="receiveUnit.name" align="center" />
             <el-table-column label="报修时间" prop="createTime" align="center" :formatter="formatterDate" />
@@ -95,9 +99,10 @@
         <el-form-item label="附件" style="display:block;">
           <el-upload
             class="upload-demo"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :on-change="handleChange"
-            :file-list="form.fileList"
+            action="/"
+            :http-request="upload"
+            :file-list="uploadList"
+            :before-remove="beforeRemove"
           >
             <el-button size="small" type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">大小不能超过500kb</div>
@@ -105,15 +110,16 @@
         </el-form-item>
 
         <el-form-item label="抢修单位意见" style="display:block;" class="applicationform-box">
-          <el-input v-model="form.desc" type="textarea" />
+          <el-input v-model="form.remark" type="textarea" />
           <div>提示：时间、地点、预算书、数量、抢修技术方案、主要材料设备、实际完成情况</div>
         </el-form-item>
 
       </el-form>
 
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" size="small" @click="centerDialogVisible = false">提交审核</el-button>
-        <el-button type="primary" size="small" @click="onSubmit">导出打印</el-button>
+        <el-button type="primary" size="small" @click="onSubmit(1)">提交审核</el-button>
+        <el-button type="primary" size="small" @click="onSubmit(2)">暂存</el-button>
+        <el-button type="primary" size="small">导出打印</el-button>
         <el-button size="small" @click="changeActiveVisible = false">取 消</el-button>
 
       </span>
@@ -171,25 +177,20 @@ export default {
       applyVisible: false,
       projectVisible: false,
 
+      date: [],
+
       form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: '',
-        type: '',
-        resource: '',
-        desc: '',
-
-        fileList: [{
-          name: 'food.jpeg',
-          url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-        }, {
-          name: 'food2.jpeg',
-          url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-        }]
-
+        repairBeginTime: '',
+        repairEndTime: '',
+        totalAmount: '',
+        remark: '',
+        emergencyRequisitionId: '',
+        submit: false,
+        project: [],
+        attachments: []
       },
+
+      uploadList: [], // 展示的上传的文件
 
       applicationTable: {
         listLoading: false,
@@ -199,12 +200,41 @@ export default {
       projectTable: {
         listLoading: false,
         list: []
-      }
+      },
+
+      applyDesc: {}
+
+    }
+  },
+  // 计算属性
+  computed: {
+
+    // 项目名称
+    engineering: function() {
+      return this.applyDesc.engineering ? this.applyDesc.engineering : ''
+    },
+
+    // 抢修单位名称
+    repairUnitId: function() {
+      return this.applyDesc.repairUnit ? this.applyDesc.repairUnit.name : ''
+    },
+
+    // 录入人
+    createUser: function() {
+      return this.applyDesc.createUser ? this.applyDesc.createUser.name : ''
     }
   },
   methods: {
-    init() {
+    init(type, id) {
       this.changeActiveVisible = true
+
+      this.costAddType = type
+
+      this.costAddDescId = id
+
+      if (type === 2) {
+        this.addDesc(id)
+      }
     },
 
     /**
@@ -235,15 +265,123 @@ export default {
           sums[index] = ''
         }
       })
+
+      this.form.totalAmount = sums[6]
+
       return sums
     },
 
-    onSubmit() {
+    /**
+     * 上传文件
+     * @return {[type]} [description]
+     */
+    upload(file) {
+      const formdata = new FormData()
+      formdata.append('path', file.file)
 
+      this.$axios.post('/api/File/Attachment', formdata, { headers: { 'Content-Type': 'multipart/form-data' }}).then(res => {
+        this.uploadList.push(res.content)
+        this.form.attachments.push(res.content.id)
+      })
     },
 
-    handleChange() {
+    // 移除
+    beforeRemove(file, fileList) {
+      // 判断 如果没有上传成功 就本地删除
+      if (file.percentage === '0') {
+        return true
+      }
 
+      this.$confirm(`确定移除 ${file.name}？`).then(_ => {
+        this.$axios.delete(`/api/File/Attachment/${file.id}`).then(res => {
+          this.$message('删除成功')
+
+          this.uploadList.splice(this.uploadList.findIndex(item => item.id === file.id), 1)
+
+          this.form.attachments.splice(this.form.attachments.findIndex(item => item === file.id), 1)
+        })
+      }).catch(_ => {})
+
+      return false
+    },
+
+    onSubmit(type) {
+      if (this.date.length === 0) {
+        this.$message.error('请选择日期')
+        return
+      }
+
+      if (this.form.emergencyRequisitionId === '') {
+        this.$message.error('请选择应急抢修申请表')
+        return
+      }
+
+      if (this.projectTable.list.length === 0) {
+        this.$message.error('请添加工程清单')
+        return
+      }
+
+      if (this.form.remark === '') {
+        this.$message.error('请输入抢修单位意见')
+        return
+      }
+
+      // 提交审核
+      if (type === 1) {
+        this.form.submit = true
+
+      // 暂存
+      } else if (type === 2) {
+        this.form.submit = false
+      }
+
+      this.form.repairBeginTime = this.date[0]
+      this.form.repairEndTime = this.date[1]
+      this.form.project = this.projectTable.list
+
+      this.$message({
+        type: 'success',
+        message: '正在提交，请稍等。。。',
+        center: true,
+        duration: 1000
+      })
+
+      // 添加
+      if (this.costAddType === 1) {
+        this.addEmergency()
+
+      // 修改
+      } else {
+        this.modifyEmergency()
+      }
+    },
+
+    // 添加
+    addEmergency() {
+      this.$axios.post('/api/EmergencyWorkCost', this.form).then(res => {
+        this.$message({
+          type: 'success',
+          message: '提交成功!',
+          duration: 2000,
+          onClose: function() {
+            location.reload()
+          }
+        })
+      })
+    },
+
+    // 修改
+    modifyEmergency() {
+      this.$axios.put(`/api/EmergencyWorkCost/${this.costAddDescId}`, this.form).then(res => {
+        this.$message({
+          type: 'success',
+          message: '修改成功!',
+          duration: 2000,
+          onClose: function() {
+            location.reload()
+          }
+        })
+      })
     },
 
     // 日期时间格式化
@@ -308,8 +446,31 @@ export default {
       })
     },
 
-    getTemplateRow(data) {
-      console.log(data)
+    // 选中申请单
+    getTemplateRow(index, row) {
+      if (row) {
+        this.date = [row.reportTime, row.receiveTime]
+        this.applyDesc = row
+      }
+    },
+
+    // 获取 暂存数据
+    addDesc(id) {
+      this.$axios.get(`/api/EmergencyWorkCost/${id}`, this.form).then(res => {
+        this.uploadList = res.attachments
+        this.projectTable.list = res.project
+        this.applyDesc = res.emergencyRequisition
+        this.applicationTable.list.push(res.emergencyRequisition)
+        this.date = [res.emergencyRequisition.reportTime, res.emergencyRequisition.receiveTime]
+
+        this.form = res
+        this.form.attachments = res.attachments.map(item => { return item.id })
+      })
+    },
+
+    // 关闭回调 并且执行父组件方法
+    closeDialog() {
+      this.$parent.closeDialog()
     }
   }
 }

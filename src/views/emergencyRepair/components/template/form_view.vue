@@ -59,14 +59,12 @@
     <el-row>
       <el-col :span="24">
         <el-form-item label="抢修范围" class="el-form-checkbox">
-          <el-checkbox-group>
-            <el-checkbox v-model="form.power" label="供配电系统" />
-            <el-checkbox v-model="form.includeSurveillance" label="监控系统" />
-            <el-checkbox v-model="form.includeToll" label="收费系统" />
-            <el-checkbox v-model="form.includeCommunication" label="通信系统" />
-            <el-checkbox v-model="form.includeTunnel" label="隧道设备" />
-            <el-checkbox v-model="form.includeOther" label="其他" />
-          </el-checkbox-group>
+          <el-checkbox v-model="form.power" label="供配电系统" />
+          <el-checkbox v-model="form.includeSurveillance" label="监控系统" />
+          <el-checkbox v-model="form.includeToll" label="收费系统" />
+          <el-checkbox v-model="form.includeCommunication" label="通信系统" />
+          <el-checkbox v-model="form.includeTunnel" label="隧道设备" />
+          <el-checkbox v-model="form.includeOther" label="其他" />
         </el-form-item>
       </el-col>
     </el-row>
@@ -81,7 +79,7 @@
     </el-form-item>
 
     <el-form-item label="费用" style="display:block;">
-      <el-radio-group v-model="form.resource">
+      <el-radio-group>
         <el-radio label="是" />
         <el-radio label="否" />
       </el-radio-group>
@@ -105,8 +103,7 @@
     <el-row>
       <el-col :span="24">
         <el-form-item label="附件" style="display:block;">
-          <a href="" style="color:blue;display: block;">附件1</a>
-          <a href="" style="color:blue;display: block;">附件2</a>
+          <a v-for="item in form.attachments" :key="item.id" :href="item.path" style="color:blue;display: block;">{{ item.name }}</a>
         </el-form-item>
       </el-col>
     </el-row>
@@ -187,7 +184,7 @@ export default {
     },
 
     receiveUnittName: function() {
-      return this.form.receiveUnitt ? this.form.receiveUnitt.name : ''
+      return this.form.receiveUnit ? this.form.receiveUnit.name : ''
     }
   },
   mounted() {

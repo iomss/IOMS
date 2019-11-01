@@ -239,13 +239,13 @@ export default {
 
       const data = this.queryRoles
 
-      for (let i = 0, len = rolesList.length; i < len; i++) {
-        for (let j = 0, len = data.length; j < len; j++) {
-          if (rolesList[i] === data[j].name) {
-            this.queryRoles[j].status = true
+      rolesList.forEach((v, k) => {
+        data.forEach((k, i) => {
+          if (v === k.name) {
+            this.queryRoles[i].status = true
           }
-        }
-      }
+        })
+      })
     },
 
     // 获取子组件的值
@@ -279,52 +279,30 @@ export default {
     onSubmit() {
       // 分中心审核
       if (this.queryRoles[0].status) {
-        this.$axios.post(`/api/EmergencyRequisition/${this.viewData.id}/Review`, {
-          ...this.subCenter
-
-        }).then(res => {
-          this.$message({
-            type: 'success',
-            message: '审核成功!',
-            duration: 3000,
-            onClose: function() {
-              location.reload()
-            }
-          })
-        })
-
+        this.emergencyRequisition(this.subCenter)
         // 路网中心审核
       } else if (this.queryRoles[1].status) {
-        this.$axios.post(`/api/EmergencyRequisition/${this.viewData.id}/Review`, {
-          ...this.pattern
-
-        }).then(res => {
-          this.$message({
-            type: 'success',
-            message: '审核成功!',
-            duration: 3000,
-            onClose: function() {
-              location.reload()
-            }
-          })
-        })
-
+        this.emergencyRequisition(this.pattern)
         // 分管领导意见
       } else if (this.queryRoles[2].status) {
-        this.$axios.post(`/api/EmergencyRequisition/${this.viewData.id}/Review`, {
-          ...this.leadership
-
-        }).then(res => {
-          this.$message({
-            type: 'success',
-            message: '审核成功!',
-            duration: 3000,
-            onClose: function() {
-              location.reload()
-            }
-          })
-        })
+        this.emergencyRequisition(this.leadership)
       }
+    },
+
+    // 提交审核
+    emergencyRequisition(data) {
+      this.$axios.post(`/api/EmergencyRequisition/${this.viewData.id}/Review`, {
+        ...data
+      }).then(res => {
+        this.$message({
+          type: 'success',
+          message: '审核成功!',
+          duration: 3000,
+          onClose: function() {
+            location.reload()
+          }
+        })
+      })
     }
   }
 }
