@@ -48,7 +48,7 @@
               <el-table-column prop="spare.model.name" label="型号" />
               <el-table-column prop="source" label="备件类型">
                 <template slot-scope="scope">
-                  {{ scope.row.consumable ?"易损易耗":"非易损易耗" }}
+                  {{ scope.row.spare.consumable ?"易损易耗":"非易损易耗" }}
                 </template>
               </el-table-column>
               <el-table-column prop="quantity" label="数量" />
