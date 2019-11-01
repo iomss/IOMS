@@ -25,7 +25,14 @@
               prop="emergencyRequisitionId"
               label="审批单位"
               width="180"
-            />
+            >
+              <template slot-scope="scope">
+                <a v-if="scope.row.type == 'Normal'" href="javascript:;">普通审批</a>
+                <a v-if="scope.row.type == 'SubCenter'" href="javascript:;">分中心审批</a>
+                <a v-if="scope.row.type == 'NetCenter'" href="javascript:;">路网中心审批</a>
+                <a v-if="scope.row.type == 'Leader'" href="javascript:;">分管领导审批</a>
+              </template>
+            </el-table-column>
             <el-table-column label="审批意见" prop="reviewComment" width="180">
               <template slot-scope="scope">
                 <a href="javascript:;">{{ scope.row.reviewComment !== null ? scope.row.reviewComment : scope.row.remark }}</a>
@@ -39,6 +46,7 @@
             <el-table-column
               prop="createTime"
               label="审批时间"
+              :formatter="formatterDate"
             />
           </el-table>
         </el-col>
@@ -89,6 +97,15 @@ export default {
     init(id) {
       this.changeActiveVisible = true
       this.viewData.id = id
+    },
+
+    // 日期时间格式化
+    formatterDate(row, column, cellValue) {
+      if (cellValue !== null) {
+        return this.$moment(cellValue).format('YYYY-MM-DD')
+      } else {
+        return cellValue
+      }
     },
 
     onSubmit() {

@@ -6,6 +6,7 @@
     :close-on-press-escape="false"
     :close-on-click-modal="false"
     top="10px"
+    @close="closeDialog"
   >
     <el-form ref="form" :model="form" label-width="80px" size="small" :inline="true" class="demo-form-inline dialog-form-add">
 
@@ -58,7 +59,7 @@
         <el-checkbox v-model="form.includeToll" label="收费系统" />
         <el-checkbox v-model="form.includeCommunication" label="通信系统" />
         <el-checkbox v-model="form.includeTunnel" label="隧道设备" />
-        <el-checkbox v-model="form.includeOther" label="其他" @change="handleCheckAllChange" />
+        <el-checkbox v-model="includeOther" label="其他" @change="handleCheckAllChange" />
       </el-form-item>
 
       <el-form-item label="抢修依据" class="el-form-checkbox" prop="basisParagraphContent">
@@ -107,13 +108,13 @@
         <el-input v-model="form.maonMaterialEquipment" placeholder="接报人" style="width:100px;" />（品牌，型号）
       </el-form-item>
 
-      <el-form-item label="附件" style="display:block;" prop="attachments">
+      <el-form-item label="附件" style="display:block;" prop="uploadList">
         <el-upload
           class="upload-demo"
           action="/"
           :http-request="upload"
-          :on-change="handleChange"
-          :file-list="form.attachments"
+          :file-list="uploadList"
+          :before-remove="beforeRemove"
         >
           <el-button size="small" type="primary">点击上传</el-button>
           <div slot="tip" class="el-upload__tip">大小不能超过500kb</div>
@@ -199,67 +200,64 @@ export default {
 
       },
 
+      includeOther: false,
+
+      uploadList: [], // 展示的上传的文件
+
       warrantyList: [], // 保修单位
 
-      receivingList: [] // 接报单位
+      receivingList: [], // 接报单位
+
+      addType: '', // 当前打开的是什么类型
+
+      addDescId: '' // 详情id
 
     }
   },
   methods: {
-    init() {
+    init(type, id) {
       this.changeActiveVisible = true
+
+      this.addType = type
+
+      this.addDescId = id
+
+      // 获取 暂存数据
+      if (type === 2) {
+        this.addDesc(id)
+      }
 
       this.warrantyUnit()
 
       this.receivingUnit()
     },
 
-    onSubmit(formName, type) {
-      // 暂存
-      if (type === 1) {
-        this.form.submit = false
-
-      // 提交审核
-      } else if (type === 2) {
-        this.form.submit = true
-      }
-
-      this.$message({
-        type: 'success',
-        message: '正在提交，请稍等。。。',
-        center: true,
-        duration: 1000
-      })
-
-      this.$axios.post('/api/EmergencyRequisition', this.form).then(res => {
-        this.$message({
-          type: 'success',
-          message: '添加成功!',
-          duration: 3000,
-          onClose: function() {
-            location.reload()
-          }
-        })
-
-        this.changeActiveVisible = false
-
-        this.$refs[formName].resetFields()
-      })
-    },
-    handleChange(file, fileList) {
-      console.log(file)
-      console.log(fileList.slice(-3))
-    },
-
     // 自定义上传方法
     upload(file) {
       const formdata = new FormData()
-      formdata.append('file', file.file)
+      formdata.append('path', file.file)
 
       this.$axios.post('/api/File/Attachment', formdata, { headers: { 'Content-Type': 'multipart/form-data' }}).then(res => {
-        console.log(res)
+        this.uploadList.push(res.content)
+        this.form.attachments.push(res.content.id)
       })
     },
+
+    // 移除
+    beforeRemove(file, fileList) {
+      this.$confirm(`确定移除 ${file.name}？`).then(_ => {
+        this.$axios.delete(`/api/File/Attachment/${file.id}`).then(res => {
+          this.$message('删除成功')
+
+          this.uploadList.splice(this.uploadList.findIndex(item => item.id === file.id), 1)
+
+          this.form.attachments.splice(this.form.attachments.findIndex(item => item === file.id), 1)
+        })
+      }).catch(_ => {})
+
+      return false
+    },
+
     // 抢修范围
     handleCheckAllChange(value) {
       if (value) {
@@ -282,11 +280,75 @@ export default {
         this.receivingList = res
       })
     },
-    updateSelect() {
-      console.log('333')
+
+    onSubmit(formName, type) {
+      // 暂存
+      if (type === 1) {
+        this.form.submit = false
+
+      // 提交审核
+      } else if (type === 2) {
+        this.form.submit = true
+      }
+
+      this.$message({
+        type: 'success',
+        message: '正在提交，请稍等。。。',
+        center: true,
+        duration: 1000
+      })
+
+      // 添加
+      if (this.addType === 1) {
+        this.addEmergency()
+
+      // 修改
+      } else {
+        this.modifyEmergency()
+      }
+    },
+
+    // 添加
+    addEmergency() {
+      this.$axios.post('/api/EmergencyRequisition', this.form).then(res => {
+        this.$message({
+          type: 'success',
+          message: '添加成功!',
+          duration: 2000,
+          onClose: function() {
+            location.reload()
+          }
+        })
+      })
+    },
+
+    // 修改
+    modifyEmergency() {
+      this.$axios.put(`/api/EmergencyRequisition/${this.addDescId}`, this.form).then(res => {
+        this.$message({
+          type: 'success',
+          message: '修改成功!',
+          duration: 2000,
+          onClose: function() {
+            location.reload()
+          }
+        })
+      })
+    },
+
+    // 获取 暂存数据
+    addDesc(id) {
+      this.$axios.get(`/api/EmergencyRequisition/${id}`, this.form).then(res => {
+        this.uploadList = res.attachments
+        this.form = res
+        this.form.attachments = res.attachments.map(item => { return item.id })
+      })
+    },
+
+    // 关闭回调 并且执行父组件方法
+    closeDialog() {
+      this.$parent.closeDialog()
     }
-
   }
-
 }
 </script>

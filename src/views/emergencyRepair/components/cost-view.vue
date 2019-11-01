@@ -6,28 +6,24 @@
     :close-on-press-escape="false"
     :close-on-click-modal="false"
     center
+    destroy-on-close="true"
     width="800px"
+    @close="closeDialog"
   >
     <el-form ref="form" :model="form" label-width="110px" size="small" :inline="true" class="demo-form-inline dialog-form-const-add" :disabled="true">
 
       <el-form-item label="项目名称">
-        <el-select v-model="form.region" placeholder="请选择报修单位" style="width:240px">
-          <el-option label="区域一" value="shanghai" />
-          <el-option label="区域二" value="beijing" />
-        </el-select>
+        <el-input v-model="engineering" placeholder="项目名称" style="width:240px" />
       </el-form-item>
 
       <el-form-item label="抢修单位名称">
-        <el-select v-model="form.region" placeholder="请选择报修单位" style="width:240px">
-          <el-option label="区域一" value="shanghai" />
-          <el-option label="区域二" value="beijing" />
-        </el-select>
+        <el-input v-model="repairUnitId" placeholder="抢修单位名称" style="width:240px" />
       </el-form-item>
 
       <el-form-item label="报修时间">
         <el-col>
           <el-date-picker
-            v-model="form.date1"
+            v-model="costDate"
             type="daterange"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -37,7 +33,7 @@
       </el-form-item>
 
       <el-form-item label="录入人">
-        <el-input v-model="form.name" placeholder="录入人" style="width:240px" />
+        <el-input v-model="createUser" placeholder="录入人" style="width:240px" />
       </el-form-item>
 
       <!-- 应急抢修申请表 -->
@@ -53,11 +49,11 @@
           size="mini"
           class="table-applicationform"
         >
-          <el-table-column label="序号" prop="id" align="center" />
-          <el-table-column label="编号" prop="number" align="center" />
-          <el-table-column label="报修单位" prop="name" align="center" />
-          <el-table-column label="接报单位" prop="company_2" align="center" />
-          <el-table-column label="报修时间" prop="createTime" align="center" />
+          <el-table-column label="序号" type="index" align="center" />
+          <el-table-column label="编号" prop="id" align="center" />
+          <el-table-column label="报修单位" prop="reportUnit.name" align="center" />
+          <el-table-column label="接报单位" prop="receiveUnit.name" align="center" />
+          <el-table-column label="报修时间" prop="createTime" align="center" :formatter="formatterDate" />
         </el-table>
       </el-form-item>
 
@@ -77,12 +73,12 @@
           size="mini"
           class="table-applicationform"
         >
-          <el-table-column label="序号" prop="id" align="center" />
+          <el-table-column label="序号" type="index" align="center" />
           <el-table-column label="名称" prop="name" align="center" />
           <el-table-column label="单位" prop="unit" align="center" />
-          <el-table-column label="数量" prop="number" align="center" />
-          <el-table-column label="单价(元)" prop="price" align="center" />
-          <el-table-column label="总价(元)" prop="total" align="center" />
+          <el-table-column label="数量" prop="quantity" align="center" />
+          <el-table-column label="单价(元)" prop="unitPrice" align="center" />
+          <el-table-column label="总价(元)" prop="totalPrice" align="center" />
 
         </el-table>
       </el-form-item>
@@ -101,8 +97,8 @@
           class="table-applicationform"
         >
           <el-table-column label="序号" prop="id" align="center" />
-          <el-table-column label="名称" prop="number" align="center" />
-          <el-table-column label="上传" prop="createTime" align="center" />
+          <el-table-column label="名称" prop="name" align="center" />
+          <el-table-column label="上传" prop="createTime" align="center" :formatter="formatterDate" />
 
         </el-table>
       </el-form-item>
@@ -121,10 +117,21 @@
           size="mini"
           class="table-applicationform"
         >
-          <el-table-column label="审批单位" prop="name" align="center" />
-          <el-table-column label="审批意见" prop="company_2" align="center" />
-          <el-table-column label="审批人" prop="createTime" align="center" />
-          <el-table-column label="审批时间" prop="createTime" align="center" />
+          <el-table-column
+            prop="emergencyRequisitionId"
+            label="审批单位"
+            width="180"
+          >
+            <template slot-scope="scope">
+              <a v-if="scope.row.type == 'Normal'" href="javascript:;">普通审批</a>
+              <a v-if="scope.row.type == 'SubCenter'" href="javascript:;">分中心审批</a>
+              <a v-if="scope.row.type == 'NetCenter'" href="javascript:;">路网中心审批</a>
+              <a v-if="scope.row.type == 'Leader'" href="javascript:;">分管领导审批</a>
+            </template>
+          </el-table-column>
+          <el-table-column label="审批意见" prop="reviewComment" align="center" />
+          <el-table-column label="审批人" prop="reviewUser.name" align="center" />
+          <el-table-column label="审批时间" prop="createTime" align="center" :formatter="formatterDate" />
 
         </el-table>
       </el-form-item>
@@ -173,53 +180,23 @@ export default {
       changeActiveVisible: false,
 
       form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: '',
-        type: '',
-        resource: '',
-        desc: '',
-
-        fileList: [{
-          name: 'food.jpeg',
-          url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-        }, {
-          name: 'food2.jpeg',
-          url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-        }]
+        repairBeginTime: '',
+        repairEndTime: '',
+        totalAmount: '',
+        remark: '',
+        project: [],
+        attachments: []
 
       },
 
       applicationTable: {
         listLoading: false,
-        list: [{
-          id: 1,
-          number: 2220912,
-          name: '家堡东收费站',
-          company_2: '韵家口分中心',
-          createTime: '2019-10-02'
-        }]
+        list: []
       },
 
       projectTable: {
         listLoading: false,
-        list: [{
-          id: 1,
-          name: '高杆200W LED投光灯',
-          unit: '盏',
-          number: 20,
-          price: 10,
-          total: 200
-        }, {
-          id: 2,
-          name: '人工费',
-          unit: '人',
-          number: 8,
-          price: 200,
-          total: 1200
-        }]
+        list: []
       },
 
       examineTable: {
@@ -230,12 +207,40 @@ export default {
       annexTable: {
         listLoading: false,
         list: []
-      }
+      },
+
+      costDesc: {}
+    }
+  },
+  // 计算属性
+  computed: {
+    // 项目名称
+    engineering: function() {
+      return this.costDesc.emergencyRequisition ? this.costDesc.emergencyRequisition.engineering : ''
+    },
+
+    // 抢修单位名称
+    repairUnitId: function() {
+      return this.costDesc.emergencyRequisition ? this.costDesc.emergencyRequisition.repairUnit.name : ''
+    },
+
+    // 录入人
+    createUser: function() {
+      return this.costDesc.emergencyRequisition ? this.costDesc.emergencyRequisition.createUser.name : ''
+    },
+
+    // 日期
+    costDate: function() {
+      return [this.costDesc.repairBeginTime, this.costDesc.repairEndTime]
     }
   },
   methods: {
-    init() {
+    init(id) {
+      this.id = id
+
       this.changeActiveVisible = true
+
+      this.costViewDesc(id)
     },
     /**
      * 自定义返回合计
@@ -266,6 +271,31 @@ export default {
         }
       })
       return sums
+    },
+
+    // 详情数据
+    costViewDesc(id) {
+      this.$axios.get(`/api/EmergencyWorkCost/${id}`).then(res => {
+        this.projectTable.list = res.project
+        this.annexTable.list = res.attachments
+        this.examineTable.list = res.audits
+        this.costDesc = res
+        this.applicationTable.list.push(res.emergencyRequisition)
+      })
+    },
+
+    // 日期时间格式化
+    formatterDate(row, column, cellValue) {
+      if (cellValue !== null) {
+        return this.$moment(cellValue).format('YYYY-MM-DD')
+      } else {
+        return cellValue
+      }
+    },
+
+    // 关闭回调
+    closeDialog() {
+      this.applicationTable.list = []
     },
 
     onSubmit() {
