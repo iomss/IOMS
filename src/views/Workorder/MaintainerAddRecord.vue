@@ -46,7 +46,7 @@
             </el-form-item>
             <el-form-item label="设备编码" prop="assetCode">
               <el-select v-model="formRcorda.assetCode" filterable remote :remote-method="remoteMethodecodeID" :loading="loading" placeholder="设备编码" size="small" @focus="remoteMethodecodeID">
-                <el-option v-for="item in assetsData" :key="item.id" :label="item.name" :value="item.id" />
+                <el-option v-for="item in assetsData" :key="item.name" :label="item.name" :value="item.name" />
               </el-select>
             </el-form-item>
             <el-form-item label="故障类型" prop="equipmentFaultId">
@@ -314,9 +314,9 @@ export default {
   },
   computed: {},
   mounted() {
-    this.getdata()
     this.getselectData()
     this.getfaultData()
+    this.getdata()
   },
   methods: {
     uploadresultImg(e) {
@@ -338,22 +338,22 @@ export default {
     getAssetsData() {
       // 获取设备编码
       this.$axios.get('/api/Meta/Assets', { params: this.assetspage }).then(res => {
-        this.assetsData = this.assetsData.concat(res.data)
-
         const multiple = [...this.assetsData, ...res.data]
-        this.assetsData = multiple.reduce((all, next) => all.some((item) => item['id'] === next['id']) ? all : [...all, next], [])
+        this.assetsData = multiple.reduce((all, next) => all.some((item) => item['name'] === next['name']) ? all : [...all, next], [])
       })
     },
     getequipmentData() {
       // 获取设备种类
       this.$axios.get('/api/Meta/equipment', { params: this.equipmentpage }).then(res => {
-        this.equipmentData = this.equipmentData.concat(res.data)
+        const multiple = [...this.equipmentData, ...res.data]
+        this.equipmentData = multiple.reduce((all, next) => all.some((item) => item['id'] === next['id']) ? all : [...all, next], [])
       })
     },
     getfaultData() {
       // 获取故障类型
       this.$axios.get('/api/Meta/Fault', { params: this.faultpage }).then(res => {
-        this.faultData = this.faultData.concat(res.data)
+        const multiple = [...this.faultData, ...res.data]
+        this.faultData = multiple.reduce((all, next) => all.some((item) => item['id'] === next['id']) ? all : [...all, next], [])
       })
     },
     remoteMethodecodeID(query) {
@@ -406,15 +406,15 @@ export default {
         this.faultData.forEach(item => { item.id === res.equipmentFault.id ? hasbrandDatab = true : '' })
         hasbrandDatab ? '' : this.faultData.push({ id: res.equipmentFault.id, name: res.equipmentFault.name })
         let hasbrandDatac = false
-        this.assetsData.forEach(item => { item.id === res.assetId ? hasbrandDatac = true : '' })
-        hasbrandDatac ? '' : this.assetsData.push({ id: res.assetId, name: res.assetCode })
+        this.assetsData.forEach(item => { item.name === res.assetCode ? hasbrandDatac = true : '' })
+        hasbrandDatac ? '' : this.assetsData.push({ id: res.assetCode, name: res.assetCode })
         // 在设置选中
         this.formRcorda.equipmentId = res.equipment.id
         this.formRcordd.equipmentId = res.equipment.id
         this.formRcorda.equipmentFaultId = res.equipmentFault.id
         this.formRcordd.equipmentFaultId = res.equipmentFault.id
-        this.formRcorda.assetCode = res.assetId
-        this.formRcordd.assetCode = res.assetId
+        this.formRcorda.assetCode = res.assetCode
+        this.formRcordd.assetCode = res.assetCode
       })
     },
     changeEquipment() { // 设备种类筛选设备编码
@@ -440,12 +440,14 @@ export default {
     },
     updata(val) { // 表单提交按钮
       console.log(val)
+      debugger
       if (val === 'a') {
         this.$refs.formRcorda.validate(valid => {
           if (valid) {
             this.formRcorda.repairType = this.repairType
             this.formRcorda.repairerId = this.dangqianUser.id
             this.formRcorda.repairOrderId = window.location.href.split('/')[window.location.href.split('/').length - 1]
+            console.log(this.formRcorda)
             this.$axios.post('/api/RepairRecord', this.formRcorda).then(response => {
               // 跳转回个人工作页
               this.$router.push('/Workorder/Watchmanlist')
