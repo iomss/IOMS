@@ -42,7 +42,7 @@
               <el-table-column prop="spare.model.name" label="型号" />
               <el-table-column prop="source" label="备件类型">
                 <template slot-scope="scope">
-                  {{ scope.row.consumable ?"易损易耗":"非易损易耗" }}
+                  {{ scope.row.spare.consumable ?"易损易耗":"非易损易耗" }}
                 </template>
               </el-table-column>
               <el-table-column prop="quantity" label="数量" />
@@ -52,7 +52,7 @@
               <el-table-column prop="remark" label="备注" />
               <el-table-column prop="remark" label="摘要">
                 <template slot-scope="scope">
-                  <el-button v-show="scope.row.consumable" type="text" @click="zhaiyaoVisible=true;getZhaiyaoData(scope.row.spareId)">出入库摘要</el-button>
+                  <el-button v-show="scope.row.spare.consumable" type="text" @click="zhaiyaoVisible=true;getZhaiyaoData(scope.row.spareId)">出入库摘要</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -166,6 +166,11 @@
                     {{ scope.row.unitPrice !==undefined && scope.row.quantity!==undefined ? scope.row.unitPrice*scope.row.quantity:'' }}
                   </template>
                 </el-table-column>
+                <el-table-column prop="remark" label="备注">
+                  <template slot-scope="scope">
+                    <el-input v-model="scope.row.remark" size="small" placeholder="请输入内容" />
+                  </template>
+                </el-table-column>
               </el-table>
               <span slot="footer" class="dialog-footer">
                 <el-button type="primary" size="small" @click="ruku()">暂存</el-button>
@@ -177,8 +182,8 @@
             <el-dialog title="选择备件" :visible.sync="xuanzebeijianVisible" :close-on-press-escape="false" :show-close="false" :close-on-click-modal="false" width="1000px">
               <div class="toolsrt">
                 <el-form ref="form" :model="beijianFormSearch" label-width="70px">
-                  <el-input v-model="beijianFormSearch.text" placeholder="全局搜索" size="small" />
-                  <el-button type="primary" plain size="small" @click="getDataselect()">查询</el-button>
+                  <el-input v-model="beijianFormSearch.text" clearable placeholder="全局搜索" size="small" />
+                  <el-button type="primary" plain size="small" @click="getbeijianData()">查询</el-button>
                 </el-form>
               </div>
               <el-table :data="beijianData" stripe border style="width: 1500px" @selection-change="handleBeijianSelection">
@@ -428,11 +433,12 @@ export default {
       const spareStockRecordItems = []
       this.rukubeijian.forEach(item => {
         spareStockRecordItems.push({
-          stockId: item.kucunId,
+          stockId: this.title === '出库' ? item.kucunId : null,
           spareId: item.id,
           quantity: item.quantity,
           unitPrice: item.unitPrice,
-          totalPrice: item.quantity * item.unitPrice
+          totalPrice: item.quantity * item.unitPrice,
+          remark: item.remark
         })
       })
       this.rukuForm.spareStockRecordItems = spareStockRecordItems
@@ -440,7 +446,7 @@ export default {
         if (valid) {
           this.$axios.post('/api/SpareStockRecord', this.rukuForm).then(res => {
             this.getData()
-            this.$message.success('入库单暂存')
+            this.$message.success(this.title + '单暂存')
             this.closeruku()
           })
         }
@@ -451,11 +457,12 @@ export default {
       const spareStockRecordItems = []
       this.rukubeijian.forEach(item => {
         spareStockRecordItems.push({
-          stockId: item.kucunId,
+          stockId: this.title === '出库' ? item.kucunId : null,
           spareId: item.id,
           quantity: item.quantity,
           unitPrice: item.unitPrice,
-          totalPrice: item.quantity * item.unitPrice
+          totalPrice: item.quantity * item.unitPrice,
+          remark: item.remark
         })
       })
       this.rukuForm.spareStockRecordItems = spareStockRecordItems
@@ -463,7 +470,7 @@ export default {
         if (valid) {
           this.$axios.post('/api/SpareStockRecord/CreateAndSubmit', this.rukuForm).then(res => {
             this.getData()
-            this.$message.success('确认入库成功')
+            this.$message.success('确认' + this.title + '成功')
             this.closeruku()
           })
         }
