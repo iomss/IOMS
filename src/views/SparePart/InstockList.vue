@@ -195,7 +195,7 @@
                   </el-col>
                   <el-table :data="Info.spareStockRecordItems" stripe border style="width: 100%" max-height="580px" @selection-change="handleSelection">
                     <el-table-column type="index" label="序号" width="50" />
-                    <el-table-column prop="spare.number" label="编码" />
+                    <!-- <el-table-column prop="spare.number" label="编码" /> -->
                     <el-table-column prop="spare.name" label="备件名称" />
                     <el-table-column prop="spare.consumable" label="备件分类">
                       <template slot-scope="scope">
