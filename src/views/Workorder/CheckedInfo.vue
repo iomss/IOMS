@@ -41,7 +41,7 @@
               <li><span>维修过程:</span><b>{{ tableData.description }}</b></li>
               <!-- <li><span>建议:</span><b>null</b></li> -->
               <li><span>配件名称及数量:</span><b>{{ tableData.spareDescription }}</b></li>
-              <li><span>维修人:</span><b>{{ tableData.repairer? tableData.repairer.name:'' }}</b></li>
+              <li v-show="tableData.repairType!=='Mistaken'"><span>维修人:</span><b>{{ tableData.repairer? tableData.repairer.name:'' }}</b></li>
               <li>
                 <span>维修结果图片:</span>
                 <el-image style="width: 100px; height: 100px" :src="url+tableData.resultImg" :preview-src-list="[url+tableData.resultImg]">
@@ -61,7 +61,7 @@
                 </b>
               </li>
               <li><span>协助人:</span><b>{{ tableData.assist }}</b></li>
-              <li><span>备注:</span><b>{{ tableData.comment }}</b></li>
+              <li v-show="tableData.repairType!=='Mistaken'"><span>备注:</span><b>{{ tableData.comment }}</b></li>
             </ul>
           </div>
         </div>
