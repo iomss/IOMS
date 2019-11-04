@@ -35,7 +35,7 @@
 
     <div class="filter-container">
       <div class="toolbar pull-left">
-        <el-button type="info" size="small" icon="el-icon-refresh" />
+        <el-button type="info" size="small" icon="el-icon-refresh" @click="onRefresh" />
       </div>
 
       <div class="columns-right pull-right">
@@ -64,6 +64,7 @@
           <a v-if="scope.row.emergencyState == 'Pending'" href="javascript:;" style="color: #1890ff;">待审批</a>
           <a v-if="scope.row.emergencyState == 'PendingSubCenter'" href="javascript:;" style="color: #1890ff;">待分中心审批</a>
           <a v-if="scope.row.emergencyState == 'PendingNetCenter'" href="javascript:;" style="color: #1890ff;">待路网中心审批</a>
+          <a v-if="scope.row.emergencyState == 'PendingLeader'" href="javascript:;" style="color: #1890ff;">待领导审批</a>
           <a v-if="scope.row.emergencyState == 'Applied'" href="javascript:;" style="color: #13ce66;">已批准</a>
           <a v-if="scope.row.emergencyState == 'Rejected'" href="javascript:;" style="color: #ff4949">驳回</a>
         </template>
@@ -222,6 +223,14 @@ export default {
     onSubmit() {
       this.formData.beginTime = this.formData.date.length !== 0 ? this.formatterDate(1, 1, this.formData.date[0]) : ''
       this.formData.endTime = this.formData.date.length !== 0 ? this.formatterDate(1, 1, this.formData.date[1]) : ''
+      this.onRefresh()
+    },
+
+    /**
+     * 刷新
+     * @return {[type]} [description]
+     */
+    onRefresh() {
       this.getList()
     }
 

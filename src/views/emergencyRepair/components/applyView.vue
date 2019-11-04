@@ -39,7 +39,7 @@
               </template>
             </el-table-column>
             <el-table-column
-              prop="createUser.name"
+              prop="reviewUser.name"
               label="审批人"
             />
 

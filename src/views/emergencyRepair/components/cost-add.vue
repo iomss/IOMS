@@ -40,7 +40,7 @@
         <el-form-item label="应急抢修申请表" style="display:block;" class="applicationform-box">
 
           <el-button type="primary" icon="el-icon-plus" size="mini" class="btn-xs" @click="openApplyPage" />
-          <el-button type="danger" size="mini" icon="el-icon-delete" class="btn-xs" />
+          <el-button type="danger" size="mini" icon="el-icon-delete" class="btn-xs" @click="applicationDel" />
 
           <el-table
             :key="applicationTable.tableKey"
@@ -471,6 +471,16 @@ export default {
     // 关闭回调 并且执行父组件方法
     closeDialog() {
       this.$parent.closeDialog()
+    },
+
+    // 申请单删除
+    applicationDel() {
+      if (!this.applyDesc.id) {
+        this.$message.error('请选择申请单')
+        return
+      }
+
+      this.applicationTable.list.splice(this.applicationTable.list.findIndex(item => item.id === this.applyDesc.id), 1)
     }
   }
 }

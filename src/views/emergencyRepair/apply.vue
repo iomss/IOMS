@@ -3,9 +3,9 @@
 
     <el-form v-show="isShowSearch" :inline="true" :model="formData" class="demo-form-inline" size="small">
 
-      <el-form-item label="审批人">
+      <!--  <el-form-item label="审批人">
         <el-input v-model="formData.user" placeholder="审批人" />
-      </el-form-item>
+      </el-form-item> -->
 
       <el-form-item label="状态">
         <el-select v-model="formData.state" placeholder="状态">
@@ -35,7 +35,7 @@
 
     <div class="filter-container">
       <div class="toolbar pull-left">
-        <el-button type="info" size="small" icon="el-icon-refresh" />
+        <el-button type="info" size="small" icon="el-icon-refresh" @click="onRefresh" />
         <el-button type="primary" size="small" icon="el-icon-plus" @click="addPage" />
         <!-- <el-button type="danger" size="small" icon="el-icon-delete" /> -->
       </div>
@@ -65,6 +65,7 @@
           <a v-if="scope.row.emergencyState == 'Pending'" href="javascript:;" style="color: #1890ff;">待审批</a>
           <a v-if="scope.row.emergencyState == 'PendingSubCenter'" href="javascript:;" style="color: #1890ff;">待分中心审批</a>
           <a v-if="scope.row.emergencyState == 'PendingNetCenter'" href="javascript:;" style="color: #1890ff;">待路网中心审批</a>
+          <a v-if="scope.row.emergencyState == 'PendingLeader'" href="javascript:;" style="color: #1890ff;">待领导审批</a>
           <a v-if="scope.row.emergencyState == 'Applied'" href="javascript:;" style="color: #13ce66;">已批准</a>
           <a v-if="scope.row.emergencyState == 'Rejected'" href="javascript:;" style="color: #ff4949">驳回</a>
         </template>
@@ -277,7 +278,7 @@ export default {
       this.formData.beginTime = this.formData.date.length !== 0 ? this.formatterDate(1, 1, this.formData.date[0]) : ''
       this.formData.endTime = this.formData.date.length !== 0 ? this.formatterDate(1, 1, this.formData.date[1]) : ''
 
-      this.getList()
+      this.onRefresh()
     },
 
     checkTypeIsSelect() {
@@ -287,6 +288,11 @@ export default {
     // 关闭添加组件
     closeDialog() {
       this.addVisible = false
+    },
+
+    // 刷新
+    onRefresh() {
+      this.getList()
     }
   }
 }

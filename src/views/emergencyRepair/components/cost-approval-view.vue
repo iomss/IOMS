@@ -189,7 +189,7 @@
           <div>提示：工程方案、数量、质量、主要材料设备的核实情况</div>
         </el-form-item>
 
-        <el-form-item v-if="queryRoles[3].status" label="分管领导意见" class="applicationform-box">
+        <el-form-item v-if="queryRoles[3].status && costDesc.emergencyState === 'PendingLeader'" label="分管领导意见" class="applicationform-box">
 
           <template>
             <el-radio-group v-model="leadership.reviewStatus">

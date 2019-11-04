@@ -72,14 +72,6 @@
         </el-row>
       </el-form-item>
 
-      <el-form-item label="费用" style="display:block;" prop="money">
-        <el-radio-group v-model="form.money">
-          <el-radio :label="true">是</el-radio>
-          <el-radio :label="false">否</el-radio>
-        </el-radio-group>
-        （是否预估5万以上）
-      </el-form-item>
-
       <el-form-item label="工程名称" prop="engineering">
         <el-input v-model="form.engineering" placeholder="请输入工程名称" />
       </el-form-item>
