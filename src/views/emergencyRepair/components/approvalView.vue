@@ -34,7 +34,7 @@
                 width="180"
               />
               <el-table-column
-                prop="createUser.name"
+                prop="reviewUser.name"
                 label="审批人"
               />
 
@@ -79,13 +79,12 @@
               </el-form-item>
             </el-tooltip>
           </el-row>
-
           <el-form-item label="抢修单位">
             <el-select v-model="pattern.repairUnitId" placeholder="请选择抢修单位">
               <el-option v-for="item in repairList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
-          <el-form-item label="提交给">
+          <el-form-item v-if="viewDesc.costEstimate > 5" label="提交给">
             <el-select v-model="pattern.reviewerId" placeholder="请选择上级审批">
               <el-option v-for="item in emergencyList" :key="item.id" :label="item.trueName" :value="item.id" />
             </el-select>
@@ -97,7 +96,7 @@
       </div>
 
       <!-- 分管领导意见 -->
-      <div v-if="queryRoles[2].status">
+      <div v-if="queryRoles[2].status && viewDesc.emergencyState === 'PendingLeader'">
         <el-divider>分管领导意见</el-divider>
         <el-form ref="leadership" :model="leadership" status-icon size="small" :inline="true" label-width="100px">
           <el-tooltip class="item" effect="dark" content="预估费用五万元以上" placement="right-start">
@@ -115,10 +114,10 @@
       </div>
 
       <div slot="footer" class="dialog-footer" style="text-align: center;display: block;">
-        <el-button size="small" @click="changeActiveVisible = false">取 消</el-button>
+        <el-button type="primary" size="small" @click="onSubmit">确定</el-button>
         <el-button type="primary" size="small">导出打印</el-button>
         <el-button type="primary" size="small">上传附件</el-button>
-        <el-button type="primary" size="small" @click="onSubmit">确定</el-button>
+        <el-button size="small" @click="changeActiveVisible = false">取 消</el-button>
       </div>
 
     </el-dialog>
@@ -155,7 +154,7 @@ export default {
       // 查询是否 有这三个的权限
       queryRoles: [
         {
-          name: 'EmergencyRequisitionSubCenterReview',
+          name: 'EmergencyRequisitionSubCenterReviews',
           status: false
         },
         {
@@ -163,7 +162,7 @@ export default {
           status: false
         },
         {
-          name: 'EmergencyRequisitionLeaderReview',
+          name: 'EmergencyRequisitionLeaderReviews',
           status: false
         }
       ],
@@ -251,6 +250,8 @@ export default {
     // 获取子组件的值
     getMsgFormSon(data) {
       this.viewDesc = data
+
+      console.log(data)
     },
 
     // 获取 抢修单位
@@ -284,7 +285,7 @@ export default {
       } else if (this.queryRoles[1].status) {
         this.emergencyRequisition(this.pattern)
         // 分管领导意见
-      } else if (this.queryRoles[2].status) {
+      } else if (this.queryRoles[2].status && this.viewDesc.emergencyState === 'PendingLeader') {
         this.emergencyRequisition(this.leadership)
       }
     },

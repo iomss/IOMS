@@ -99,7 +99,7 @@
           >
             <el-table-column label="序号" prop="id" align="center" />
             <el-table-column label="名称" prop="name" align="center" />
-            <el-table-column label="上传" prop="createTime" align="center" :formatter="formatterDate" />
+            <el-table-column label="上传时间" prop="createTime" align="center" :formatter="formatterDate" />
 
           </el-table>
         </el-form-item>
@@ -189,7 +189,7 @@
           <div>提示：工程方案、数量、质量、主要材料设备的核实情况</div>
         </el-form-item>
 
-        <el-form-item v-if="queryRoles[3].status" label="分管领导意见" class="applicationform-box">
+        <el-form-item v-if="queryRoles[3].status && costDesc.emergencyState === 'PendingLeader'" label="分管领导意见" class="applicationform-box">
 
           <template>
             <el-radio-group v-model="leadership.reviewStatus">
@@ -201,7 +201,6 @@
           <el-input v-model="leadership.remark" type="textarea" />
           <div>提示：预算费用五万元以上</div>
         </el-form-item>
-
       </el-form>
 
     </el-row>
@@ -247,6 +246,9 @@ export default {
   data: function() {
     return {
       changeActiveVisible: false,
+      acceptanceId: 0,
+
+      emergencyAuditType: [],
 
       form: {
         repairBeginTime: '',
@@ -479,9 +481,6 @@ export default {
           }
         })
       })
-    },
-    handleChange() {
-
     }
   }
 }

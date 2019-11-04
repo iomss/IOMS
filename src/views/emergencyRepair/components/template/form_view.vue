@@ -64,7 +64,7 @@
           <el-checkbox v-model="form.includeToll" label="收费系统" />
           <el-checkbox v-model="form.includeCommunication" label="通信系统" />
           <el-checkbox v-model="form.includeTunnel" label="隧道设备" />
-          <el-checkbox v-model="form.includeOther" label="其他" />
+          <el-checkbox v-model="includeOther" label="其他" />
         </el-form-item>
       </el-col>
     </el-row>
@@ -76,14 +76,6 @@
           第 {{ form.basisChapter }} 章 {{ form.basisArticle }} 条 第{{ form.basisParagraph }}款：{{ form.basisParagraphContent }}
         </el-col>
       </el-row>
-    </el-form-item>
-
-    <el-form-item label="费用" style="display:block;">
-      <el-radio-group>
-        <el-radio label="是" />
-        <el-radio label="否" />
-      </el-radio-group>
-      （是否预估5万以上）
     </el-form-item>
 
     <el-row>
@@ -185,6 +177,14 @@ export default {
 
     receiveUnittName: function() {
       return this.form.receiveUnit ? this.form.receiveUnit.name : ''
+    },
+
+    includeOther: function() {
+      if (this.form.includeOther === '其他') {
+        return true
+      } else {
+        return false
+      }
     }
   },
   mounted() {

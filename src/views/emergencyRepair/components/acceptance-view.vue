@@ -12,7 +12,14 @@
 
       <el-form-item label="施工日期">
         <el-col>
-          <el-input v-model="form.createTime" placeholder="施工日期" style="width:240px" />
+          <el-date-picker
+            v-model="form.date"
+            type="daterange"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width:240px"
+          />
         </el-col>
       </el-form-item>
 
@@ -33,10 +40,9 @@
           class="table-applicationform"
         >
           <el-table-column label="序号" prop="id" align="center" />
-          <el-table-column label="编号" prop="number" align="center" />
-          <el-table-column label="报修单位" prop="name" align="center" />
-          <el-table-column label="接报单位" prop="company_2" align="center" />
-          <el-table-column label="报修时间" prop="createTime" align="center" />
+          <el-table-column label="报修单位" prop="repairUnit.name" align="center" />
+          <el-table-column label="接报单位" prop="reportUnit" align="center" />
+          <el-table-column label="报修时间" prop="createTime" align="center" :formatter="formatterDate" />
         </el-table>
       </el-form-item>
 
@@ -50,17 +56,16 @@
           highlight-current-row
           show-summary
           :summary-method="getSummaries"
-
           style="width: 100%;"
           size="mini"
           class="table-applicationform"
         >
-          <el-table-column label="序号" prop="id" align="center" />
+          <el-table-column label="序号" type="index" align="center" />
           <el-table-column label="名称" prop="name" align="center" />
           <el-table-column label="单位" prop="unit" align="center" />
-          <el-table-column label="数量" prop="number" align="center" />
-          <el-table-column label="单价(元)" prop="price" align="center" />
-          <el-table-column label="总价(元)" prop="total" align="center" />
+          <el-table-column label="数量" prop="quantity" align="center" />
+          <el-table-column label="单价(元)" prop="unitPrice" align="center" />
+          <el-table-column label="总价(元)" prop="totalPrice" align="center" />
 
         </el-table>
       </el-form-item>
@@ -79,8 +84,8 @@
           class="table-applicationform"
         >
           <el-table-column label="序号" prop="id" align="center" />
-          <el-table-column label="名称" prop="number" align="center" />
-          <el-table-column label="上传" prop="createTime" align="center" />
+          <el-table-column label="名称" prop="name" align="center" />
+          <el-table-column label="上传时间" prop="createTime" align="center" :formatter="formatterDate" />
 
         </el-table>
       </el-form-item>
@@ -99,10 +104,10 @@
           size="mini"
           class="table-applicationform"
         >
-          <el-table-column label="审批单位" prop="name" align="center" />
-          <el-table-column label="审批意见" prop="company_2" align="center" />
-          <el-table-column label="审批人" prop="createTime" align="center" />
-          <el-table-column label="审批时间" prop="createTime" align="center" />
+          <el-table-column label="审批单位" prop="type" align="center" :formatter="convertUnitType" />
+          <el-table-column label="审批意见" prop="remark" align="center" />
+          <el-table-column label="审批人" prop="reviewUser.name" align="center" />
+          <el-table-column label="审批时间" prop="createTime" align="center" :formatter="formatterDate" />
 
         </el-table>
       </el-form-item>
@@ -121,10 +126,10 @@
           size="mini"
           class="table-applicationform"
         >
-          <el-table-column label="审批单位" prop="name" align="center" />
-          <el-table-column label="审批意见" prop="company_2" align="center" />
-          <el-table-column label="审批人" prop="createTime" align="center" />
-          <el-table-column label="审批时间" prop="createTime" align="center" />
+          <el-table-column label="审批单位" prop="type" align="center" :formatter="convertUnitType" />
+          <el-table-column label="审批意见" prop="reviewComment" align="center" />
+          <el-table-column label="审批人" prop="reviewUser.name" align="center" />
+          <el-table-column label="审批时间" prop="createTime" align="center" :formatter="formatterDate" />
 
         </el-table>
       </el-form-item>
@@ -179,51 +184,24 @@ export default {
           name: ''
         },
 
-        date1: '',
-        date2: '',
+        date: '',
         delivery: '',
         type: '',
         resource: '',
         desc: '',
 
-        fileList: [{
-          name: 'food.jpeg',
-          url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-        }, {
-          name: 'food2.jpeg',
-          url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-        }]
+        fileList: []
 
       },
 
       applicationTable: {
         listLoading: false,
-        list: [{
-          id: 1,
-          number: 2220912,
-          name: '家堡东收费站',
-          company_2: '韵家口分中心',
-          createTime: '2019-10-02'
-        }]
+        list: []
       },
 
       projectTable: {
         listLoading: false,
-        list: [{
-          id: 1,
-          name: '高杆200W LED投光灯',
-          unit: '盏',
-          number: 20,
-          price: 10,
-          total: 200
-        }, {
-          id: 2,
-          name: '人工费',
-          unit: '人',
-          number: 8,
-          price: 200,
-          total: 1200
-        }]
+        list: []
       },
 
       examineTable: {
@@ -234,7 +212,9 @@ export default {
       annexTable: {
         listLoading: false,
         list: []
-      }
+      },
+
+      emergencyAuditType: []
     }
   },
 
@@ -243,7 +223,31 @@ export default {
       this.changeActiveVisible = true
       this.acceptanceId = id
 
+      this.getEmergencyAuditType()
       this.getAcceptanceDataDesc()
+    },
+
+    /**
+     * 转换单位类型
+     * @return {[type]} [description]
+     */
+    convertUnitType(row, column, cellValue) {
+      for (var i = 0, len = this.emergencyAuditType.length; i < len; i++) {
+        if (this.emergencyAuditType[i]['key'] === cellValue) {
+          cellValue = this.emergencyAuditType[i]['description']
+        }
+      }
+      return cellValue
+    },
+
+    /**
+     * 获取应急抢修审核类型
+     * @return {[type]} [description]
+     */
+    getEmergencyAuditType() {
+      this.$axios.get('/api/Enum/EmergencyAuditType/').then(res => {
+        this.emergencyAuditType = res
+      })
     },
 
     /**
@@ -253,17 +257,33 @@ export default {
     getAcceptanceDataDesc() {
       this.applicationTable.listLoading = true
       this.projectTable.listLoading = true
+      this.annexTable.listLoading = true
+      this.examineTable.listLoading = true
+
+      this.applicationTable.list = []
+      this.projectTable.list = []
+      this.annexTable.list = []
+      this.examineTable.list = []
 
       this.$axios.get('/api/EmergencyAcceptance/' + this.acceptanceId).then(res => {
-        this.form.createTime = this.$moment(res.createTime).format('YYYY-MM-DD')
+        this.form.date = [this.$moment(res.repairBeginTime).format('YYYY-MM-DD'), this.$moment(res.repairEndTime).format('YYYY-MM-DD')]
         this.form.createUser.name = res.createUser.name
 
+        // 项目信息
         this.applicationTable.listLoading = false
-        this.applicationTable.list[0] = res.emergencyRequisition
+        this.applicationTable.list.push(res.emergencyRequisition)
 
+        // 附件
+        this.annexTable.listLoading = false
+        this.annexTable.list = res.attachments
+
+        // 工程清单
         this.projectTable.listLoading = false
-        // this.projectTable.list
-        // this.form.rateScore = res.rateScore
+        this.projectTable.list = res.emergencyWorkCost.project
+
+        // 审批意见
+        this.examineTable.listLoading = false
+        this.examineTable.list = res.audits
       })
     },
 
@@ -296,6 +316,15 @@ export default {
         }
       })
       return sums
+    },
+
+    // 日期时间格式化
+    formatterDate(row, column, cellValue) {
+      if (cellValue !== null) {
+        return this.$moment(cellValue).format('YYYY-MM-DD')
+      } else {
+        return cellValue
+      }
     },
 
     onSubmit() {

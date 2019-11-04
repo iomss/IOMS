@@ -77,7 +77,7 @@ const emergencyRepairRoutes = {
       meta: {
         title: '应急抢修验收审批',
         icon: 'fa fa-circle-o',
-        roles: ['ManageAsset'],
+        roles: ['EmergencyAcceptanceReview'],
         fullPath: '/emergencyRepair/acceptanceApproval'
       }
     }

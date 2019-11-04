@@ -65,7 +65,7 @@
       <el-table-column label="接报单位" prop="emergencyRequisition.receiveUnit" align="center" />
       <el-table-column label="录入时间" prop="createTime" align="center" :formatter="formatterDate" />
 
-      <el-table-column label="操作">
+      <el-table-column label="操作" align="center">
         <template slot-scope="scope">
           <el-button
             size="small"
@@ -78,7 +78,7 @@
 
     </el-table>
 
-    <pagination v-show="table.total>0" :total="table.total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination v-show="table.total>0" :total="table.total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="addPagingData" />
 
     <cost-view v-if="viewVisible" ref="costView" />
 
@@ -113,7 +113,7 @@
 <script>
 
 // https://blog.csdn.net/qq_29384639/article/details/80700882
-import costView from './components/cost-approval-view'
+import costView from './components/acceptance-approval'
 
 import pagination from '@/components/Pagination'
 
@@ -223,13 +223,22 @@ export default {
     },
 
     /**
+     * 添加分页数据
+     * @param {[type]} val [description]
+     */
+    addPagingData(val) {
+      this.formInline.pageNumber = val.page
+      this.getList()
+    },
+
+    /**
      * 处理显示试图
      * @return {[type]} [description]
      */
-    handleView() {
+    handleView(index, rows) {
       this.viewVisible = true
       this.$nextTick(() => {
-        this.$refs.costView.init()
+        this.$refs.costView.init(rows.id)
       })
     },
 

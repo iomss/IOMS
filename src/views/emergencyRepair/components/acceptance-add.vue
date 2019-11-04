@@ -1,7 +1,12 @@
 <template>
   <div class="djalog-box">
     <el-dialog
+      v-loading="loading"
       title="青海省高等级公路机电工程数量确认及质量验收确认表"
+      element-loading-text="正在提交中"
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="rgba(0, 0, 0, 0.8)"
+
       :visible.sync="changeActiveVisible"
       :close-on-press-escape="false"
       :close-on-click-modal="false"
@@ -88,7 +93,6 @@
             class="upload-demo"
             action="/"
             :http-request="upload"
-            :on-change="handleChange"
             :file-list="form.fileList"
           >
             <el-button size="small" type="primary">点击上传</el-button>
@@ -156,10 +160,13 @@ export default {
   },
   data: function() {
     return {
+      loading: false,
       changeActiveVisible: false,
 
       applyVisible: false,
       projectVisible: false,
+      acceptanceId: 0,
+      isEdit: false,
 
       form: {
         emergencyRequisitionId: 0,
@@ -191,7 +198,20 @@ export default {
   methods: {
     init() {
       this.changeActiveVisible = true
-      this.form.name = this.$cookie.get('userName')
+      this.isEdit = false
+
+      this.form.name = this.$cookie.get('trueName')
+    },
+    /**
+     * 初始化编辑内容
+     * @return {[type]} [description]
+     */
+    initEdit(id) {
+      this.acceptanceId = id
+      this.changeActiveVisible = true
+      this.isEdit = true
+
+      this.getAcceptanceDataDesc()
     },
 
     /**
@@ -224,7 +244,6 @@ export default {
       })
       return sums
     },
-
     /**
      * 提交申请单
      * @param  {[type]} type [description]
@@ -233,6 +252,8 @@ export default {
     onSubmit(type) {
       if (type === 1) {
         this.form.submit = true
+      } else {
+        this.form.submit = false
       }
 
       if (this.applicationTable.list.length <= 0) {
@@ -245,9 +266,41 @@ export default {
         this.form.repairEndTime = this.$utils.formatTime(this.form.date[1], 'Y-M-D')
       }
 
+      this.loading = true
+
+      if (this.isEdit) {
+        this.handlerUpdateData()
+      } else {
+        this.handlerSaveData()
+      }
+    },
+    /**
+     * 更新数据
+     * @return {[type]} [description]
+     */
+    handlerUpdateData() {
+      this.$axios.put('api/EmergencyAcceptance/' + this.acceptanceId, this.form).then(res => {
+        this.changeActiveVisible = false
+        this.loading = false
+        this.$emit('func')
+      }).catch(res => {
+        this.loading = false
+        this.$message.error(res.message || '保存失败')
+      })
+    },
+
+    /**
+     * 保存数据
+     * @return {[type]} [description]
+     */
+    handlerSaveData() {
       this.$axios.post('api/EmergencyAcceptance/', this.form).then(res => {
         this.changeActiveVisible = false
+        this.loading = false
         this.$emit('func')
+      }).catch(res => {
+        this.loading = false
+        this.$message.error(res.message || '保存失败')
       })
     },
 
@@ -273,12 +326,33 @@ export default {
         // console.log(res)
       })
     },
+    /**
+     * 获取验收申请单详细内容
+     * @return {[type]} [description]
+     */
+    getAcceptanceDataDesc() {
+      this.applicationTable.listLoading = true
+      this.projectTable.listLoading = true
 
-    handleChange(file, fileList) {
-      console.log(file)
-      // console.log(fileList.slice(-3))
+      this.applicationTable.list = []
+      this.projectTable.list = []
+      this.$axios.get('/api/EmergencyAcceptance/' + this.acceptanceId).then(res => {
+        this.form.date = [this.$moment(res.repairBeginTime).format('YYYY-MM-DD'), this.$moment(res.repairEndTime).format('YYYY-MM-DD')]
+        this.form.name = res.createUser.name
+        this.form.fileList = res.attachments
+
+        this.form.remark = res.remark
+        this.form.reviewComment = res.reviewComment
+
+        // 项目信息
+        this.applicationTable.listLoading = false
+        this.applicationTable.list.push(res.emergencyRequisition)
+
+        // 工程清单
+        this.projectTable.listLoading = false
+        this.projectTable.list = res.emergencyWorkCost.project
+      })
     },
-
     /**
      * 打开应急抢修表清单
      * @return {[type]} [description]
