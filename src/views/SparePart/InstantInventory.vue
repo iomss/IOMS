@@ -49,10 +49,10 @@
               <el-table-column prop="unitPrice" label="单价" />
               <el-table-column prop="totalPrice" label="总价" />
               <el-table-column prop="year" label="入库年份" />
-              <el-table-column prop="remark" label="备注" />
-              <el-table-column prop="remark" label="摘要">
+              <el-table-column prop="comment" label="备注" />
+              <el-table-column label="摘要">
                 <template slot-scope="scope">
-                  <el-button v-show="scope.row.spare.consumable" type="text" @click="zhaiyaoVisible=true;getZhaiyaoData(scope.row.spareId)">出入库摘要</el-button>
+                  <el-button v-show="scope.row.spare.consumable" type="text" @click="zhaiyaoVisible=true;getZhaiyaoData(scope.row.id)">出入库摘要</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -62,12 +62,28 @@
             <el-dialog width="40%" title="选择备件" :visible.sync="zhaiyaoVisible" append-to-body>
               <el-table :data="zhaiyaoData" border>
                 <el-table-column type="index" label="序号" width="50" />
-                <el-table-column type="spareStockRecordCode" label="单据号" />
+                <el-table-column type="spareStockRecordCode" label="单据号">
+                  <template slot-scope="scope">
+                    {{ scope.row.spareStockRecordCode }}
+                  </template>
+                </el-table-column>
                 <el-table-column type="spareStockRecordCode" label="出入库类型" />
-                <el-table-column type="spareStockRecordItem.name" label="设备名称" />
-                <el-table-column type="spareStockRecordBoundTime" label="出入库时间" />
-                <el-table-column type="quantity" label="出入库数量" />
-                <el-table-column type="remark" label="备注" />
+                <el-table-column type="spareStockRecordItem.spare.name" label="设备名称">
+                  <template slot-scope="scope">
+                    {{ scope.row.spareStockRecordItem.spare.name }}
+                  </template>
+                </el-table-column>
+                <el-table-column type="spareStockRecordBoundTime" label="出入库时间" :formatter="formatterTime" />
+                <el-table-column type="quantity" label="出入库数量">
+                  <template slot-scope="scope">
+                    {{ scope.row.quantity }}
+                  </template>
+                </el-table-column>
+                <el-table-column type="remark" label="备注">
+                  <template slot-scope="scope">
+                    {{ scope.row.spareStockRecordItem.remark }}
+                  </template>
+                </el-table-column>
               </el-table>
               <pagination v-show="zhaiyaoTotalCount>0" :total="zhaiyaoTotalCount" :page.sync="zhaiyaoForm.pageNumber" :limit.sync="zhaiyaoForm.pageSize" @pagination="getPageZhaiyao" />
             </el-dialog>
@@ -316,6 +332,14 @@ export default {
     this.getKufang()
   },
   methods: {
+    // 格式化日期
+    formatterTime(row, column, cellValue) {
+      if (cellValue !== null) {
+        return this.$moment(cellValue).format('YYYY-MM-DD HH:mm')
+      } else {
+        return cellValue
+      }
+    },
     // 获取即时库存数据
     getData() {
       this.$axios.get('/api/SpareStock/', { params: this.formSearch }).then(res => {
@@ -489,9 +513,20 @@ export default {
     },
     // 选中备件加入rukubeijian
     jiarurukubeijian() {
-      this.xuanzebeijianData.forEach(item => {
-        this.rukubeijian.push({ ...item, kucunId: item.id })
-      })
+      // this.xuanzebeijianData.forEach(item => {
+      //   this.rukubeijian.push({ ...item, kucunId: item.id })
+      // })
+
+      if (this.xuanzebeijianData) {
+        const newArray = []
+        this.xuanzebeijianData.forEach(i => {
+          let hasData = false
+          this.rukubeijian.forEach(item => { item.id === i.id ? hasData = true : '' })
+          hasData ? '' : newArray.push({ ...i, kucunId: i.id })
+        })
+        this.rukubeijian = Array.prototype.concat.apply(this.rukubeijian, newArray)
+      }
+
       this.xuanzebeijianVisible = false
     },
     /* *****选择备件结束***** */
