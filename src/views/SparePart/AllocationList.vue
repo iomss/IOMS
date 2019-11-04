@@ -164,6 +164,7 @@ export default {
         text: '', // 搜索文本
         type: '', // 库存类型（备件、维修、报废）
         unitId: null, // 管理单位
+        allunit: true, // 查询所有单位的
         spareRepositoryId: null, // 库房
         consumable: null, // 备件性质
         pageSize: 10, // 展示条数
