@@ -99,7 +99,7 @@
           >
             <el-table-column label="序号" prop="id" align="center" />
             <el-table-column label="名称" prop="name" align="center" />
-            <el-table-column label="上传" prop="createTime" align="center" :formatter="formatterDate" />
+            <el-table-column label="上传时间" prop="createTime" align="center" :formatter="formatterDate" />
 
           </el-table>
         </el-form-item>
@@ -201,7 +201,6 @@
           <el-input v-model="leadership.remark" type="textarea" />
           <div>提示：预算费用五万元以上</div>
         </el-form-item>
-
       </el-form>
 
     </el-row>
@@ -247,6 +246,9 @@ export default {
   data: function() {
     return {
       changeActiveVisible: false,
+      acceptanceId: 0,
+
+      emergencyAuditType: [],
 
       form: {
         repairBeginTime: '',
@@ -479,9 +481,6 @@ export default {
           }
         })
       })
-    },
-    handleChange() {
-
     }
   }
 }

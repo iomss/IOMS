@@ -70,7 +70,7 @@
       <el-table-column label="录入人" prop="createUser.name" align="center" />
       <el-table-column label="录入时间" prop="createTime" align="center" :formatter="formatterDate" />
 
-      <el-table-column label="操作">
+      <el-table-column label="操作" align="center">
         <template slot-scope="scope">
           <el-button
             size="small"
@@ -78,12 +78,21 @@
             type="danger"
             @click="handleView(scope.$index, scope.row)"
           ><i class="el-icon-document" /></el-button>
+
+          <el-button
+            v-if="scope.row.emergencyState == 'Record'"
+            size="small"
+            class="btn-xs"
+            type="danger"
+            @click="handleEditView(scope.$index, scope.row)"
+          ><i class="el-icon-edit" /></el-button>
+
         </template>
       </el-table-column>
 
     </el-table>
 
-    <pagination v-show="table.total>0" :total="table.total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination v-show="table.total>0" :total="table.total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="addPagingData" />
 
     <acceptanc-add v-if="addVisible" ref="add" @func="onRefresh" />
     <acceptance-view v-if="viewVisible" ref="acceptanceView" />
@@ -243,6 +252,15 @@ export default {
     },
 
     /**
+     * 添加分页数据
+     * @param {[type]} val [description]
+     */
+    addPagingData(val) {
+      this.formInline.pageNumber = val.page
+      this.getList()
+    },
+
+    /**
      * 处理显示试图
      * @return {[type]} [description]
      */
@@ -250,6 +268,19 @@ export default {
       this.viewVisible = true
       this.$nextTick(() => {
         this.$refs.acceptanceView.init(rows.id)
+      })
+    },
+
+    /**
+     * 处理编辑试图
+     * @param  {[type]} index [description]
+     * @param  {[type]} rows  [description]
+     * @return {[type]}       [description]
+     */
+    handleEditView(index, rows) {
+      this.addVisible = true
+      this.$nextTick(() => {
+        this.$refs.add.initEdit(rows.id)
       })
     },
 
