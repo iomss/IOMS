@@ -370,8 +370,7 @@ export const asyncRoutes = [
     meta: {
       title: '备品备件',
       icon: 'fa fa-plug',
-      fullPath: '/SparePart',
-      roles: ['SpareNameManage']
+      fullPath: '/SparePart'
     },
     component: Layout,
     redirect: '/SparePart/List',
