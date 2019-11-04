@@ -67,7 +67,11 @@
                     {{ scope.row.spareStockRecordCode }}
                   </template>
                 </el-table-column>
-                <el-table-column type="spareStockRecordCode" label="出入库类型" />
+                <el-table-column type="spareStockRecordCode" label="出入库类型">
+                  <template slot-scope="scope">
+                    {{ scope.row.spareBoundType==='InBound'?'入库': scope.row.spareBoundType==='OutBound'?'出库':scope.row.spareBoundType==='ScrapBound'?'报废':scope.row.spareBoundType==='TransferApplication'?'调拨':'' }}
+                  </template>
+                </el-table-column>
                 <el-table-column type="spareStockRecordItem.spare.name" label="设备名称">
                   <template slot-scope="scope">
                     {{ scope.row.spareStockRecordItem.spare.name }}
