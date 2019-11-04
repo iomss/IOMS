@@ -55,7 +55,7 @@
               <el-table-column prop="unitPrice" label="单价" />
               <el-table-column prop="totalPrice" label="总价" />
               <el-table-column prop="year" label="入库年份" />
-              <el-table-column prop="remark" label="备注" />
+              <el-table-column prop="comment" label="备注" />
             </el-table>
             <!--分页-->
             <pagination v-show="totalCount>0" :total="totalCount" :page.sync="formSearch.pageNumber" :limit.sync="formSearch.pageSize" @pagination="getPage" />
