@@ -111,7 +111,7 @@
                   <el-button style="display:block;margin-left:0;margin-bottom:5px;" size="mini" type="text" @click="UpdateInfo(scope.row)">{{ scope.row.code }}</el-button>
                 </template>
               </el-table-column>
-              <el-table-column prop="equipmentType.name" label="资产类别" sortable="custom" />
+              <el-table-column prop="equipment.name" label="资产类别" sortable="custom" />
               <el-table-column prop="alias" label="资产名称" sortable="custom">
                 <template slot-scope="scope">
                   {{ scope.row.alias===null?scope.row.equipment===null?'':scope.row.equipment.name: scope.row.alias }}
