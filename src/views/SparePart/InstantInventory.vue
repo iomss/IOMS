@@ -513,14 +513,18 @@ export default {
     /* *****选择备件开始***** */
     // 从备件中选择备件
     handleBeijianSelection(val) {
-      this.xuanzebeijianData.push(...val)
+      if (val) {
+        const newArray = []
+        val.forEach(i => {
+          let hasData = false
+          this.xuanzebeijianData.forEach(item => { item.id === i.id ? hasData = true : '' })
+          hasData ? '' : newArray.push(i)
+        })
+        this.xuanzebeijianData = Array.prototype.concat.apply(this.xuanzebeijianData, newArray)
+      }
     },
     // 选中备件加入rukubeijian
     jiarurukubeijian() {
-      // this.xuanzebeijianData.forEach(item => {
-      //   this.rukubeijian.push({ ...item, kucunId: item.id })
-      // })
-
       if (this.xuanzebeijianData) {
         const newArray = []
         this.xuanzebeijianData.forEach(i => {
@@ -532,6 +536,7 @@ export default {
       }
 
       this.xuanzebeijianVisible = false
+      this.xuanzebeijianData = []
     },
     /* *****选择备件结束***** */
     /* ****************  入库结束  ******************** */
