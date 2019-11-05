@@ -21,9 +21,15 @@
                   </treeselect>
                 </el-form-item>
                 <el-form-item>
-                  <el-select v-model="formSearch.spareRepositoryId" clearable filterable placeholder="全部库房" size="small">
+                  <el-form-item>
+                    <el-select v-model="formSearch.spareRepositoryId" filterable remote :remote-method="getKufang" :loading="loading" placeholder="库房" size="small" no-match-text="没有找到相关库房" @focus="getKufang">
+                      <el-option v-for="item in SpareRepositoryData" :key="item.id" :label="item.name" :value="item.id" />
+                    </el-select>
+                  </el-form-item>
+
+                  <!-- <el-select v-model="formSearch.spareRepositoryId" clearable filterable placeholder="全部库房" size="small">
                     <el-option v-for="item in SpareRepositoryData" :key="item.id" :label="item.name" :value="item.id" />
-                  </el-select>
+                  </el-select> -->
                 </el-form-item>
                 <el-form-item>
                   <el-select v-model="formSearch.consumable" clearable placeholder="备件性质" size="small">
@@ -78,8 +84,11 @@
                 <treeselect v-model="allocationForm.unitId" :normalizer="normalizer" :options="UnitData" :load-options="loadOptions" placeholder="管理单位" no-results-text="未找到相关数据" />
               </el-form-item>
               <el-form-item label="调拨后库房" prop="spareRepositoryId">
-                <el-select v-model="allocationForm.spareRepositoryId" clearable filterable placeholder="全部库房" size="small">
+                <!-- <el-select v-model="allocationForm.spareRepositoryId" clearable filterable placeholder="全部库房" size="small">
                   <el-option v-for="item in SpareRepositoryData" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select> -->
+                <el-select v-model="allocationForm.spareRepositoryId" filterable remote :remote-method="getKufangdiaobo" :loading="loading" placeholder="库房" size="small" no-match-text="没有找到相关库房" @focus="getKufangdiaobo">
+                  <el-option v-for="item in SpareRepositoryDatadiaobo" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
               <el-form-item label="经办人">
@@ -160,6 +169,7 @@ export default {
       loading: false, // 远程搜索
       UnitData: [], // 管理单位数据
       SpareRepositoryData: [], // 库房数据
+      SpareRepositoryDatadiaobo: [],
       formSearch: {
         text: '', // 搜索文本
         type: '', // 库存类型（备件、维修、报废）
@@ -220,7 +230,9 @@ export default {
   mounted() {
     this.getData()
     this.getUnitData()
-    this.getSpareRepositoryData()
+    // this.getSpareRepositoryData()
+    this.getKufang()
+    this.getKufangdiaobo()
   },
   methods: {
     // treeSelect 加载
@@ -277,12 +289,43 @@ export default {
         this.UnitData = res
       })
     },
-    // 获取库房数据
-    getSpareRepositoryData() {
-      this.$axios.get('/api/SpareRepository').then(res => {
+    // 库房数据
+    getKufang(query) {
+      this.loading = true
+      let querytext = ''
+      querytext = typeof (query) === 'string' ? query : ''
+
+      const searchQuery = {
+        text: querytext,
+        allUnit: true,
+        unitId: this.formSearch.unitId
+      }
+      this.$axios.get('/api/SpareRepository', { params: searchQuery }).then(res => {
+        this.loading = false
         this.SpareRepositoryData = res.data
       })
     },
+    getKufangdiaobo(query) {
+      this.loading = true
+      let querytext = ''
+      querytext = typeof (query) === 'string' ? query : ''
+
+      const searchQuery = {
+        text: querytext,
+        allUnit: true,
+        unitId: this.allocationForm.unitId
+      }
+      this.$axios.get('/api/SpareRepository', { params: searchQuery }).then(res => {
+        this.loading = false
+        this.SpareRepositoryDatadiaobo = res.data
+      })
+    },
+    // 获取库房数据
+    // getSpareRepositoryData() {
+    //   this.$axios.get('/api/SpareRepository').then(res => {
+    //     this.SpareRepositoryData = res.data
+    //   })
+    // },
     // 库存table 数据选中事件
     handleSelectionSpare(val) {
       this.multipleSpareData = val

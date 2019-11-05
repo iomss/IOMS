@@ -142,6 +142,7 @@ export default {
       formSearch: {
         beginTime: '',
         endTime: '',
+        allunit: true,
         text: '', // 搜索文本
         spareBoundType: 'TransferApplication',
         spareBoundSubType: 'TransferApplication',
