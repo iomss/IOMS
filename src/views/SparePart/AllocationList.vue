@@ -5,13 +5,11 @@
       <el-col>
         <el-row class="panel">
           <div class="header">
-            <el-button type="primary" size="small" @click="allocation()">调拨申请</el-button>
-          </div>
-          <div class="header">
             <div class="tools">
-              <el-button type="success" size="small" @click="formSearch.type='spare';getData()">备件库</el-button>
+              <el-button type="primary" size="small" @click="allocation()">调拨申请</el-button>
+              <!-- <el-button type="success" size="small" @click="formSearch.type='spare';getData()">备件库</el-button>
               <el-button type="success" size="small" @click="formSearch.type='repair';getData()">维修库</el-button>
-              <el-button type="success" size="small" @click="formSearch.type='scrap';getData()">报废库</el-button>
+              <el-button type="success" size="small" @click="formSearch.type='scrap';getData()">报废库</el-button> -->
             </div>
             <div class="toolsrt">
               <el-form ref="form" :inline="true" :model="formSearch">

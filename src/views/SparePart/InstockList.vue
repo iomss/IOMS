@@ -6,7 +6,7 @@
         <el-row class="panel">
           <div class="header">
             <div class="tools">
-              <el-button type="success" size="small" @click="rukushow('InBound','Spare')">新增备件入库</el-button>
+              <!-- <el-button type="success" size="small" @click="rukushow('InBound','Spare')">新增备件入库</el-button> -->
               <el-button type="primary" size="small" @click="inForm()">确认入库</el-button>
               <!-- <el-button type="primary" size="small" @click="updateData()">修改</el-button> -->
               <el-button type="danger" size="small" @click="deleteData()">删除</el-button>
