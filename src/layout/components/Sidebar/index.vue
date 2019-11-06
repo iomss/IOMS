@@ -3,7 +3,7 @@
     <logo v-if="showLogo" :collapse="isCollapse" />
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu :default-active="getActiveMenu" class="el-menu-vertical-demo menu" router :collapse="isCollapse" background-color="#304156" text-color="#fff" active-text-color="#409eff">
-        <el-menu-item v-show="roles.includes('EnterSystem')" index="/">
+        <el-menu-item v-show="roles.includes('PlatformOverview')" index="/">
           <i class="fa fa-map" />
           <span slot="title"><a :href="url">运维平台概览展示</a></span>
         </el-menu-item>
