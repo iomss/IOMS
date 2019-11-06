@@ -15,6 +15,7 @@
             <!--导入导出-->
             <div class="tools">
               <el-button type="primary" @click="create()">新增资产</el-button>
+              <el-button type="danger" @click="drop()">报废资产</el-button>
               <el-dropdown>
                 <el-button type="primary" @click="handleClick">
                   批量导入<i class="el-icon-arrow-down el-icon--right" />
@@ -103,7 +104,7 @@
               <!-- <el-table-column v-show="false" prop="id" label="序号" sortable="custom" width="80" /> -->
               <el-table-column prop="state" label="状态" sortable="custom">
                 <template slot-scope="scope">
-                  {{ scope.row.state==='Normal'?"正常":scope.row.state==='Using'?"使用中":"故障" }}
+                  {{ scope.row.state==='Normal'?"正常":scope.row.state==='Using'?"使用中":scope.row.state==='Drop'?"报废":"故障" }}
                 </template>
               </el-table-column>
               <el-table-column prop="code" label="资产编码" sortable="custom" width="170">
@@ -530,6 +531,18 @@ export default {
     selectstate(data) { // 按状态筛选资产
       this.tableDataSearch.state = data === undefined ? null : data
       this.getData()
+    },
+    drop() {
+      const _this = this
+      // 设置清单有效
+      if (this.multipleSelection === '') {
+        this.$message.error('请至少选择一条数据')
+      } else {
+        this.$axios.put('/api/Assets/' + _this.multipleSelection[0].id + '/Drop').then(res => {
+          _this.$message.success('操作成功')
+          _this.getData()// 刷新数据
+        })
+      }
     },
     handleClick(e) { // 导入导出选择事件
     },
