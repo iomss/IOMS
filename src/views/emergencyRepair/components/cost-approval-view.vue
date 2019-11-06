@@ -118,17 +118,11 @@
             style="width: 100%"
           >
             <el-table-column
-              prop="emergencyRequisitionId"
+              prop="type"
               label="审批单位"
               width="180"
-            >
-              <template slot-scope="scope">
-                <a v-if="scope.row.type == 'Normal'" href="javascript:;">普通审批</a>
-                <a v-if="scope.row.type == 'SubCenter'" href="javascript:;">分中心审批</a>
-                <a v-if="scope.row.type == 'NetCenter'" href="javascript:;">路网中心审批</a>
-                <a v-if="scope.row.type == 'Leader'" href="javascript:;">分管领导审批</a>
-              </template>
-            </el-table-column>
+              :formatter="convertUnitType"
+            />
             <el-table-column
               prop="reviewComment"
               label="审批意见"
@@ -150,7 +144,8 @@
       </el-form>
 
       <el-form ref="form" :model="examine" label-width="110px" size="small" :inline="true">
-        <el-form-item v-if="queryRoles[0].status" label="收费站/隧道所意见" class="applicationform-box">
+
+        <el-form-item v-if="costDesc.emergencyState === 'Pending'" label="收费站/隧道所意见" class="applicationform-box">
 
           <template>
             <el-radio-group v-model="examine.reviewStatus">
@@ -163,7 +158,7 @@
           <div>提示：工程方案、数量、质量、主要材料设备的核实情况</div>
         </el-form-item>
 
-        <el-form-item v-if="queryRoles[1].status" label="分中心意见" class="applicationform-box">
+        <el-form-item v-if="costDesc.emergencyState === 'PendingSubCenter'" label="分中心意见" class="applicationform-box">
 
           <template>
             <el-radio-group v-model="subCenter.reviewStatus">
@@ -176,20 +171,24 @@
           <div>提示：工程方案、数量、质量、主要材料设备的核实情况</div>
         </el-form-item>
 
-        <el-form-item v-if="queryRoles[2].status" label="路网中心意见" class="applicationform-box">
+        <el-form-item v-if="costDesc.emergencyState === 'PendingNetCenter'" label="路网中心意见" class="applicationform-box">
 
           <template>
             <el-radio-group v-model="pattern.reviewStatus">
               <el-radio label="Applied">通过</el-radio>
               <el-radio label="Rejected">不通过</el-radio>
             </el-radio-group>
+            <span style="font-weight: 600;margin-left: 10px;">提交给：</span>
+            <el-select v-model="pattern.reviewerId" placeholder="请选择上级审批">
+              <el-option v-for="item in emergencyList" :key="item.id" :label="item.trueName" :value="item.id" />
+            </el-select>
           </template>
 
-          <el-input v-model="pattern.reviewComment" type="textarea" />
+          <el-input v-model="pattern.reviewComment" type="textarea" style="margin-top: 10px;" />
           <div>提示：工程方案、数量、质量、主要材料设备的核实情况</div>
         </el-form-item>
 
-        <el-form-item v-if="queryRoles[3].status && costDesc.emergencyState === 'PendingLeader'" label="分管领导意见" class="applicationform-box">
+        <el-form-item v-if="costDesc.emergencyState === 'PendingLeader'" label="分管领导意见" class="applicationform-box">
 
           <template>
             <el-radio-group v-model="leadership.reviewStatus">
@@ -249,6 +248,7 @@ export default {
       acceptanceId: 0,
 
       emergencyAuditType: [],
+      emergencyList: [],
 
       form: {
         repairBeginTime: '',
@@ -279,27 +279,17 @@ export default {
         list: []
       },
 
-      costDesc: {},
+      costDesc: {
+        emergencyState: ''
+      },
 
       // 查询是否 有这三个的权限
-      queryRoles: [
-        {
-          name: 'EmergencyRequisitionReview',
-          status: false
-        },
-        {
-          name: 'EmergencyRequisitionSubCenterReview',
-          status: false
-        },
-        {
-          name: 'EmergencyRequisitionNetCenterEngineerReview',
-          status: false
-        },
-        {
-          name: 'EmergencyRequisitionLeaderReview',
-          status: false
-        }
-      ],
+      queryRoles: {
+        EmergencyRequisitionReview: false,
+        EmergencyRequisitionSubCenterReview: false,
+        EmergencyRequisitionNetCenterEngineerReview: false,
+        EmergencyRequisitionLeaderReview: false
+      },
 
       // 收费站
       examine: {
@@ -351,45 +341,56 @@ export default {
   methods: {
     init(id) {
       this.id = id
-
-      const roles = this.getCookie('ioms-roles')
-
-      this.authority(roles)
-
       this.changeActiveVisible = true
+      this.costDesc.emergencyState = ''
 
+      this.setRole()
+      this.getEmergencyAuditType()
+      this.emergencyNetCenter()
       this.costViewDesc(id)
     },
+    /**
+     * 设置角色操作权限
+     */
+    setRole() {
+      var rolesData = this.$cookie.get('roles')
 
-    // 查找Cookie
-    getCookie(cname) {
-      var name = cname + '='
-      var decodedCookie = decodeURIComponent(document.cookie)
-      var ca = decodedCookie.split(';')
-      for (var i = 0; i < ca.length; i++) {
-        var c = ca[i]
-        while (c.charAt(0) === ' ') {
-          c = c.substring(1)
-        }
-        if (c.indexOf(name) === 0) {
-          return c.substring(name.length, c.length)
-        }
+      if (rolesData.indexOf('EmergencyRequisitionReview') !== -1) {
+        this.queryRoles.EmergencyRequisitionReview = true
       }
-      return ''
+
+      if (rolesData.indexOf('EmergencyRequisitionSubCenterReview') !== -1) {
+        this.queryRoles.EmergencyRequisitionSubCenterReview = true
+      }
+
+      if (rolesData.indexOf('EmergencyRequisitionNetCenterEngineerReview') !== -1) {
+        this.queryRoles.EmergencyRequisitionNetCenterEngineerReview = true
+      }
+
+      if (rolesData.indexOf('EmergencyRequisitionLeaderReview') !== -1) {
+        this.queryRoles.EmergencyRequisitionLeaderReview = true
+      }
     },
 
-    // 判断是否有权限
-    authority(roles) {
-      const rolesList = roles.split(',')
-
-      const data = this.queryRoles
-
-      rolesList.forEach((v, k) => {
-        data.forEach((k, i) => {
-          if (v === k.name) {
-            this.queryRoles[i].status = true
-          }
-        })
+    /**
+     * 转换单位类型
+     * @return {[type]} [description]
+     */
+    convertUnitType(row, column, cellValue) {
+      for (var i = 0, len = this.emergencyAuditType.length; i < len; i++) {
+        if (this.emergencyAuditType[i]['key'] === cellValue) {
+          cellValue = this.emergencyAuditType[i]['description']
+        }
+      }
+      return cellValue
+    },
+    /**
+     * 获取应急抢修审核类型
+     * @return {[type]} [description]
+     */
+    getEmergencyAuditType() {
+      this.$axios.get('/api/Enum/EmergencyAuditType/').then(res => {
+        this.emergencyAuditType = res
       })
     },
 
@@ -434,6 +435,16 @@ export default {
       })
     },
 
+    /**
+     * 获取 上级审批
+     * @return {[type]} [description]
+     */
+    emergencyNetCenter() {
+      this.$axios.get(`/api/User?emergencyNetCenter=${true}`).then(res => {
+        this.emergencyList = res.data
+      })
+    },
+
     // 日期时间格式化
     formatterDate(row, column, cellValue) {
       if (cellValue !== null) {
@@ -450,23 +461,33 @@ export default {
 
     // 提交审核
     onSubmit() {
+      const currentUserId = this.$cookie.get('id')
+
       // 收费站
-      if (this.queryRoles[0].status) {
+      if (this.costDesc.emergencyState === 'Pending' && this.queryRoles.EmergencyRequisitionReview) {
         this.emergencyRequisition(this.examine)
         // 分中心审核
-      } else if (this.queryRoles[1].status) {
+      } else if (this.queryRoles.EmergencyRequisitionSubCenterReview) {
         this.emergencyRequisition(this.subCenter)
         // 路网中心审核
-      } else if (this.queryRoles[2].status) {
+      } else if (this.queryRoles.EmergencyRequisitionNetCenterEngineerReview && this.viewDesc.emergencyState === 'PendingNetCenter' && (this.reviewerId.toString() === '' || this.reviewerId.toString() === currentUserId.toString())) {
         this.emergencyRequisition(this.pattern)
         // 分管领导意见
-      } else if (this.queryRoles[3].status) {
+      } else if (this.queryRoles.EmergencyRequisitionLeaderReview) {
         this.emergencyRequisition(this.leadership)
+      } else {
+        this.$message.error('没有权限操作')
       }
     },
 
     // 提交审核
     emergencyRequisition(data) {
+      this.$message({
+        type: 'success',
+        message: '正在提交，请稍等。。。',
+        center: true,
+        duration: 1000
+      })
       this.$axios.post(`/api/EmergencyWorkCost/${this.id}/Review`, {
         emergencyRequisitionId: this.costDesc.emergencyRequisitionId,
         emergencyWorkCostId: this.id,

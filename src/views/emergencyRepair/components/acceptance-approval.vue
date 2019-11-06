@@ -261,7 +261,7 @@ export default {
       },
 
       roleView: {
-        emergencyRequisitionSubCenterReview: false,
+        EmergencyRequisitionSubCenterReview: false,
         emergencyRequisitionNetCenterEngineerReview: false
       }
     }
@@ -305,6 +305,10 @@ export default {
       this.annexTable.list = []
       this.projectTable.list = []
       this.examineTable.list = []
+
+      this.approval_form.emergencyState = ''
+      this.approval_form.remark = ''
+      this.approval_form.reviewComment = ''
 
       this.$axios.get('/api/EmergencyAcceptance/' + this.acceptanceId).then(res => {
         this.form.date = [this.$moment(res.repairBeginTime).format('YYYY-MM-DD'), this.$moment(res.repairEndTime).format('YYYY-MM-DD')]
@@ -404,13 +408,14 @@ export default {
      * @return {[type]} [description]
      */
     onSubmit() {
-      if (!this.roleView.emergencyRequisitionSubCenterReview || !this.roleView.emergencyRequisitionNetCenterEngineerReview) {
+      if (!this.roleView.emergencyRequisitionSubCenterReview && !this.roleView.emergencyRequisitionNetCenterEngineerReview) {
         this.$message.error('您没有权限操作')
         return
       }
 
       this.$axios.post('/api/EmergencyAcceptance/' + this.acceptanceId + '/Review', this.approval_form).then(res => {
         this.changeActiveVisible = false
+        this.$emit('func')
       })
     }
   }

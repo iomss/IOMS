@@ -224,7 +224,7 @@ export default {
     addPage() {
       this.addVisible = true
       this.$nextTick(() => {
-        this.$refs.add.init()
+        this.$refs.add.init(1)
       })
     },
 

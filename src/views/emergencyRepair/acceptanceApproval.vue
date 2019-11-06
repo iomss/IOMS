@@ -80,7 +80,7 @@
 
     <pagination v-show="table.total>0" :total="table.total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="addPagingData" />
 
-    <cost-view v-if="viewVisible" ref="costView" />
+    <cost-view v-if="viewVisible" ref="costView" @func="onRefresh" />
 
   </div>
 </template>

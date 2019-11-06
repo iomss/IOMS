@@ -33,7 +33,7 @@ const emergencyRepairRoutes = {
       meta: {
         title: '应急抢修审批',
         icon: 'fa fa-circle-o',
-        roles: ['ManageAsset'],
+        roles: ['EmergencyAcceptanceReview'],
         fullPath: '/emergencyRepair/approval'
       }
     },
@@ -55,7 +55,7 @@ const emergencyRepairRoutes = {
       meta: {
         title: '应急抢修费用审批',
         icon: 'fa fa-circle-o',
-        roles: ['ManageAsset'],
+        roles: ['EmergencyAcceptanceReview'],
         fullPath: '/emergencyRepair/costApproval'
       }
     },

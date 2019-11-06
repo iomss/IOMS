@@ -24,9 +24,10 @@
               style="width: 100%"
             >
               <el-table-column
-                prop="emergencyRequisitionId"
+                prop="type"
                 label="审批单位"
                 width="180"
+                :formatter="convertUnitType"
               />
               <el-table-column
                 prop="reviewComment"
@@ -49,7 +50,7 @@
       </div>
 
       <!-- 分中心审核 -->
-      <div v-if="queryRoles[0].status">
+      <div v-if="viewDesc.emergencyState === 'PendingSubCenter'">
         <el-divider>分中心审核</el-divider>
         <el-form ref="subCenter" :model="subCenter" status-icon size="small" :inline="true" label-width="120px">
           <el-form-item label="分中心审批意见" prop="reviewStatus">
@@ -65,7 +66,7 @@
       </div>
 
       <!-- 路网中心审核 -->
-      <div v-if="queryRoles[1].status">
+      <div v-if="viewDesc.emergencyState === 'PendingNetCenter'">
         <el-divider>路网中心审核</el-divider>
         <el-form ref="leadership" :model="pattern" status-icon size="small" :inline="true" label-width="100px">
 
@@ -84,7 +85,7 @@
               <el-option v-for="item in repairList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
-          <el-form-item v-if="viewDesc.costEstimate > 5" label="提交给">
+          <el-form-item label="提交给">
             <el-select v-model="pattern.reviewerId" placeholder="请选择上级审批">
               <el-option v-for="item in emergencyList" :key="item.id" :label="item.trueName" :value="item.id" />
             </el-select>
@@ -96,7 +97,7 @@
       </div>
 
       <!-- 分管领导意见 -->
-      <div v-if="queryRoles[2].status && viewDesc.emergencyState === 'PendingLeader'">
+      <div v-if="viewDesc.emergencyState === 'PendingLeader'">
         <el-divider>分管领导意见</el-divider>
         <el-form ref="leadership" :model="leadership" status-icon size="small" :inline="true" label-width="100px">
           <el-tooltip class="item" effect="dark" content="预估费用五万元以上" placement="right-start">
@@ -152,27 +153,19 @@ export default {
         id: ''
       },
       // 查询是否 有这三个的权限
-      queryRoles: [
-        {
-          name: 'EmergencyRequisitionSubCenterReviews',
-          status: false
-        },
-        {
-          name: 'EmergencyRequisitionNetCenterEngineerReview',
-          status: false
-        },
-        {
-          name: 'EmergencyRequisitionLeaderReviews',
-          status: false
-        }
-      ],
+      queryRoles: {
+        // 应急抢修分中心审批
+        EmergencyRequisitionSubCenterReview: false,
+        // 应急抢修路网工程师审批
+        EmergencyRequisitionNetCenterEngineerReview: false,
+        // 应急抢修分管领导审批
+        EmergencyRequisitionLeaderReview: false
+      },
 
       // 分中心
       subCenter: {
-
         reviewStatus: '', // 审核状态
         reviewComment: '' // 审核内容
-
       },
 
       // 路网中心
@@ -182,7 +175,6 @@ export default {
         reviewerId: '', // 下一个审核的id
         reviewStatus: '', // 审核状态
         reviewComment: '' // 审核内容
-
       },
 
       // 分管领导
@@ -190,8 +182,9 @@ export default {
 
         reviewStatus: '', // 审核状态
         remark: '' // 意见
-
       },
+
+      emergencyAuditType: [], // 审批单位
 
       repairList: [], // 抢修单位
 
@@ -203,55 +196,58 @@ export default {
   methods: {
     init(id) {
       this.changeActiveVisible = true
-
-      const roles = this.getCookie('ioms-roles')
-
-      this.authority(roles)
-
-      this.repairUnit()
-
-      this.emergencyNetCenter()
-
       this.viewData.id = id
+
+      this.setRole()
+      this.getEmergencyAuditType()
+      this.repairUnit()
+      this.emergencyNetCenter()
     },
 
-    // 查找Cookie
-    getCookie(cname) {
-      var name = cname + '='
-      var decodedCookie = decodeURIComponent(document.cookie)
-      var ca = decodedCookie.split(';')
-      for (var i = 0; i < ca.length; i++) {
-        var c = ca[i]
-        while (c.charAt(0) === ' ') {
-          c = c.substring(1)
-        }
-        if (c.indexOf(name) === 0) {
-          return c.substring(name.length, c.length)
+    /**
+     * 设置角色操作权限
+     */
+    setRole() {
+      var rolesData = this.$cookie.get('roles')
+
+      if (rolesData.indexOf('EmergencyRequisitionSubCenterReview') !== -1) {
+        this.queryRoles.EmergencyRequisitionSubCenterReview = true
+      }
+
+      if (rolesData.indexOf('EmergencyRequisitionNetCenterEngineerReview') !== -1) {
+        this.queryRoles.EmergencyRequisitionNetCenterEngineerReview = true
+      }
+
+      if (rolesData.indexOf('EmergencyRequisitionLeaderReview') !== -1) {
+        this.queryRoles.EmergencyRequisitionLeaderReview = true
+      }
+    },
+
+    /**
+     * 转换单位类型
+     * @return {[type]} [description]
+     */
+    convertUnitType(row, column, cellValue) {
+      for (var i = 0, len = this.emergencyAuditType.length; i < len; i++) {
+        if (this.emergencyAuditType[i]['key'] === cellValue) {
+          cellValue = this.emergencyAuditType[i]['description']
         }
       }
-      return ''
+      return cellValue
     },
-
-    // 判断是否有权限
-    authority(roles) {
-      const rolesList = roles.split(',')
-
-      const data = this.queryRoles
-
-      rolesList.forEach((v, k) => {
-        data.forEach((k, i) => {
-          if (v === k.name) {
-            this.queryRoles[i].status = true
-          }
-        })
+    /**
+     * 获取应急抢修审核类型
+     * @return {[type]} [description]
+     */
+    getEmergencyAuditType() {
+      this.$axios.get('/api/Enum/EmergencyAuditType/').then(res => {
+        this.emergencyAuditType = res
       })
     },
 
     // 获取子组件的值
     getMsgFormSon(data) {
       this.viewDesc = data
-
-      console.log(data)
     },
 
     // 获取 抢修单位
@@ -267,6 +263,7 @@ export default {
         this.emergencyList = res.data
       })
     },
+
     // 日期时间格式化
     formatterDate(row, column, cellValue) {
       if (cellValue !== null) {
@@ -278,20 +275,30 @@ export default {
 
     // 提交审核
     onSubmit() {
+      const currentUserId = this.$cookie.get('id')
       // 分中心审核
-      if (this.queryRoles[0].status) {
+      if (this.queryRoles.EmergencyRequisitionSubCenterReview && this.viewDesc.emergencyState === 'PendingSubCenter') {
         this.emergencyRequisition(this.subCenter)
         // 路网中心审核
-      } else if (this.queryRoles[1].status) {
+      } else if (this.queryRoles.EmergencyRequisitionNetCenterEngineerReview && this.viewDesc.emergencyState === 'PendingNetCenter' && (this.reviewerId === '' || this.reviewerId === currentUserId)) {
         this.emergencyRequisition(this.pattern)
         // 分管领导意见
-      } else if (this.queryRoles[2].status && this.viewDesc.emergencyState === 'PendingLeader') {
+      } else if (this.queryRoles.EmergencyRequisitionLeaderReview && this.viewDesc.emergencyState === 'PendingLeader') {
         this.emergencyRequisition(this.leadership)
+      } else {
+        this.$message.error('没有权限操作')
       }
     },
 
     // 提交审核
     emergencyRequisition(data) {
+      this.$message({
+        type: 'success',
+        message: '正在提交，请稍等。。。',
+        center: true,
+        duration: 1000
+      })
+
       this.$axios.post(`/api/EmergencyRequisition/${this.viewData.id}/Review`, {
         ...data
       }).then(res => {
