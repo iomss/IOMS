@@ -411,7 +411,7 @@ export default {
      */
     rukushow(spareBoundType, spareStockType) {
       this.xuanzekucunSelectData.forEach(item => {
-        this.rukubeijian.push({ kucunId: item.id, ...item.spare, unitPrice: item.unitPrice, kucun: item.quantity })
+        this.rukubeijian.push({ kucunId: item.id, ...item.spare, unitPrice: item.unitPrice, remark: item.comment, kucun: item.quantity })
       })
       this.rukuForm.spareBoundType = spareBoundType
       this.rukuForm.spareStockType = spareStockType

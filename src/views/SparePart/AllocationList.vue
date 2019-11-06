@@ -24,10 +24,6 @@
                       <el-option v-for="item in SpareRepositoryData" :key="item.id" :label="item.name" :value="item.id" />
                     </el-select>
                   </el-form-item>
-
-                  <!-- <el-select v-model="formSearch.spareRepositoryId" clearable filterable placeholder="全部库房" size="small">
-                    <el-option v-for="item in SpareRepositoryData" :key="item.id" :label="item.name" :value="item.id" />
-                  </el-select> -->
                 </el-form-item>
                 <el-form-item>
                   <el-select v-model="formSearch.consumable" clearable placeholder="备件性质" size="small">
@@ -78,13 +74,10 @@
               <el-form-item label="调拨日期" prop="boundTime">
                 <el-date-picker v-model="allocationForm.boundTime" type="date" placeholder="选择日期" />
               </el-form-item>
-              <el-form-item label="调拨后单位" prop="unitId" style="margin-bottom:-20px;">
-                <treeselect v-model="allocationForm.unitId" :normalizer="normalizer" :options="UnitData" :load-options="loadOptions" placeholder="管理单位" no-results-text="未找到相关数据" />
+              <el-form-item label="调拨后单位" style="margin-bottom:-20px;">
+                <el-input :value="afterUnitName" disabled />
               </el-form-item>
               <el-form-item label="调拨后库房" prop="spareRepositoryId">
-                <!-- <el-select v-model="allocationForm.spareRepositoryId" clearable filterable placeholder="全部库房" size="small">
-                  <el-option v-for="item in SpareRepositoryData" :key="item.id" :label="item.name" :value="item.id" />
-                </el-select> -->
                 <el-select v-model="allocationForm.spareRepositoryId" filterable remote :remote-method="getKufangdiaobo" :loading="loading" placeholder="库房" size="small" no-match-text="没有找到相关库房" @focus="getKufangdiaobo">
                   <el-option v-for="item in SpareRepositoryDatadiaobo" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
@@ -99,10 +92,10 @@
             <el-divider />
             <div class="header">
               <div class="tools">
-                <el-button type="primary" size="small" @click="removeSelectSpare({spareData:multipleSpareData,selectData:handleSelectionData})">删除备件</el-button>
+                <el-button type="primary" size="small" @click="removeSelectSpare({spareData:multipleSpareDatadiaobo,selectData:handleSelectionData})">删除备件</el-button>
               </div>
             </div>
-            <el-table :data="multipleSpareData" stripe border style="width: 100%" height="600" @selection-change="handleSelection">
+            <el-table :data="multipleSpareDatadiaobo" stripe border style="width: 100%" height="600" @selection-change="handleSelection">
               <el-table-column type="selection" />
               <el-table-column prop="spare.number" label="编码" />
               <el-table-column prop="spare.name" label="备件名称" />
@@ -181,6 +174,8 @@ export default {
       totalCount: 0, // 数据总条数
       tableData: [], // 库存数据
       multipleSpareData: [], // 选中库存数据
+      multipleSpareDatadiaobo: [],
+      afterUnitName: JSON.parse(this.$cookie.get('unit')).name, // 调拨后库房名称（当前单位）
       beforeUnitName: '', // 备件单位
       beforeSparRepository: '', // 备件库房
       allocationForm: {
@@ -191,7 +186,7 @@ export default {
         spareBoundSubType: 'TransferApplication', // 出入库子类型
         // opeartor: '', // 经办人（系统自动生成）
         remark: '', // 备注
-        unitId: null, // 单位（调拨去）
+        unitId: JSON.parse(this.$cookie.get('unit')).id, // 单位（调拨去）
         spareRepositoryId: null, // 仓库（调拨去）
         spareStockRecordItems: [
           //   {
@@ -209,11 +204,11 @@ export default {
           message: '调拨日期不可为空',
           trigger: 'change'
         },
-        unitId: {
-          required: true,
-          message: '调拨后单位不可为空',
-          trigger: 'change'
-        },
+        // unitId: {
+        //   required: true,
+        //   message: '调拨后单位不可为空',
+        //   trigger: 'change'
+        // },
         spareRepositoryId: {
           required: true,
           message: '调拨后库房不可为空',
@@ -227,7 +222,7 @@ export default {
   computed: {},
   mounted() {
     this.getData()
-    this.getUnitData()
+    // this.getUnitData()
     // this.getSpareRepositoryData()
     this.getKufang()
     this.getKufangdiaobo()
@@ -340,6 +335,9 @@ export default {
           this.beforeSparRepository = this.multipleSpareData[0].spareRepository.name
           this.allocationForm.fromUnitId = this.multipleSpareData[0].unitId
           this.allocationForm.fromRepositoryId = this.multipleSpareData[0].spareRepositoryId
+          this.multipleSpareData.forEach(item => {
+            this.multipleSpareDatadiaobo.push({ ...item, remark: item.comment })
+          })
           this.allocationVisibale = true
         } else {
           this.$message.warning('请选择同一单位、同一库房备件')
@@ -359,22 +357,25 @@ export default {
       this.handleSelectionData = val
     },
     submitAllocation() {
-      this.multipleSpareData.forEach(item => {
+      this.allocationForm.spareStockRecordItems = []
+      this.multipleSpareDatadiaobo.forEach(item => {
         this.allocationForm.spareStockRecordItems.push({ stockId: item.id, quantity: item.allocationQuantity, unitPrice: item.unitPrice, totalPrice: item.unitPrice * item.allocationQuantity, remark: item.remark })
       })
       this.$refs.allocationForm.validate(valid => {
-        if (valid) {
-          this.$axios.post('/api/SpareStockRecord', this.allocationForm).then(res => {
-            this.$message.success('调拨申请成功')
-            this.allocationVisibale = false
-            this.closeAllocatio()
-          })
-        }
+        // if (valid) {
+        this.$axios.post('/api/SpareStockRecord', this.allocationForm).then(res => {
+          this.$message.success('调拨申请成功')
+          this.allocationVisibale = false
+          this.closeAllocatio()
+        })
+        // }
       })
     },
     // 关闭调拨
     closeAllocatio() {
       this.$refs.allocationForm.resetFields()
+      this.allocationForm.spareStockRecordItems = []
+      this.multipleSpareDatadiaobo = []
       this.allocationVisibale = false
     }
   }
