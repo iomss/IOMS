@@ -362,13 +362,13 @@ export default {
         this.allocationForm.spareStockRecordItems.push({ stockId: item.id, quantity: item.allocationQuantity, unitPrice: item.unitPrice, totalPrice: item.unitPrice * item.allocationQuantity, remark: item.remark })
       })
       this.$refs.allocationForm.validate(valid => {
-        // if (valid) {
-        this.$axios.post('/api/SpareStockRecord', this.allocationForm).then(res => {
-          this.$message.success('调拨申请成功')
-          this.allocationVisibale = false
-          this.closeAllocatio()
-        })
-        // }
+        if (valid) {
+          this.$axios.post('/api/SpareStockRecord', this.allocationForm).then(res => {
+            this.$message.success('调拨申请成功')
+            this.allocationVisibale = false
+            this.closeAllocatio()
+          })
+        }
       })
     },
     // 关闭调拨
