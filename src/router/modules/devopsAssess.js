@@ -21,7 +21,7 @@ const devopsAssessRoutes = {
       meta: {
         title: '运维指标考核',
         icon: 'fa fa-circle-o',
-        roles: ['AssessmentRecord'],
+        roles: ['ManageAsset'],
         fullPath: '/devopsAssess/assess'
       }
     },
@@ -32,7 +32,7 @@ const devopsAssessRoutes = {
       meta: {
         title: '运维指标查询',
         icon: 'fa fa-circle-o',
-        roles: ['AssessmentRecordQuery'],
+        roles: ['ManageAsset'],
         fullPath: '/devopsAssess/view'
       }
     },
@@ -43,7 +43,7 @@ const devopsAssessRoutes = {
       meta: {
         title: '权重系数管理',
         icon: 'fa fa-circle-o',
-        roles: ['AssessmentWeight'],
+        roles: ['ManageAsset'],
         fullPath: '/devopsAssess/weight'
       }
     }

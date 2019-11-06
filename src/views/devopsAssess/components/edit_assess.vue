@@ -1,6 +1,6 @@
 <template>
   <el-dialog title="修改指标得分" :visible.sync="changeActiveVisible" :close-on-press-escape="false" :close-on-click-modal="false" class="edit_assess_box">
-    <el-form ref="form" :model="form" label-width="200px" size="small" :inline="true" class="demo-form-inline dialog-form-add">
+    <el-form ref="form" status-icon :model="form" :rules="rules" label-width="200px" size="small" :inline="true" class="demo-form-inline dialog-form-add">
       <el-row>
         <el-col :span="24">
           <el-form-item label="指标名称">
@@ -26,12 +26,9 @@
 
       <el-form-item
         label="指标得分"
-        :rules="[
-          { required: true, message: '不能为空'},
-          { type: 'number', message: '必须为数字值'}
-        ]"
+        prop="rateScore"
       >
-        <el-input v-model.number="form.rateScore" type="age" placeholder="指标得分" autocomplete="off" style="width:282px;" />
+        <el-input v-model.number="form.rateScore" placeholder="指标得分" autocomplete="off" style="width:282px;" />
       </el-form-item>
 
       <el-form-item label="编辑备注">
@@ -57,6 +54,23 @@
 export default {
   name: 'EditAssess',
   data: function() {
+    var validatorRateScore = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('指标不能为空'))
+      }
+
+      setTimeout(() => {
+        if (!Number.isInteger(value)) {
+          callback(new Error('请输入数字'))
+        } else {
+          if (value < 0 || value > 100) {
+            callback(new Error('数字需要在0-100之间'))
+          } else {
+            callback()
+          }
+        }
+      }, 1000)
+    }
     return {
       assessmentItemId: '',
       changeActiveVisible: false,
@@ -64,6 +78,10 @@ export default {
       form: {
         rateScore: 0,
         remark: ''
+      },
+
+      rules: {
+        rateScore: [{ validator: validatorRateScore, trigger: 'blur' }]
       },
 
       assessmentRecordItemData: {
