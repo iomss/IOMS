@@ -305,8 +305,8 @@ export default {
 
       const searchQuery = {
         text: querytext,
-        allUnit: true,
-        unitId: this.allocationForm.unitId
+        allUnit: true
+        // unitId: this.allocationForm.unitId
       }
       this.$axios.get('/api/SpareRepository', { params: searchQuery }).then(res => {
         this.loading = false
