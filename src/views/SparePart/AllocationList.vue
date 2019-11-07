@@ -222,7 +222,7 @@ export default {
   computed: {},
   mounted() {
     this.getData()
-    // this.getUnitData()
+    this.getUnitData()
     // this.getSpareRepositoryData()
     this.getKufang()
     this.getKufangdiaobo()
