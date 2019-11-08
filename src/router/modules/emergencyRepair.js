@@ -22,7 +22,7 @@ const emergencyRepairRoutes = {
       meta: {
         title: '应急抢修申请',
         icon: 'fa fa-circle-o',
-        roles: ['ManageAsset'],
+        roles: ['EmergencyRequisition'],
         fullPath: '/emergencyRepair/apply'
       }
     },
@@ -44,7 +44,7 @@ const emergencyRepairRoutes = {
       meta: {
         title: '应急抢修费用申请',
         icon: 'fa fa-circle-o',
-        roles: ['ManageAsset'],
+        roles: ['EmergencyWorkCost'],
         fullPath: '/emergencyRepair/cost'
       }
     },
@@ -66,7 +66,7 @@ const emergencyRepairRoutes = {
       meta: {
         title: '应急抢修验收申请',
         icon: 'fa fa-circle-o',
-        roles: ['ManageAsset'],
+        roles: ['EmergencyAcceptance'],
         fullPath: '/emergencyRepair/acceptance'
       }
     },
