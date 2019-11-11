@@ -304,8 +304,8 @@ export default {
       querytext = typeof (query) === 'string' ? query : ''
 
       const searchQuery = {
-        text: querytext,
-        allUnit: true
+        text: querytext
+        // allUnit: true
         // unitId: this.allocationForm.unitId
       }
       this.$axios.get('/api/SpareRepository', { params: searchQuery }).then(res => {
