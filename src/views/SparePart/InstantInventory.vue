@@ -59,7 +59,7 @@
             <!--分页-->
             <pagination v-show="totalCount>0" :total="totalCount" :page.sync="formSearch.pageNumber" :limit.sync="formSearch.pageSize" @pagination="getPage" />
             <!--出入库摘要-->
-            <el-dialog width="40%" title="选择备件" :visible.sync="zhaiyaoVisible" append-to-body>
+            <el-dialog width="40%" title="出入库摘要" :visible.sync="zhaiyaoVisible" append-to-body>
               <el-table :data="zhaiyaoData" border>
                 <el-table-column type="index" label="序号" width="50" />
                 <el-table-column type="spareStockRecordCode" label="单据号">
@@ -77,7 +77,11 @@
                     {{ scope.row.spareStockRecordItem.spare.name }}
                   </template>
                 </el-table-column>
-                <el-table-column type="spareStockRecordBoundTime" label="出入库时间" :formatter="formatterTime" />
+                <el-table-column type="spareStockRecordBoundTime" label="出入库时间">
+                  <template slot-scope="scope">
+                    {{ scope.row.spareStockRecordBoundTime }}
+                  </template>
+                </el-table-column>
                 <el-table-column type="quantity" label="出入库数量">
                   <template slot-scope="scope">
                     {{ scope.row.quantity }}
@@ -390,6 +394,7 @@ export default {
     // 获取摘要数据
     getZhaiyaoData(id) {
       this.$axios.get('/api/SpareStock/' + id + '/Logs', { params: this.zhaiyaoForm }).then(res => {
+        res.data.forEach(item => { item.spareStockRecordBoundTime = this.$moment(item.spareStockRecordBoundTime).format('YYYY-MM-DD HH:mm:ss') })
         this.zhaiyaoData = res.data
       })
     },
