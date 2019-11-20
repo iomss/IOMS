@@ -21,6 +21,9 @@ import Layout from '@/layout'
 
 import emergencyRepairRoutes from './modules/emergencyRepair'
 import devopsAssessRoutes from './modules/devopsAssess'
+import integrityRateRoutes from './modules/integrityRate'
+import repairStatisticsRoutes from './modules/repairStatistics'
+import maintenanceSuperviseRoutes from './modules/maintenanceSupervise'
 
 /**
  * constantRoutes
@@ -944,7 +947,10 @@ export const asyncRoutes = [
     hidden: true
   },
   emergencyRepairRoutes,
-  devopsAssessRoutes
+  devopsAssessRoutes,
+  integrityRateRoutes,
+  repairStatisticsRoutes,
+  maintenanceSuperviseRoutes
 ]
 
 const routers = [...constantRoutes, ...asyncRoutes]
