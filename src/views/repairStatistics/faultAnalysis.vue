@@ -2,12 +2,7 @@
   <div class="app-container">
     <el-form v-show="isShowSearch" :inline="true" :model="formData" class="demo-form-inline" size="small">
       <el-form-item label="设备位置">
-        <el-cascader
-          v-model="equipmentValue"
-          :props="optionProps"
-          :options="equipmentList"
-          @change="handleChange"
-        />
+        <el-button style="width: 194px;" plain @click="centerDialogVisible = true">{{ positionName }}</el-button>
       </el-form-item>
 
       <el-form-item label="选择时间">
@@ -49,6 +44,24 @@
       <el-table-column label="维修人" prop="checkUser.name" align="center" />
     </el-table>
     <pagination v-show="table.total>0" :total="table.total" :page.sync="formData.pageNumber" :limit.sync="formData.pageSize" @pagination="tableList" />
+    <!-- 设备位置 -->
+    <el-dialog
+      title="设备位置"
+      :visible.sync="centerDialogVisible"
+      width="40%"
+      center
+    >
+      <el-tree
+        ref="treeForm"
+        :data="equipmentList"
+        show-checkbox
+        node-key="id"
+        check-strictly
+        accordion
+        :props="defaultProps"
+        @check-change="handleClick"
+      />
+    </el-dialog>
   </div>
 
 </template>
@@ -98,6 +111,7 @@ export default {
   data() {
     return {
       isShowSearch: true,
+      centerDialogVisible: false,
       formData: {
         equipmentId: '',
         positionId: '',
@@ -109,9 +123,7 @@ export default {
       },
       charts: '',
       fault: '',
-      companyAllList: [],
-      optionProps: {
-        value: 'id',
+      defaultProps: {
         label: 'name',
         children: 'children'
       },
@@ -123,20 +135,17 @@ export default {
         list: [],
 
         total: 0
-      }
+      },
+      positionName: '请选择设备位置'
     }
   },
   mounted() {
-    this.companyAll()
     this.equipment()
   },
   methods: {
     draw(id, dataAxis, dataAjax, dataId) {
-      this.charts = echarts.init(document.getElementById(id))
-
-      this.charts.showLoading({
-        text: '图表加载中'
-      })
+      const charts = echarts.init(document.getElementById(id))
+      charts.off('click') // 这里很重要！！！ 防止点击触发多次
 
       const option = {
         title: {
@@ -192,14 +201,18 @@ export default {
           }
         ]
       }
-      this.charts.setOption(option)
 
       // 点击柱状图 获取饼图和表格
-      this.charts.on('click', (params) => {
-        this.formData.equipmentId = dataId[params.dataIndex]
-        this.tableList()
-        this.system()
+      charts.on('click', (params) => {
+        if (params) {
+          this.formData.equipmentId = dataId[params.dataIndex]
+
+          this.tableList()
+          this.system()
+        }
       })
+
+      charts.setOption(option)
     },
     // 比例
     proportion(id, dataAxis, res) {
@@ -243,16 +256,12 @@ export default {
     },
     // 柱状图查询
     histogram() {
-      this.$axios.get(`/api/OperationStatistic/GetEquipmentCount?positionId=${this.formData.positionId}&beginTime=${this.formData.beginTime}&endTime=${this.formData.endTime}`).then(res => {
+      this.$axios.get(`/api/OperationStatistic/GetEquipmentCount?positionId=${this.formData.positionId}&top=${20}&beginTime=${this.formData.beginTime}&endTime=${this.formData.endTime}`).then(res => {
         const dataAxis = res.map(item => { return item.name })
         const dataAjax = res.map(item => { return item.value })
         const dataId = res.map(item => { return item.id })
 
         this.draw('report', dataAxis, dataAjax, dataId)
-        // 定时关闭 加载动画
-        setTimeout(() => {
-          this.charts.hideLoading()
-        }, 1000)
       })
     },
     // 饼图统计
@@ -264,7 +273,6 @@ export default {
 
         // 定时关闭 加载动画
         setTimeout(() => {
-          this.charts.hideLoading()
           this.fault.hideLoading()
         }, 1000)
       })
@@ -276,12 +284,6 @@ export default {
         this.table.list = res.data
         this.table.total = res.totalCount
         this.table.listLoading = false
-      })
-    },
-    // 获取所有单位
-    companyAll() {
-      this.$axios.get(`/api/Tree/Position/All?startLevel=${2}&endLevel=${2}`).then(res => {
-        this.companyAllList = res
       })
     },
     // 日期时间格式化
@@ -298,15 +300,24 @@ export default {
         this.equipmentList = res
       })
     },
-    // 选择设备位置
-    handleChange(val) {
-      // 获取选择的id
-      const last = val[val.length - 1]
-      this.formData.positionId = last
+    // 选择 设备位置
+    handleClick(data, checked, node) {
+      if (checked === true) {
+        this.formData.positionId = data.id
+        this.positionName = data.name
+        this.$refs.treeForm.setCheckedNodes([data])
+        this.centerDialogVisible = false
+      }
     },
     onSubmit() {
       this.formData.beginTime = this.formData.date.length !== 0 ? this.formatterDate(1, 1, this.formData.date[0]) : ''
       this.formData.endTime = this.formData.date.length !== 0 ? this.formatterDate(1, 1, this.formData.date[1]) : ''
+
+      // 先重置数据
+      this.proportion('proportion', [], [])
+      this.fault.hideLoading()
+      this.table.list = ''
+      this.table.total = 0
 
       this.histogram()
     }
