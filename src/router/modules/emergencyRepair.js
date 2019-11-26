@@ -7,7 +7,6 @@ const emergencyRepairRoutes = {
   name: 'emergencyRepair',
   component: Layout,
   redirect: '/emergencyRepair/apply',
-
   meta: {
     title: '应急抢修管理',
     icon: 'fa fa-fax',
@@ -39,8 +38,8 @@ const emergencyRepairRoutes = {
     },
     {
       path: 'cost',
+      name: 'cost-info',
       component: () => import('@/views/emergencyRepair/cost'),
-      name: 'emergencyRepair-cost',
       meta: {
         title: '应急抢修费用申请',
         icon: 'fa fa-circle-o',
@@ -50,8 +49,8 @@ const emergencyRepairRoutes = {
     },
     {
       path: 'costApproval',
+      name: 'costApproval-list',
       component: () => import('@/views/emergencyRepair/costApproval'),
-      name: 'emergencyRepair-costApproval',
       meta: {
         title: '应急抢修费用审批',
         icon: 'fa fa-circle-o',
