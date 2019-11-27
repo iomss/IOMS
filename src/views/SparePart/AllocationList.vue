@@ -83,7 +83,7 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="经办人">
-                <el-input value="系统自动生成" disabled />
+                <el-input :value="allocationForm.opeartor" disabled />
               </el-form-item>
               <el-form-item label="备注" prop="remark" class="form_total">
                 <el-input v-model="allocationForm.remark" type="textarea" placeholder="备注" size="small" />
@@ -184,7 +184,7 @@ export default {
         boundTime: '', // 时间
         spareBoundType: 'TransferApplication', // 出入库类型
         spareBoundSubType: 'TransferApplication', // 出入库子类型
-        // opeartor: '', // 经办人（系统自动生成）
+        opeartor: this.$cookie.get('trueName'), // 经办人（系统自动生成）
         remark: '', // 备注
         unitId: JSON.parse(this.$cookie.get('unit')).id, // 单位（调拨去）
         spareRepositoryId: null, // 仓库（调拨去）
