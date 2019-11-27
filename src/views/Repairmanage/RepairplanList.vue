@@ -53,13 +53,13 @@
                   {{ scope.row.createUser.name }}
                 </template>
               </el-table-column>
-              <el-table-column prop="reviewUser" label="验收人">
+              <!-- <el-table-column prop="reviewUser" label="验收人">
                 <template slot-scope="scope">
                   {{ scope.row.reviewUser===null?'':scope.row.reviewUser.name }}
                 </template>
               </el-table-column>
               <el-table-column prop="reviewComment" label="验收意见" />
-              <el-table-column prop="reviewtime" label="验收时间" :formatter="formatterDate" />
+              <el-table-column prop="reviewtime" label="验收时间" :formatter="formatterDate" /> -->
               <el-table-column label="操作" width="200px">
                 <template slot-scope="scope">
                   <el-button size="mini" type="primary" style="margin:2px 5px" @click="UpdateStage(scope.row)">编辑计划</el-button>
