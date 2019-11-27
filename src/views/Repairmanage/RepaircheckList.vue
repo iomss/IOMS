@@ -283,7 +283,7 @@ export default {
       console.log(this.yearData)
     },
     selectstate(data) { // 列表筛选
-      data === undefined ? null : this.tableDataSearch.planState = data
+      this.tableDataSearch.planState = data
       this.getData()
     },
     //* ******************************************************************************************************* */
