@@ -8,17 +8,17 @@
             <div class="tooltotal">
               <el-button size="small" type="primary" @click="rukushow('InBound','Spare')">备件入库</el-button>
               <el-button size="small" type="primary" @click="rukushow('OutBound','Spare')">备件出库</el-button>
-              <el-button size="small" type="primary" @click="rukushow('InBound','Scrap')">报废入库</el-button>
+              <!-- <el-button size="small" type="primary" @click="rukushow('InBound','Scrap')">报废入库</el-button> -->
               <el-button v-show="formSearch.type==='scrap'" size="small" type="danger" @click="baofei()">报废归档</el-button>
               <el-button size="small" type="primary" plain @click="outputData()">导出</el-button>
             </div>
-            <div class="tools">
+            <!-- <div class="tools">
               {{ formSearch.typ }}
               <el-button type="primary" :plain="formSearch.type==='spare'?false:true" size="small" @click="formSearch.type='spare';getData()">备件库</el-button>
-              <!-- <el-button type="primary" :plain="formSearch.type==='repair'?false:true" size="small" @click="formSearch.type='repair';getData()">维修库</el-button> -->
+              <el-button type="primary" :plain="formSearch.type==='repair'?false:true" size="small" @click="formSearch.type='repair';getData()">维修库</el-button>
               <el-button type="primary" :plain="formSearch.type==='scrap'?false:true" size="small" @click="formSearch.type='scrap';getData()">报废库</el-button>
-            </div>
-            <div class="toolsrt">
+            </div> -->
+            <div class="toolsrt" style="margin:15px 0;">
               <el-form ref="form" :model="formSearch">
                 <el-select v-model="formSearch.spareRepositoryId" filterable remote :remote-method="getKufang" :loading="loading" clearable placeholder="全部库房" size="small" @focus="getKufang">
                   <el-option v-for="item in kufangData" :key="item.id" :label="item.name" :value="item.id" />
