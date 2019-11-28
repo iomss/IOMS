@@ -177,6 +177,9 @@ export default {
     },
     exportdata() {
       // 导出方法
+      this.$axios.get('/api/EquipmentList/' + this.id + '/Items', { params: { ...this.formSearch, export: true }}).then(res => {
+        this.$message.success('导出任务已生成,请前往任务列表查看')
+      })
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
