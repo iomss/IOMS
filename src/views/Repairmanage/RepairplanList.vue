@@ -602,7 +602,9 @@ export default {
     },
 
     setvalid() { // 导出计划
-
+      this.$axios.get('/api/MaintenancePlan', { params: { ...this.tableDataSearch, export: true }}).then(res => {
+        this.$message.success('导出任务已生成,请前往任务列表查看')
+      })
     },
     addlist() { // 新增计划
       // 重置表单数据
