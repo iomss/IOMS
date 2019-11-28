@@ -394,7 +394,7 @@ export default {
     // 获取摘要数据
     getZhaiyaoData(id) {
       this.$axios.get('/api/SpareStock/' + id + '/Logs', { params: this.zhaiyaoForm }).then(res => {
-        res.data.forEach(item => { item.spareStockRecordBoundTime = this.$moment(item.spareStockRecordBoundTime).format('YYYY-MM-DD HH:mm:ss') })
+        res.data.forEach(item => { item.spareStockRecordBoundTime = this.$moment(item.spareStockRecordBoundTime).format('YYYY-MM-DD') })
         this.zhaiyaoData = res.data
       })
     },
