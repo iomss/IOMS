@@ -77,7 +77,7 @@
               </el-form>
               <span slot="footer" class="dialog-footer">
                 <el-button type="primary" @click="updatedata()">确 定</el-button>
-                <el-button type="primary" @click="changeActiveVisible=false">取消</el-button>
+                <el-button type="" @click="changeActiveVisible=false">取消</el-button>
               </span>
             </el-dialog>
             <!--分页-->
