@@ -39,7 +39,7 @@
             </div>
           </div>
           <el-col class="content">
-            <el-table :data="tableData" stripe border style="width: 1500px" @selection-change="handleSelectionSpare">
+            <el-table :data="tableData" stripe border @selection-change="handleSelectionSpare">
               <el-table-column type="selection" />
               <el-table-column prop="unit.name" label="管理单位" />
               <el-table-column label="库房名称" prop="spareRepository.name" />
