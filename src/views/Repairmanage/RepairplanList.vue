@@ -260,31 +260,31 @@
                           <el-input-number v-model="RepairRecord.level1" controls-position="right" size="mini" :min="0" :max="1000000" />
                         </el-form-item>
                       </el-col>
-                      <el-col :span="1">次</el-col>
+                      <el-col :span="1" style="height: 40px;padding: 12px 0px 0px 5px;">次</el-col>
                       <el-col :span="3">
                         <el-form-item label="二级">
                           <el-input-number v-model="RepairRecord.level2" controls-position="right" size="mini" :min="0" :max="1000000" />
                         </el-form-item>
                       </el-col>
-                      <el-col :span="1">次</el-col>
+                      <el-col :span="1" style="height: 40px;padding: 12px 0px 0px 5px;">次</el-col>
                       <el-col :span="3">
                         <el-form-item label="三级">
                           <el-input-number v-model="RepairRecord.level3" controls-position="right" size="mini" :min="0" :max="1000000" />
                         </el-form-item>
                       </el-col>
-                      <el-col :span="1">次</el-col>
+                      <el-col :span="1" style="height: 40px;padding: 12px 0px 0px 5px;">次</el-col>
                       <el-col :span="3">
                         <el-form-item label="四级">
                           <el-input-number v-model="RepairRecord.level4" controls-position="right" size="mini" :min="0" :max="1000000" />
                         </el-form-item>
                       </el-col>
-                      <el-col :span="1">次</el-col>
+                      <el-col :span="1" style="height: 40px;padding: 12px 0px 0px 5px;">次</el-col>
                       <el-col :span="3">
                         <el-form-item label="五级">
                           <el-input-number v-model="RepairRecord.level5" controls-position="right" size="mini" :min="0" :max="1000000" />
                         </el-form-item>
                       </el-col>
-                      <el-col :span="1">次</el-col>
+                      <el-col :span="1" style="height: 40px;padding: 12px 0px 0px 5px;">次</el-col>
                     </el-row>
                   </el-form>
                 </div>
