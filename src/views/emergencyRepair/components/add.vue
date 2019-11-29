@@ -97,7 +97,7 @@
       </el-form-item>
 
       <el-form-item label="材料设备" prop="maonMaterialEquipment">
-        <el-input v-model="form.maonMaterialEquipment" placeholder="接报人" style="width:100px;" />（品牌，型号）
+        <el-input v-model="form.maonMaterialEquipment" placeholder="" style="width:100px;" />（品牌，型号）
       </el-form-item>
 
       <el-form-item label="附件" style="display:block;" prop="uploadList">

@@ -59,33 +59,41 @@ export default {
       formData: {
         date: '',
         pageNumber: 1,
-        pageSize: 10
+        pageSize: 10,
+        export: false
+
       },
       applicationTable: {
         listLoading: false,
         list: [],
         total: 0
-      }
+      },
+      postData: {}
     }
   },
   methods: {
     init(data) {
       this.projectVisible = true
+      this.postData = data
       this.getList(data)
     },
     // 获取权重详情
     getList(data) {
       this.applicationTable.listLoading = true
-      this.$axios.get(`/api/InternalAssessment?pageNumber=${this.formData.pageNumber}&pageSize=${this.formData.pageSize}&positionId=${data.positionId}&beginDate=${data.beginDate}&endDate=${data.endDate}`).then(res => {
-        this.applicationTable.list = res.data
-        this.applicationTable.total = res.totalCount
+      this.$axios.get(`/api/InternalAssessment?export=${this.formData.export}&pageNumber=${this.formData.pageNumber}&pageSize=${this.formData.pageSize}&positionId=${data.positionId}&beginDate=${data.beginDate}&endDate=${data.endDate}`).then(res => {
         this.applicationTable.listLoading = false
+
+        if (!this.formData.export) {
+          this.applicationTable.list = res.data
+          this.applicationTable.total = res.totalCount
+        } else {
+          this.$message.success('导出任务添加成功')
+        }
       })
     },
     onSubmit(data) {
-      const that = this
-
-      this.formData = that.form
+      this.formData.export = true
+      this.getList(this.postData)
     },
     // 显示百分比
     formatterPercentage(row, column, cellValue) {

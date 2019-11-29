@@ -180,7 +180,7 @@ export default {
         },
         tooltip: {
           trigger: 'item',
-          formatter: '{b} : {c}%'
+          formatter: '{b} : {c} ({d}%)'
         },
         legend: {
           // orient: 'vertical',
@@ -214,6 +214,7 @@ export default {
       this.$axios.get(`/api/OperationStatistic/GetSystemCount?positionId=${this.formData.positionId}&systemId=${this.formData.systemId}&beginTime=${this.formData.beginTime}&endTime=${this.formData.endTime}`).then(res => {
         const dataAxis = res.map(item => { return item.name })
         const dataAjax = res.map(item => { return item.value })
+
         this.draw('report', dataAxis, dataAjax)
         this.proportion('proportion', dataAxis, res)
 

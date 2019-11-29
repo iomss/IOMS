@@ -4,9 +4,7 @@
     <el-form v-show="isShowSearch" :inline="true" :model="formData" class="demo-form-inline" size="small">
 
       <el-form-item label="位置列表">
-        <el-select v-model="formData.positionId" placeholder="状态">
-          <el-option v-for="item in companyAllList" :key="item.id" :label="item.name" :value="item.id" />
-        </el-select>
+        <el-button style="width: 194px;" plain @click="centerDialogVisible = true">{{ positionName }}</el-button>
       </el-form-item>
 
       <el-form-item label="选择时间">
@@ -31,6 +29,26 @@
       <div id="report" class="chart-box" style="width: 100%;height: 400px;" />
       <div id="proportion" class="chart-box" style="width: 500px;height: 400px;margin: 50px auto 0px;" />
     </div>
+
+    <!-- 设备位置 -->
+    <el-dialog
+      title="位置列表"
+      :visible.sync="centerDialogVisible"
+      width="40%"
+      center
+    >
+      <el-tree
+        ref="treeForm"
+        class="filter-tree"
+        :data="companyAllList"
+        show-checkbox
+        node-key="id"
+        check-strictly
+        accordion
+        :props="defaultProps"
+        @check-change="handleClick"
+      />
+    </el-dialog>
 
   </div>
 
@@ -77,6 +95,7 @@ export default {
   data() {
     return {
       isShowSearch: true,
+      centerDialogVisible: false,
       formData: {
         positionId: '',
         beginTime: '',
@@ -85,8 +104,13 @@ export default {
       },
       charts: '',
       fault: '',
+      defaultProps: {
+        label: 'name',
+        children: 'children'
+      },
       companyAllList: [],
-      systemAllList: []
+      systemAllList: [],
+      positionName: '请选择设备位置'
     }
   },
   mounted() {
@@ -172,7 +196,7 @@ export default {
         },
         tooltip: {
           trigger: 'item',
-          formatter: '{b} : {c}%'
+          formatter: '{b} : {c} ({d}%)'
         },
         legend: {
           bottom: 10,
@@ -216,7 +240,7 @@ export default {
     },
     // 获取所有单位
     companyAll() {
-      this.$axios.get(`/api/Tree/Position/All?startLevel=${2}&endLevel=${2}`).then(res => {
+      this.$axios.get(`/api/Tree/Position/All?startLevel=${2}`).then(res => {
         this.companyAllList = res
       })
     },
@@ -225,6 +249,21 @@ export default {
       this.$axios.get(`/api/Meta/System?topLevel=${true}`).then(res => {
         this.systemAllList = res.data
       })
+    },
+    // 选择 设备位置
+    handleClick(data, checked, node) {
+      if (checked === true) {
+        // 默认不选择 最后一级
+        if (data.children !== null) {
+          this.formData.positionId = data.id
+          this.positionName = data.name
+          this.centerDialogVisible = false
+          this.$refs.treeForm.setCheckedNodes([data])
+        } else {
+          this.$message.error('不能选择最后一级')
+          this.$refs.treeForm.setChecked(data, false)
+        }
+      }
     },
     // 日期时间格式化
     formatterDate(row, column, cellValue) {
