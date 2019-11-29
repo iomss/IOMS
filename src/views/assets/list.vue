@@ -30,8 +30,8 @@
                   批量导出<i class="el-icon-arrow-down el-icon--right" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click.native="assetsExport">导出全部</el-dropdown-item>
-                  <el-dropdown-item @click.native="assetsExport">选择导出</el-dropdown-item>
+                  <el-dropdown-item @click.native="assetsExport(all)">导出全部</el-dropdown-item>
+                  <el-dropdown-item @click.native="assetsExport()">选择导出</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
@@ -831,17 +831,9 @@ export default {
         this.showInfo = false
       })
     },
-    assetsExport() {
-      this.$axios.post('/api/Assets/Export', this.tableDataSearch, { Accept: {
-        'Content-Type': 'application/json;application/octet-stream'
-      }, responseType: 'blob' }).then(res => {
-        const url = window.URL.createObjectURL(new Blob([res.data]))
-        const link = document.createElement('a')
-        link.style.display = 'none'
-        link.href = url
-        link.setAttribute('download', this.$base64.decode(/filename="=\?(\S*)\?(\S*)==/.exec(res.headers['content-disposition'])[2]))
-        document.body.appendChild(link)
-        link.click()
+    assetsExport(type) {
+      this.$axios.get('/api/Assets', { params: { ...this.tableDataSearch, export: true }}).then(res => {
+        this.$message.success('导出任务已生成,请前往任务列表查看')
       })
     }
   }
