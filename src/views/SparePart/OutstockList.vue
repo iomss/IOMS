@@ -11,13 +11,24 @@
             </div>
             <div class="toolsrt">
               <el-form ref="form" :model="formSearch" label-width="70px">
-                <el-input v-model="formSearch.text" placeholder="全局搜索" size="small" />
+                <el-date-picker v-model="formSearch.beginTime" placeholder="出库开始时间" size="small" />
+                <el-date-picker v-model="formSearch.endTime" placeholder="出库结束时间" size="small" />
+                <el-input v-model="formSearch.text" placeholder="出库单号" size="small" />
+                <el-select v-model="formSearch.spareBoundSubType" clearable filterable placeholder="出库单类型" size="small">
+                  <el-option key="ReceiveOutBound" label="领用出库" value="ReceiveOutBound" />
+                  <el-option key="Repair" label="维修出库" value="Repair" />
+                  <el-option key="TransferApplication" label="调拨申请单" value="TransferApplication" />
+                </el-select>
+                <el-select v-model="formSearch.reviewStatus" clearable filterable placeholder="单据状态" size="small">
+                  <el-option key="pending" label="待出库" value="pending" />
+                  <el-option key="Applied" label="已出库" value="Applied" />
+                </el-select>
                 <el-button type="primary" plain size="small" @click="getData()">查询</el-button>
               </el-form>
             </div>
           </div>
           <el-col class="content">
-            <el-table :data="tableData" stripe border style="width: 1500px" @selection-change="handlechange">
+            <el-table :data="tableData" stripe border @selection-change="handlechange">
               <el-table-column type="selection" />
               <el-table-column prop="confirmed " label="单据状态">
                 <template slot-scope="scope">
@@ -148,7 +159,11 @@ export default {
         spareBoundType: 'OutBound'
       },
       formSearchselect: {
+        beginTime: '', // 开始时间
+        endTime: '', // 结束时间
         text: '', // 搜索文本
+        spareBoundSubType: '',
+        reviewStatus: '',
         pageSize: 10, // 展示条数
         pageNumber: 1// 页码
       },
@@ -409,11 +424,11 @@ export default {
 
 .tools {
   margin: 10px 0px;
-  width: 400px;
-  display: inline-block;
+  // width: 400px;
+  // display: inline-block;
 }
 .toolsrt {
-  width: 30%;
+  // width: 30%;
   display: inline-block;
   margin-bottom: 20px;
   .el-input {

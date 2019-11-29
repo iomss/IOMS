@@ -13,13 +13,25 @@
             </div>
             <div class="toolsrt">
               <el-form ref="form" :model="formSearch" label-width="70px">
-                <el-input v-model="formSearch.text" placeholder="全局搜索" size="small" />
+                <el-date-picker v-model="formSearch.beginTime" placeholder="入库开始时间" size="small" />
+                <el-date-picker v-model="formSearch.endTime" placeholder="入库结束时间" size="small" />
+                <el-input v-model="formSearch.text" placeholder="入库单号" size="small" />
+                <el-select v-model="formSearch.spareBoundSubType" clearable filterable placeholder="入库单类型" size="small">
+                  <el-option key="PurchaseInBound" label="采购入库" value="PurchaseInBound" />
+                  <el-option key="SpecialInBound" label="专项入库" value="SpecialInBound" />
+                  <el-option key="Repair" label="维修入库" value="Repair" />
+                  <el-option key="TransferApplication" label="调拨申请单" value="Repair" />
+                </el-select>
+                <el-select v-model="formSearch.reviewStatus" clearable filterable placeholder="单据状态" size="small">
+                  <el-option key="pending" label="待入库" value="pending" />
+                  <el-option key="Applied" label="已入库" value="Applied" />
+                </el-select>
                 <el-button type="primary" plain size="small" @click="getData()">查询</el-button>
               </el-form>
             </div>
           </div>
           <el-col class="content">
-            <el-table :data="tableData" stripe border style="width: 1500px" @selection-change="handlechange">
+            <el-table :data="tableData" stripe border @selection-change="handlechange">
               <el-table-column type="selection" />
               <el-table-column prop="confirmed " label="单据状态">
                 <template slot-scope="scope">
@@ -274,7 +286,11 @@ export default {
         id: this.$cookie.get('id')
       },
       formSearch: {
+        beginTime: '', // 开始时间
+        endTime: '', // 结束时间
         text: '', // 搜索文本
+        spareBoundSubType: '',
+        reviewStatus: '',
         pageSize: 10, // 展示条数
         pageNumber: 1, // 页码
         spareBoundType: 'InBound'
@@ -556,11 +572,11 @@ export default {
 
 .tools {
   margin: 10px 0px;
-  width: 400px;
-  display: inline-block;
+  // width: 400px;
+  // display: inline-block;
 }
 .toolsrt {
-  width: 30%;
+  // width: 30%;
   display: inline-block;
   margin-bottom: 20px;
   .el-input {
