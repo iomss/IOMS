@@ -37,7 +37,10 @@ import { Base64 } from 'js-base64'
 // 引入utils公共方法
 import utils from './libs/utils'
 
+import ElTreeSelect from 'el-tree-select'
+
 Vue.use(Element)
+Vue.use(ElTreeSelect)
 
 // Vue.use(directives)
 
