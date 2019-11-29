@@ -228,7 +228,7 @@ export default {
         },
         tooltip: {
           trigger: 'item',
-          formatter: '{b} : {c}%'
+          formatter: '{b} : {c} ({d}%)'
         },
         legend: {
           orient: 'vertical',

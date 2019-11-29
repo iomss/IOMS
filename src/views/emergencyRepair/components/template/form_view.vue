@@ -86,7 +86,7 @@
           <el-row>3,事件经过: {{ form.eventProcess }}</el-row>
           <el-row>4,影响程度: {{ form.influence }}</el-row>
           <el-row>5,抢修内容: {{ form.repairDescription }}</el-row>
-          <el-row>6,费用估算: {{ form.costEstimate }}</el-row>
+          <el-row>6,费用估算: {{ form.costEstimate }}万</el-row>
           <el-row>7,主要材料设备: {{ form.maonMaterialEquipment }}</el-row>
         </el-form-item>
       </el-col>
