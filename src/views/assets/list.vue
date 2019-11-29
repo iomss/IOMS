@@ -30,7 +30,7 @@
                   批量导出<i class="el-icon-arrow-down el-icon--right" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click.native="assetsExport(all)">导出全部</el-dropdown-item>
+                  <el-dropdown-item @click.native="assetsExport()">导出全部</el-dropdown-item>
                   <el-dropdown-item @click.native="assetsExport()">选择导出</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
