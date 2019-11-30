@@ -21,7 +21,7 @@
                   批量导入<i class="el-icon-arrow-down el-icon--right" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item>导入</el-dropdown-item>
+                  <el-dropdown-item @click.native="importVisibale=true">导入</el-dropdown-item>
                   <el-dropdown-item>下载模板</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
@@ -271,6 +271,16 @@
                 </el-tab-pane>
               </el-tabs>
             </el-dialog>
+            <el-dialog title="导入资产" :visible="importVisibale" :close-on-press-escape="false" :close-on-click-modal="false" width="500px" :show-close="false">
+              <el-upload class="upload-demo" :action="url+'/api/File/Attachment'" :limit="1" :headers="{ Authorization: this.$cookie.get('token_type') + ' ' + this.$cookie.get('access_token')}" name="path" :file-list="fileList" :on-exceed="handleExceed" :on-change="handleChange">
+                <el-button size="small" type="primary">点击上传</el-button>
+                <div slot="tip" class="el-upload__tip">最多只能上传一个文件</div>
+              </el-upload>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="importVisibale=false;fileList=[];fileId=null">取 消</el-button>
+                <el-button type="primary" @click="importAssets">导 入</el-button>
+              </span>
+            </el-dialog>
           </div>
         </div>
       </el-col>
@@ -294,6 +304,7 @@ export default {
   },
   data() {
     return {
+      url: process.env.VUE_APP_API,
       // 树结构
       normalizer(node) {
         return {
@@ -436,7 +447,10 @@ export default {
       },
       showedit: true,
       editshow: true,
-      selfData: []// 自定义属性
+      selfData: [], // 自定义属性
+      importVisibale: false,
+      fileId: null,
+      fileList: []
     }
   },
   computed: {},
@@ -835,6 +849,25 @@ export default {
       this.$axios.get('/api/Assets', { params: { ...this.tableDataSearch, export: true }}).then(res => {
         this.$message.success('导出任务已生成,请前往任务列表查看')
       })
+    },
+    handleChange(file, fileList) {
+      this.fileList = fileList.slice(-3)
+      file.status === 'success' ? this.fileId = file.response.content.id : ''
+    },
+    handleExceed(files, fileList) {
+      this.$message.warning(`一次只能上传一个文件`)
+    },
+    importAssets() {
+      if (this.fileId !== null) {
+        this.$axios.post('/api/Assets/Import/' + this.fileId).then(res => {
+          this.$message.success('资产导入成功')
+          this.importVisibale = false
+          this.fileId = null
+          this.fileList = []
+        })
+      } else {
+        this.$message.warning('请上传相关文件')
+      }
     }
   }
 }
