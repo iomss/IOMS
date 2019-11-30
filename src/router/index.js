@@ -137,6 +137,30 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/Workorder'
   },
+  {
+    path: '/fileDown',
+    name: 'fileDown',
+    meta: {
+      title: '文件下载管理',
+      hidden: true,
+      fullPath: '/fileDown'
+    },
+    component: Layout,
+    redirect: '/fileDown/fileDownIndex',
+    children: [
+      {
+        path: 'fileDownIndex',
+        name: 'fileDown-index',
+        component: () => import('@/views/fileDown/index'),
+        meta: {
+          title: '文件下载管理',
+          hidden: true,
+          roles: ['EnterSystem'],
+          fullPath: '/fileDown/fileDownIndex'
+        }
+      }
+    ]
+  },
   // 我都工作相关 权限已调整
   {
     path: '/Workorder',
