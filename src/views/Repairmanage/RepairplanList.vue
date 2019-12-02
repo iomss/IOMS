@@ -225,7 +225,7 @@
               <div class="header">
                 <div class="">
                   <el-form ref="tableDataSearchsecond" :model="tableDataSearchsecond" label-width="50px;">
-                    <el-row class="selfstyle">
+                    <el-row class="selfstyle" :gutter="20">
                       <el-col :span="6">
                         <el-form-item>
                           <treeselect v-model="tableDataSearchsecond.positionId" :normalizer="normalizer" :options="positionTreeData" :load-options="loadOptions" placeholder="安装位置" no-results-text="未找到相关数据" />
@@ -384,7 +384,7 @@ export default {
         pageNumber: 1// 页码
       },
       tableDataSearchsecond: {// 二级弹框搜索
-        positionId: '',
+        positionId: null,
         systemId: '',
         text: '',
         pageSize: 10, // 展示条数
@@ -888,7 +888,7 @@ export default {
         this.getDatasecond()
 
         // 遍历位置树，设置第一个可点positionId
-        this.gettreeposition(this.positionTreeData)
+        // this.gettreeposition(this.positionTreeData)
       })
     },
     updatelist() {
