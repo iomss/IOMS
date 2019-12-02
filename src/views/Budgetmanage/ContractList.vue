@@ -26,7 +26,7 @@
                     <el-option v-for="(item,index) in yearData" :key="index" :label="item" :value="item" />
                   </el-select>
                 </el-form-item>
-                <el-form-item label="路段" prop="positionId" style="margin-bottom:-12px;">
+                <el-form-item label="路段" prop="positionId" style="margin-bottom:-12px;width:400px;">
                   <treeselect v-model="formSearch.positionId" :normalizer="normalizer" :options="positionData" :load-options="loadOptions" placeholder="安装位置" no-results-text="未找到相关数据" />
                 </el-form-item>
                 <el-form-item label="状态" prop="isValid">
@@ -199,6 +199,17 @@ export default {
     this.getPositionData()
   },
   methods: {
+    checkhasChildren(data) {
+      // 位置数据遍历
+      data.forEach((item, index) => {
+        if (item.children === null) {
+          item.children = undefined
+        } else if (item.children !== undefined) {
+          this.checkhasChildren(item.children)
+        }
+      })
+      return data
+    },
     formatterDate(row, column, cellValue) {
       if (cellValue !== null) {
         return this.$moment(cellValue).format('YYYY-MM-DD HH:mm')
@@ -257,7 +268,7 @@ export default {
     getPositionData() {
       // 获取所属系统
       this.$axios.get('/api/Tree/Position/All?secondThird=true').then(res => {
-        this.positionData = res
+        this.positionData = this.checkhasChildren(res)
       })
     },
     // 创建
@@ -355,7 +366,7 @@ export default {
 .toolsrt {
   width: 100%;
   .el-form-item {
-    width: 10%;
+    // width: 10%;
     display: inline-block;
   }
   .form_total {
