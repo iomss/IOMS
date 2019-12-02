@@ -6,7 +6,7 @@
         <div class="panel">
           <div class="header">
             <div class="search">
-              <el-input v-model="UnitFormSearce.text" placeholder="全局查询" size="small" />
+              <el-input v-model="UnitFormSearce.text" placeholder="全局查询" size="medium" />
               <div style="width:300px;display:inline-block;margin-right:20px;margin-bottom:-10px;">
                 <treeselect v-model="UnitFormSearce.parentId" :normalizer="normalizer" :options="UnitTreeData" :load-options="loadOptions" placeholder="上级部门" no-results-text="未找到相关数据" />
               </div>
@@ -157,6 +157,17 @@ export default {
         }
       }
     },
+    checkhasChildren(data) {
+      // 位置数据遍历
+      data.forEach((item, index) => {
+        if (item.children === null) {
+          item.children = undefined
+        } else if (item.children !== undefined) {
+          this.checkhasChildren(item.children)
+        }
+      })
+      return data
+    },
     // 获取数据
     getData() {
       this.$axios.get('/api/Meta/Unit', { params: this.UnitFormSearce }).then(res => {
@@ -164,10 +175,10 @@ export default {
         this.UnitTotalCount = res.totalCount
       })
       this.$axios.get('/api/Tree/Unit').then(res => {
-        this.UnitTreeData = res
+        this.UnitTreeData = this.checkhasChildren(res)
       })
       this.$axios.get('/api/Tree/Position').then(res => {
-        this.PositionData = res
+        this.PositionData = this.checkhasChildren(res)
       })
     },
     // 分页
