@@ -13,10 +13,10 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="安装位置" prop="positionId" style="margin-bottom:-20px;">
-                <Position :source-position="formData.positionId" @position="positionChange" />
-                <!-- <treeselect v-model="formData.positionId" :disable-branch-nodes="true" :normalizer="normalizer" :options="positionTreeData" :load-options="loadOptions" placeholder="安装位置" no-results-text="未找到相关数据">
+                <!-- <Position :source-position="formData.positionId" @position="positionChange" /> -->
+                <treeselect v-model="formData.positionId" :disable-branch-nodes="true" :normalizer="normalizer" :options="positionTreeData" :load-options="loadOptions" placeholder="安装位置" no-results-text="未找到相关数据">
                   <div slot="value-label" slot-scope="{ node }">{{ node.raw.crumbsName }}</div>
-                </treeselect> -->
+                </treeselect>
               </el-form-item>
               <el-form-item label="所属系统" prop="systemId">
                 <el-select v-model="formData.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" placeholder="所属系统" size="small" @focus="remoteMethodsystemId">
@@ -108,19 +108,19 @@
   </div>
 </template>
 <script>
-import { LOAD_CHILDREN_OPTIONS } from '@riophae/vue-treeselect'
-// import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import { Treeselect, LOAD_CHILDREN_OPTIONS } from '@riophae/vue-treeselect'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 // 节流
 const simulateAsyncOperation = fn => {
   setTimeout(fn, 500)
 }
 import Uploadimg from '@/components/Uploadimg'
-import Position from '@/components/Position'
+// import Position from '@/components/Position'
 export default {
   components: {
-    // Treeselect,
-    Uploadimg,
-    Position
+    Treeselect,
+    Uploadimg
+    // Position
   },
   data() {
     return {
