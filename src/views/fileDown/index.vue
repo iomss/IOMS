@@ -7,12 +7,21 @@
           <el-button size="mini" type="danger" @click="deleteFile(row.id)">删除</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="name" label="文件名称">
+      <el-table-column prop="state" label="状态">
         <template slot-scope="{row}">
-          <a :href="url+row.path" target="_bank">{{ row.name }}</a>
+          {{ row.state === 'Pending' ? '等待执行' : row.state === 'Excute' ? '执行中' : row.state === 'Success' ? '成功' : row.state === 'Faild' ? '失败' : '' }}
         </template>
       </el-table-column>
-
+      <el-table-column prop="name" label="文件名称">
+        <template slot-scope="{row}">
+          <a :href="row.attachment !== null ? url+row.attachment.path : ''" target="_bank">{{ row.name }}</a>
+        </template>
+      </el-table-column>
+      <el-table-column prop="type" label="操作类型">
+        <template slot-scope="{row}">
+          {{ row.type === 'Import' ? '导入' : row.type === 'Export' ? '导出' : '' }}
+        </template>
+      </el-table-column>
       <el-table-column prop="createUser.name" label="创建人" width="150" />
       <el-table-column prop="createTime" label="创建时间" width="200" :formatter="formatterDate" />
       <el-table-column prop="remark" label="备注" />
@@ -53,9 +62,9 @@ export default {
       }
     },
     getData() {
-      this.$axios.get('/api/File/Attachment', { params: this.formSearch }).then(res => {
-        this.fileData = res.content.data
-        this.totalCount = res.content.totalCount
+      this.$axios.get('/api/FileProcess', { params: this.formSearch }).then(res => {
+        this.fileData = res.data
+        this.totalCount = res.totalCount
       })
     },
     getPage(val) {
@@ -67,7 +76,7 @@ export default {
       this.getData()
     },
     deleteFile(id) {
-      this.$axios.delete('/api/File/Attachment/' + id).then(res => {
+      this.$axios.delete('/api/FileProcess/' + id).then(res => {
         this.$message.success('文件已删除')
         this.getData()
       })
