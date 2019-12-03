@@ -60,7 +60,7 @@
             <!--分页-->
             <pagination v-show="totalCount>0" :total="totalCount" :page.sync="formSearch.pageNumber" :limit.sync="formSearch.pageSize" @pagination="getPage" />
           </el-col>
-          <el-dialog ref="allocation" title="调拨申请" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="allocationVisibale" width="1200px" @close="closeAllocatio">
+          <el-dialog ref="allocation" title="调拨申请" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="allocationVisibale" width="1300px" @close="closeAllocatio">
             <el-form ref="allocationForm" :model="allocationForm" :rules="allocationFormRules" label-width="120px">
               <el-form-item label="调拨单号">
                 <el-input value="系统自动生成" disabled />
@@ -116,7 +116,7 @@
               </el-table-column>
               <el-table-column prop="allocationQuantity" label="数量">
                 <template slot-scope="scope">
-                  <el-input v-model="scope.row.allocationQuantity" type="number" size="small" placeholder="请输入内容" />
+                  <el-input-number v-model="scope.row.allocationQuantity" controls-position="right" type="number" :min="1" size="small" placeholder="请输入内容" style="width:100%;" />
                 </template>
               </el-table-column>
               <el-table-column prop="remark" label="备注">

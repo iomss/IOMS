@@ -180,6 +180,7 @@
                       controls-position="right"
                       :max="rukuForm.spareBoundType==='OutBound' && rukuForm.spareStockType === 'Spare'?scope.row.kucun:Infinity"
                       size="small"
+                      :min="1"
                       placeholder="请输入内容"
                       style="width:100%;"
                     />
