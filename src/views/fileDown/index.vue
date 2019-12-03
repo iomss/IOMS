@@ -14,7 +14,7 @@
       </el-table-column>
       <el-table-column prop="name" label="文件名称">
         <template slot-scope="{row}">
-          <a :href="row.attachment !== null ? url+row.attachment.path : ''" target="_bank">{{ row.name }}</a>
+          <el-link :type="row.attachment !== null ?'primary':''" :href="row.attachment !== null ? url+row.attachment.path : '#'" target="_bank">{{ row.name }}</el-link>
         </template>
       </el-table-column>
       <el-table-column prop="type" label="操作类型">
@@ -24,7 +24,7 @@
       </el-table-column>
       <el-table-column prop="createUser.name" label="创建人" width="150" />
       <el-table-column prop="createTime" label="创建时间" width="200" :formatter="formatterDate" />
-      <el-table-column prop="remark" label="备注" />
+      <el-table-column prop="message" label="信息" />
     </el-table>
     <pagination v-show="totalCount>0" :total="totalCount" :page.sync="formSearch.pageNumber" :limit.sync="formSearch.pageSize" @pagination="getPage" />
   </div>
