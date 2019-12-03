@@ -27,7 +27,7 @@
 
     <div class="chart">
       <div id="report" class="chart-box" style="width: 100%;height: 400px;" />
-      <div id="proportion" class="chart-box" style="width: 500px;height: 400px;margin: 50px auto 0px;" />
+      <div id="proportion" class="chart-box" style="height: 400px;" />
     </div>
 
     <!-- 设备位置 -->
@@ -199,8 +199,8 @@ export default {
           formatter: '{b} : {c} ({d}%)'
         },
         legend: {
-          bottom: 10,
-          left: 'center',
+          orient: 'vertical',
+          x: 'right',
           data: dataAxis
         },
         series: [
