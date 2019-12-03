@@ -276,11 +276,13 @@ export default {
     // 提交审核
     onSubmit() {
       const currentUserId = this.$cookie.get('id')
+
+      debugger
       // 分中心审核
       if (this.queryRoles.EmergencyRequisitionSubCenterReview && this.viewDesc.emergencyState === 'PendingSubCenter') {
         this.emergencyRequisition(this.subCenter)
         // 路网中心审核
-      } else if (this.queryRoles.EmergencyRequisitionNetCenterEngineerReview && this.viewDesc.emergencyState === 'PendingNetCenter' && (this.reviewerId === '' || this.reviewerId === currentUserId)) {
+      } else if (this.queryRoles.EmergencyRequisitionNetCenterEngineerReview && this.viewDesc.emergencyState === 'PendingNetCenter' && (this.viewDesc.reviewerId === null || this.viewDesc.reviewerId === currentUserId)) {
         this.emergencyRequisition(this.pattern)
         // 分管领导意见
       } else if (this.queryRoles.EmergencyRequisitionLeaderReview && this.viewDesc.emergencyState === 'PendingLeader') {
