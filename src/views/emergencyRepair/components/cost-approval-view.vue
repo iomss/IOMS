@@ -470,7 +470,7 @@ export default {
       } else if (this.queryRoles.EmergencyRequisitionSubCenterReview) {
         this.emergencyRequisition(this.subCenter)
         // 路网中心审核
-      } else if (this.queryRoles.EmergencyRequisitionNetCenterEngineerReview && this.viewDesc.emergencyState === 'PendingNetCenter' && (this.reviewerId.toString() === '' || this.reviewerId.toString() === currentUserId.toString())) {
+      } else if (this.queryRoles.EmergencyRequisitionNetCenterEngineerReview && this.viewDesc.emergencyState === 'PendingNetCenter' && (this.viewDesc.reviewerId.toString() === '' || this.viewDesc.reviewerId.toString() === currentUserId.toString())) {
         this.emergencyRequisition(this.pattern)
         // 分管领导意见
       } else if (this.queryRoles.EmergencyRequisitionLeaderReview) {

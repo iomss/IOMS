@@ -277,7 +277,6 @@ export default {
     onSubmit() {
       const currentUserId = this.$cookie.get('id')
 
-      debugger
       // 分中心审核
       if (this.queryRoles.EmergencyRequisitionSubCenterReview && this.viewDesc.emergencyState === 'PendingSubCenter') {
         this.emergencyRequisition(this.subCenter)
