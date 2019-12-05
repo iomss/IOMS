@@ -82,7 +82,7 @@ axios.interceptors.response.use(
   response => {
     // dataAxios 是 axios 返回数据中的 data
     let dataAxios
-    if (response.config.url === '/api/Assets/Export') {
+    if (response.headers['content-type'] === 'application/octet-stream') {
       dataAxios = response
     } else {
       dataAxios = response.data
