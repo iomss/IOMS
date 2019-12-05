@@ -12,9 +12,9 @@ Spare<!-- 库房管理页面 -->
               <el-button type="danger" size="small" @click="deleteSpare()">删除</el-button>
             </div>
             <div class="tools">
-              <el-button type="success" size="small" @click="getData()">批量导入</el-button>
-              <el-button type="primary" size="small" @click="updateData()">导出数据</el-button>
-              <el-button type="primary" plain size="small" @click="deleteData()">下载模板</el-button>
+              <!-- <el-button type="success" size="small" @click="getData()">批量导入</el-button> -->
+              <el-button type="primary" size="small" @click="exprotData()">导出数据</el-button>
+              <!-- <el-button type="primary" plain size="small" @click="deleteData()">下载模板</el-button> -->
             </div>
             <div class="toolsrt">
               <el-form ref="form" :model="SpareFormSearce" label-width="70px">
@@ -211,6 +211,29 @@ export default {
         this.SpareData = res.data
         this.SpareTotalCount = res.totalCount
       })
+    },
+    exprotData() {
+      debugger
+      this.$axios
+        .get('/api/Spare/Export', {
+          params: this.SpareFormSearce,
+          Accept: {
+            'Content-Type': 'application/json;application/octet-stream'
+          },
+          responseType: 'blob'
+        })
+        .then(res => {
+          const fileName = res.headers['content-disposition'].match(
+            /filename=(.*)/
+          )[1]
+          const url = window.URL.createObjectURL(new Blob([res.data]))
+          const link = document.createElement('a')
+          link.style.display = 'none'
+          link.href = url
+          link.setAttribute('download', decodeURI(fileName))
+          document.body.appendChild(link)
+          link.click()
+        })
     },
     // 分页
     getSparePage(val) {

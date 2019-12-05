@@ -270,17 +270,19 @@ export default {
       //     this.$message.success("导出任务已生成,请前往任务列表查看");
       //   });
       this.$axios
-        .get('/api/EquipmentList/' + this.id + '/ExportItems', { params: this.tableDataSearch }, {
+        .get('/api/EquipmentList/' + this.id + '/ExportItems', {
+          params: this.tableDataSearch,
           Accept: {
             'Content-Type': 'application/json;application/octet-stream'
           },
-          responseType: 'arraybuffer'
-          // responseType: 'blob'
+          responseType: 'blob'
         })
         .then(res => {
-          const url = window.URL.createObjectURL(new Blob([res.data], { type: 'text/plain;charset=UTF-8' }))
+          const fileName = res.headers['content-disposition'].match(
+            /filename=(.*)/
+          )[1]
+          const url = window.URL.createObjectURL(new Blob([res.data]))
           const link = document.createElement('a')
-          const fileName = res.headers['content-disposition'].match(/filename=(.*)/)[1]
           link.style.display = 'none'
           link.href = url
           link.setAttribute('download', decodeURI(fileName))

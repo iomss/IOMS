@@ -10,7 +10,7 @@
               <el-button size="small" type="primary" @click="rukushow('OutBound','Spare')">备件出库</el-button>
               <!-- <el-button size="small" type="primary" @click="rukushow('InBound','Scrap')">报废入库</el-button> -->
               <el-button v-show="formSearch.type==='scrap'" size="small" type="danger" @click="baofei()">报废归档</el-button>
-              <el-button size="small" type="primary" plain @click="outputData()">导出</el-button>
+              <el-button size="small" type="primary" plain @click="exportData()">导出</el-button>
             </div>
             <!-- <div class="tools">
               {{ formSearch.typ }}
@@ -355,6 +355,28 @@ export default {
         this.tableData = res.data
         this.totalCount = res.totalCount
       })
+    },
+    exportData() {
+      this.$axios
+        .get('/api/SpareStock/Export', {
+          params: this.formSearch,
+          Accept: {
+            'Content-Type': 'application/json;application/octet-stream'
+          },
+          responseType: 'blob'
+        })
+        .then(res => {
+          const fileName = res.headers['content-disposition'].match(
+            /filename=(.*)/
+          )[1]
+          const url = window.URL.createObjectURL(new Blob([res.data]))
+          const link = document.createElement('a')
+          link.style.display = 'none'
+          link.href = url
+          link.setAttribute('download', decodeURI(fileName))
+          document.body.appendChild(link)
+          link.click()
+        })
     },
     // 入库单分页
     getPage(val) { // page事件

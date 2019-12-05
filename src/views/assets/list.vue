@@ -34,6 +34,7 @@
                   <el-dropdown-item @click.native="assetsExport()">选择导出</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
+              <el-link type="primary" href="/fileDown" icon="el-icon-folder-opened" target="_blank" />
             </div>
             <div class="toolsrt">
               <el-input v-model="tableDataSearch.text" placeholder="全局查询" size="small" />

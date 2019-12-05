@@ -6,30 +6,92 @@
         <div class="panel">
           <div class="header">
             <div class="select">
-              <el-button type="primary" size="small" @click="addlist()">新增计划</el-button>
-              <el-button type="primary" size="small" @click="setvalid()">导出计划</el-button>
-              <el-button type="danger" size="small" @click="deletelist()">删除</el-button>
+              <el-button
+                type="primary"
+                size="small"
+                @click="addlist()"
+              >新增计划</el-button>
+              <el-button
+                type="primary"
+                size="small"
+                @click="setvalid()"
+              >导出计划</el-button>
+              <el-button
+                type="danger"
+                size="small"
+                @click="deletelist()"
+              >删除</el-button>
             </div>
             <div class="toolsrt">
               <el-form ref="form" :model="tableDataSearch">
-                <el-select v-model="tableDataSearch.start" filterable placeholder="开始时间" size="small">
-                  <el-option v-for="item in startdateData" :key="item" :label="item" :value="item" />
+                <el-select
+                  v-model="tableDataSearch.start"
+                  filterable
+                  placeholder="开始时间"
+                  size="small"
+                >
+                  <el-option
+                    v-for="item in startdateData"
+                    :key="item"
+                    :label="item"
+                    :value="item"
+                  />
                 </el-select>
-                <el-select v-model="tableDataSearch.end" filterable placeholder="结束时间" size="small">
-                  <el-option v-for="item in enddateData" :key="item" :label="item" :value="item" />
+                <el-select
+                  v-model="tableDataSearch.end"
+                  filterable
+                  placeholder="结束时间"
+                  size="small"
+                >
+                  <el-option
+                    v-for="item in enddateData"
+                    :key="item"
+                    :label="item"
+                    :value="item"
+                  />
                 </el-select>
-                <el-input v-model="tableDataSearch.text" placeholder="全局搜索" size="small" />
-                <el-button type="primary" plain size="small" @click="getData()">查询</el-button>
-                <el-button type="primary" plain size="small" @click="resetSearchForm()">重置</el-button>
+                <el-input
+                  v-model="tableDataSearch.text"
+                  placeholder="全局搜索"
+                  size="small"
+                />
+                <el-button
+                  type="primary"
+                  plain
+                  size="small"
+                  @click="getData()"
+                >查询</el-button>
+                <el-button
+                  type="primary"
+                  plain
+                  size="small"
+                  @click="resetSearchForm()"
+                >重置</el-button>
               </el-form>
             </div>
           </div>
           <div class="content">
-            <el-table :data="tableData" stripe border style="width: 100%" @selection-change="handleChange">
+            <el-table
+              :data="tableData"
+              stripe
+              border
+              style="width: 100%"
+              @selection-change="handleChange"
+            >
               <el-table-column type="selection" />
               <el-table-column label="完成状态" prop="planState">
                 <template slot-scope="scope">
-                  {{ scope.row.planState==='Plan'?'计划':scope.row.planState==='Excute'?'执行':scope.row.planState==='Review'?'待验收':scope.row.planState==='Done'?'计划结束':'验收不通过' }}
+                  {{
+                    scope.row.planState === "Plan"
+                      ? "计划"
+                      : scope.row.planState === "Excute"
+                        ? "执行"
+                        : scope.row.planState === "Review"
+                          ? "待验收"
+                          : scope.row.planState === "Done"
+                            ? "计划结束"
+                            : "验收不通过"
+                  }}
                 </template>
               </el-table-column>
               <el-table-column prop="name" label="维护计划名名称" />
@@ -44,10 +106,22 @@
               <el-table-column prop="assetCount" label="关联资产数" />
               <el-table-column prop="cyclic" label="维护频率">
                 <template slot-scope="scope">
-                  {{ scope.row.cyclic=='Day'?'每天':scope.row.cyclic=='Week'?'每周':scope.row.cyclic=='Month'?'每月':'每年' }}
+                  {{
+                    scope.row.cyclic == "Day"
+                      ? "每天"
+                      : scope.row.cyclic == "Week"
+                        ? "每周"
+                        : scope.row.cyclic == "Month"
+                          ? "每月"
+                          : "每年"
+                  }}
                 </template>
               </el-table-column>
-              <el-table-column prop="createTime" label="录入日期" :formatter="formatterDate" />
+              <el-table-column
+                prop="createTime"
+                label="录入日期"
+                :formatter="formatterDate"
+              />
               <el-table-column prop="createUser" label="录入人">
                 <template slot-scope="scope">
                   {{ scope.row.createUser.name }}
@@ -62,46 +136,117 @@
               <el-table-column prop="reviewtime" label="验收时间" :formatter="formatterDate" /> -->
               <el-table-column label="操作" width="200px">
                 <template slot-scope="scope">
-                  <el-button size="mini" type="primary" style="margin:2px 5px" @click="UpdateStage(scope.row)">编辑计划</el-button>
-                  <el-button type="primary" size="mini" style="margin:2px 5px" @click="managelist(scope.row)">管理资产</el-button>
-                  <el-button size="mini" type="danger" style="margin:2px 5px" @click="deletelist(scope.row)">删除</el-button>
+                  <el-button
+                    size="mini"
+                    type="primary"
+                    style="margin:2px 5px"
+                    @click="UpdateStage(scope.row)"
+                  >编辑计划</el-button>
+                  <el-button
+                    type="primary"
+                    size="mini"
+                    style="margin:2px 5px"
+                    @click="managelist(scope.row)"
+                  >管理资产</el-button>
+                  <el-button
+                    size="mini"
+                    type="danger"
+                    style="margin:2px 5px"
+                    @click="deletelist(scope.row)"
+                  >删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
             <!--分页-->
-            <pagination v-show="totalCount>0" :total="totalCount" :page.sync="tableDataSearch.pageNumber" :limit.sync="tableDataSearch.pageSize" @pagination="getPage" />
+            <pagination
+              v-show="totalCount > 0"
+              :total="totalCount"
+              :page.sync="tableDataSearch.pageNumber"
+              :limit.sync="tableDataSearch.pageSize"
+              @pagination="getPage"
+            />
             <!-- 删除计划 -->
-            <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeQuestionVisible" width="220px">
+            <el-dialog
+              ref="removeData"
+              title="提示"
+              :close-on-press-escape="false"
+              :close-on-click-modal="false"
+              :visible.sync="removeQuestionVisible"
+              width="220px"
+            >
               <span>您确定要删除此条数据？</span>
               <span slot="footer" class="dialog-footer">
-                <el-button @click="removeQuestionVisible = false">取 消</el-button>
+                <el-button
+                  @click="removeQuestionVisible = false"
+                >取 消</el-button>
                 <el-button type="primary" @click="removeData">确 定</el-button>
               </span>
             </el-dialog>
             <!-- 新增或编辑计划-->
-            <el-dialog :title="titlea" :visible.sync="Visible" :close-on-press-escape="false" :close-on-click-modal="false" width="1300px">
-              <el-form ref="tableDatanew" :model="tableDatanew" :rules="tableDatanewrules" label-width="120px">
+            <el-dialog
+              :title="titlea"
+              :visible.sync="Visible"
+              :close-on-press-escape="false"
+              :close-on-click-modal="false"
+              width="1300px"
+            >
+              <el-form
+                ref="tableDatanew"
+                :model="tableDatanew"
+                :rules="tableDatanewrules"
+                label-width="120px"
+              >
                 <el-row class="selfstyle">
                   <el-col :span="12">
                     <el-form-item label="计划名称" prop="name">
-                      <el-input v-model="tableDatanew.name" placeholder="计划名称" size="small" />
+                      <el-input
+                        v-model="tableDatanew.name"
+                        placeholder="计划名称"
+                        size="small"
+                      />
                     </el-form-item>
                   </el-col>
                   <el-col :span="12">
                     <el-form-item label="所属系统" prop="systemId">
-                      <el-select v-model="tableDatanew.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" placeholder="所属系统" size="small" @focus="remoteMethodsystemId">
-                        <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
+                      <el-select
+                        v-model="tableDatanew.systemId"
+                        filterable
+                        remote
+                        :remote-method="remoteMethodsystemId"
+                        :loading="loading"
+                        placeholder="所属系统"
+                        size="small"
+                        @focus="remoteMethodsystemId"
+                      >
+                        <el-option
+                          v-for="item in systemData"
+                          :key="item.id"
+                          :label="item.name"
+                          :value="item.id"
+                        />
                       </el-select>
                     </el-form-item>
                   </el-col>
                   <el-col :span="12">
                     <el-form-item label="起止时间" prop="daterange">
-                      <el-date-picker v-model="tableDatanew.daterange" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" @change="daterangeChange" />
+                      <el-date-picker
+                        v-model="tableDatanew.daterange"
+                        type="daterange"
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        @change="daterangeChange"
+                      />
                     </el-form-item>
                   </el-col>
                   <el-col :span="6">
                     <el-form-item label="维护频率" prop="cyclic">
-                      <el-select v-model="tableDatanew.cyclic" filterable placeholder="维护频率" size="small">
+                      <el-select
+                        v-model="tableDatanew.cyclic"
+                        filterable
+                        placeholder="维护频率"
+                        size="small"
+                      >
                         <el-option key="Day" label="每天" value="Day" />
                         <el-option key="Week" label="每周" value="Week" />
                         <el-option key="Month" label="每月" value="Month" />
@@ -111,55 +256,127 @@
                   </el-col>
                   <el-col :span="6">
                     <el-form-item label="抽检率" prop="samplingRate">
-                      <el-select v-model="tableDatanew.samplingRate" filterable placeholder="抽检率" size="small">
-                        <el-option v-for="item in samplingRateData" :key="item.id" :label="item.name" :value="item.id" />
+                      <el-select
+                        v-model="tableDatanew.samplingRate"
+                        filterable
+                        placeholder="抽检率"
+                        size="small"
+                      >
+                        <el-option
+                          v-for="item in samplingRateData"
+                          :key="item.id"
+                          :label="item.name"
+                          :value="item.id"
+                        />
                       </el-select>
                     </el-form-item>
                   </el-col>
                   <el-col :span="12">
                     <el-form-item label="责任人" prop="responsibleUser">
-                      <el-input v-model="tableDatanew.responsibleUser" placeholder="责任人" size="small" />
+                      <el-input
+                        v-model="tableDatanew.responsibleUser"
+                        placeholder="责任人"
+                        size="small"
+                      />
                     </el-form-item>
                   </el-col>
                   <el-col :span="12">
                     <el-form-item label="执行人" prop="excuteUser">
-                      <el-input v-model="tableDatanew.excuteUser" placeholder="执行人" size="small" />
+                      <el-input
+                        v-model="tableDatanew.excuteUser"
+                        placeholder="执行人"
+                        size="small"
+                      />
                     </el-form-item>
                   </el-col>
                   <el-col :span="24">
                     <el-form-item style="text-align:center;">
-                      <el-button type="primary" size="small" icon="el-icon-search" @click="createorupdate()">保存</el-button>
-                      <el-button v-if="titlea==='新增计划'" type="primary" size="small" @click="resetForm()">重置</el-button>
-                      <el-button size="small" icon="el-icon-close" @click="cancel()">取消</el-button>
+                      <el-button
+                        type="primary"
+                        size="small"
+                        icon="el-icon-search"
+                        @click="createorupdate()"
+                      >保存</el-button>
+                      <el-button
+                        v-if="titlea === '新增计划'"
+                        type="primary"
+                        size="small"
+                        @click="resetForm()"
+                      >重置</el-button>
+                      <el-button
+                        size="small"
+                        icon="el-icon-close"
+                        @click="cancel()"
+                      >取消</el-button>
                     </el-form-item>
                   </el-col>
                 </el-row>
               </el-form>
             </el-dialog>
             <!-- 一级弹框开始******************************************************* -->
-            <el-dialog title="编辑资产" :visible.sync="Visiblefirst" :close-on-press-escape="false" :close-on-click-modal="false" width="1200px" @close="updatelist()">
-              <el-form ref="form" :model="tableDatanewfirst" label-width="120px">
+            <el-dialog
+              title="编辑资产"
+              :visible.sync="Visiblefirst"
+              :close-on-press-escape="false"
+              :close-on-click-modal="false"
+              width="1200px"
+              @close="updatelist()"
+            >
+              <el-form
+                ref="form"
+                :model="tableDatanewfirst"
+                label-width="120px"
+              >
                 <el-row class="selfstyle">
                   <el-col :span="12">
                     <el-form-item label="计划名称" prop="name">
-                      <el-input v-model="tableDatanewfirst.name" :disabled="true" placeholder="计划名称" size="small" />
+                      <el-input
+                        v-model="tableDatanewfirst.name"
+                        :disabled="true"
+                        placeholder="计划名称"
+                        size="small"
+                      />
                     </el-form-item>
                   </el-col>
                   <el-col :span="12">
                     <el-form-item label="所属系统" prop="systemId">
-                      <el-select v-model="tableDatanewfirst.systemId" :disabled="true" clearable placeholder="所属系统" size="small">
-                        <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
+                      <el-select
+                        v-model="tableDatanewfirst.systemId"
+                        :disabled="true"
+                        clearable
+                        placeholder="所属系统"
+                        size="small"
+                      >
+                        <el-option
+                          v-for="item in systemData"
+                          :key="item.id"
+                          :label="item.name"
+                          :value="item.id"
+                        />
                       </el-select>
                     </el-form-item>
                   </el-col>
                   <el-col :span="12">
                     <el-form-item label="起止时间" prop="daterange">
-                      <el-date-picker v-model="tableDatanewfirst.daterange" :disabled="true" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
+                      <el-date-picker
+                        v-model="tableDatanewfirst.daterange"
+                        :disabled="true"
+                        type="daterange"
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                      />
                     </el-form-item>
                   </el-col>
                   <el-col :span="6">
                     <el-form-item label="维护频率" prop="cyclic">
-                      <el-select v-model="tableDatanewfirst.cyclic" filterable :disabled="true" placeholder="维护频率" size="small">
+                      <el-select
+                        v-model="tableDatanewfirst.cyclic"
+                        filterable
+                        :disabled="true"
+                        placeholder="维护频率"
+                        size="small"
+                      >
                         <el-option key="Day" label="每天" value="Day" />
                         <el-option key="Week" label="每周" value="Week" />
                         <el-option key="Month" label="每月" value="Month" />
@@ -169,30 +386,65 @@
                   </el-col>
                   <el-col :span="6">
                     <el-form-item label="抽检率" prop="samplingRate">
-                      <el-select v-model="tableDatanewfirst.samplingRate" filterable :disabled="true" placeholder="抽检率" size="small">
-                        <el-option v-for="item in samplingRateData" :key="item.id" :label="item.name" :value="item.id" />
+                      <el-select
+                        v-model="tableDatanewfirst.samplingRate"
+                        filterable
+                        :disabled="true"
+                        placeholder="抽检率"
+                        size="small"
+                      >
+                        <el-option
+                          v-for="item in samplingRateData"
+                          :key="item.id"
+                          :label="item.name"
+                          :value="item.id"
+                        />
                       </el-select>
                     </el-form-item>
                   </el-col>
                   <el-col :span="12">
                     <el-form-item label="责任人" prop="responsibleUser">
-                      <el-input v-model="tableDatanewfirst.responsibleUser" :disabled="true" placeholder="责任人" size="small" />
+                      <el-input
+                        v-model="tableDatanewfirst.responsibleUser"
+                        :disabled="true"
+                        placeholder="责任人"
+                        size="small"
+                      />
                     </el-form-item>
                   </el-col>
                   <el-col :span="12">
                     <el-form-item label="执行人" prop="excuteUser">
-                      <el-input v-model="tableDatanewfirst.excuteUser" :disabled="true" placeholder="执行人" size="small" />
+                      <el-input
+                        v-model="tableDatanewfirst.excuteUser"
+                        :disabled="true"
+                        placeholder="执行人"
+                        size="small"
+                      />
                     </el-form-item>
                   </el-col>
                 </el-row>
               </el-form>
               <div class="header">
                 <div class="select">
-                  <el-button type="primary" size="small" @click="addAssets()">添加资产</el-button>
-                  <el-button type="primary" size="small" @click="removeEquip()">移除资产</el-button>
+                  <el-button
+                    type="primary"
+                    size="small"
+                    @click="addAssets()"
+                  >添加资产</el-button>
+                  <el-button
+                    type="primary"
+                    size="small"
+                    @click="removeEquip()"
+                  >移除资产</el-button>
                 </div>
               </div>
-              <el-table :data="tableDatafirst" stripe border style="width: 100%" @selection-change="handleChangefirst">
+              <el-table
+                :data="tableDatafirst"
+                stripe
+                border
+                style="width: 100%"
+                @selection-change="handleChangefirst"
+              >
                 <el-table-column type="selection" />
                 <el-table-column prop="equipment" label="资产名称">
                   <template slot-scope="scope">
@@ -217,79 +469,181 @@
                 <el-table-column prop="level5" label="五级" />
               </el-table>
               <!--分页-->
-              <pagination v-show="totalCountfirst>0" :total="totalCountfirst" :page.sync="tableDataSearchfirst.pageNumber" :limit.sync="tableDataSearchfirst.pageSize" @pagination="getPagefirst" />
+              <pagination
+                v-show="totalCountfirst > 0"
+                :total="totalCountfirst"
+                :page.sync="tableDataSearchfirst.pageNumber"
+                :limit.sync="tableDataSearchfirst.pageSize"
+                @pagination="getPagefirst"
+              />
             </el-dialog>
             <!-- 一级弹框结束**************************************************************** -->
             <!-- 二级弹框开始**************************************************************** -->
-            <el-dialog title="新增计划子项" :visible.sync="Visiblesecond" :close-on-press-escape="false" :close-on-click-modal="false" width="1200px">
+            <el-dialog
+              title="新增计划子项"
+              :visible.sync="Visiblesecond"
+              :close-on-press-escape="false"
+              :close-on-click-modal="false"
+              width="1200px"
+            >
               <div class="header">
                 <div class="">
-                  <el-form ref="tableDataSearchsecond" :model="tableDataSearchsecond" label-width="50px;">
+                  <el-form
+                    ref="tableDataSearchsecond"
+                    :model="tableDataSearchsecond"
+                    label-width="50px;"
+                  >
                     <el-row class="selfstyle" :gutter="20">
                       <el-col :span="6">
                         <el-form-item>
-                          <treeselect v-model="tableDataSearchsecond.positionId" :normalizer="normalizer" :options="positionTreeData" :load-options="loadOptions" placeholder="安装位置" no-results-text="未找到相关数据" />
+                          <treeselect
+                            v-model="tableDataSearchsecond.positionId"
+                            :normalizer="normalizer"
+                            :options="positionTreeData"
+                            :load-options="loadOptions"
+                            placeholder="安装位置"
+                            no-results-text="未找到相关数据"
+                          />
                         </el-form-item>
                       </el-col>
                       <el-col :span="6">
                         <el-form-item>
-                          <el-select v-model="tableDataSearchsecond.systemId" filterable remote :remote-method="remoteMethodsystemId" :loading="loading" clearable placeholder="所属系统" size="small" @focus="remoteMethodsystemId">
-                            <el-option v-for="item in systemData" :key="item.id" :label="item.name" :value="item.id" />
+                          <el-select
+                            v-model="tableDataSearchsecond.systemId"
+                            filterable
+                            remote
+                            :remote-method="remoteMethodsystemId"
+                            :loading="loading"
+                            clearable
+                            placeholder="所属系统"
+                            size="small"
+                            @focus="remoteMethodsystemId"
+                          >
+                            <el-option
+                              v-for="item in systemData"
+                              :key="item.id"
+                              :label="item.name"
+                              :value="item.id"
+                            />
                           </el-select>
                         </el-form-item>
                       </el-col>
                       <el-col :span="6">
                         <el-form-item>
-                          <el-input v-model="tableDataSearchsecond.text" placeholder="关键字模糊查询" size="small" />
+                          <el-input
+                            v-model="tableDataSearchsecond.text"
+                            placeholder="关键字模糊查询"
+                            size="small"
+                          />
                         </el-form-item>
                       </el-col>
                       <el-col :span="6">
                         <el-form-item>
-                          <el-button type="primary" plain size="small" @click="getDatasecond()">查询</el-button>
+                          <el-button
+                            type="primary"
+                            plain
+                            size="small"
+                            @click="getDatasecond()"
+                          >查询</el-button>
                         </el-form-item>
                       </el-col>
                     </el-row>
                   </el-form>
-                  <el-form ref="RepairRecord" :model="RepairRecord" label-width="50px;">
+                  <el-form
+                    ref="RepairRecord"
+                    :model="RepairRecord"
+                    label-width="50px;"
+                  >
                     <el-row>
                       <el-col :span="24">需维护的等级及次数</el-col>
                     </el-row>
                     <el-row>
                       <el-col :span="3">
                         <el-form-item label="一级">
-                          <el-input-number v-model="RepairRecord.level1" controls-position="right" size="mini" :min="0" :max="1000000" />
+                          <el-input-number
+                            v-model="RepairRecord.level1"
+                            controls-position="right"
+                            size="mini"
+                            :min="0"
+                            :max="1000000"
+                          />
                         </el-form-item>
                       </el-col>
-                      <el-col :span="1" style="height: 40px;padding: 12px 0px 0px 5px;">次</el-col>
+                      <el-col
+                        :span="1"
+                        style="height: 40px;padding: 12px 0px 0px 5px;"
+                      >次</el-col>
                       <el-col :span="3">
                         <el-form-item label="二级">
-                          <el-input-number v-model="RepairRecord.level2" controls-position="right" size="mini" :min="0" :max="1000000" />
+                          <el-input-number
+                            v-model="RepairRecord.level2"
+                            controls-position="right"
+                            size="mini"
+                            :min="0"
+                            :max="1000000"
+                          />
                         </el-form-item>
                       </el-col>
-                      <el-col :span="1" style="height: 40px;padding: 12px 0px 0px 5px;">次</el-col>
+                      <el-col
+                        :span="1"
+                        style="height: 40px;padding: 12px 0px 0px 5px;"
+                      >次</el-col>
                       <el-col :span="3">
                         <el-form-item label="三级">
-                          <el-input-number v-model="RepairRecord.level3" controls-position="right" size="mini" :min="0" :max="1000000" />
+                          <el-input-number
+                            v-model="RepairRecord.level3"
+                            controls-position="right"
+                            size="mini"
+                            :min="0"
+                            :max="1000000"
+                          />
                         </el-form-item>
                       </el-col>
-                      <el-col :span="1" style="height: 40px;padding: 12px 0px 0px 5px;">次</el-col>
+                      <el-col
+                        :span="1"
+                        style="height: 40px;padding: 12px 0px 0px 5px;"
+                      >次</el-col>
                       <el-col :span="3">
                         <el-form-item label="四级">
-                          <el-input-number v-model="RepairRecord.level4" controls-position="right" size="mini" :min="0" :max="1000000" />
+                          <el-input-number
+                            v-model="RepairRecord.level4"
+                            controls-position="right"
+                            size="mini"
+                            :min="0"
+                            :max="1000000"
+                          />
                         </el-form-item>
                       </el-col>
-                      <el-col :span="1" style="height: 40px;padding: 12px 0px 0px 5px;">次</el-col>
+                      <el-col
+                        :span="1"
+                        style="height: 40px;padding: 12px 0px 0px 5px;"
+                      >次</el-col>
                       <el-col :span="3">
                         <el-form-item label="五级">
-                          <el-input-number v-model="RepairRecord.level5" controls-position="right" size="mini" :min="0" :max="1000000" />
+                          <el-input-number
+                            v-model="RepairRecord.level5"
+                            controls-position="right"
+                            size="mini"
+                            :min="0"
+                            :max="1000000"
+                          />
                         </el-form-item>
                       </el-col>
-                      <el-col :span="1" style="height: 40px;padding: 12px 0px 0px 5px;">次</el-col>
+                      <el-col
+                        :span="1"
+                        style="height: 40px;padding: 12px 0px 0px 5px;"
+                      >次</el-col>
                     </el-row>
                   </el-form>
                 </div>
               </div>
-              <el-table :data="tableDatasecond" stripe border style="width: 100%" @selection-change="handleChangesecond">
+              <el-table
+                :data="tableDatasecond"
+                stripe
+                border
+                style="width: 100%"
+                @selection-change="handleChangesecond"
+              >
                 <el-table-column type="selection" />
                 <el-table-column prop="equipment" label="资产名称">
                   <template slot-scope="scope">
@@ -309,23 +663,48 @@
                 <el-table-column prop="count" label="数量" />
               </el-table>
               <!--分页-->
-              <pagination v-show="totalCountsecond>0" :total="totalCountsecond" :page.sync="tableDataSearchsecond.pageNumber" :limit.sync="tableDataSearchsecond.pageSize" @pagination="getPagesecond" />
+              <pagination
+                v-show="totalCountsecond > 0"
+                :total="totalCountsecond"
+                :page.sync="tableDataSearchsecond.pageNumber"
+                :limit.sync="tableDataSearchsecond.pageSize"
+                @pagination="getPagesecond"
+              />
               <span slot="footer" class="dialog-footer">
                 <el-button type="primary" @click="creatlist">添加</el-button>
-                <el-button type="primary" @click="Visiblesecond=false">取消</el-button>
+                <el-button
+                  type="primary"
+                  @click="Visiblesecond = false"
+                >取消</el-button>
               </span>
             </el-dialog>
             <!-- 二级弹框结束**************************************************************** -->
             <!-- 删除计划子项**************************************************************** -->
-            <el-dialog ref="removeData" title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="removeVisible" width="220px">
+            <el-dialog
+              ref="removeData"
+              title="提示"
+              :close-on-press-escape="false"
+              :close-on-click-modal="false"
+              :visible.sync="removeVisible"
+              width="220px"
+            >
               <span>您确定要删除此条数据？</span>
               <span slot="footer" class="dialog-footer">
                 <el-button @click="removeVisible = false">取 消</el-button>
-                <el-button type="primary" @click="removeDatainfo">确 定</el-button>
+                <el-button
+                  type="primary"
+                  @click="removeDatainfo"
+                >确 定</el-button>
               </span>
             </el-dialog>
             <!-- 是否添加资产 -->
-            <el-dialog title="提示" :close-on-press-escape="false" :close-on-click-modal="false" :visible.sync="AddVisible" width="220px">
+            <el-dialog
+              title="提示"
+              :close-on-press-escape="false"
+              :close-on-click-modal="false"
+              :visible.sync="AddVisible"
+              width="220px"
+            >
               <span>是否添加资产？</span>
               <span slot="footer" class="dialog-footer">
                 <el-button @click="AddVisible = false">否</el-button>
@@ -377,18 +756,20 @@ export default {
         end: '',
         text: '', // 搜索文本
         pageSize: 10, // 展示条数
-        pageNumber: 1// 页码
+        pageNumber: 1 // 页码
       },
-      tableDataSearchfirst: {// 一级弹框搜索
+      tableDataSearchfirst: {
+        // 一级弹框搜索
         pageSize: 10, // 展示条数
-        pageNumber: 1// 页码
+        pageNumber: 1 // 页码
       },
-      tableDataSearchsecond: {// 二级弹框搜索
+      tableDataSearchsecond: {
+        // 二级弹框搜索
         positionId: null,
         systemId: '',
         text: '',
         pageSize: 10, // 展示条数
-        pageNumber: 1// 页码
+        pageNumber: 1 // 页码
       },
       totalCount: 0, // 数据总条数
       totalCountfirst: 0, // 数据总条数
@@ -396,7 +777,8 @@ export default {
       tableData: [],
       tableDatafirst: [], // 一级弹框表单数据
       tableDatasecond: [], // 二级弹框表单数据
-      tableDatanew: {// 新增计划表单
+      tableDatanew: {
+        // 新增计划表单
         daterange: [],
         start: '',
         end: '',
@@ -413,12 +795,14 @@ export default {
       multiplesecond: [], // 二级弹框表单选中行
       yearData: [],
       systemData: [],
-      systempage: {// 所属系统分页
+      systempage: {
+        // 所属系统分页
         pageNumber: 1,
         pageSize: 50,
         pageCount: ''
       },
-      samplingRateData: [// 抽检率数据
+      samplingRateData: [
+        // 抽检率数据
         { id: 10, name: '10 %' },
         { id: 20, name: '20 %' },
         { id: 30, name: '30 %' },
@@ -430,7 +814,8 @@ export default {
         { id: 90, name: '90 %' },
         { id: 100, name: '100 %' }
       ],
-      tableDatanewrules: {// 新增计划表单验证
+      tableDatanewrules: {
+        // 新增计划表单验证
         responsibleUser: [
           { required: true, message: '责任人不可为空', trigger: 'change' }
         ],
@@ -454,7 +839,8 @@ export default {
         ]
       },
       positionTreeData: [], // 位置数据
-      RepairRecord: {// 维修记录表单
+      RepairRecord: {
+        // 维修记录表单
         level1: '',
         level2: '',
         level3: '',
@@ -478,14 +864,16 @@ export default {
     //* ******************************************************************************************************* */
     // 公用代码
 
-    formatterDate(row, column, cellValue) { // 日期时间格式化
+    formatterDate(row, column, cellValue) {
+      // 日期时间格式化
       if (cellValue !== null) {
         return this.$moment(cellValue).format('YYYY-MM-DD')
       } else {
         return cellValue
       }
     },
-    formatter(val) { // 日期时间格式化
+    formatter(val) {
+      // 日期时间格式化
       return this.$moment(val).format('YYYY-MM-DD')
     },
     checkhasChildren(data) {
@@ -532,18 +920,21 @@ export default {
         }
       }
     },
-    getpositionData() { // 获取位置
+    getpositionData() {
+      // 获取位置
       this.$axios.get('/api/Tree/Position').then(res => {
         this.positionTreeData = this.checkhasChildren(res)
       })
     },
-    resetSearchForm() { // 重置搜索条件
+    resetSearchForm() {
+      // 重置搜索条件
       this.tableDataSearch.start = ''
       this.tableDataSearch.end = ''
       this.tableDataSearch.text = ''
       this.getData()
     },
-    getDates() { // 获取列表
+    getDates() {
+      // 获取列表
       this.$axios.get('/api/MaintenancePlan/Dates').then(res => {
         this.startdateData = res.startDates
         this.enddateData = res.endDates
@@ -552,11 +943,19 @@ export default {
 
     //* ******************************************************************************************************* */
     // 下拉菜单数据
-    getsystemData() { // 获取系统
+    getsystemData() {
+      // 获取系统
       // 获取所属系统
-      this.$axios.get('/api/Meta/System?pageSize=' + this.systempage.pageSize + '&pageNumber=' + this.systempage.pageNumber).then(res => {
-        this.systemData = this.systemData.concat(res.data)
-      })
+      this.$axios
+        .get(
+          '/api/Meta/System?pageSize=' +
+            this.systempage.pageSize +
+            '&pageNumber=' +
+            this.systempage.pageNumber
+        )
+        .then(res => {
+          this.systemData = this.systemData.concat(res.data)
+        })
     },
     getyearData() {
       var year = new Date().getFullYear()
@@ -567,10 +966,11 @@ export default {
         })
       }
     },
-    remoteMethodsystemId(query) { // 所属系统远程搜索
+    remoteMethodsystemId(query) {
+      // 所属系统远程搜索
       this.loading = true
       let querytext = ''
-      querytext = typeof (query) === 'string' ? query : ''
+      querytext = typeof query === 'string' ? query : ''
       this.$axios.get('/api/Meta/System?text=' + querytext).then(res => {
         this.loading = false
         this.systemData = res.data
@@ -579,34 +979,62 @@ export default {
     //* ******************************************************************************************************* */
     // 列表数据
 
-    getData(data) { // 获取列表
+    getData(data) {
+      // 获取列表
       if (data) {
         this.tableDataSearch.valid = data
       } else {
         this.tableDataSearch.valid = ''
       }
-      this.$axios.get('/api/MaintenancePlan', { params: this.tableDataSearch }).then(res => {
-        this.tableData = res.data
-        this.totalCount = res.totalCount
-      })
+      this.$axios
+        .get('/api/MaintenancePlan', { params: this.tableDataSearch })
+        .then(res => {
+          this.tableData = res.data
+          this.totalCount = res.totalCount
+        })
     },
-    getPage(val) { // page事件
+    getPage(val) {
+      // page事件
       // 展示条数
       this.tableDataSearch.pageSize = val.limit
       // 页码
       this.tableDataSearch.pageNumber = val.page
       // 调用获取数据
-      this.$axios.get('/api/MaintenancePlan', { params: this.tableDataSearch }).then(res => {
-        this.tableData = res.data
-      })
+      this.$axios
+        .get('/api/MaintenancePlan', { params: this.tableDataSearch })
+        .then(res => {
+          this.tableData = res.data
+        })
     },
 
-    setvalid() { // 导出计划
-      this.$axios.get('/api/MaintenancePlan', { params: { ...this.tableDataSearch, export: true }}).then(res => {
-        this.$message.success('导出任务已生成,请前往任务列表查看')
-      })
+    setvalid() {
+      // 导出计划
+      // this.$axios.get('/api/MaintenancePlan', { params: { ...this.tableDataSearch, export: true }}).then(res => {
+      //   this.$message.success('导出任务已生成,请前往任务列表查看')
+      // })
+      this.$axios
+        .get('/api/MaintenancePlan/Export', {
+          params: this.tableDataSearch,
+          Accept: {
+            'Content-Type': 'application/json;application/octet-stream'
+          },
+          responseType: 'blob'
+        })
+        .then(res => {
+          const fileName = res.headers['content-disposition'].match(
+            /filename=(.*)/
+          )[1]
+          const url = window.URL.createObjectURL(new Blob([res.data]))
+          const link = document.createElement('a')
+          link.style.display = 'none'
+          link.href = url
+          link.setAttribute('download', decodeURI(fileName))
+          document.body.appendChild(link)
+          link.click()
+        })
     },
-    addlist() { // 新增计划
+    addlist() {
+      // 新增计划
       // 重置表单数据
       this.tableDatanew = {
         daterange: [],
@@ -622,7 +1050,8 @@ export default {
       this.titlea = '新增计划'
       this.Visible = true
     },
-    deletelist(data) { // 删除计划
+    deletelist(data) {
+      // 删除计划
       if (data) {
         this.removeQuestionVisible = true
         this.multiple = data
@@ -634,12 +1063,16 @@ export default {
         }
       }
     },
-    removeData() { // 删除弹框点确定
+    removeData() {
+      // 删除弹框点确定
       this.removeQuestionVisible = true
       let id = ''
-      if (typeof (this.multiple) === 'object' && this.multiple.constructor === Array) {
+      if (
+        typeof this.multiple === 'object' &&
+        this.multiple.constructor === Array
+      ) {
         id = this.multiple[0].id
-      } else if (typeof (this.multiple) === 'object') {
+      } else if (typeof this.multiple === 'object') {
         id = this.multiple.id
       }
       this.$axios.delete('/api/MaintenancePlan/' + id).then(res => {
@@ -654,7 +1087,8 @@ export default {
     handleChange(val) {
       this.multiple = val
     },
-    showInfo(row) { // 点击详情按钮
+    showInfo(row) {
+      // 点击详情按钮
       // 重置表单数据
       this.tableDatanew = {
         daterange: [],
@@ -670,7 +1104,9 @@ export default {
       this.titlea = '计划详情'
       // 判断当前按选中值是否存在，不存在插入
       let hasSystemData = false
-      this.systemData.forEach(item => { item.id === row.system.id ? hasSystemData = true : '' })
+      this.systemData.forEach(item => {
+        item.id === row.system.id ? (hasSystemData = true) : ''
+      })
       hasSystemData ? '' : this.systemData.push(row.system)
       // 赋值
       this.tableDatanew.daterange = [row.start, row.end]
@@ -688,7 +1124,8 @@ export default {
       this.tableDatanew.start = val[0]
       this.tableDatanew.end = val[1]
     },
-    UpdateStage(row) { // 点击编辑按钮
+    UpdateStage(row) {
+      // 点击编辑按钮
       const _this = this
       if (row) {
         // 重置表单数据
@@ -705,7 +1142,9 @@ export default {
         }
         // 判断当前按选中值是否存在，不存在插入
         let hasSystemData = false
-        this.systemData.forEach(item => { item.id === row.system.id ? hasSystemData = true : '' })
+        this.systemData.forEach(item => {
+          item.id === row.system.id ? (hasSystemData = true) : ''
+        })
         hasSystemData ? '' : this.systemData.push(row.system)
         // tableDatanew
         this.tableDatanew.daterange = [row.start, row.end]
@@ -738,22 +1177,27 @@ export default {
             cyclic: ''
           }
           // 获取编辑弹框中数据
-          this.$axios.get('/api/MaintenancePlan/' + this.multiple[0].id).then(res => {
-            // 判断当前按选中值是否存在，不存在插入
-            let hasSystemData = false
-            this.systemData.forEach(item => { item.id === res.system.id ? hasSystemData = true : '' })
-            hasSystemData ? '' : this.systemData.push(res.system)
-            // 赋值
-            this.tableDatanew = res
-            this.tableDatanew.daterange = [res.start, res.end]
-            // 显示弹框
-            this.Visible = true
-            this.itemid = this.multiple[0].id
-          })
+          this.$axios
+            .get('/api/MaintenancePlan/' + this.multiple[0].id)
+            .then(res => {
+              // 判断当前按选中值是否存在，不存在插入
+              let hasSystemData = false
+              this.systemData.forEach(item => {
+                item.id === res.system.id ? (hasSystemData = true) : ''
+              })
+              hasSystemData ? '' : this.systemData.push(res.system)
+              // 赋值
+              this.tableDatanew = res
+              this.tableDatanew.daterange = [res.start, res.end]
+              // 显示弹框
+              this.Visible = true
+              this.itemid = this.multiple[0].id
+            })
         }
       }
     },
-    managelist(row) { // 点击管理资产按钮
+    managelist(row) {
+      // 点击管理资产按钮
       this.tableDatanewfirst.daterange = [row.start, row.end]
       this.tableDatanewfirst.name = row.name
       this.tableDatanewfirst.systemId = row.systemId
@@ -791,61 +1235,81 @@ export default {
           _this.tableDatanew.start = _this.tableDatanew.daterange[0]
           _this.tableDatanew.end = _this.tableDatanew.daterange[1]
           if (_this.titlea === '新增计划') {
-            this.$axios.post('/api/MaintenancePlan', this.tableDatanew).then(response => {
-              _this.$message.success('添加成功')
-              _this.Visible = false
-              // 清空选中值
-              _this.multiple = ''
-              // 更新表格数据
-              _this.getData()
-              // 显示是否添加资产弹框
-              _this.AddVisible = true
-              // 一级弹框赋值
-              _this.tableDatanewfirst = response
-              _this.tableDatanewfirst.daterange = [response.start, response.end]
-              // 存id
-              _this.itemid = response.id
-            })
-          } else if (_this.titlea === '编辑计划' || _this.titlea === '计划详情') {
-            _this.$axios.put('/api/MaintenancePlan/' + _this.itemid, _this.tableDatanew).then(response => {
-              _this.$message.success('编辑成功')
-              _this.Visible = false
-              // 清空选中值
-              _this.multiple = ''
-              // 更新表格数据
-              _this.getData()
-            })
+            this.$axios
+              .post('/api/MaintenancePlan', this.tableDatanew)
+              .then(response => {
+                _this.$message.success('添加成功')
+                _this.Visible = false
+                // 清空选中值
+                _this.multiple = ''
+                // 更新表格数据
+                _this.getData()
+                // 显示是否添加资产弹框
+                _this.AddVisible = true
+                // 一级弹框赋值
+                _this.tableDatanewfirst = response
+                _this.tableDatanewfirst.daterange = [
+                  response.start,
+                  response.end
+                ]
+                // 存id
+                _this.itemid = response.id
+              })
+          } else if (
+            _this.titlea === '编辑计划' ||
+            _this.titlea === '计划详情'
+          ) {
+            _this.$axios
+              .put('/api/MaintenancePlan/' + _this.itemid, _this.tableDatanew)
+              .then(response => {
+                _this.$message.success('编辑成功')
+                _this.Visible = false
+                // 清空选中值
+                _this.multiple = ''
+                // 更新表格数据
+                _this.getData()
+              })
           }
         }
       })
     },
-    AddDatainfo() { //
+    AddDatainfo() {
+      //
       // 隐藏是否添加资产弹框
       this.AddVisible = false
       // 打开一级弹框
       this.Visiblefirst = true
     },
-    cancel() { // 新增或编辑弹框取消方法
+    cancel() {
+      // 新增或编辑弹框取消方法
       this.Visible = false
     },
     //* *************************************************************************************************************** */
     // 一级弹框方法
 
-    getDatafirst() { // 获取资产列表
-      this.$axios.get('/api/MaintenancePlan/' + this.itemid + '/Items').then(res => {
-        this.tableDatafirst = res.data
-        this.totalCountfirst = res.totalCount
-      })
+    getDatafirst() {
+      // 获取资产列表
+      this.$axios
+        .get('/api/MaintenancePlan/' + this.itemid + '/Items')
+        .then(res => {
+          this.tableDatafirst = res.data
+          this.totalCountfirst = res.totalCount
+        })
     },
-    getPagefirst(val) { // page事件
+    getPagefirst(val) {
+      // page事件
       // 展示条数
       this.tableDataSearchfirst.pageSize = val.limit
       // 页码
       this.tableDataSearchfirst.pageNumber = val.page
       // 调用获取数据
-      this.$axios.get('/api/MaintenancePlan/' + this.itemid + '/Items', { params: this.tableDataSearchfirst }).then(res => {
-        this.tableDatafirst = res.data
-      })
+      this.$axios
+        .get('/api/MaintenancePlan/' + this.itemid + '/Items', {
+          params: this.tableDataSearchfirst
+        })
+        .then(res => {
+          this.tableDatafirst = res.data
+        })
     },
     handleChangefirst(val) {
       const arr = []
@@ -856,7 +1320,8 @@ export default {
       console.log(this.multiplefirst)
     },
 
-    removeEquip() { // 一级弹框中点删除
+    removeEquip() {
+      // 一级弹框中点删除
       if (this.multiplefirst === '') {
         this.$message.error('请至少选择一条数据')
       } else {
@@ -864,21 +1329,27 @@ export default {
       }
     },
 
-    removeDatainfo() { // 删除弹框点确定
+    removeDatainfo() {
+      // 删除弹框点确定
       this.removeVisible = true
       const itemIds = {
         itemIds: this.multiplefirst
       }
-      this.$axios.delete('api/MaintenancePlan/' + this.itemid + '/Item', { data: itemIds }).then(res => {
-        this.$message.success('删除成功')
-        this.removeVisible = false
-        // 清空选中值
-        this.multiple = ''
-        // 获取资产level列表
-        this.getDatafirst()
-      })
+      this.$axios
+        .delete('api/MaintenancePlan/' + this.itemid + '/Item', {
+          data: itemIds
+        })
+        .then(res => {
+          this.$message.success('删除成功')
+          this.removeVisible = false
+          // 清空选中值
+          this.multiple = ''
+          // 获取资产level列表
+          this.getDatafirst()
+        })
     },
-    addAssets() { // 一级弹框中点添加资产
+    addAssets() {
+      // 一级弹框中点添加资产
       // 获取位置数据
       // this.getpositionData()
       this.$axios.get('/api/Tree/Position').then(res => {
@@ -898,7 +1369,8 @@ export default {
     },
     //* *************************************************************************************************************** */
     // 二级弹框方法
-    gettreeposition(arr) { // 遍历位置树，设置第一个可点positionId
+    gettreeposition(arr) {
+      // 遍历位置树，设置第一个可点positionId
       for (var item of arr) {
         if (item.children === undefined) {
           this.tableDataSearchsecond.positionId = item.id
@@ -909,33 +1381,39 @@ export default {
         }
       }
     },
-    getDatasecond() { // 获取列表
+    getDatasecond() {
+      // 获取列表
       console.log(this.tableDataSearchsecond.positionId)
-      this.$axios.get('/api/MaintenancePlan/Equipments', { params: this.tableDataSearchsecond }).then(res => {
-        this.tableDatasecond = res.data
-        this.totalCountsecond = res.totalCount
-      })
+      this.$axios
+        .get('/api/MaintenancePlan/Equipments', {
+          params: this.tableDataSearchsecond
+        })
+        .then(res => {
+          this.tableDatasecond = res.data
+          this.totalCountsecond = res.totalCount
+        })
     },
-    getPagesecond(val) { // page事件
+    getPagesecond(val) {
+      // page事件
       // 展示条数
       this.tableDataSearchsecond.pageSize = val.limit
       // 页码
       this.tableDataSearchsecond.pageNumber = val.page
       // 调用获取数据
-      this.$axios.get('/api/EquipmentList', { params: this.tableDataSearchsecond }).then(res => {
-        this.tableDatasecond = res.data
-      })
+      this.$axios
+        .get('/api/EquipmentList', { params: this.tableDataSearchsecond })
+        .then(res => {
+          this.tableDatasecond = res.data
+        })
     },
     handleChangesecond(val) {
       const arr = []
       val.forEach(item => {
-        arr.push(
-          {
-            equipmentId: item.equipment.id,
-            modelId: item.model.id,
-            brandId: item.brand.id
-          }
-        )
+        arr.push({
+          equipmentId: item.equipment.id,
+          modelId: item.model.id,
+          brandId: item.brand.id
+        })
       })
       this.multiplesecond = arr
       console.log(this.multiplesecond)
@@ -947,18 +1425,23 @@ export default {
         this.RepairRecord.equipmentIds = this.multiplesecond
         this.RepairRecord.positionId = this.tableDataSearchsecond.positionId
         this.RepairRecord.systemId = this.tableDataSearchsecond.systemId
-        this.$axios.post('api/MaintenancePlan/' + this.itemid + '/Item', this.RepairRecord).then(res => {
-          this.$message.success('添加成功')
-          this.Visiblesecond = false
-          // 刷新资产列表
-          this.getDatafirst()
-        })
+        this.$axios
+          .post(
+            'api/MaintenancePlan/' + this.itemid + '/Item',
+            this.RepairRecord
+          )
+          .then(res => {
+            this.$message.success('添加成功')
+            this.Visiblesecond = false
+            // 刷新资产列表
+            this.getDatafirst()
+          })
       }
     }
   }
 }
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .header {
   width: 100%;
 }
@@ -1008,4 +1491,3 @@ export default {
   width: 70%;
 }
 </style>
-

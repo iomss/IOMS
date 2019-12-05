@@ -3,9 +3,7 @@
     <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
     <div class="right-menu">
-      <el-tooltip class="item" effect="dark" content="文件下载管理" placement="bottom">
-        <el-link :underline="false" type="primary" href="/fileDown" icon="el-icon-folder-opened" style="float:left;font-size:30px;padding:10px 5px;" />
-      </el-tooltip>
+
       <el-popover placement="bottom" width="280" trigger="click">
         <div>
           <div style="height:175px;background:#2e8cff47;text-align:center;padding-top:40px;">
