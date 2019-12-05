@@ -462,9 +462,8 @@ export default {
     // 提交审核
     onSubmit() {
       const currentUserId = this.$cookie.get('id')
-
       // 收费站
-      if (this.costDesc.emergencyState === 'Pending' && this.queryRoles.EmergencyRequisitionReview) {
+      if (this.costDesc.emergencyState === 'Pending') {
         this.emergencyRequisition(this.examine)
         // 分中心审核
       } else if (this.queryRoles.EmergencyRequisitionSubCenterReview) {
