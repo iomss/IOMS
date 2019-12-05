@@ -274,17 +274,16 @@ export default {
           Accept: {
             'Content-Type': 'application/json;application/octet-stream'
           },
-          responseType: 'blob'
+          responseType: 'arraybuffer'
+          // responseType: 'blob'
         })
-        .then((res, r2) => {
-          const url = window.URL.createObjectURL(new Blob([res.data]))
+        .then(res => {
+          const url = window.URL.createObjectURL(new Blob([res.data], { type: 'text/plain;charset=UTF-8' }))
           const link = document.createElement('a')
+          const fileName = res.headers['content-disposition'].match(/filename=(.*)/)[1]
           link.style.display = 'none'
           link.href = url
-          link.setAttribute(
-            'download',
-            decodeURI(res.headers['content-disposition'])
-          )
+          link.setAttribute('download', decodeURI(fileName))
           document.body.appendChild(link)
           link.click()
         })
