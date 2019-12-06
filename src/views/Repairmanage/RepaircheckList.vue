@@ -21,6 +21,13 @@
                 </el-select>
                 <el-input v-model="tableDataSearch.text" placeholder="全局搜索" size="small" />
                 <el-button type="primary" plain size="small" @click="getData()">查询</el-button>
+
+                <el-button
+                  type="primary"
+                  plain
+                  size="small"
+                  @click="resetSearchForm()"
+                >重置</el-button>
               </el-form>
             </div>
           </div>
@@ -284,6 +291,13 @@ export default {
     },
     selectstate(data) { // 列表筛选
       this.tableDataSearch.planState = data
+      this.getData()
+    },
+    resetSearchForm() {
+      // 重置搜索条件
+      this.tableDataSearch.start = ''
+      this.tableDataSearch.end = ''
+      this.tableDataSearch.text = ''
       this.getData()
     },
     //* ******************************************************************************************************* */
