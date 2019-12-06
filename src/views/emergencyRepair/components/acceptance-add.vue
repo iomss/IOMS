@@ -52,10 +52,10 @@
           >
             <el-table-column type="selection" width="80" align="center" />
 
-            <el-table-column label="序号" prop="id" width="50" align="center" />
-            <el-table-column label="编号" prop="number" align="center" />
-            <el-table-column label="报修单位" prop="name" align="center" />
-            <el-table-column label="接报单位" prop="company_2" align="center" />
+            <el-table-column label="序号" prop="index" width="50" align="center" />
+            <el-table-column label="编号" prop="id" align="center" />
+            <el-table-column label="报修单位" prop="reportUnit.name" align="center" />
+            <el-table-column label="接报单位" prop="receiveUnit.name" align="center" />
             <el-table-column label="报修时间" prop="createTime" align="center" :formatter="formatterDate" />
           </el-table>
         </el-form-item>

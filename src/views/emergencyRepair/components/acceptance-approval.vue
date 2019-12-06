@@ -42,9 +42,9 @@
             class="table-applicationform"
           >
 
-            <el-table-column label="序号" prop="id" align="center" />
-            <el-table-column label="报修单位" prop="reportUnit" align="center" />
-            <el-table-column label="接报单位" prop="receiveUnit" align="center" />
+            <el-table-column label="序号" type="index" show-overflow-tooltip align="center" />
+            <el-table-column label="报修单位" prop="reportUnit.name" align="center" />
+            <el-table-column label="接报单位" prop="receiveUnit.name" align="center" />
             <el-table-column label="报修时间" prop="createTime" align="center" :formatter="formatterDate" />
           </el-table>
         </el-form-item>
@@ -88,7 +88,7 @@
             size="mini"
             class="table-applicationform"
           >
-            <el-table-column label="序号" prop="id" align="center" />
+            <el-table-column label="序号" type="index" show-overflow-tooltip align="center" />
             <el-table-column label="名称" prop="name" align="center" />
             <el-table-column label="上传时间" prop="createTime" align="center" :formatter="formatterDate" />
 

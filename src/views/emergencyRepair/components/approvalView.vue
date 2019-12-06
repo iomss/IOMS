@@ -81,12 +81,12 @@
             </el-tooltip>
           </el-row>
           <el-form-item label="抢修单位">
-            <el-select v-model="pattern.repairUnitId" placeholder="请选择抢修单位">
+            <el-select v-model="pattern.repairUnitId" clearable placeholder="请选择抢修单位">
               <el-option v-for="item in repairList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="提交给">
-            <el-select v-model="pattern.reviewerId" placeholder="请选择上级审批">
+            <el-select v-model="pattern.reviewerId" clearable placeholder="请选择上级审批">
               <el-option v-for="item in emergencyList" :key="item.id" :label="item.trueName" :value="item.id" />
             </el-select>
           </el-form-item>
@@ -116,8 +116,6 @@
 
       <div slot="footer" class="dialog-footer" style="text-align: center;display: block;">
         <el-button type="primary" size="small" @click="onSubmit">确定</el-button>
-        <el-button type="primary" size="small">导出打印</el-button>
-        <el-button type="primary" size="small">上传附件</el-button>
         <el-button size="small" @click="changeActiveVisible = false">取 消</el-button>
       </div>
 

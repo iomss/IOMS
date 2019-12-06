@@ -20,7 +20,7 @@
         <el-input v-model="repairUnitId" placeholder="抢修单位名称" style="width:240px" />
       </el-form-item>
 
-      <el-form-item label="报修时间">
+      <el-form-item label="施工日期">
         <el-col>
           <el-date-picker
             v-model="costDate"
@@ -96,7 +96,7 @@
           size="mini"
           class="table-applicationform"
         >
-          <el-table-column label="序号" prop="id" align="center" />
+          <el-table-column label="序号" type="index" show-overflow-tooltip align="center" />
           <el-table-column label="名称" prop="name" align="center" />
           <el-table-column label="上传" prop="createTime" align="center" :formatter="formatterDate" />
 
