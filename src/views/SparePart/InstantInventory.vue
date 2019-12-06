@@ -169,7 +169,15 @@
                 <el-table-column v-show="rukuForm.spareBoundType==='OutBound' && rukuForm.spareStockType === 'Spare'" prop="safetyStock" label="安全库存" />
                 <el-table-column prop="unitPrice" label="单价">
                   <template slot-scope="scope">
-                    <el-input v-model="scope.row.unitPrice" :disabled="!(rukuForm.spareBoundType==='InBound' && rukuForm.spareStockType === 'Spare')" type="number" size="small" placeholder="请输入内容" />
+                    <el-input
+                      v-model="scope.row.unitPrice"
+                      :disabled="!(rukuForm.spareBoundType==='InBound' && rukuForm.spareStockType === 'Spare')"
+                      type="number"
+                      size="small"
+                      :min="0"
+                      controls-position="right"
+                      placeholder="请输入内容"
+                    />
                   </template>
                 </el-table-column>
                 <el-table-column v-if="rukuForm.spareBoundType==='OutBound' && rukuForm.spareStockType === 'Spare'" prop="kucun" label="库存" />
