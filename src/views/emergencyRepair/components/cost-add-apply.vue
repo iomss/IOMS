@@ -35,6 +35,7 @@
 
       <el-table-column label="序号" type="index" width="50" align="center" />
       <el-table-column label="编号" prop="id" align="center" />
+      <el-table-column label="工程名称" prop="engineering" align="center" />
       <el-table-column label="报修单位" prop="reportUnit.name" align="center" />
       <el-table-column label="接报单位" prop="receiveUnit.name" align="center" />
       <el-table-column label="报修时间" prop="createTime" align="center" :formatter="formatterDate" />

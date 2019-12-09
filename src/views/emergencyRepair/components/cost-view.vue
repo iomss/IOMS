@@ -10,14 +10,14 @@
     width="800px"
     @close="closeDialog"
   >
-    <el-form ref="form" :model="form" label-width="110px" size="small" :inline="true" class="demo-form-inline dialog-form-const-add" :disabled="true">
+    <el-form ref="form" :model="form" label-width="110px" size="small" :inline="true" class="demo-form-inline dialog-form-const-add">
 
       <el-form-item label="项目名称">
-        <el-input v-model="engineering" placeholder="项目名称" style="width:240px" />
+        <el-input v-model="engineering" disabled placeholder="项目名称" style="width:240px" />
       </el-form-item>
 
       <el-form-item label="抢修单位名称">
-        <el-input v-model="repairUnitId" placeholder="抢修单位名称" style="width:240px" />
+        <el-input v-model="repairUnitId" disabled placeholder="抢修单位名称" style="width:240px" />
       </el-form-item>
 
       <el-form-item label="施工日期">
@@ -28,12 +28,13 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             style="width:240px"
+            disabled
           />
         </el-col>
       </el-form-item>
 
       <el-form-item label="录入人">
-        <el-input v-model="createUser" placeholder="录入人" style="width:240px" />
+        <el-input v-model="createUser" disabled placeholder="录入人" style="width:240px" />
       </el-form-item>
 
       <!-- 应急抢修申请表 -->
@@ -90,8 +91,6 @@
           v-loading="annexTable.listLoading"
           :data="annexTable.list"
           border
-          fit
-          highlight-current-row
           style="width: 100%;"
           size="mini"
           class="table-applicationform"
@@ -99,8 +98,24 @@
           <el-table-column label="序号" type="index" show-overflow-tooltip align="center" />
           <el-table-column label="名称" prop="name" align="center" />
           <el-table-column label="上传" prop="createTime" align="center" :formatter="formatterDate" />
-
+          <el-table-column
+            fixed="right"
+            label="操作"
+            width="120"
+          >
+            <template slot-scope="scope">
+              <el-link target="_blank" :href="url + scope.row.path" :underline="false" style="margin-left:15px">
+                <el-button size="small" type="text">下载</el-button>
+              </el-link>
+            </template>
+          </el-table-column>
         </el-table>
+      </el-form-item>
+
+      <!-- 抢修单位意见 -->
+      <el-form-item label="抢修单位意见" style="display:block;" class="applicationform-box">
+        <el-input v-model="costDesc.remark" type="textarea" disabled />
+        <div>提示：时间、地点、预算书、数量、抢修技术方案、主要材料设备、实际完成情况</div>
       </el-form-item>
 
       <!-- 审批信息 -->
@@ -209,7 +224,9 @@ export default {
         list: []
       },
 
-      costDesc: {}
+      costDesc: {},
+
+      url: process.env.VUE_APP_API
     }
   },
   // 计算属性
@@ -292,10 +309,16 @@ export default {
         return cellValue
       }
     },
-
     // 关闭回调
     closeDialog() {
       this.applicationTable.list = []
+    },
+    download(file) {
+      const a = document.createElement('a')
+      const event = new MouseEvent('click')
+      a.href = this.url + file.path
+      a.download = file.name
+      a.dispatchEvent(event)
     },
 
     onSubmit() {

@@ -162,10 +162,10 @@ export default {
         influence: '',
         repairDescription: '',
         costEstimate: '',
-        maonMaterialEquipment: '',
-
-        attachments: []
+        maonMaterialEquipment: ''
       },
+      attachments: [],
+      uploadList: [],
       url: process.env.VUE_APP_API
     }
   },
@@ -197,7 +197,7 @@ export default {
       this.$axios.get('/api/EmergencyRequisition/' + id).then(res => {
         res.reportTime = this.formatterDate(res.reportTime)
         res.receiveTime = this.formatterDate(res.receiveTime)
-
+        this.uploadList = res.attachments
         this.form = res
 
         // 给 父组件传值
@@ -205,6 +205,14 @@ export default {
       })
     },
 
+    // 点击上传的文件
+    preview(file) {
+      const a = document.createElement('a')
+      const event = new MouseEvent('click')
+      a.download = file.name
+      a.href = this.url + file.path
+      a.dispatchEvent(event)
+    },
     // 日期时间格式化
     formatterDate(cellValue) {
       if (cellValue !== null) {

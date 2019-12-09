@@ -55,7 +55,6 @@
       <div slot="footer" class="dialog-footer" style="text-align: center;display: block;">
         <el-button size="small" @click="changeActiveVisible = false">取 消</el-button>
         <el-button type="primary" size="small" @click="onSubmit">导出打印</el-button>
-        <el-button type="primary" size="small" @click="onSubmit">上传附件</el-button>
       </div>
     </el-dialog>
   </div>
@@ -90,7 +89,6 @@ export default {
       },
 
       viewDesc: {} // 详情数据
-
     }
   },
   methods: {
@@ -107,12 +105,10 @@ export default {
         return cellValue
       }
     },
-
+    // 导出
     onSubmit() {
-
-    },
-    handleChange() {
-
+      this.$axios.post(`/api/InternalAssessment/${this.viewData.id}/Print`).then(res => {
+      })
     },
     // 获取子组件的值
     getMsgFormSon(data) {

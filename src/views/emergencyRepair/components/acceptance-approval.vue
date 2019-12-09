@@ -10,7 +10,7 @@
   >
 
     <el-row class="dialog-form-const-add">
-      <el-form ref="form" :model="form" label-width="110px" size="small" :inline="true" class="demo-form-inline " :disabled="true">
+      <el-form ref="form" :model="form" label-width="110px" size="small" :inline="true" class="demo-form-inline ">
 
         <el-form-item label="报修时间">
           <el-col>
@@ -20,12 +20,13 @@
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               style="width:240px"
+              disabled
             />
           </el-col>
         </el-form-item>
 
         <el-form-item label="录入人">
-          <el-input v-model="form.name" placeholder="录入人" style="width:240px" />
+          <el-input v-model="form.name" disabled placeholder="录入人" style="width:240px" />
         </el-form-item>
 
         <!-- 应急抢修申请表 -->
@@ -91,10 +92,29 @@
             <el-table-column label="序号" type="index" show-overflow-tooltip align="center" />
             <el-table-column label="名称" prop="name" align="center" />
             <el-table-column label="上传时间" prop="createTime" align="center" :formatter="formatterDate" />
-
+            <el-table-column
+              fixed="right"
+              label="操作"
+              width="120"
+            >
+              <template slot-scope="scope">
+                <el-link target="_blank" :href="url + scope.row.path" :underline="false" style="margin-left:15px">
+                  <el-button size="small" type="text">下载</el-button>
+                </el-link>
+              </template>
+            </el-table-column>
           </el-table>
         </el-form-item>
 
+        <!-- 抢修工程数量核实意见 -->
+        <el-form-item label="抢修工程数量核实意见" style="display:block;" class="applicationform-box">
+          <el-input v-model="desc.remark" disabled type="textarea" />
+        </el-form-item>
+
+        <!-- 维修单位自评意见 -->
+        <el-form-item label="维修单位自评意见" style="display:block;" class="applicationform-box">
+          <el-input v-model="desc.reviewComment" disabled type="textarea" />
+        </el-form-item>
       </el-form>
 
       <el-form ref="approval_form" :model="approval_form" label-width="110px" size="small" :inline="true">
@@ -263,7 +283,11 @@ export default {
       roleView: {
         EmergencyRequisitionSubCenterReview: false,
         emergencyRequisitionNetCenterEngineerReview: false
-      }
+      },
+
+      desc: {},
+
+      url: process.env.VUE_APP_API
     }
   },
 
@@ -315,6 +339,7 @@ export default {
         this.form.name = res.createUser.name
         this.form.projectName = res.emergencyRequisition.basisParagraphContent
         this.form.repairUnitName = res.emergencyRequisition.repairUnit.name
+        this.desc = res
 
         this.approval_form.repairUnitId = res.emergencyRequisition.repairUnitId
         this.approval_form.emergencyRequisitionId = res.emergencyRequisitionId
