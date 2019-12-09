@@ -119,7 +119,6 @@
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" size="small" @click="onSubmit(1)">提交审核</el-button>
         <el-button type="primary" size="small" @click="onSubmit(2)">暂存</el-button>
-        <el-button type="primary" size="small">导出打印</el-button>
         <el-button size="small" @click="changeActiveVisible = false">取 消</el-button>
 
       </span>
