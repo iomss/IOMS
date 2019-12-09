@@ -44,14 +44,15 @@
             :data="applicationTable.list"
             border
             fit
-            highlight-current-row
             style="width: 100%;"
             size="mini"
             class="table-applicationform"
-            @selection-change="handleSelectionChange"
           >
-            <el-table-column type="selection" width="80" align="center" />
-
+            <el-table-column label="选择" width="50" align="center">
+              <template scope="scope">
+                <el-radio v-model="form.emergencyRequisitionId" class="radio" :label="scope.row.id" @change.native="handleSelectionChange(scope.row)">&nbsp;</el-radio>
+              </template>
+            </el-table-column>
             <el-table-column label="序号" type="index" width="50" align="center" />
             <el-table-column label="编号" prop="id" align="center" />
             <el-table-column label="报修单位" prop="reportUnit.name" align="center" />
@@ -350,7 +351,7 @@ export default {
 
         // 工程清单
         this.projectTable.listLoading = false
-        this.projectTable.list = res.emergencyWorkCost.project
+        this.projectTable.list = res.emergencyWorkCost.project ? res.emergencyWorkCost.project : []
       })
     },
     /**
@@ -373,7 +374,6 @@ export default {
       if (data) {
         this.applyVisible = false
         this.applicationTable.list = data
-        this.getRushRepairUnitData(data[0].id)
       }
     },
 
@@ -388,7 +388,6 @@ export default {
       this.$axios.get('api/EmergencyRequisition/' + id).then(res => {
         if (res && res.emergencyWorkCost && res.emergencyWorkCost.project) {
           this.projectTable.list = res.emergencyWorkCost.project
-
           const strBeginTime = res.emergencyWorkCost.repairBeginTime.split('T')[0]
           const strEndTime = res.emergencyWorkCost.repairEndTime.split('T')[0]
 
@@ -396,6 +395,8 @@ export default {
           this.form.emergencyRequisitionId = res.emergencyWorkCost.emergencyRequisitionId
           this.form.repairBeginTime = res.emergencyWorkCost.repairBeginTime
           this.form.repairEndTime = res.emergencyWorkCost.repairEndTime
+        } else {
+          this.projectTable.list = []
         }
       })
     },
@@ -421,6 +422,7 @@ export default {
      */
     handleSelectionChange(val) {
       this.applicationTable.multipleSelection = val
+      this.getRushRepairUnitData(val.id)
     }
 
   }
