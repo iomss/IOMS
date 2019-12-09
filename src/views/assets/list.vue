@@ -85,7 +85,7 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item>
-                  <el-select v-model="tableDataSearch.modelId" filterable remote :remote-method="remoteMethodmodelId" :loading="loading" clearable placeholder="型号" size="small" @focus="remoteMethodmodelId">
+                  <el-select v-model="tableDataSearch.modelId" filterable remote :remote-method="remoteMethodmodelId" :loading="loading" clearable :disabled="!showmodel" placeholder="型号" size="small" @focus="remoteMethodmodelId">
                     <el-option v-for="item in modelData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
@@ -318,6 +318,7 @@ export default {
       showInfo: false, // 编辑弹框隐藏
       activeName: 'first', // 编辑弹框tab
       formSearchShow: false, // 高级搜索弹框隐藏
+      showmodel: false, // 高级搜索默认型号不可选
       removeQuestionVisible: false, // 删除弹框隐藏
       formData: {// 编辑或详情表单数据
         id: '',
@@ -794,6 +795,7 @@ export default {
       })
     },
     changebrand() {
+      this.showmodel = true // 高级搜索中显示型号
       this.formData.modelId = ''
       this.$axios.get('/api/Meta/Model?brandId=' + this.formData.brandId).then(res => {
         this.modelData = res.data

@@ -7,15 +7,14 @@
           <div class="header">
             <h4>我的工作</h4>
             <div class="tools">
-              <el-button v-if="roles.indexOf('CreateRepairOrder')!==-1" type="primary" size="small" @click="selectstate()">新建报修单</el-button>
-              <el-button v-if="roles.indexOf('BeingDispatched')!==-1" type="primary" size="small" @click="changework()">转单</el-button>
-              <el-button v-if="roles.indexOf('CheckRepairRecord')!==-1" type="primary" size="small" @click="checkwork()">验收</el-button>
-              <el-button v-if="roles.indexOf('ReviewRepairRecord')!==-1" type="primary" size="small" @click="reviewwork()">审核</el-button>
-              <el-button v-if="roles.indexOf('DeleteRepairOrder')!==-1" type="danger" size="small" @click="deletedata()">删除</el-button>
+              <el-button v-if="roles.indexOf('CreateRepairOrder') !== -1" type="primary" size="small" @click="selectstate()">新建报修单</el-button>
+              <el-button v-if="roles.indexOf('BeingDispatched') !== -1" type="primary" size="small" @click="changework()">转单</el-button>
+              <el-button v-if="roles.indexOf('CheckRepairRecord') !== -1" type="primary" size="small" @click="checkwork()">验收</el-button>
+              <el-button v-if="roles.indexOf('ReviewRepairRecord') !== -1" type="primary" size="small" @click="reviewwork()">审核</el-button>
+              <el-button v-if="roles.indexOf('DeleteRepairOrder') !== -1" type="danger" size="small" @click="deletedata()">删除</el-button>
             </div>
 
             <div class="toolsrt" style="margin:15px 0;">
-
               <el-select v-model="tableDataSearch.state" clearable placeholder="工单状态" size="small">
                 <el-option key="0" label="全部" value="0" />
                 <el-option key="1" label="待处理" value="1" />
@@ -35,40 +34,40 @@
               <el-table-column prop="code" label="维修单编号">
                 <template slot-scope="scope">
                   <!-- 验收状态，审核状态，录入维修记录状态，完成状态可查看详情 -->
-                  <router-link v-if="scope.row.orderState==='Check'||scope.row.orderState==='Review'||scope.row.orderState==='Done'||scope.row.orderState==='Repair'" :to="'/Workorder/CheckedInfo/' +scope.row.id" tag="a" style="color:#409eff">{{ scope.row.code }}</router-link>
+                  <router-link v-if="scope.row.orderState === 'Check' || scope.row.orderState === 'Review' || scope.row.orderState === 'Done' || scope.row.orderState === 'Repair'" :to="'/Workorder/CheckedInfo/' + scope.row.id" tag="a" style="color:#409eff">{{ scope.row.code }}</router-link>
                   <!-- 接单转单抢单不可查看详情 -->
-                  <div v-if="scope.row.orderState==='Dispatching'||scope.row.orderState==='Record'||scope.row.orderState==='Dispatched'">{{ scope.row.code }}</div>
+                  <div v-if="scope.row.orderState === 'Dispatching' || scope.row.orderState === 'Record' || scope.row.orderState === 'Dispatched'">{{ scope.row.code }}</div>
                 </template>
               </el-table-column>
-              <el-table-column label="操作" width="200">
+              <el-table-column label="操作" width="130">
                 <template slot-scope="scope">
                   <!-- 删除权限 -->
-                  <div v-if="roles.indexOf('DeleteRepairOrder')!==-1">
-                    <el-button v-show="scope.row.selfCreated&&(scope.row.orderState==='Record'||scope.row.orderState==='Dispatching'||scope.row.orderState==='Dispatched')" size="mini" type="danger" @click="deletedata(scope.row)">删除</el-button>
+                  <div v-if="roles.indexOf('DeleteRepairOrder') !== -1">
+                    <el-button v-show="scope.row.selfCreated && (scope.row.orderState === 'Record' || scope.row.orderState === 'Dispatching' || scope.row.orderState === 'Dispatched')" size="mini" type="danger" @click="deletedata(scope.row)">删除</el-button>
                   </div>
                   <!-- 验收权限 -->
-                  <div v-if="roles.indexOf('CheckRepairRecord')!==-1">
-                    <el-button v-show="scope.row.orderState==='Check'" size="mini" type="primary" @click="checkwork(scope.row)">验收</el-button>
+                  <div v-if="roles.indexOf('CheckRepairRecord') !== -1">
+                    <el-button v-show="scope.row.orderState === 'Check'" size="mini" type="primary" @click="checkwork(scope.row)">验收</el-button>
                   </div>
                   <!-- 审核权限 -->
-                  <div v-if="roles.indexOf('ReviewRepairRecord')!==-1">
-                    <el-button v-show="scope.row.orderState==='Review'" size="mini" type="primary" @click="reviewwork(scope.row)">审核</el-button>
+                  <div v-if="roles.indexOf('ReviewRepairRecord') !== -1">
+                    <el-button v-show="scope.row.orderState === 'Review'" size="mini" type="primary" @click="reviewwork(scope.row)">审核</el-button>
                   </div>
                   <!-- 转单权限 -->
-                  <div v-if="roles.indexOf('BeingDispatched')!==-1">
-                    <el-button v-show="scope.row.orderState==='Dispatching'||scope.row.orderState==='Dispatched'" size="mini" type="primary" @click="changework(scope.row)">转单</el-button>
+                  <div v-if="roles.indexOf('BeingDispatched') !== -1">
+                    <el-button v-show="scope.row.orderState === 'Dispatching' || scope.row.orderState === 'Dispatched'" size="mini" type="primary" @click="changework(scope.row)">转单</el-button>
                   </div>
                   <!-- 录入维修记录权限 -->
-                  <div v-if="roles.indexOf('CreateRepairRecord')!==-1">
-                    <el-button v-show="scope.row.orderState==='Repair'" size="mini" type="success" @click="updatework(scope.row)">录入维修记录</el-button>
+                  <div v-if="roles.indexOf('CreateRepairRecord') !== -1">
+                    <el-button v-show="scope.row.orderState === 'Repair'" size="mini" type="success" @click="updatework(scope.row)">录入维修记录</el-button>
                   </div>
                   <!-- 抢单权限 -->
-                  <div v-if="roles.indexOf('CreateRepairRecord')!==-1">
-                    <el-button v-show="scope.row.orderState==='Record'" size="mini" type="primary" @click="robwork(scope.row)">抢单</el-button>
+                  <div v-if="roles.indexOf('CreateRepairRecord') !== -1">
+                    <el-button v-show="scope.row.orderState === 'Record'" size="mini" type="primary" @click="robwork(scope.row)">抢单</el-button>
                   </div>
                   <!-- 接单权限 -->
-                  <div v-if="roles.indexOf('GrabOrder')!==-1">
-                    <el-button v-show="scope.row.orderState==='Dispatching'||scope.row.orderState==='Dispatched'" size="mini" type="primary" @click="Receiptwork(scope.row)">接单</el-button>
+                  <div v-if="roles.indexOf('GrabOrder') !== -1">
+                    <el-button v-show="scope.row.orderState === 'Dispatching' || scope.row.orderState === 'Dispatched'" size="mini" type="primary" @click="Receiptwork(scope.row)">接单</el-button>
                   </div>
                 </template>
               </el-table-column>
@@ -87,7 +86,7 @@
               <el-table-column prop="repairUser.name" label="维修员" />
               <el-table-column prop="orderState" label="状态">
                 <template slot-scope="scope">
-                  {{ scope.row.orderState==="Record"?"待处理":scope.row.orderState==='Dispatching'?"待分配":scope.row.orderState==='Dispatched'?'已分配':scope.row.orderState==='Repair'?'处理中':scope.row.orderState==='Suspend'?'暂缓':scope.row.orderState==='Check'?'待验收':scope.row.orderState==='Review'?'待审核':scope.row.orderState==='Done'?'工单已完成':'报修单流程被终止' }}
+                  {{ scope.row.orderState === 'Record' ? '待处理' : scope.row.orderState === 'Dispatching' ? '待分配' : scope.row.orderState === 'Dispatched' ? '已分配' : scope.row.orderState === 'Repair' ? '处理中' : scope.row.orderState === 'Suspend' ? '暂缓' : scope.row.orderState === 'Check' ? '待验收' : scope.row.orderState === 'Review' ? '待审核' : scope.row.orderState === 'Done' ? '工单已完成' : '报修单流程被终止' }}
                 </template>
               </el-table-column>
               <el-table-column prop="repairLevel.name" label="报修等级" />
@@ -102,7 +101,7 @@
               </span>
             </el-dialog>
             <!--分页-->
-            <pagination v-show="totalCount>0" :total="totalCount" :page.sync="tableDataSearch.pageNumber" :limit.sync="tableDataSearch.pageSize" @pagination="getPage" />
+            <pagination v-show="totalCount > 0" :total="totalCount" :page.sync="tableDataSearch.pageNumber" :limit.sync="tableDataSearch.pageSize" @pagination="getPage" />
           </div>
         </div>
       </el-col>
@@ -123,11 +122,11 @@ export default {
       tableDataSearch: {
         text: '', // 搜索文本
         pageSize: 10, // 展示条数
-        pageNumber: 1// 页码
+        pageNumber: 1 // 页码
       },
       totalCount: 0, // 数据总条数
       removeQuestionVisible: false, // 删除提示弹框隐藏
-      removeData: ''// 要删除的行数据
+      removeData: '' // 要删除的行数据
     }
   },
   computed: {},
@@ -143,7 +142,8 @@ export default {
         return cellValue
       }
     },
-    getData() { // 获取数据
+    getData() {
+      // 获取数据
       // 搜索框内容不为空 页码跳转至第一页
       if (this.tableDataSearch.text !== '') {
         this.tableDataSearch.pageNumber = 1
@@ -153,7 +153,8 @@ export default {
         this.totalCount = res.totalCount
       })
     },
-    getPage(val) { // page事件
+    getPage(val) {
+      // page事件
       // 展示条数
       this.tableDataSearch.pageSize = val.limit
       // 页码
@@ -164,19 +165,24 @@ export default {
         this.totalCount = res.totalCount
       })
     },
-    selectstate() { // 点击新建报修单按钮
+    selectstate() {
+      // 点击新建报修单按钮
       this.$router.push('/maintenance/WatchmanAssetslist')
     },
-    handleSelectionChange(val) { // 表格选中行
+    handleSelectionChange(val) {
+      // 表格选中行
       this.multipleSelection = val
     },
-    Receiptwork(data) { // 接单
+    Receiptwork(data) {
+      // 接单
       this.$router.push('/Workorder/MaintainerReceipt/' + data.id)
     },
-    robwork(data) { // 抢单
+    robwork(data) {
+      // 抢单
       this.$router.push('/Workorder/MaintainerRob/' + data.id)
     },
-    changework(data) { // 转单
+    changework(data) {
+      // 转单
       if (data) {
         this.$router.push('/Workorder/MaintainerChangeOrder/' + data.id)
       } else {
@@ -191,11 +197,13 @@ export default {
         }
       }
     },
-    updatework(data) { // 录入维修记录
+    updatework(data) {
+      // 录入维修记录
       console.log(data)
       this.$router.push('/Workorder/MaintainerAddRecord/' + data.id)
     },
-    checkwork(data) { // 验收
+    checkwork(data) {
+      // 验收
       if (data) {
         this.$router.push('/Workorder/AcceptorOperate/' + data.id)
       } else {
@@ -210,7 +218,8 @@ export default {
         }
       }
     },
-    reviewwork(data) { // 审核
+    reviewwork(data) {
+      // 审核
       if (data) {
         this.$router.push('/Workorder/AuditorOperate/' + data.id)
       } else {
@@ -225,7 +234,8 @@ export default {
         }
       }
     },
-    deletedata(data) { // 删除报修单
+    deletedata(data) {
+      // 删除报修单
       if (data) {
         this.removeData = data
         this.removeQuestionVisible = true
@@ -248,7 +258,7 @@ export default {
   }
 }
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .header {
   width: 100%;
   .tools {
@@ -279,9 +289,7 @@ export default {
 }
 .cell {
   > div {
-    display: inline-block;
-    overflow: hidden;
-    margin: 2px;
+    margin: 4px;
   }
 }
 </style>
