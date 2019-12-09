@@ -267,8 +267,10 @@ export default {
     // 饼图统计
     system(id) {
       this.$axios.get(`/api/OperationStatistic/GetEquipmentFaultCount?equipmentId=${this.formData.equipmentId}&beginTime=${this.formData.beginTime}&endTime=${this.formData.endTime}`).then(res => {
+        if (!res.length) {
+          this.$message.error('该比例暂无数据')
+        }
         const dataAxis = res.map(item => { return item.name })
-
         this.proportion('proportion', dataAxis, res)
 
         // 定时关闭 加载动画
@@ -281,6 +283,9 @@ export default {
     tableList(id) {
       this.table.listLoading = true
       this.$axios.get(`/api/OperationStatistic/GetEquipmentOrder?&equipmentId=${this.formData.equipmentId}&pageNumber=${this.formData.pageNumber}&pageSize=${this.formData.pageSize}&beginTime=${this.formData.beginTime}&endTime=${this.formData.endTime}`).then(res => {
+        if (!res.data.length) {
+          this.$message.error('该统计暂无数据')
+        }
         this.table.list = res.data
         this.table.total = res.totalCount
         this.table.listLoading = false
@@ -316,7 +321,7 @@ export default {
       // 先重置数据
       this.proportion('proportion', [], [])
       this.fault.hideLoading()
-      this.table.list = ''
+      this.table.list = []
       this.table.total = 0
 
       this.histogram()

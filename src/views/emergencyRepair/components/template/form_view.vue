@@ -95,7 +95,7 @@
     <el-row>
       <el-col :span="24">
         <el-form-item label="附件" style="display:block;">
-          <a v-for="item in form.attachments" :key="item.id" :href="item.path" style="color:blue;display: block;">{{ item.name }}</a>
+          <a v-for="item in form.attachments" :key="item.id" :download="item.name" :href="url + item.path" style="color:blue;display: block;" target="_blank">{{ item.name }}</a>
         </el-form-item>
       </el-col>
     </el-row>
@@ -165,8 +165,8 @@ export default {
         maonMaterialEquipment: '',
 
         attachments: []
-
-      }
+      },
+      url: process.env.VUE_APP_API
     }
   },
   computed: {

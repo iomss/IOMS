@@ -66,7 +66,7 @@
 
       <el-table-column label="工程名称" prop="emergencyRequisition.engineering" align="center" />
       <el-table-column label="抢修单位" prop="emergencyRequisition.repairUnit.name" align="center" />
-      <el-table-column label="报修单位" prop="emergencyRequisition.reportUnit" align="center" />
+      <el-table-column label="报修单位" prop="emergencyRequisition.reportUnit.name" align="center" />
       <el-table-column label="录入人" prop="createUser.name" align="center" />
       <el-table-column label="录入时间" prop="createTime" align="center" :formatter="formatterDate" />
 

@@ -20,7 +20,7 @@
           <el-input v-model="repairUnitId" placeholder="抢修单位名称" :disabled="true" style="width:240px" />
         </el-form-item>
 
-        <el-form-item label="报修时间">
+        <el-form-item label="施工日期">
           <el-col>
             <el-date-picker
               v-model="date"
@@ -449,7 +449,6 @@ export default {
     // 选中申请单
     getTemplateRow(index, row) {
       if (row) {
-        this.date = [row.reportTime, row.receiveTime]
         this.applyDesc = row
       }
     },

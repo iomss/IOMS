@@ -82,18 +82,31 @@ export default {
       this.applicationTable.listLoading = true
       this.$axios.get(`/api/InternalAssessment?export=${this.formData.export}&pageNumber=${this.formData.pageNumber}&pageSize=${this.formData.pageSize}&positionId=${data.positionId}&beginDate=${data.beginDate}&endDate=${data.endDate}`).then(res => {
         this.applicationTable.listLoading = false
-
-        if (!this.formData.export) {
-          this.applicationTable.list = res.data
-          this.applicationTable.total = res.totalCount
-        } else {
-          this.$message.success('导出任务添加成功')
-        }
+        this.applicationTable.list = res.data
+        this.applicationTable.total = res.totalCount
       })
     },
     onSubmit(data) {
-      this.formData.export = true
-      this.getList(this.postData)
+      this.$message({
+        type: 'success',
+        message: '正在导出，请稍等。。。',
+        center: true,
+        duration: 1000
+      })
+      this.$axios.get(`/api/InternalAssessment/Export?export=${true}&pageNumber=${this.formData.pageNumber}&pageSize=${this.formData.pageSize}&positionId=${this.postData.positionId}&beginDate=${this.postData.beginDate}&endDate=${this.postData.endDate}`, { responseType: 'blob' }).then(res => {
+        this.download(res)
+      })
+    },
+    // 下载 文件
+    download(data) {
+      if (!data) return
+      const url = window.URL.createObjectURL(new Blob([data]))
+      const link = document.createElement('a')
+      link.style.display = 'none'
+      link.href = url
+      link.setAttribute('download', '考核查询.xlsx')
+      document.body.appendChild(link)
+      link.click()
     },
     // 显示百分比
     formatterPercentage(row, column, cellValue) {
