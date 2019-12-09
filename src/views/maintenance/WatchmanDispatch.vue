@@ -54,7 +54,7 @@
                   </el-tooltip>
                 </el-form-item>
                 <el-form-item label="指定工程师" prop="repairUserId">
-                  <el-select v-model="formData.repairUserId" filterable remote :remote-method="remoteMethoduserId" :loading="loading" placeholder="指定工程师" size="small" @focus="remoteMethoduserId">
+                  <el-select v-model="formData.repairUserId" filterable remote :remote-method="remoteMethoduserId" :loading="loading" clearable  placeholder="指定工程师" size="small" @focus="remoteMethoduserId">
                     <el-option v-for="item in userData" :key="item.id" :label="item.trueName" :value="item.id" />
                   </el-select>
                 </el-form-item>

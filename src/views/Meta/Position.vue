@@ -6,7 +6,7 @@
         <div class="panel">
           <div class="header">
             <div class="search">
-              <el-input v-model="positionFormSearce.text" placeholder="全局查询" size="small" />
+              <el-input v-model="positionFormSearce.text" placeholder="位置名称" size="small" />
               <el-button type="primary" size="small" @click="getData()">查询</el-button>
               <el-button type="success" size="small" @click="addData()">添加</el-button>
               <el-button type="warning" size="small" @click="updatePosition()">修改</el-button>

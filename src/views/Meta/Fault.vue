@@ -6,7 +6,7 @@
         <div class="panel">
           <div class="header">
             <div class="search">
-              <el-input v-model="FaultFormSearch.text" placeholder="全局查询" size="small" />
+              <el-input v-model="FaultFormSearch.text" placeholder="故障名称" size="small" />
               <el-select v-model="FaultFormSearch.equipmentId" filterable remote :remote-method="remoteMethodequipmentID" :loading="loading" clearable placeholder="选择相关设备" @focus="remoteMethodequipmentID">
                 <el-option v-for="item in Equipment" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>

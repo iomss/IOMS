@@ -18,7 +18,7 @@ Spare<!-- 库房管理页面 -->
             </div>
             <div class="toolsrt">
               <el-form ref="form" :model="SpareFormSearce" label-width="70px">
-                <el-input v-model="SpareFormSearce.text" placeholder="全局搜索" size="small" />
+                <el-input v-model="SpareFormSearce.text" placeholder="设备名称" size="small" />
                 <el-button type="primary" plain size="small" @click="getData()">查询</el-button>
               </el-form>
             </div>
@@ -31,7 +31,7 @@ Spare<!-- 库房管理页面 -->
                   {{ scope.row.number }}
                 </template>
               </el-table-column>
-              <el-table-column prop="name" label="名称" />
+              <el-table-column prop="name" label="设备名称" />
               <el-table-column prop="consumable" label="易损易耗品">
                 <template slot-scope="scope">
                   {{ scope.row.consumable?'是':'否' }}

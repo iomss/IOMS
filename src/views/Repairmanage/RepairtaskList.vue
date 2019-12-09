@@ -19,7 +19,7 @@
                 <el-select v-model="tableDataSearch.end" filterable placeholder="结束时间" size="small">
                   <el-option v-for="item in enddateData" :key="item" :label="item" :value="item" />
                 </el-select>
-                <el-input v-model="tableDataSearch.text" placeholder="全局搜索" size="small" />
+                <el-input v-model="tableDataSearch.text" placeholder="维护计划名称" size="small" />
                 <el-button type="primary" plain size="small" @click="getData()">查询</el-button>
                 <el-button
                   type="primary"

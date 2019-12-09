@@ -13,7 +13,9 @@
               <el-button v-if="roles.indexOf('ReviewRepairRecord')!==-1" type="primary" size="small" @click="reviewwork()">审核</el-button>
               <el-button v-if="roles.indexOf('DeleteRepairOrder')!==-1" type="danger" size="small" @click="deletedata()">删除</el-button>
             </div>
-            <div class="select">
+
+            <div class="toolsrt" style="margin:15px 0;">
+
               <el-select v-model="tableDataSearch.state" clearable placeholder="工单状态" size="small">
                 <el-option key="0" label="全部" value="0" />
                 <el-option key="1" label="待处理" value="1" />
@@ -22,9 +24,7 @@
                 <el-option key="4" label="待审核" value="4" />
                 <el-option key="5" label="已完成" value="5" />
               </el-select>
-            </div>
-            <div class="toolsrt">
-              <el-input v-model="tableDataSearch.text" placeholder="请输入查询内容" size="small" />
+              <el-input v-model="tableDataSearch.text" placeholder="工单号/资产名称/设备编码/故障描述" size="small" />
               <el-button type="primary" size="small" @click="getData()">查询</el-button>
             </div>
           </div>
@@ -74,7 +74,7 @@
               </el-table-column>
 
               <el-table-column prop="position.crumbName" label="设备位置" width="200" />
-              <el-table-column prop="position.name" label="资产名称" />
+              <el-table-column prop="position.name" label="资产名称," />
               <!-- <el-table-column prop="equipment.equimentType.name" label="设备种类" /> -->
               <el-table-column prop="assetCode" label="设备编码" />
               <el-table-column prop="equipmentFault.name" label="故障类型" />

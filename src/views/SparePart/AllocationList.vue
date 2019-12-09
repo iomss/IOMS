@@ -20,7 +20,7 @@
                 </el-form-item>
                 <el-form-item>
                   <el-form-item>
-                    <el-select v-model="formSearch.spareRepositoryId" filterable remote :remote-method="getKufang" :loading="loading" placeholder="库房" size="small" no-match-text="没有找到相关库房" @focus="getKufang">
+                    <el-select v-model="formSearch.spareRepositoryId" filterable remote :remote-method="getKufang" :loading="loading" clearable placeholder="库房" size="small" no-match-text="没有找到相关库房" @focus="getKufang">
                       <el-option v-for="item in SpareRepositoryData" :key="item.id" :label="item.name" :value="item.id" />
                     </el-select>
                   </el-form-item>
@@ -32,7 +32,7 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item>
-                  <el-input v-model="formSearch.text" clearable placeholder="模糊搜索" size="small" />
+                  <el-input v-model="formSearch.text" clearable placeholder="设备名称" size="small" />
                 </el-form-item>
                 <el-button type="primary" plain size="small" @click="getData()">查询</el-button>
               </el-form>

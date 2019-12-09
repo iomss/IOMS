@@ -14,7 +14,7 @@
                 <el-date-picker v-model="formSearch.beginTime" size="small" type="date" placeholder="开始时间" />
                 ——
                 <el-date-picker v-model="formSearch.endTime" size="small" type="date" placeholder="结束时间" />
-                <el-input v-model="formSearch.text" placeholder="模糊搜索" size="small" />
+                <el-input v-model="formSearch.text" placeholder="调拨单号" size="small" />
                 <el-button type="primary" plain size="small" @click="getData()">查询</el-button>
               </el-form>
             </div>

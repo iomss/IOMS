@@ -25,7 +25,7 @@
                   <el-input v-model="formSearch.normName" placeholder="定额设备名称" size="small" />
                 </el-form-item>
                 <el-form-item label="匹配度" prop="matchType">
-                  <el-select v-model="formSearch.matchType" placeholder="匹配度" size="small">
+                  <el-select v-model="formSearch.matchType" clearable placeholder="匹配度" size="small">
                     <el-option key="Full" label="完全匹配" value="Full" />
                     <el-option key="Like" label="近似匹配" value="Like" />
                     <el-option key="Reference" label="参考匹配" value="Reference" />

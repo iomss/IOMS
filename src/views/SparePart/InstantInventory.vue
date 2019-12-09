@@ -27,7 +27,7 @@
                   <el-option key="1" label="非易损易耗" value="false" />
                   <el-option key="2" label="易损易耗" value="true" />
                 </el-select>
-                <el-input v-model="formSearch.text" placeholder="模糊搜索" size="small" />
+                <el-input v-model="formSearch.text" placeholder="设备名称" size="small" />
                 <el-button type="primary" plain size="small" @click="getData()">查询</el-button>
               </el-form>
             </div>

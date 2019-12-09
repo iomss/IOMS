@@ -52,7 +52,7 @@
                 </el-select>
                 <el-input
                   v-model="tableDataSearch.text"
-                  placeholder="全局搜索"
+                  placeholder="维护计划名称"
                   size="small"
                 />
                 <el-button
@@ -94,7 +94,7 @@
                   }}
                 </template>
               </el-table-column>
-              <el-table-column prop="name" label="维护计划名名称" />
+              <el-table-column prop="name" label="维护计划名称" />
               <el-table-column prop="start" label="起止时间">
                 <template slot-scope="scope">
                   {{ formatter(scope.row.start) }} <br>至<br>

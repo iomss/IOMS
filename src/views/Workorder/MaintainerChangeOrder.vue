@@ -26,7 +26,7 @@
                 <li>
                   <el-form ref="form" :model="updateData" label-width="120px">
                     <el-form-item label="派工:">
-                      <el-select v-model="updateData.userId" v-loadmore="loadMoreuser" filterable placeholder="派工" size="small">
+                      <el-select v-model="updateData.userId" v-loadmore="loadMoreuser" clearable filterable placeholder="派工" size="small">
                         <el-option v-for="item in userData" :key="item.id" :label="item.trueName" :value="item.id" />
                       </el-select>
                     </el-form-item>
