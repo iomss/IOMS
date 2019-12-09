@@ -18,7 +18,7 @@
               </el-select>
             </div>
             <div class="toolsrt">
-              <el-input v-model="tableDataSearch.text" placeholder="请输入查询内容" size="small" />
+              <el-input v-model="tableDataSearch.text" placeholder="资产名称" size="small" />
               <el-button type="primary" size="small" @click="getData()">查询</el-button>
               <el-button type="primary" size="small" @click="resetForm()">重置</el-button>
             </div>

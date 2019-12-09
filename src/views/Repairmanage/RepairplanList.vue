@@ -532,7 +532,7 @@
                         <el-form-item>
                           <el-input
                             v-model="tableDataSearchsecond.text"
-                            placeholder="关键字模糊查询"
+                            placeholder="资产名称"
                             size="small"
                           />
                         </el-form-item>
