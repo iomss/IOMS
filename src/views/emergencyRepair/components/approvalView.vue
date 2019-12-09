@@ -86,7 +86,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="提交给">
-            <el-select v-model="pattern.reviewerId" clearable filterable placeholder="请选择上级审批">
+            <el-select v-model="pattern.reviewerId" clearable placeholder="请选择上级审批">
               <el-option v-for="item in emergencyList" :key="item.id" :label="item.trueName" :value="item.id" />
             </el-select>
           </el-form-item>
