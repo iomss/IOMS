@@ -2,7 +2,7 @@
 
   <div class="djalog-box">
     <el-dialog
-      title="青海省高等级公路机电工程应急抢修工程数量及费用审核表"
+      title="青海省高等级公路机电工程应急抢修工程数量及费用申请表"
       :visible.sync="changeActiveVisible"
       :close-on-press-escape="false"
       :close-on-click-modal="false"

@@ -216,7 +216,7 @@ export default {
     // 日期时间格式化
     formatterDate(cellValue) {
       if (cellValue !== null) {
-        return this.$moment(cellValue).format('YYYY-MM-DD hh:mm')
+        return this.$moment(cellValue).format('YYYY-MM-DD HH:mm')
       } else {
         return cellValue
       }

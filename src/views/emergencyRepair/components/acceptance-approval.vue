@@ -1,7 +1,7 @@
 <template>
 
   <el-dialog
-    title="青海省高等级公路机电工程应急抢修工程数量及费用审核表"
+    title="青海省高等级公路机电工程应急抢修工程数量及验收审核表"
     :visible.sync="changeActiveVisible"
     :close-on-press-escape="false"
     :close-on-click-modal="false"
@@ -166,7 +166,7 @@
           class="table-applicationform"
         >
           <el-table-column label="审批单位" prop="type" align="center" :formatter="convertUnitType" />
-          <el-table-column label="审批意见" prop="reviewComment" align="center" />
+          <el-table-column label="审批意见" prop="remark" align="center" />
           <el-table-column label="审批人" prop="reviewUser.name" align="center" />
           <el-table-column label="审批时间" prop="createTime" align="center" :formatter="formatterDate" />
         </el-table>
@@ -454,7 +454,7 @@ export default {
       if (this.roleView.emergencyRequisitionSubCenterReview && this.approval_form.emergencyState === 'PendingSubCenter') {
         this.emergencyAcceptance()
       // 路网中心审核
-      } else if (this.roleView.emergencyRequisitionNetCenterEngineerReview && this.approval_form.emergencyState === 'PendingNetCenter' && (this.desc.emergencyWorkCost.reviewerId === null || this.desc.emergencyWorkCost.reviewerId.toString() === currentUserId.toString())) {
+      } else if (this.roleView.emergencyRequisitionNetCenterEngineerReview && this.approval_form.emergencyState === 'PendingNetCenter' && (this.desc.reviewerId === null || this.desc.reviewerId.toString() === currentUserId.toString())) {
         this.emergencyAcceptance()
       } else {
         this.$message.error('您没有权限操作')

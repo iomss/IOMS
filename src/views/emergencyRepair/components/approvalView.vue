@@ -3,7 +3,7 @@
   <div v-if="changeActiveVisible">
     <el-dialog
       title="
-  青海省高等级公路机电工程应急抢修申请表"
+  青海省高等级公路机电工程应急抢修审核表"
       :visible.sync="changeActiveVisible"
       :close-on-press-escape="false"
       :close-on-click-modal="false"

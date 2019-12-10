@@ -18,7 +18,7 @@
 
       <el-form-item label="报修时间" prop="reportTime">
         <el-col>
-          <el-date-picker v-model="form.reportTime" class="applyPicker" type="datetime" placeholder="选择日期" format="yyyy-MM-dd hh:mm" style="width: 100%;" />
+          <el-date-picker v-model="form.reportTime" class="applyPicker" type="datetime" placeholder="选择日期" format="yyyy-MM-dd HH:mm" style="width: 100%;" />
         </el-col>
       </el-form-item>
 
@@ -38,7 +38,7 @@
 
       <el-form-item label="接报时间" prop="receiveTime">
         <el-col>
-          <el-date-picker v-model="form.receiveTime" class="applyPicker" type="datetime" format="yyyy-MM-dd hh:mm" placeholder="选择日期" style="width: 100%;" />
+          <el-date-picker v-model="form.receiveTime" class="applyPicker" type="datetime" format="yyyy-MM-dd HH:mm" placeholder="选择日期" style="width: 100%;" />
         </el-col>
       </el-form-item>
 
