@@ -61,8 +61,8 @@
 
       <el-table-column label="项目名称" prop="emergencyRequisition.engineering" align="center" />
       <el-table-column label="抢修单位" prop="emergencyRequisition.repairUnit.name" align="center" />
-      <el-table-column label="报修单位" prop="emergencyRequisition.reportUnit" align="center" />
-      <el-table-column label="接报单位" prop="emergencyRequisition.receiveUnit" align="center" />
+      <el-table-column label="报修单位" prop="emergencyRequisition.reportUnit.name" align="center" />
+      <el-table-column label="接报单位" prop="emergencyRequisition.receiveUnit.name" align="center" />
       <el-table-column label="录入时间" prop="createTime" align="center" :formatter="formatterDate" />
 
       <el-table-column label="操作" align="center">
@@ -145,7 +145,7 @@ export default {
 
       formInline: {
         text: '',
-        state: '',
+        state: '2',
         date1: [],
         beginTime: '',
         endTime: '',

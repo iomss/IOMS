@@ -246,6 +246,7 @@ export default {
     // 获取子组件的值
     getMsgFormSon(data) {
       this.viewDesc = data
+      this.pattern.repairUnitId = data.repairUnitId
     },
 
     // 获取 抢修单位
