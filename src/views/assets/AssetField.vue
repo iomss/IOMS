@@ -8,7 +8,7 @@
             <div class="search">
               <el-button type="success" size="small" @click="adddata()">添加</el-button>
               <el-button type="warning" size="small" @click="updateAssetField()">修改</el-button>
-              <el-button type="danger" size="small" @click="deleteAssetField()">删除</el-button>
+              <!-- <el-button type="danger" size="small" @click="deleteAssetField()">删除</el-button> -->
             </div>
           </div>
           <div class="content">
