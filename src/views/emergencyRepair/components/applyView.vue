@@ -107,8 +107,26 @@ export default {
     },
     // 导出
     onSubmit() {
-      this.$axios.post(`/api/InternalAssessment/${this.viewData.id}/Print`).then(res => {
+      this.$message({
+        type: 'success',
+        message: '正在导出，请稍等。。。',
+        center: true,
+        duration: 1000
       })
+      this.$axios.post(`/api/EmergencyRequisition/${this.viewData.id}/Print`, {}, { responseType: 'blob' }).then(res => {
+        this.download(res)
+      })
+    },
+    // 下载 文件
+    download(res) {
+      if (!res) return
+      const url = window.URL.createObjectURL(new Blob([res.data]))
+      const link = document.createElement('a')
+      link.style.display = 'none'
+      link.href = url
+      link.setAttribute('download', '应急抢修申请表.docx')
+      document.body.appendChild(link)
+      link.click()
     },
     // 获取子组件的值
     getMsgFormSon(data) {

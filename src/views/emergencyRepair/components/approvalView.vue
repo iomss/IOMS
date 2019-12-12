@@ -29,11 +29,11 @@
                 width="180"
                 :formatter="convertUnitType"
               />
-              <el-table-column
-                prop="reviewComment"
-                label="审批意见"
-                width="180"
-              />
+              <el-table-column label="审批意见" prop="reviewComment" width="180">
+                <template slot-scope="scope">
+                  <a href="javascript:;">{{ scope.row.reviewComment !== null ? scope.row.reviewComment : scope.row.remark }}</a>
+                </template>
+              </el-table-column>
               <el-table-column
                 prop="reviewUser.name"
                 label="审批人"

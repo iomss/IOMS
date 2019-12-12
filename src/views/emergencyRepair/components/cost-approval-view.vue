@@ -297,7 +297,7 @@ export default {
 
       // 查询是否 有这三个的权限
       queryRoles: {
-        EmergencyRequisitionReview: false,
+        EmergencyRequisitionTollReview: false,
         EmergencyRequisitionSubCenterReview: false,
         EmergencyRequisitionNetCenterEngineerReview: false,
         EmergencyRequisitionLeaderReview: false
@@ -369,8 +369,8 @@ export default {
     setRole() {
       var rolesData = this.$cookie.get('roles')
 
-      if (rolesData.indexOf('EmergencyRequisitionReview') !== -1) {
-        this.queryRoles.EmergencyRequisitionReview = true
+      if (rolesData.indexOf('EmergencyRequisitionTollReview') !== -1) {
+        this.queryRoles.EmergencyRequisitionTollReview = true
       }
 
       if (rolesData.indexOf('EmergencyRequisitionSubCenterReview') !== -1) {
@@ -476,11 +476,12 @@ export default {
     // 提交审核
     onSubmit() {
       const currentUserId = this.$cookie.get('id')
+      console.log(currentUserId)
       // 收费站
-      if (this.costDesc.emergencyState === 'Pending') {
+      if (this.queryRoles.EmergencyRequisitionTollReview && this.costDesc.emergencyState === 'Pending') {
         this.emergencyRequisition(this.examine)
         // 分中心审核
-      } else if (this.queryRoles.EmergencyRequisitionSubCenterReview) {
+      } else if (this.queryRoles.EmergencyRequisitionSubCenterReview && this.costDesc.emergencyState === 'PendingSubCenter') {
         this.emergencyRequisition(this.subCenter)
         // 路网中心审核
       } else if (this.queryRoles.EmergencyRequisitionNetCenterEngineerReview && this.costDesc.emergencyState === 'PendingNetCenter' && (this.costDesc.reviewerId === null || this.costDesc.reviewerId.toString() === currentUserId.toString())) {

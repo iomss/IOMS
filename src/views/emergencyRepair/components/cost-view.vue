@@ -153,7 +153,7 @@
 
     </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button type="primary" size="small" @click="centerDialogVisible = false">导出打印</el-button>
+      <el-button type="primary" size="small" @click="onSubmit">导出打印</el-button>
       <el-button size="small" @click="changeActiveVisible = false">取 消</el-button>
     </span>
   </el-dialog>
@@ -313,16 +313,35 @@ export default {
     closeDialog() {
       this.applicationTable.list = []
     },
-    download(file) {
-      const a = document.createElement('a')
-      const event = new MouseEvent('click')
-      a.href = this.url + file.path
-      a.download = file.name
-      a.dispatchEvent(event)
-    },
-
+    // download(file) {
+    //   const a = document.createElement('a')
+    //   const event = new MouseEvent('click')
+    //   a.href = this.url + file.path
+    //   a.download = file.name
+    //   a.dispatchEvent(event)
+    // },
+    // 导出
     onSubmit() {
-
+      this.$message({
+        type: 'success',
+        message: '正在导出，请稍等。。。',
+        center: true,
+        duration: 1000
+      })
+      this.$axios.post(`/api/EmergencyWorkCost/${this.id}/Print`, {}, { responseType: 'blob' }).then(res => {
+        this.download(res)
+      })
+    },
+    // 下载 文件
+    download(res) {
+      if (!res) return
+      const url = window.URL.createObjectURL(new Blob([res.data]))
+      const link = document.createElement('a')
+      link.style.display = 'none'
+      link.href = url
+      link.setAttribute('download', '费用审核表.docx')
+      document.body.appendChild(link)
+      link.click()
     },
     handleChange() {
 

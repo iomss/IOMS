@@ -148,7 +148,7 @@
           class="table-applicationform"
         >
           <el-table-column label="审批单位" prop="type" align="center" :formatter="convertUnitType" />
-          <el-table-column label="审批意见" prop="reviewComment" align="center" />
+          <el-table-column label="审批意见" prop="remark" align="center" />
           <el-table-column label="审批人" prop="reviewUser.name" align="center" />
           <el-table-column label="审批时间" prop="createTime" align="center" :formatter="formatterDate" />
 
@@ -157,7 +157,7 @@
 
     </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button type="primary" size="small" @click="centerDialogVisible = false">导出打印</el-button>
+      <el-button type="primary" size="small" @click="onSubmit">导出打印</el-button>
       <el-button size="small" @click="changeActiveVisible = false">取 消</el-button>
     </span>
   </el-dialog>
@@ -353,11 +353,29 @@ export default {
         return cellValue
       }
     },
-
+    // 导出
     onSubmit() {
-
+      this.$message({
+        type: 'success',
+        message: '正在导出，请稍等。。。',
+        center: true,
+        duration: 1000
+      })
+      this.$axios.post(`/api/EmergencyAcceptance/${this.acceptanceId}/Print`, {}, { responseType: 'blob' }).then(res => {
+        this.download(res)
+      })
     },
-
+    // 下载 文件
+    download(res) {
+      if (!res) return
+      const url = window.URL.createObjectURL(new Blob([res.data]))
+      const link = document.createElement('a')
+      link.style.display = 'none'
+      link.href = url
+      link.setAttribute('download', '应急抢修验收表.docx')
+      document.body.appendChild(link)
+      link.click()
+    },
     handleChange() {
 
     }

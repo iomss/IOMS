@@ -11,11 +11,11 @@
       </el-form-item>
 
       <el-form-item label="数量" prop="quantity">
-        <el-input v-model="form.quantity" placeholder="数量" style="width:200px" />
+        <el-input-number v-model="form.quantity" :min="1" label="数量" style="width:200px" @change="handleChange" />
       </el-form-item>
 
       <el-form-item label="单价" prop="unitPrice">
-        <el-input v-model="form.unitPrice" placeholder="单价" style="width:200px" /> (元)
+        <el-input v-model="form.unitPrice" oninput="value=value.replace(/[^\d.]/g,'')" placeholder="单价" style="width:200px" @input="unitPriceVal" /> (元)
       </el-form-item>
 
       <el-form-item label="总价" prop="totalPrice">
@@ -40,9 +40,9 @@ export default {
       form: {
         name: '',
         unit: '',
-        quantity: '',
-        unitPrice: '',
-        totalPrice: ''
+        quantity: 1,
+        unitPrice: 0,
+        totalPrice: 0
       },
       formData: {},
       rules: {
@@ -67,6 +67,18 @@ export default {
   methods: {
     init() {
       this.projectVisible = true
+    },
+    // 监听 数量
+    handleChange(value) {
+      if (value !== 0 && this.form.unitPrice !== 0) {
+        this.form.totalPrice = value * this.form.unitPrice
+      }
+    },
+    // 监听 单价
+    unitPriceVal(value) {
+      if (value !== 0 && this.form.quantity !== 0) {
+        this.form.totalPrice = value * this.form.quantity
+      }
     },
     onSubmit(data) {
       const that = this
