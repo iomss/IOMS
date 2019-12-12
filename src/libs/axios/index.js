@@ -55,7 +55,7 @@ axios.create({
   withCredentials: false
 })
 
-const ajaxUrl = process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging' ? process.env.VUE_APP_API : undefined
+const ajaxUrl = process.env.VUE_APP_API // process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging' ? process.env.VUE_APP_API : undefined
 axios.defaults.baseURL = ajaxUrl
 // axios 配置
 axios.defaults.timeout = 30000
@@ -63,8 +63,8 @@ axios.defaults.timeout = 30000
 axios.interceptors.request.use(
   config => {
     // 根据相关情况修改默认url地址
-    const url = config.url
-    config.baseURL = url.indexOf('/easymock') !== -1 ? (process.env.NODE_ENV !== 'development' ? process.env.VUE_APP_API_Easy_Mock : '/') : process.env.NODE_ENV !== 'development' ? process.env.VUE_APP_API : '/'
+    // const url = config.url
+    // config.baseURL = url.indexOf('/easymock') !== -1 ? (process.env.NODE_ENV !== 'development' ? process.env.VUE_APP_API_Easy_Mock : '/') : process.env.NODE_ENV !== 'development' ? process.env.VUE_APP_API : '/'
 
     // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
     config.headers['Authorization'] = config.headers.Authorization || token.getToken()
@@ -84,6 +84,7 @@ axios.interceptors.response.use(
     let dataAxios
     if (response.headers['content-type'] === 'application/octet-stream') {
       dataAxios = response
+      debugger
     } else {
       dataAxios = response.data
     }

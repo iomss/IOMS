@@ -28,29 +28,29 @@ module.exports = {
     overlay: {
       warnings: false,
       errors: true
-    },
-    proxy: {
-      // change xxx-api/login => mock/login
-      // detail: https://cli.vuejs.org/config/#devserver-proxy
-      '/api': {
-        target: process.env.VUE_APP_API,
-        ws: true,
-        bypass: function(req, res, proxyOptions) {},
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api': '/api'
-        }
-      }
-      // '/easymock': {
-      //   target: process.env.VUE_APP_API_Easy_Mock,
-      //   ws: true,
-      //   bypass: function(req, res, proxyOptions) {},
-      //   changeOrigin: true,
-      //   pathRewrite: {
-      //     '^/easymock': ''
-      //   }
-      // }
     }
+    // proxy: {
+    //   // change xxx-api/login => mock/login
+    //   // detail: https://cli.vuejs.org/config/#devserver-proxy
+    //   '/api': {
+    //     target: process.env.VUE_APP_API,
+    //     ws: false,
+    //     bypass: function(req, res, proxyOptions) {},
+    //     changeOrigin: true,
+    //     pathRewrite: {
+    //       '^/api': '/api'
+    //     }
+    //   }
+    //   // '/easymock': {
+    //   //   target: process.env.VUE_APP_API_Easy_Mock,
+    //   //   ws: true,
+    //   //   bypass: function(req, res, proxyOptions) {},
+    //   //   changeOrigin: true,
+    //   //   pathRewrite: {
+    //   //     '^/easymock': ''
+    //   //   }
+    //   // }
+    // }
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
