@@ -10,7 +10,7 @@
               <el-button type="primary" plain size="small" @click="selectstate()">资产列表</el-button>
               <el-button type="primary" plain size="small" @click="selectstate(1)">在用资产</el-button>
               <el-button type="primary" plain size="small" @click="selectstate(0)">闲置资产</el-button>
-              <el-button type="primary" plain size="small" @click="selectstate(2)">报废资产</el-button>
+              <el-button type="primary" plain size="small" @click="selectstate(3)">报废资产</el-button>
             </div>
             <!--导入导出-->
             <div class="tools">
@@ -105,7 +105,7 @@
               <!-- <el-table-column v-show="false" prop="id" label="序号" sortable="custom" width="80" /> -->
               <el-table-column prop="state" label="状态" sortable="custom">
                 <template slot-scope="scope">
-                  {{ scope.row.state==='Normal'?"正常":scope.row.state==='Using'?"使用中":scope.row.state==='Drop'?"报废":"故障" }}
+                  {{ scope.row.state==='Normal'?"闲置":scope.row.state==='Using'?"使用中":scope.row.state==='Drop'?"报废":"故障" }}
                 </template>
               </el-table-column>
               <el-table-column prop="code" label="资产编码" sortable="custom" width="170">
