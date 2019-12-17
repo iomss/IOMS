@@ -7,7 +7,7 @@
           <div class="header">
             <div class="search">
               <el-input v-model="FaultFormSearch.text" placeholder="故障名称" size="small" />
-              <el-select v-model="FaultFormSearch.equipmentId" filterable remote :remote-method="remoteMethodequipmentID" :loading="loading" clearable placeholder="选择相关设备" @focus="remoteMethodequipmentID">
+              <el-select v-model="FaultFormSearch.equipmentId" filterable remote :remote-method="remoteMethodequipmentID" :loading="loading" clearable placeholder="选择相关设备" size="small" @focus="remoteMethodequipmentID">
                 <el-option v-for="item in Equipment" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
               <el-button type="primary" size="small" @click="getData()">查询</el-button>

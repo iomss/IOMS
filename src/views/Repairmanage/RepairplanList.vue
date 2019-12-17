@@ -356,7 +356,7 @@
                       </el-select>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="12">
+                  <el-col :span="12" style="height:63px;">
                     <el-form-item label="起止时间" prop="daterange">
                       <el-date-picker
                         v-model="tableDatanewfirst.daterange"

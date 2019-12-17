@@ -6,7 +6,7 @@
         <div class="panel">
           <div class="header">
             <div class="search">
-              <el-input v-model="UnitFormSearce.text" placeholder="部门名称" size="medium" />
+              <el-input v-model="UnitFormSearce.text" placeholder="部门名称" size="medium" style="width:300px" />
               <div style="width:300px;display:inline-block;margin-right:20px;margin-bottom:-10px;">
                 <treeselect v-model="UnitFormSearce.parentId" :normalizer="normalizer" :options="UnitTreeData" :load-options="loadOptions" placeholder="上级部门" no-results-text="未找到相关数据" />
               </div>
