@@ -63,10 +63,10 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item>
-                  <el-date-picker v-model="tableDataSearch.enableBegin" type="date" clearable placeholder="投用开始时间" />
+                  <el-date-picker v-model="tableDataSearch.enableBegin" type="date" clearable placeholder="投用开始时间" size="small" />
                 </el-form-item>
                 <el-form-item>
-                  <el-date-picker v-model="tableDataSearch.enableEnd" type="date" clearable placeholder="投用截止时间" />
+                  <el-date-picker v-model="tableDataSearch.enableEnd" type="date" clearable placeholder="投用截止时间" size="small" />
                 </el-form-item>
                 <el-form-item>
                   <el-select v-model="tableDataSearch.sourceId" filterable remote :remote-method="remoteMethodsourceId" clearable :loading="loading" placeholder="资产来源" size="small" @focus="remoteMethodsourceId">
@@ -904,7 +904,7 @@ export default {
   position: absolute;
   right: 0;
   z-index: 4;
-  .el-input {
+  .el-input,.el-date-editor {
     display: inline-block;
     width: 49%;
   }
