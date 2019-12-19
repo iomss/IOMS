@@ -233,7 +233,33 @@ export default {
       this.getList()
     },
     onExport() {
+      if (this.formInline.date.length <= 0) {
+        this.$message.error('请选择查询日期')
+        return
+      }
 
+      this.formInline.beginDate = this.$utils.formatTime(this.formInline.date[0], 'Y-M-D')
+      this.formInline.endDate = this.$utils.formatTime(this.formInline.date[1], 'Y-M-D')
+      var queryString = this.$utils.objectToString(this.formInline)
+
+      // this.tableData.listLoading = true
+      this.$axios.get('/api/AssessmentRecord/ExportAvg' + queryString, {
+        Accept: {
+          'Content-Type': 'application/json;application/octet-stream'
+        },
+        responseType: 'blob'
+      }).then(res => {
+        const fileName = res.headers['content-disposition'].match(
+          /filename=(.*)/
+        )[1]
+        const url = window.URL.createObjectURL(new Blob([res.data]))
+        const link = document.createElement('a')
+        link.style.display = 'none'
+        link.href = url
+        link.setAttribute('download', decodeURI(fileName))
+        document.body.appendChild(link)
+        link.click()
+      })
     },
     handleView(index, rows) {
       this.roadFractionVisible = true

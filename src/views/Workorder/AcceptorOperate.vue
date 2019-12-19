@@ -32,32 +32,28 @@
           <div class="Infodata">
             <ul v-if="tableData.repairType!==''">
               <li><span>维修单类型:</span><b>{{ tableData.repairType=='Done'?'维修完成':tableData.repairType=='Repeat'?'重复报修':tableData.repairType=='Mistaken'?'误报':'暂缓' }}</b></li>
-              <li><span>资产名称:</span><b>{{ tableData.equipment===null?'':tableData.equipment.name }}</b></li>
+              <li v-show="tableData.repairType!=='Mistaken'"><span>资产名称:</span><b>{{ tableData.equipment? tableData.equipment.name:'' }}</b></li>
               <!-- <li><span>设备种类:</span><b>{{ tableData.equipment.equimentType.name }}</b></li> -->
-              <li><span>设备编号:</span><b>{{ tableData.assetCode }}</b></li>
-              <li><span>故障类型:</span><b>{{ tableData.equipmentFault? tableData.equipmentFault.name:'' }}</b></li>
-              <li><span>维修级别:</span><b>{{ tableData.repairLevel===null?'':tableData.repairLevel.name }}</b></li>
-              <li><span>维修开始时间:</span><b>{{ tableData.startTime===null?'':tableData.startTime }}</b></li>
-              <li><span>维修结束时间:</span><b>{{ tableData.endTime===null?'':tableData.endTime }}</b></li>
-              <li><span>维修过程:</span><b>{{ tableData.description }}</b></li>
+              <li v-show="tableData.repairType!=='Mistaken'"><span>设备编号:</span><b>{{ tableData.assetCode }}</b></li>
+              <li v-show="tableData.repairType!=='Mistaken'"><span>故障类型:</span><b>{{ tableData.equipmentFault? tableData.equipmentFault.name:'' }}</b></li>
+              <li v-show="tableData.repairType!=='Mistaken'"><span>维修级别:</span><b>{{ tableData.repairLevel===null?'':tableData.repairLevel.name }}</b></li>
+              <li v-show="tableData.repairType!=='Mistaken'"><span>维修开始时间:</span><b>{{ tableData.startTime===null?'':this.$moment(tableData.startTime).format('YYYY-MM-DD HH:MM:SS') }}</b></li>
+              <li v-show="tableData.repairType!=='Mistaken'"><span>维修结束时间:</span><b>{{ tableData.endTime===null?'':this.$moment(tableData.endTime).format('YYYY-MM-DD HH:MM:SS') }}</b></li>
+              <li v-show="tableData.repairType!=='Mistaken'"><span>维修过程:</span><b>{{ tableData.description }}</b></li>
               <!-- <li><span>建议:</span><b>null</b></li> -->
-              <li><span>配件名称及数量:</span><b>{{ tableData.spareDescription }}</b></li>
-              <li><span>维修人:</span><b>{{ tableData.repairer? tableData.repairer.name :'' }}</b></li>
-              <li>
+              <li v-show="tableData.repairType!=='Mistaken'"><span>配件名称及数量:</span><b>{{ tableData.spareDescription }}</b></li>
+              <li><span>维修人:</span><b>{{ tableData.repairer? tableData.repairer.name:'' }}</b></li>
+              <li v-show="tableData.repairType!=='Mistaken'">
                 <span>维修结果图片:</span>
-                <b>
-                  <el-image style="width: 100px; height: 100px" :src="url+tableData.resultImg" :preview-src-list="[url+tableData.resultImg]">
-                    <div slot="error" class="el-image__error">
-                      暂无图片
-                    </div>
-                  </el-image>
-                  <!-- <img alt="" :src="tableData.resultImg" style="width:100px;height:100px;"> -->
-                </b>
+                <el-image style="width: 100px; height: 100px" :src="url+tableData.resultImg" :preview-src-list="[url+tableData.resultImg]">
+                  <div slot="error" class="el-image__error">
+                    暂无图片
+                  </div>
+                </el-image>
               </li>
-              <li>
+              <li v-show="tableData.repairType!=='Mistaken'">
                 <span>现场验收签字:</span>
                 <b>
-                  <!-- <img alt="" :src="tableData.signImg " style="width:100px;height:100px;"> -->
                   <el-image style="width: 100px; height: 100px" :src="url+tableData.signImg" :preview-src-list="[url+tableData.signImg]">
                     <div slot="error" class="el-image__error">
                       暂无图片
@@ -65,7 +61,7 @@
                   </el-image>
                 </b>
               </li>
-              <li><span>协助人:</span><b>{{ tableData.assist }}</b></li>
+              <li v-show="tableData.repairType!=='Mistaken'"><span>协助人:</span><b>{{ tableData.assist }}</b></li>
               <li><span>备注:</span><b>{{ tableData.comment }}</b></li>
             </ul>
           </div>

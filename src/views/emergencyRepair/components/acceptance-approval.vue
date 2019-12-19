@@ -1,7 +1,7 @@
 <template>
 
   <el-dialog
-    title="青海省高等级公路机电工程应急抢修工程数量及费用审核表"
+    title="青海省高等级公路机电工程应急抢修工程数量及验收审核表"
     :visible.sync="changeActiveVisible"
     :close-on-press-escape="false"
     :close-on-click-modal="false"
@@ -144,8 +144,12 @@
           <template>
             <el-radio v-model="approval_form.reviewStatus" label="Applied">通过</el-radio>
             <el-radio v-model="approval_form.reviewStatus" label="Rejected">不通过</el-radio>
+            <span style="font-weight: 600;margin-left: 10px;">提交给：</span>
+            <el-select v-model="approval_form.reviewerId" clearable placeholder="请选择上级审批">
+              <el-option v-for="item in emergencyList" :key="item.id" :label="item.trueName" :value="item.id" />
+            </el-select>
           </template>
-          <el-input v-model="approval_form.remark" type="textarea" />
+          <el-input v-model="approval_form.remark" type="textarea" style="margin-top: 10px" />
           <div>提示：工程方案、数量、质量、主要材料设备的核实情况</div>
         </el-form-item>
 
@@ -162,7 +166,7 @@
           class="table-applicationform"
         >
           <el-table-column label="审批单位" prop="type" align="center" :formatter="convertUnitType" />
-          <el-table-column label="审批意见" prop="reviewComment" align="center" />
+          <el-table-column label="审批意见" prop="remark" align="center" />
           <el-table-column label="审批人" prop="reviewUser.name" align="center" />
           <el-table-column label="审批时间" prop="createTime" align="center" :formatter="formatterDate" />
         </el-table>
@@ -287,7 +291,9 @@ export default {
 
       desc: {},
 
-      url: process.env.VUE_APP_API
+      url: process.env.VUE_APP_API,
+
+      emergencyList: []
     }
   },
 
@@ -299,6 +305,7 @@ export default {
       this.setRole()
       this.getEmergencyAuditType()
       this.getAcceptanceDataDesc()
+      this.emergencyNetCenter()
     },
 
     /**
@@ -314,6 +321,16 @@ export default {
       if (rolesData.indexOf('EmergencyRequisitionNetCenterEngineerReview') !== -1) {
         this.roleView.emergencyRequisitionNetCenterEngineerReview = true
       }
+    },
+
+    /**
+     * 获取 上级审批
+     * @return {[type]} [description]
+     */
+    emergencyNetCenter() {
+      this.$axios.get(`/api/User?emergencyNetCenter=${true}`).then(res => {
+        this.emergencyList = res.data
+      })
     },
 
     /**
@@ -345,7 +362,6 @@ export default {
         this.approval_form.emergencyRequisitionId = res.emergencyRequisitionId
         this.approval_form.emergencyWorkCostId = res.emergencyWorkCost.id
         this.approval_form.emergencyAcceptanceId = res.audits.length > 0 ? res.audits[0].emergencyAcceptanceId : ''
-        this.approval_form.reviewerId = res.audits.length > 0 ? res.audits[0].reviewUserId : ''
         this.approval_form.emergencyState = res.emergencyState
 
         // 申请单
@@ -433,14 +449,32 @@ export default {
      * @return {[type]} [description]
      */
     onSubmit() {
-      if (!this.roleView.emergencyRequisitionSubCenterReview && !this.roleView.emergencyRequisitionNetCenterEngineerReview) {
+      const currentUserId = this.$cookie.get('id')
+      // 分中心审核
+      if (this.roleView.emergencyRequisitionSubCenterReview && this.approval_form.emergencyState === 'PendingSubCenter') {
+        this.emergencyAcceptance()
+      // 路网中心审核
+      } else if (this.roleView.emergencyRequisitionNetCenterEngineerReview && this.approval_form.emergencyState === 'PendingNetCenter' && (this.desc.reviewerId === null || this.desc.reviewerId.toString() === currentUserId.toString())) {
+        this.emergencyAcceptance()
+      } else {
         this.$message.error('您没有权限操作')
-        return
       }
-
+    },
+    emergencyAcceptance() {
+      this.$message({
+        type: 'success',
+        message: '正在提交，请稍等。。。',
+        center: true,
+        duration: 1000
+      })
       this.$axios.post('/api/EmergencyAcceptance/' + this.acceptanceId + '/Review', this.approval_form).then(res => {
         this.changeActiveVisible = false
         this.$emit('func')
+        this.$message({
+          type: 'success',
+          message: '审核成功!',
+          duration: 2000
+        })
       })
     }
   }

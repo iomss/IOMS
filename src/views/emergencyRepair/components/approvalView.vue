@@ -3,7 +3,7 @@
   <div v-if="changeActiveVisible">
     <el-dialog
       title="
-  青海省高等级公路机电工程应急抢修申请表"
+  青海省高等级公路机电工程应急抢修审核表"
       :visible.sync="changeActiveVisible"
       :close-on-press-escape="false"
       :close-on-click-modal="false"
@@ -29,11 +29,11 @@
                 width="180"
                 :formatter="convertUnitType"
               />
-              <el-table-column
-                prop="reviewComment"
-                label="审批意见"
-                width="180"
-              />
+              <el-table-column label="审批意见" prop="reviewComment" width="180">
+                <template slot-scope="scope">
+                  <a href="javascript:;">{{ scope.row.reviewComment !== null ? scope.row.reviewComment : scope.row.remark }}</a>
+                </template>
+              </el-table-column>
               <el-table-column
                 prop="reviewUser.name"
                 label="审批人"
@@ -246,6 +246,7 @@ export default {
     // 获取子组件的值
     getMsgFormSon(data) {
       this.viewDesc = data
+      this.pattern.repairUnitId = data.repairUnitId
     },
 
     // 获取 抢修单位

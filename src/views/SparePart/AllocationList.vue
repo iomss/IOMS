@@ -20,21 +20,33 @@
                 </el-form-item>
                 <el-form-item>
                   <el-form-item>
-                    <el-select v-model="formSearch.spareRepositoryId" filterable remote :remote-method="getKufang" :loading="loading" clearable placeholder="库房" size="small" no-match-text="没有找到相关库房" @focus="getKufang">
+                    <el-select
+                      v-model="formSearch.spareRepositoryId"
+                      filterable
+                      remote
+                      :remote-method="getKufang"
+                      :loading="loading"
+                      clearable
+                      placeholder="库房"
+                      size="medium"
+                      no-match-text="没有找到相关库房"
+                      style="width:250px"
+                      @focus="getKufang"
+                    >
                       <el-option v-for="item in SpareRepositoryData" :key="item.id" :label="item.name" :value="item.id" />
                     </el-select>
                   </el-form-item>
                 </el-form-item>
                 <el-form-item>
-                  <el-select v-model="formSearch.consumable" clearable placeholder="备件性质" size="small">
+                  <el-select v-model="formSearch.consumable" clearable placeholder="备件性质" size="medium" style="width:250px">
                     <el-option key="1" label="非易损易耗" value="false" />
                     <el-option key="2" label="易损易耗" value="true" />
                   </el-select>
                 </el-form-item>
                 <el-form-item>
-                  <el-input v-model="formSearch.text" clearable placeholder="设备名称" size="small" />
+                  <el-input v-model="formSearch.text" clearable placeholder="设备名称" size="medium" style="width:250px" />
                 </el-form-item>
-                <el-button type="primary" plain size="small" @click="getData()">查询</el-button>
+                <el-button type="primary" plain size="medium" @click="getData()">查询</el-button>
               </el-form>
             </div>
           </div>

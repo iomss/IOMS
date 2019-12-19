@@ -10,15 +10,19 @@
   >
     <el-form ref="form" :model="form" label-width="80px" size="small" :inline="true" class="demo-form-inline dialog-form-add">
 
-      <el-form-item label="报修单位" prop="reportUnitId">
+      <!-- <el-form-item label="报修单位" prop="reportUnitId">
         <el-select v-model="form.reportUnitId" filterable placeholder="请选择报修单位" size="small">
           <el-option v-for="item in warrantyList" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
+      </el-form-item> -->
+
+      <el-form-item label="报修单位">
+        <el-button style="width: 194px;" plain @click="centerDialogVisible = true">{{ positionName }}</el-button>
       </el-form-item>
 
       <el-form-item label="报修时间" prop="reportTime">
         <el-col>
-          <el-date-picker v-model="form.reportTime" type="date" placeholder="选择日期" style="width: 100%;" />
+          <el-date-picker v-model="form.reportTime" class="applyPicker" type="datetime" placeholder="选择日期" format="yyyy-MM-dd HH:mm" style="width: 100%;" />
         </el-col>
       </el-form-item>
 
@@ -38,7 +42,7 @@
 
       <el-form-item label="接报时间" prop="receiveTime">
         <el-col>
-          <el-date-picker v-model="form.receiveTime" type="date" placeholder="选择日期" style="width: 100%;" />
+          <el-date-picker v-model="form.receiveTime" class="applyPicker" type="datetime" format="yyyy-MM-dd HH:mm" placeholder="选择日期" style="width: 100%;" />
         </el-col>
       </el-form-item>
 
@@ -120,15 +124,35 @@
       <el-button size="small" type="primary" @click="onSubmit('form',1)">暂 存</el-button>
       <el-button size="small" @click="changeActiveVisible = false">取 消</el-button>
     </div>
+
+    <!-- 报修单位 -->
+    <el-dialog
+      title="报修单位"
+      :visible.sync="centerDialogVisible"
+      width="40%"
+      center
+      append-to-body
+    >
+      <el-tree
+        ref="treeForm"
+        class="filter-tree"
+        :data="warrantyList"
+        show-checkbox
+        node-key="id"
+        check-strictly
+        accordion
+        :props="defaultProps"
+        @check-change="handleClick"
+      />
+    </el-dialog>
+
   </el-dialog>
 </template>
-<style>
+<style >
+
 	.dialog-form-add{
 		height: 500px;
 		overflow: auto;
-	}
-	.el-input{
-		width: 194px;
 	}
 	.el-item-label label.el-form-item__label{
 		width : 100px;
@@ -152,6 +176,7 @@
     padding: 0px;
     text-align: center;
   }
+
 </style>
 <script>
 export default {
@@ -196,13 +221,22 @@ export default {
 
       uploadList: [], // 展示的上传的文件
 
-      warrantyList: [], // 保修单位
-
       receivingList: [], // 接报单位
 
       addType: '', // 当前打开的是什么类型
 
-      addDescId: '' // 详情id
+      addDescId: '', // 详情id
+
+      defaultProps: {
+        label: 'name',
+        children: 'children'
+      },
+
+      centerDialogVisible: false,
+
+      warrantyList: [], // 报修单位
+
+      positionName: '请选择报修单位'
 
     }
   },
@@ -259,7 +293,7 @@ export default {
       }
     },
 
-    // 获取 保修单位
+    // 获取 报修单位
     warrantyUnit() {
       this.$axios.get(`/api/Tree/Position/All?startLevel=${2}&endLevel=${4}`).then(res => {
         this.warrantyList = res
@@ -271,6 +305,16 @@ export default {
       this.$axios.get(`/api/Tree/Position/All?startLevel=${2}&endLevel=${3}`).then(res => {
         this.receivingList = res
       })
+    },
+
+    // 选择 报修单位
+    handleClick(data, checked, node) {
+      if (checked === true) {
+        this.form.reportUnitId = data.id
+        this.positionName = data.name
+        this.centerDialogVisible = false
+        this.$refs.treeForm.setCheckedNodes([data])
+      }
     },
 
     onSubmit(formName, type) {
@@ -334,6 +378,7 @@ export default {
         this.uploadList = res.attachments
         this.form = res
         this.form.attachments = res.attachments.map(item => { return item.id })
+        this.positionName = res.reportUnit.name
       })
     },
 

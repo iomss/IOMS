@@ -43,7 +43,8 @@
                     <el-option v-for="item in levelData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                   <el-tooltip placement="right">
-                    <div slot="content" style="width:300px;">一级故障（重大设备故障）：<br>
+                    <div slot="content" style="width:300px;">
+                      一级故障（重大设备故障）：<br>
                       指机电系统出现系统瘫痪或局部瘫痪造成收费运营不能正常进行的故障。出现一级故障时要立即赶赴现场维修，要求在8小时内完成维修任务。其中现有外联维修协议包括的维修范围：①柴油发电机故障②UPS故障③光缆线路故障④通信设备故障⑤收费、监控系统故障⑥情报板故障⑦供配电系统故障。<br>
                       二级故障（较大设备故障）：<br>
                       指机电系统设备出现局部故障，对正常的收费监控管理造成较大影响的设备故障。出现二级故障时要求在72小时（3天）内完成维修任务。<br>
@@ -54,12 +55,13 @@
                   </el-tooltip>
                 </el-form-item>
                 <el-form-item label="指定工程师" prop="repairUserId">
-                  <el-select v-model="formData.repairUserId" filterable remote :remote-method="remoteMethoduserId" :loading="loading" clearable  placeholder="指定工程师" size="small" @focus="remoteMethoduserId">
+                  <el-select v-model="formData.repairUserId" filterable remote :remote-method="remoteMethoduserId" :loading="loading" clearable placeholder="指定工程师" size="small" @focus="remoteMethoduserId">
                     <el-option v-for="item in userData" :key="item.id" :label="item.trueName" :value="item.id" />
                   </el-select>
                 </el-form-item>
                 <el-form-item class="total">
                   <el-button type="primary" size="small" icon="el-icon-search" @click="createWorker()">派单</el-button>
+                  <el-button type="primary" size="small" icon="el-icon-search" @click="resetForm()">重置</el-button>
                   <el-button type="primary" size="small" icon="el-icon-search" @click="cancelWorker()">取消</el-button>
                 </el-form-item>
               </el-form>
@@ -77,7 +79,7 @@
               </el-form>
               <span slot="footer" class="dialog-footer">
                 <el-button type="primary" @click="creatderrortype()">确 定</el-button>
-                <el-button type="primary" @click="changeActiveVisible=false">关闭</el-button>
+                <el-button type="primary" @click="changeActiveVisible = false">关闭</el-button>
               </span>
             </el-dialog>
           </div>
@@ -88,11 +90,11 @@
 </template>
 <script>
 export default {
-  components: {
-  },
+  components: {},
   data() {
     return {
-      dangqianUser: {// 当前登陆用户
+      dangqianUser: {
+        // 当前登陆用户
         userName: this.$cookie.get('trueName'),
         id: this.$cookie.get('id'),
         trueName: this.$cookie.get('trueName')
@@ -123,39 +125,30 @@ export default {
       levelData: [], // 故障级别数据
       userData: [], // 可指派人员数据
       formDatarules: {
-        failureTime: [
-          { type: 'date', required: true, message: '请选择故障时间', trigger: 'change' }
-        ],
-        reportTime: [
-          { type: 'date', required: true, message: '请选择报修时间', trigger: 'change' }
-        ],
-        equipmentFaultId: [
-          { required: true, message: '故障类型不可为空', trigger: 'change' }
-        ],
-        repairLevelId: [
-          { required: true, message: '故障级别不可为空', trigger: 'change' }
-        ]
+        failureTime: [{ type: 'date', required: true, message: '请选择故障时间', trigger: 'change' }],
+        reportTime: [{ type: 'date', required: true, message: '请选择报修时间', trigger: 'change' }],
+        equipmentFaultId: [{ required: true, message: '故障类型不可为空', trigger: 'change' }],
+        repairLevelId: [{ required: true, message: '故障级别不可为空', trigger: 'change' }]
       },
       formAddrules: {
-        equipmentId: [
-          { required: true, message: '设备种类不可为空', trigger: 'change' }
-        ],
-        name: [
-          { required: true, message: '故障名称不可为空', trigger: 'change' }
-        ]
+        equipmentId: [{ required: true, message: '设备种类不可为空', trigger: 'change' }],
+        name: [{ required: true, message: '故障名称不可为空', trigger: 'change' }]
       },
-      faultpage: {// 故障类型分页
+      faultpage: {
+        // 故障类型分页
         pageNumber: 1,
         pageSize: 50,
         pageCount: '',
         equipmentId: undefined
       },
-      equipmentpage: {// 资产类别分页
+      equipmentpage: {
+        // 资产类别分页
         pageNumber: 1,
         pageSize: 50,
         pageCount: ''
       },
-      userpage: {// 指定工程师分页
+      userpage: {
+        // 指定工程师分页
         pageNumber: 1,
         pageSize: 50,
         pageCount: ''
@@ -214,7 +207,7 @@ export default {
     remoteMethodefaultID(query) {
       this.loading = true
       let querytext = ''
-      querytext = typeof (query) === 'string' ? query : ''
+      querytext = typeof query === 'string' ? query : ''
       this.$axios.get('/api/Meta/Fault?equipmentId=' + this.formData.equipmentId + '&text=' + querytext).then(res => {
         this.loading = false
         this.faultData = res.data
@@ -223,7 +216,7 @@ export default {
     remoteMethoduserId(query) {
       this.loading = true
       let querytext = ''
-      querytext = typeof (query) === 'string' ? query : ''
+      querytext = typeof query === 'string' ? query : ''
       this.$axios.get('/api/User?Dispatch=true&pageSize=' + this.userpage.pageSize + '&pageNumber=' + this.userpage.pageNumber + '&text=' + querytext).then(res => {
         this.loading = false
         this.userData = res.data
@@ -232,13 +225,14 @@ export default {
     remoteMethodequipmentID(query) {
       this.loading = true
       let querytext = ''
-      querytext = typeof (query) === 'string' ? query : ''
+      querytext = typeof query === 'string' ? query : ''
       this.$axios.get('/api/Meta/Equipment?text=' + querytext).then(res => {
         this.loading = false
         this.equipmentData = res.data
       })
     },
-    getData() { // 获取当前数据
+    getData() {
+      // 获取当前数据
       const _this = this
       this.formData.assetId = window.location.href.split('/')[window.location.href.split('/').length - 1]
       this.$axios.get('/api/Assets/' + this.formData.assetId).then(res => {
@@ -250,7 +244,17 @@ export default {
         _this.formData.code = res.code
       })
     },
-    createWorker() { // 提交派单按钮方法
+    resetForm() {
+      // 派单内容重置
+      this.formData.failureTime = ''
+      this.formData.reportTime = ''
+      this.formData.equipmentFaultId = ''
+      this.formData.reporterName = ''
+      this.formData.description = ''
+      this.formData.repairUserId = ''
+    },
+    createWorker() {
+      // 提交派单按钮方法
       const _this = this
       this.$refs.formData.validate(valid => {
         if (valid) {
@@ -265,13 +269,16 @@ export default {
         }
       })
     },
-    handleSelectionChange(val) { // 表单选中行
+    handleSelectionChange(val) {
+      // 表单选中行
       this.multipleSelection = val
     },
-    creatorder() { // 创建故障类型
-      this.changeActiveVisible = true// 打开弹框
+    creatorder() {
+      // 创建故障类型
+      this.changeActiveVisible = true // 打开弹框
     },
-    creatderrortype() { // 添加故障类型弹框确定方法
+    creatderrortype() {
+      // 添加故障类型弹框确定方法
       console.log(this)
       this.$refs.formAdd.validate(valid => {
         if (valid) {
@@ -288,7 +295,8 @@ export default {
         }
       })
     },
-    cancelWorker() { // 取消派单
+    cancelWorker() {
+      // 取消派单
       // 关闭派单页面
       console.log(this.$router.currentRoute.fullPath)
       this.$store.dispatch('tagsView/delAllViews', this.$router.currentRoute.fullPath)
@@ -298,7 +306,7 @@ export default {
   }
 }
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .header {
   width: 100%;
 }

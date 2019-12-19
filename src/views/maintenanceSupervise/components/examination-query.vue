@@ -33,7 +33,7 @@
         <el-table-column label="已审核工单总量" prop="reviewCount" align="center" width="120" />
         <el-table-column label="工单合格率%" prop="reviewPassRate" align="center" width="100" :formatter="formatterPercentage" />
         <el-table-column label="上级评分(主观分)" prop="superiorScore" align="center" width="120" />
-        <el-table-column label="总分(加权平均)" prop="score" align="center" width="120" />
+        <el-table-column label="总分(加权平均)" prop="score" align="center" width="120" :formatter="formtoFiexd" />
         <el-table-column label="备注" prop="remark" align="center" width="150" />
       </el-table>
       <pagination v-show="applicationTable.total>0" :total="applicationTable.total" :page.sync="formData.pageNumber" :limit.sync="formData.pageSize" @pagination="getList" />
@@ -98,9 +98,9 @@ export default {
       })
     },
     // 下载 文件
-    download(data) {
-      if (!data) return
-      const url = window.URL.createObjectURL(new Blob([data]))
+    download(res) {
+      if (!res) return
+      const url = window.URL.createObjectURL(new Blob([res.data]))
       const link = document.createElement('a')
       link.style.display = 'none'
       link.href = url
@@ -111,7 +111,15 @@ export default {
     // 显示百分比
     formatterPercentage(row, column, cellValue) {
       if (cellValue !== null) {
-        return cellValue * 100 + '%'
+        return (cellValue * 100).toFixed(2) + '%'
+      } else {
+        return ''
+      }
+    },
+    // 保留两位 小数点
+    formtoFiexd(row, column, cellValue) {
+      if (cellValue !== null) {
+        return cellValue.toFixed(2)
       } else {
         return ''
       }
