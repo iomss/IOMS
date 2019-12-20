@@ -17,7 +17,7 @@
             <div class="toolsrt">
               <el-form ref="form" :model="formSearch">
                 <el-select
-                  v-model="formSearch.system"
+                  v-model="formSearch.systemId"
                   filterable
                   remote
                   :remote-method="remoteMethodsystemId"
