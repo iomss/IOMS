@@ -17,7 +17,7 @@ const emergencyRepairRoutes = {
     {
       path: 'apply',
       component: () => import('@/views/emergencyRepair/apply'),
-      name: 'emergencyRepair-apply',
+      name: 'EmergencyRepairApply',
       meta: {
         title: '应急抢修申请',
         icon: 'fa fa-circle-o',
@@ -28,7 +28,7 @@ const emergencyRepairRoutes = {
     {
       path: 'approval',
       component: () => import('@/views/emergencyRepair/approval'),
-      name: 'emergencyRepair-approval',
+      name: 'EmergencyRepairApproval',
       meta: {
         title: '应急抢修审批',
         icon: 'fa fa-circle-o',
