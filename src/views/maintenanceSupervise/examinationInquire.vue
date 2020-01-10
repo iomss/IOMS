@@ -105,6 +105,7 @@ import query from './components/examination-query'
 import pagination from '@/components/Pagination'
 
 export default {
+  name: 'MaintenanceSuperviseExaminationInquire',
   components: {
     pagination,
     statistics,

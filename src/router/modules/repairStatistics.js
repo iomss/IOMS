@@ -18,7 +18,7 @@ const repairStatisticsRoutes = {
     {
       path: 'equipmentFailure',
       component: () => import('@/views/repairStatistics/equipmentFailure'),
-      name: 'repairStatistics-equipmentFailure',
+      name: 'RepairStatisticsEquipmentFailure',
       meta: {
         title: '系统故障统计分析',
         icon: 'fa fa-circle-o',
@@ -29,7 +29,7 @@ const repairStatisticsRoutes = {
     {
       path: 'positionFault',
       component: () => import('@/views/repairStatistics/positionFault'),
-      name: 'repairStatistics-positionFault',
+      name: 'RepairStatisticsPositionFault',
       meta: {
         title: '位置故障统计分析',
         icon: 'fa fa-circle-o',
@@ -40,7 +40,7 @@ const repairStatisticsRoutes = {
     {
       path: 'maintenanceLevel',
       component: () => import('@/views/repairStatistics/maintenanceLevel'),
-      name: 'repairStatistics-maintenanceLevel',
+      name: 'RepairStatisticsMaintenanceLevel',
       meta: {
         title: '按维修等级统计分析',
         icon: 'fa fa-circle-o',
@@ -51,7 +51,7 @@ const repairStatisticsRoutes = {
     {
       path: 'faultGrade',
       component: () => import('@/views/repairStatistics/faultGrade'),
-      name: 'repairStatistics-faultGrade',
+      name: 'RepairStatisticsFaultGrade',
       meta: {
         title: '按故障等级统计分析',
         icon: 'fa fa-circle-o',
@@ -62,7 +62,7 @@ const repairStatisticsRoutes = {
     {
       path: 'dateFaultLevel',
       component: () => import('@/views/repairStatistics/dateFaultLevel'),
-      name: 'repairStatistics-dateFaultLevel',
+      name: 'RepairStatisticsDateFaultLevel',
       meta: {
         title: '日期多维度故障统计分析',
         icon: 'fa fa-circle-o',
@@ -73,7 +73,7 @@ const repairStatisticsRoutes = {
     {
       path: 'faultAnalysis',
       component: () => import('@/views/repairStatistics/faultAnalysis'),
-      name: 'repairStatistics-faultAnalysis',
+      name: 'RepairStatisticsFaultAnalysis',
       meta: {
         title: '故障分析统计',
         icon: 'fa fa-circle-o',

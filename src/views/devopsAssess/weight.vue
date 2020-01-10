@@ -127,6 +127,7 @@ import pagination from '@/components/Pagination'
 import editWeight from './components/edit_weight'
 
 export default {
+  name: 'DevopsAssessWeight',
   components: {
     editWeight,
     pagination

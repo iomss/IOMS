@@ -105,6 +105,7 @@ import echarts from 'echarts'
 import pagination from '@/components/Pagination'
 
 export default {
+  name: 'RepairStatisticsFaultAnalysis',
   components: {
     pagination
   },

@@ -92,6 +92,7 @@
 import echarts from 'echarts'
 
 export default {
+  name: 'RepairStatisticsPositionFault',
   data() {
     return {
       isShowSearch: true,

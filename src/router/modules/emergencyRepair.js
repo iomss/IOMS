@@ -38,18 +38,18 @@ const emergencyRepairRoutes = {
     },
     {
       path: 'cost',
-      name: 'cost-info',
+      name: 'EmergencyRepairCost',
       component: () => import('@/views/emergencyRepair/cost'),
       meta: {
         title: '应急抢修费用申请',
         icon: 'fa fa-circle-o',
-        roles: ['EmergencyWorkCostRecord'],
+        roles: ['EmergencyWorkCostRecordn'],
         fullPath: '/emergencyRepair/cost'
       }
     },
     {
       path: 'costApproval',
-      name: 'costApproval-list',
+      name: 'EmergencyRepairCostApproval',
       component: () => import('@/views/emergencyRepair/costApproval'),
       meta: {
         title: '应急抢修费用审批',
@@ -61,7 +61,7 @@ const emergencyRepairRoutes = {
     {
       path: 'acceptance',
       component: () => import('@/views/emergencyRepair/acceptance'),
-      name: 'emergencyRepair-acceptance',
+      name: 'EmergencyRepairAcceptance',
       meta: {
         title: '应急抢修验收申请',
         icon: 'fa fa-circle-o',
@@ -72,7 +72,7 @@ const emergencyRepairRoutes = {
     {
       path: 'acceptanceApproval',
       component: () => import('@/views/emergencyRepair/acceptanceApproval'),
-      name: 'emergencyRepair-acceptanceApproval',
+      name: 'EmergencyRepairAcceptanceApproval',
       meta: {
         title: '应急抢修验收审批',
         icon: 'fa fa-circle-o',

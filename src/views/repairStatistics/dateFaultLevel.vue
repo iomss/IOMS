@@ -74,6 +74,7 @@
 import echarts from 'echarts'
 
 export default {
+  name: 'RepairStatisticsDateFaultLevel',
   data() {
     return {
       isShowSearch: true,

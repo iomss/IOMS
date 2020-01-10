@@ -17,7 +17,7 @@ const devopsAssessRoutes = {
     {
       path: 'assess',
       component: () => import('@/views/devopsAssess/assess'),
-      name: 'devopsAssess-assess',
+      name: 'DevopsAssessAssess',
       meta: {
         title: '运维指标考核',
         icon: 'fa fa-circle-o',
@@ -28,7 +28,7 @@ const devopsAssessRoutes = {
     {
       path: 'view',
       component: () => import('@/views/devopsAssess/view'),
-      name: 'devopsAssess-view',
+      name: 'DevopsAssessView',
       meta: {
         title: '运维指标查询',
         icon: 'fa fa-circle-o',
@@ -39,7 +39,7 @@ const devopsAssessRoutes = {
     {
       path: 'weight',
       component: () => import('@/views/devopsAssess/weight'),
-      name: 'devopsAssess-weight',
+      name: 'DevopsAssessWeight',
       meta: {
         title: '权重系数管理',
         icon: 'fa fa-circle-o',

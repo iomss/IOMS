@@ -81,6 +81,7 @@
 import echarts from 'echarts'
 
 export default {
+  name: 'RepairStatisticsEquipmentFailure',
   data() {
     return {
       isShowSearch: true,

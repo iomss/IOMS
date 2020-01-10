@@ -118,6 +118,7 @@ import costView from './components/acceptance-approval'
 import pagination from '@/components/Pagination'
 
 export default {
+  name: 'EmergencyRepairAcceptanceApproval',
   components: {
     pagination,
     costView
