@@ -139,6 +139,7 @@ import costView from './components/cost-view'
 import pagination from '@/components/Pagination'
 
 export default {
+  name: 'EmergencyRepairCost',
   components: {
     pagination,
     costAdd,

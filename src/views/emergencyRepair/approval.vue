@@ -130,6 +130,7 @@ import approvalView from './components/approvalView'
 import pagination from '@/components/Pagination'
 
 export default {
+  name: 'EmergencyRepairApproval',
   components: {
     pagination,
     approvalView

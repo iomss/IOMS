@@ -18,7 +18,7 @@ const integrityRateRoutes = {
     {
       path: 'internalExamination',
       component: () => import('@/views/maintenanceSupervise/internalExamination'),
-      name: 'maintenanceSupervise-internalExamination',
+      name: 'MaintenanceSuperviseInternalExamination',
       meta: {
         title: '内部考核设置',
         icon: 'fa fa-circle-o',
@@ -29,7 +29,7 @@ const integrityRateRoutes = {
     {
       path: 'examinationInquire',
       component: () => import('@/views/maintenanceSupervise/examinationInquire'),
-      name: 'maintenanceSupervise-examinationInquire',
+      name: 'MaintenanceSuperviseExaminationInquire',
       meta: {
         title: '内部工作考核查询',
         icon: 'fa fa-circle-o',

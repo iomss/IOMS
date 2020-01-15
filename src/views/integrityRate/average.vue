@@ -70,6 +70,7 @@
 import echarts from 'echarts'
 
 export default {
+  name: 'IntegrityRateAverage',
   data() {
     return {
       isShowSearch: true,

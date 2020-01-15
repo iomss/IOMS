@@ -189,7 +189,7 @@ export const asyncRoutes = [
         name: 'Workorder-Checkedlist',
         component: () => import('@/views/Workorder/Checkedlist'),
         meta: {
-          title: '已验收列表',
+          title: '已完成工单查询',
           icon: 'fa fa-th-large',
           roles: ['EnterSystem'],
           fullPath: '/Workorder/Checkedlist'
@@ -200,7 +200,7 @@ export const asyncRoutes = [
         name: 'Workorder-CheckedInfo',
         component: () => import('@/views/Workorder/CheckedInfo'),
         meta: {
-          title: '已验收列表详情',
+          title: '已完成工单详情',
           icon: 'fa fa-home',
           roles: ['EnterSystem'],
           hidden: true,

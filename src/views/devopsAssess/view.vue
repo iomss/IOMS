@@ -113,6 +113,7 @@ import pagination from '@/components/Pagination'
 import roadFraction from './components/road_fraction'
 
 export default {
+  name: 'DevopsAssessView',
   components: {
     pagination,
     roadFraction

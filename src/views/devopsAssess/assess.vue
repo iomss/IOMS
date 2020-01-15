@@ -93,6 +93,7 @@
 import editAssess from './components/edit_assess'
 
 export default {
+  name: 'DevopsAssessAssess',
   components: {
     editAssess
   },

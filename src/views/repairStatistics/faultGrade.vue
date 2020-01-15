@@ -75,6 +75,7 @@
 import echarts from 'echarts'
 
 export default {
+  name: 'RepairStatisticsFaultGrade',
   data() {
     return {
       isShowSearch: true,

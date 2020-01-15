@@ -79,6 +79,7 @@
 import echarts from 'echarts'
 
 export default {
+  name: 'IntegrityRateElectromechanical',
   data() {
     return {
       isShowSearch: true,

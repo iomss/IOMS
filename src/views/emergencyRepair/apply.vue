@@ -142,6 +142,7 @@ import applyView from './components/applyView'
 import pagination from '@/components/Pagination'
 
 export default {
+  name: 'EmergencyRepairApply',
   components: {
     pagination,
     add,

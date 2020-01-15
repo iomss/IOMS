@@ -88,6 +88,7 @@ import setUp from './components/internal-setUp'
 import pagination from '@/components/Pagination'
 
 export default {
+  name: 'MaintenanceSuperviseInternalExamination',
   components: {
     pagination,
     setUp

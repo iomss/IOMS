@@ -1401,7 +1401,7 @@ export default {
       this.tableDataSearchsecond.pageNumber = val.page
       // 调用获取数据
       this.$axios
-        .get('/api/EquipmentList', { params: this.tableDataSearchsecond })
+        .get('/api/MaintenancePlan/Equipments', { params: this.tableDataSearchsecond })
         .then(res => {
           this.tableDatasecond = res.data
         })

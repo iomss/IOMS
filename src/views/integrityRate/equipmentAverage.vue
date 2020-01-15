@@ -103,6 +103,7 @@
 import pagination from '@/components/Pagination'
 
 export default {
+  name: 'IntegrityRateEquipmentAverage',
   components: {
     pagination
   },

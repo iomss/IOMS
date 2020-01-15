@@ -134,6 +134,7 @@ import acceptanceView from './components/acceptance-view'
 import pagination from '@/components/Pagination'
 
 export default {
+  name: 'EmergencyRepairAcceptance',
   components: {
     pagination,
     acceptancAdd,

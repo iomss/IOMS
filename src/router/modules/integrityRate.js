@@ -18,7 +18,7 @@ const integrityRateRoutes = {
     {
       path: 'systemStatistics',
       component: () => import('@/views/integrityRate/systemStatistics'),
-      name: 'integrityRate-systemStatistics',
+      name: 'IntegrityRateSystemStatistics',
       meta: {
         title: '所属系统完好率统计',
         icon: 'fa fa-circle-o',
@@ -29,7 +29,7 @@ const integrityRateRoutes = {
     {
       path: 'electromechanical',
       component: () => import('@/views/integrityRate/electromechanical'),
-      name: 'integrityRate-electromechanical',
+      name: 'IntegrityRateElectromechanical',
       meta: {
         title: '机电设备完好率统计',
         icon: 'fa fa-circle-o',
@@ -40,7 +40,7 @@ const integrityRateRoutes = {
     {
       path: 'average',
       component: () => import('@/views/integrityRate/average'),
-      name: 'integrityRate-average',
+      name: 'IntegrityRateAverage',
       meta: {
         title: '平均完好率统计',
         icon: 'fa fa-circle-o',
@@ -51,7 +51,7 @@ const integrityRateRoutes = {
     {
       path: 'averageRanking',
       component: () => import('@/views/integrityRate/averageRanking'),
-      name: 'integrityRate-averageRanking',
+      name: 'IntegrityRateAverageRanking',
       meta: {
         title: '平均完好率统计Top10',
         icon: 'fa fa-circle-o',
@@ -62,7 +62,7 @@ const integrityRateRoutes = {
     {
       path: 'equipmentAverage',
       component: () => import('@/views/integrityRate/equipmentAverage'),
-      name: 'integrityRate-equipmentAverage',
+      name: 'IntegrityRateEquipmentAverage',
       meta: {
         title: '设备平均完好率统计',
         icon: 'fa fa-circle-o',
