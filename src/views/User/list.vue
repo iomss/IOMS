@@ -117,6 +117,7 @@
 import pagination from '@/components/Pagination/index.vue'
 
 export default {
+  name: 'Userlist',
   components: {
     pagination
   },

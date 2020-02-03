@@ -103,6 +103,7 @@
 </template>
 <script>
 export default {
+  name: 'WorkorderAuditorOperate',
   components: {
   },
   data() {

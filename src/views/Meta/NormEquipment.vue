@@ -56,6 +56,7 @@
 import pagination from '@/components/Pagination/index.vue'
 
 export default {
+  name: 'MetaNormEquipment',
   components: {
     pagination
   },

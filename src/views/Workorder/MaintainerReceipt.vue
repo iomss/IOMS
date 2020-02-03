@@ -101,6 +101,7 @@
 </template>
 <script>
 export default {
+  name: 'WorkorderMaintainerReceipt',
   components: {
 
   },

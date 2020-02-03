@@ -88,6 +88,7 @@
 </template>
 <script>
 export default {
+  name: 'MaintenanceWatchmanDispatchs',
   components: {
   },
   data() {

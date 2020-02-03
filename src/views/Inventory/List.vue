@@ -95,6 +95,7 @@
 <script>
 import pagination from '@/components/Pagination'
 export default {
+  name: 'Inventorylist',
   components: {
     pagination
   },

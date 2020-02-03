@@ -69,6 +69,7 @@
 <script>
 import pagination from '@/components/Pagination'
 export default {
+  name: 'RateinformationList',
   components: {
     pagination
   },

@@ -150,7 +150,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'fileDownIndex',
-        name: 'fileDown-index',
+        name: 'FileDownindex',
         component: () => import('@/views/fileDown/index'),
         meta: {
           title: '文件下载管理',
@@ -175,7 +175,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'Watchmanlist',
-        name: 'Workorder-Watchmanlist',
+        name: 'WorkorderWatchmanlist',
         component: () => import('@/views/Workorder/Watchmanlist'),
         meta: {
           title: '工作列表',
@@ -186,7 +186,7 @@ export const asyncRoutes = [
       },
       {
         path: 'Checkedlist',
-        name: 'Workorder-Checkedlist',
+        name: 'WorkorderCheckedlist',
         component: () => import('@/views/Workorder/Checkedlist'),
         meta: {
           title: '已完成工单查询',
@@ -197,7 +197,7 @@ export const asyncRoutes = [
       },
       {
         path: 'CheckedInfo/:id',
-        name: 'Workorder-CheckedInfo',
+        name: 'WorkorderCheckedInfo',
         component: () => import('@/views/Workorder/CheckedInfo'),
         meta: {
           title: '已完成工单详情',
@@ -209,7 +209,7 @@ export const asyncRoutes = [
       },
       {
         path: 'MaintainerRob/:id',
-        name: 'Workorder-MaintainerRob',
+        name: 'WorkorderMaintainerRob',
         component: () => import('@/views/Workorder/MaintainerRob'),
         meta: {
           title: '维修工程师抢单',
@@ -221,7 +221,7 @@ export const asyncRoutes = [
       },
       {
         path: 'MaintainerAddRecord/:id',
-        name: 'Workorder-MaintainerAddRecord',
+        name: 'WorkorderMaintainerAddRecord',
         component: () => import('@/views/Workorder/MaintainerAddRecord'),
         meta: {
           title: '维修工程师添加维修记录',
@@ -233,7 +233,7 @@ export const asyncRoutes = [
       },
       {
         path: 'MaintainerReceipt/:id',
-        name: 'Workorder-MaintainerReceipt',
+        name: 'WorkorderMaintainerReceipt',
         component: () => import('@/views/Workorder/MaintainerReceipt'),
         meta: {
           title: '维修工程师接单',
@@ -245,7 +245,7 @@ export const asyncRoutes = [
       },
       {
         path: 'MaintainerChangeOrder/:id',
-        name: 'Workorder-MaintainerChangeOrder',
+        name: 'WorkorderMaintainerChangeOrder',
         component: () => import('@/views/Workorder/MaintainerChangeOrder'),
         meta: {
           title: '维修工程师转单',
@@ -257,7 +257,7 @@ export const asyncRoutes = [
       },
       {
         path: 'AcceptorOperate/:id',
-        name: 'Workorder-AcceptorOperate',
+        name: 'WorkorderAcceptorOperate',
         component: () => import('@/views/Workorder/AcceptorOperate'),
         meta: {
           title: '验收人员验收',
@@ -269,7 +269,7 @@ export const asyncRoutes = [
       },
       {
         path: 'AuditorOperate/:id',
-        name: 'Workorder-AuditorOperate',
+        name: 'WorkorderAuditorOperate',
         component: () => import('@/views/Workorder/AuditorOperate'),
         meta: {
           title: '审核人员审核',
@@ -295,7 +295,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'list',
-        name: 'assets-list',
+        name: 'Assetslist',
         meta: {
           title: '资产列表',
           icon: 'fa fa-th-large',
@@ -306,7 +306,7 @@ export const asyncRoutes = [
       },
       {
         path: 'Info/:id',
-        name: 'assets-Info',
+        name: 'AssetsInfo',
         meta: {
           title: '资产明细',
           icon: 'fa fa-home',
@@ -318,7 +318,7 @@ export const asyncRoutes = [
       },
       {
         path: 'Create',
-        name: 'assets-Create',
+        name: 'AssetsCreate',
         meta: {
           title: '新增资产',
           icon: 'fa fa-th-large',
@@ -329,7 +329,7 @@ export const asyncRoutes = [
       },
       {
         path: 'AssetField',
-        name: 'assets-AssetField',
+        name: 'AssetsAssetField',
         meta: {
           title: '资产自定义属性',
           icon: 'fa fa-th-large',
@@ -355,7 +355,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'list',
-        name: 'Inventory-list',
+        name: 'Inventorylist',
         meta: {
           title: '清单列表',
           icon: 'fa fa-th-large',
@@ -366,7 +366,7 @@ export const asyncRoutes = [
       },
       {
         path: 'Info/:id',
-        name: 'Inventory-Info',
+        name: 'InventoryInfo',
         meta: {
           title: '清单详情',
           icon: 'fa fa-home',
@@ -378,7 +378,7 @@ export const asyncRoutes = [
       },
       {
         path: 'Update/:id',
-        name: 'Inventory-Update',
+        name: 'InventoryUpdate',
         meta: {
           title: '生成清单详情',
           icon: 'fa fa-home',
@@ -404,7 +404,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'SparePartList',
-        name: 'SparePartList-List',
+        name: 'SparePartListList',
         component: () => import('@/views/SparePart/sparePartList'),
         meta: {
           title: '备品备件管理',
@@ -415,7 +415,7 @@ export const asyncRoutes = [
       },
       {
         path: 'StoreroomList',
-        name: 'StoreroomList-List',
+        name: 'StoreroomListList',
         component: () => import('@/views/SparePart/StoreroomList'),
         meta: {
           title: '库房管理',
@@ -426,7 +426,7 @@ export const asyncRoutes = [
       },
       {
         path: 'InstantInventory',
-        name: 'InstantInventory-List',
+        name: 'InstantInventoryList',
         component: () => import('@/views/SparePart/InstantInventory'),
         meta: {
           title: '即时库存',
@@ -437,7 +437,7 @@ export const asyncRoutes = [
       },
       {
         path: 'InstockList',
-        name: 'InstockList-List',
+        name: 'InstockListList',
         component: () => import('@/views/SparePart/InstockList'),
         meta: {
           title: '入库单查看',
@@ -448,7 +448,7 @@ export const asyncRoutes = [
       },
       {
         path: 'OutstockList',
-        name: 'OutstockList-List',
+        name: 'OutstockListList',
         component: () => import('@/views/SparePart/OutstockList'),
         meta: {
           title: '出库单查看',
@@ -459,7 +459,7 @@ export const asyncRoutes = [
       },
       {
         path: 'AllocationList',
-        name: 'AllocationList-List',
+        name: 'AllocationListList',
         component: () => import('@/views/SparePart/AllocationList'),
         meta: {
           title: '调拨申请',
@@ -470,7 +470,7 @@ export const asyncRoutes = [
       },
       {
         path: 'AllocationCheck',
-        name: 'AllocationCheck-List',
+        name: 'AllocationCheckList',
         component: () => import('@/views/SparePart/AllocationCheck'),
         meta: {
           title: '调拨申请单审批',
@@ -496,7 +496,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'WatchmanAssetslist',
-        name: 'maintenance-WatchmanAssetslist',
+        name: 'MaintenanceWatchmanAssetslist',
         component: () => import('@/views/maintenance/WatchmanAssetslist'),
         meta: {
           title: '维修单录入',
@@ -507,7 +507,7 @@ export const asyncRoutes = [
       },
       {
         path: 'WatchmanDispatch/:id',
-        name: 'maintenance-WatchmanDispatch',
+        name: 'MaintenanceWatchmanDispatch',
         component: () => import('@/views/maintenance/WatchmanDispatch'),
         meta: {
           title: '值班人员派单',
@@ -519,7 +519,7 @@ export const asyncRoutes = [
       },
       {
         path: 'WatchmanDispatchs/:id',
-        name: 'maintenance-WatchmanDispatchs',
+        name: 'MaintenanceWatchmanDispatchs',
         component: () => import('@/views/maintenance/WatchmanDispatchs'),
         meta: {
           title: '值班人员派单',
@@ -545,7 +545,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'RepairplanList',
-        name: 'RepairplanList-List',
+        name: 'RepairplanListList',
         component: () => import('@/views/Repairmanage/RepairplanList'),
         meta: {
           title: '维护计划',
@@ -556,7 +556,7 @@ export const asyncRoutes = [
       },
       {
         path: 'RepairtaskList',
-        name: 'RepairtaskList-List',
+        name: 'RepairtaskListList',
         component: () => import('@/views/Repairmanage/RepairtaskList'),
         meta: {
           title: '维护任务',
@@ -567,7 +567,7 @@ export const asyncRoutes = [
       },
       {
         path: 'RepaircheckList',
-        name: 'RepaircheckList-List',
+        name: 'RepaircheckListList',
         component: () => import('@/views/Repairmanage/RepaircheckList'),
         meta: {
           title: '维护验收',
@@ -593,7 +593,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'HardwareMaintenance',
-        name: 'HardwareMaintenance-List',
+        name: 'HardwareMaintenanceList',
         component: () => import('@/views/Budgetmanage/HardwareMaintenance'),
         meta: {
           title: '硬件维护单价管理',
@@ -604,7 +604,7 @@ export const asyncRoutes = [
       },
       {
         path: 'HardwareMaintenanceInfo/:id',
-        name: 'HardwareMaintenance-Info',
+        name: 'HardwareMaintenanceInfo',
         component: () => import('@/views/Budgetmanage/HardwareMaintenanceInfo'),
         meta: {
           title: '硬件维护单价详情',
@@ -616,7 +616,7 @@ export const asyncRoutes = [
       },
       {
         path: 'SoftwareMaintenance',
-        name: 'SoftwareMaintenance-List',
+        name: 'SoftwareMaintenanceList',
         component: () => import('@/views/Budgetmanage/SoftwareMaintenance'),
         meta: {
           title: '软件维护单价管理',
@@ -627,7 +627,7 @@ export const asyncRoutes = [
       },
       {
         path: 'SoftwareMaintenanceInfo/:id',
-        name: 'SoftwareMaintenance-Info',
+        name: 'SoftwareMaintenanceInfo',
         component: () => import('@/views/Budgetmanage/SoftwareMaintenanceInfo'),
         meta: {
           title: '软件维护单价详情',
@@ -639,7 +639,7 @@ export const asyncRoutes = [
       },
       {
         path: 'Informationsafety',
-        name: 'Informationsafety-List',
+        name: 'InformationsafetyList',
         component: () => import('@/views/Budgetmanage/Informationsafety'),
         meta: {
           title: '信息安全单价管理',
@@ -650,7 +650,7 @@ export const asyncRoutes = [
       },
       {
         path: 'InformationsafetyInfo/:id',
-        name: 'Informationsafety-Info',
+        name: 'InformationsafetyInfo',
         component: () => import('@/views/Budgetmanage/InformationsafetyInfo'),
         meta: {
           title: '信息安全单价详情',
@@ -662,7 +662,7 @@ export const asyncRoutes = [
       },
       {
         path: 'HardwareRepair',
-        name: 'HardwareRepair-List',
+        name: 'HardwareRepairList',
         component: () => import('@/views/Budgetmanage/HardwareRepair'),
         meta: {
           title: '硬件维修单价管理',
@@ -673,7 +673,7 @@ export const asyncRoutes = [
       },
       {
         path: 'HardwareRepairInfo/:id',
-        name: 'HardwareRepair-Info',
+        name: 'HardwareRepairInfo',
         component: () => import('@/views/Budgetmanage/HardwareRepairInfo'),
         meta: {
           title: '硬件维修单价详情',
@@ -685,7 +685,7 @@ export const asyncRoutes = [
       },
       {
         path: 'SoftwareRepair',
-        name: 'SoftwareRepair-List',
+        name: 'SoftwareRepairList',
         component: () => import('@/views/Budgetmanage/SoftwareRepair'),
         meta: {
           title: '软件维修单价管理',
@@ -696,7 +696,7 @@ export const asyncRoutes = [
       },
       {
         path: 'SoftwareRepairInfo/:id',
-        name: 'SoftwareRepair-Info',
+        name: 'SoftwareRepairInfo',
         component: () => import('@/views/Budgetmanage/SoftwareRepairInfo'),
         meta: {
           title: '软件维修单价管理',
@@ -708,7 +708,7 @@ export const asyncRoutes = [
       },
       {
         path: 'ContractList',
-        name: 'ContractEndList-List',
+        name: 'ContractEndListList',
         component: () => import('@/views/Budgetmanage/ContractList'),
         meta: {
           title: '合同测算预算',
@@ -719,7 +719,7 @@ export const asyncRoutes = [
       },
       {
         path: 'ContractInfo/:id',
-        name: 'ContractEndList-Info',
+        name: 'ContractEndListInfo',
         component: () => import('@/views/Budgetmanage/ContractInfo'),
         meta: {
           title: '合同测算预算详情',
@@ -731,7 +731,7 @@ export const asyncRoutes = [
       },
       {
         path: 'EquipmentQuota',
-        name: 'EquipmentQuota-List',
+        name: 'EquipmentQuotaList',
         component: () => import('@/views/Budgetmanage/EquipmentQuota'),
         meta: {
           title: '设备定额名称匹配',
@@ -742,7 +742,7 @@ export const asyncRoutes = [
       },
       {
         path: 'Rateinformation',
-        name: 'Rateinformation-List',
+        name: 'RateinformationList',
         component: () => import('@/views/Budgetmanage/Rateinformation'),
         meta: {
           title: '费率信息管理',
@@ -753,7 +753,7 @@ export const asyncRoutes = [
       },
       {
         path: 'RateinformationInfo/:id',
-        name: 'Rateinformation-Info',
+        name: 'RateinformationInfo',
         component: () => import('@/views/Budgetmanage/RateinformationInfo'),
         meta: {
           title: '费率信息详情',
@@ -779,7 +779,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'list',
-        name: 'User-list',
+        name: 'Userlist',
         component: () => import('@/views/User/list'),
         meta: {
           title: '用户管理',
@@ -804,7 +804,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'brandModel',
-        name: 'Meta-brandModel',
+        name: 'MetabrandModel',
         meta: {
           title: '品牌型号',
           icon: 'fa fa-th-large',
@@ -815,7 +815,7 @@ export const asyncRoutes = [
       },
       {
         path: 'Type',
-        name: 'Meta-Type',
+        name: 'MetaType',
         meta: {
           title: '设备类型',
           icon: 'fa fa-th-large',
@@ -826,7 +826,7 @@ export const asyncRoutes = [
       },
       {
         path: 'Source',
-        name: 'Meta-Source',
+        name: 'MetaSource',
         meta: {
           title: '设备来源',
           icon: 'fa fa-th-large',
@@ -837,7 +837,7 @@ export const asyncRoutes = [
       },
       {
         path: 'Equipment',
-        name: 'Meta-Equipment',
+        name: 'MetaEquipment',
         meta: {
           title: '设备管理',
           icon: 'fa fa-th-large',
@@ -848,7 +848,7 @@ export const asyncRoutes = [
       },
       {
         path: 'System',
-        name: 'Meta-System',
+        name: 'MetaSystem',
         meta: {
           title: '设备系统',
           icon: 'fa fa-th-large',
@@ -859,7 +859,7 @@ export const asyncRoutes = [
       },
       {
         path: 'SI',
-        name: 'Meta-SI',
+        name: 'MetaSI',
         meta: {
           title: '设备集成商',
           icon: 'fa fa-th-large',
@@ -870,7 +870,7 @@ export const asyncRoutes = [
       },
       {
         path: 'positionType',
-        name: 'Meta-positionType',
+        name: 'MetapositionType',
         meta: {
           title: '位置类型',
           icon: 'fa fa-th-large',
@@ -881,7 +881,7 @@ export const asyncRoutes = [
       },
       {
         path: 'position',
-        name: 'Meta-position',
+        name: 'Metaposition',
         meta: {
           title: '位置管理',
           icon: 'fa fa-th-large',
@@ -892,7 +892,7 @@ export const asyncRoutes = [
       },
       {
         path: 'Fault',
-        name: 'Meta-Fault',
+        name: 'MetaFault',
         meta: {
           title: '故障管理',
           icon: 'fa fa-th-large',
@@ -903,7 +903,7 @@ export const asyncRoutes = [
       },
       {
         path: 'RepairLevel',
-        name: 'Meta-RepairLevel',
+        name: 'MetaRepairLevel',
         meta: {
           title: '维修等级管理',
           icon: 'fa fa-th-large',
@@ -914,7 +914,7 @@ export const asyncRoutes = [
       },
       {
         path: 'Unit',
-        name: 'Meta-Unit',
+        name: 'MetaUnit',
         meta: {
           title: '部门管理',
           icon: 'fa fa-th-large',
@@ -925,7 +925,7 @@ export const asyncRoutes = [
       },
       {
         path: 'Role',
-        name: 'Meta-Role',
+        name: 'MetaRole',
         meta: {
           title: '角色管理',
           icon: 'fa fa-th-large',
@@ -936,7 +936,7 @@ export const asyncRoutes = [
       },
       {
         path: 'NormEquipment',
-        name: 'Meta-NormEquipment',
+        name: 'MetaNormEquipment',
         meta: {
           title: '定额名称',
           icon: 'fa fa-th-large',
@@ -947,7 +947,7 @@ export const asyncRoutes = [
       },
       {
         path: 'Claims',
-        name: 'Meta-Claims',
+        name: 'MetaClaims',
         meta: {
           title: '权限列表',
           icon: 'fa fa-th-large',

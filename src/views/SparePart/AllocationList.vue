@@ -155,6 +155,7 @@ const simulateAsyncOperation = fn => {
   setTimeout(fn, 500)
 }
 export default {
+  name: 'AllocationListList',
   components: {
     pagination,
     Treeselect

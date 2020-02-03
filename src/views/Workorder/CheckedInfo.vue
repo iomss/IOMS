@@ -92,6 +92,7 @@
 </template>
 <script>
 export default {
+  name: 'WorkorderCheckedInfo',
   components: {
   },
   data() {

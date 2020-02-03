@@ -52,6 +52,7 @@
 <script>
 import Pagination from '@/components/Pagination'
 export default {
+  name: 'MetaType',
   components: {
     Pagination
   },

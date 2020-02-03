@@ -131,6 +131,7 @@ const simulateAsyncOperation = fn => {
 }
 import pagination from '@/components/Pagination'
 export default {
+  name: 'ContractEndListList',
   components: {
     pagination,
     Treeselect

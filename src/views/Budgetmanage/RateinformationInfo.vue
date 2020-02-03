@@ -57,6 +57,7 @@
 </template>
 <script>
 export default {
+  name: 'RateinformationInfo',
   components: {
   },
   data() {

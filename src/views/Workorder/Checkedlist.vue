@@ -58,6 +58,7 @@
 <script>
 import pagination from '@/components/Pagination'
 export default {
+  name: 'WorkorderCheckedlist',
   components: {
     pagination
   },

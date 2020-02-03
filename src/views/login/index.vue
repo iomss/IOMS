@@ -75,7 +75,7 @@ export default {
   name: 'Login',
   data() {
     return {
-      // 背景样式
+      // 背景样式1
       loginbj: {
         backgroundImage: 'url(' + loginbjimg + ')',
         backgroundRepeat: 'no-repeat',

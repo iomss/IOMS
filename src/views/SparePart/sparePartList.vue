@@ -108,6 +108,7 @@ import Uploadimg from '@/components/Uploadimg/uploadimg.vue'
 import pagination from '@/components/Pagination/index.vue'
 
 export default {
+  name: 'SparePartListList',
   components: {
     Uploadimg,
     pagination

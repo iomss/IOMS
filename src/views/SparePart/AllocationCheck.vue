@@ -133,6 +133,7 @@
 <script>
 import pagination from '@/components/Pagination'
 export default {
+  name: 'AllocationCheckList',
   components: {
     pagination
   },

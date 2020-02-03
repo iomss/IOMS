@@ -21,6 +21,7 @@
 <script>
 
 export default {
+  name: 'MetaClaims',
   data() {
     return {
       ClaimsData: [] // 数据

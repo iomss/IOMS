@@ -89,6 +89,7 @@
 <script>
 import pagination from '@/components/Pagination'
 export default {
+  name: 'SoftwareMaintenanceList',
   components: {
     pagination
   },

@@ -117,6 +117,7 @@ const simulateAsyncOperation = fn => {
 import Uploadimg from '@/components/Uploadimg'
 // import Position from '@/components/Position'
 export default {
+  name: 'AssetsCreate',
   components: {
     Treeselect,
     Uploadimg

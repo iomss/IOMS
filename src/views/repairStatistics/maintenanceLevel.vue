@@ -158,7 +158,7 @@ export default {
 
       this.charts.setOption(option)
     },
-    // 比例
+    // 比例Q
     proportion(id, dataAxis, res) {
       this.fault = echarts.init(document.getElementById(id))
 

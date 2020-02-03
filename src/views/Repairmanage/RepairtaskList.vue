@@ -266,6 +266,7 @@
 <script>
 import pagination from '@/components/Pagination'
 export default {
+  name: 'RepairtaskListList',
   components: {
     pagination
   },

@@ -95,6 +95,7 @@
 </template>
 <script>
 export default {
+  name: 'WorkorderAcceptorOperate',
   components: {
   },
   data() {

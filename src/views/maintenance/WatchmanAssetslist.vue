@@ -57,6 +57,7 @@
 <script>
 import pagination from '@/components/Pagination'
 export default {
+  name: 'MaintenanceWatchmanAssetslist',
   components: {
     pagination
   },

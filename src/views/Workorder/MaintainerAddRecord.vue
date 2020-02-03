@@ -165,6 +165,7 @@
 
 import Uploadimg from '@/components/Uploadimg'
 export default {
+  name: 'WorkorderMaintainerAddRecord',
   components: {
     Uploadimg
   },

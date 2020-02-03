@@ -90,6 +90,7 @@
 </template>
 <script>
 export default {
+  name: 'MaintenanceWatchmanDispatch',
   components: {},
   data() {
     return {

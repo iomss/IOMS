@@ -61,6 +61,7 @@
 import pagination from '@/components/Pagination/index.vue'
 
 export default {
+  name: 'MetaRole',
   components: {
     pagination
   },

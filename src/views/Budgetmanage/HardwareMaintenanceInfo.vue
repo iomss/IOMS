@@ -46,6 +46,7 @@
 <script>
 import pagination from '@/components/Pagination'
 export default {
+  name: 'HardwareMaintenanceInfo',
   components: {
     pagination
   },

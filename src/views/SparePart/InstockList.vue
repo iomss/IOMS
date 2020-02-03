@@ -275,6 +275,7 @@
 <script>
 import pagination from '@/components/Pagination'
 export default {
+  name: 'InstockListList',
   components: {
     pagination
   },

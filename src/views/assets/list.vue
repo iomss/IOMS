@@ -298,6 +298,7 @@ const simulateAsyncOperation = fn => {
 import pagination from '@/components/Pagination'
 import Uploadimg from '@/components/Uploadimg'
 export default {
+  name: 'Assetslist',
   components: {
     pagination,
     Treeselect,

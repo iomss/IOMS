@@ -122,6 +122,7 @@ const simulateAsyncOperation = fn => {
   setTimeout(fn, 500)
 }
 export default {
+  name: 'AssetsInfo',
   components: {
     Treeselect
   },

@@ -150,7 +150,7 @@ export default {
       })
     },
 
-    // 获取所有单位
+    // 获取所有单位1
     companyAll() {
       this.$axios.get(`/api/Tree/Position/All?startLevel=${2}&endLevel=${4}`).then(res => {
         this.companyAllList = res

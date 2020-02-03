@@ -52,6 +52,7 @@
 import pagination from '@/components/Pagination/index.vue'
 
 export default {
+  name: 'AssetsAssetField',
   components: {
     pagination
   },

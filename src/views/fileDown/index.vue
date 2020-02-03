@@ -33,6 +33,7 @@
 <script>
 import pagination from '@/components/Pagination/index.vue'
 export default {
+  name: 'FileDownindex',
   components: {
     pagination
   },
