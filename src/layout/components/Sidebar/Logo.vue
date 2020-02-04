@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import logo from '@/assets/logo.png'
+import logo from '@/assets/logo-bj.png'
 export default {
   name: 'SidebarLogo',
   props: {

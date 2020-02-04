@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import loginbjimg from '@/assets/login_bj.jpg'
+import loginbjimg from '@/assets/login_bj-bj.jpg'
 export default {
   name: 'Login',
   data() {

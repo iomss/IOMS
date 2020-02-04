@@ -111,7 +111,6 @@
 <script>
 import pagination from '@/components/Pagination'
 export default {
-  name: 'WorkorderWatchmanlist',
   components: {
     pagination
   },
@@ -132,9 +131,17 @@ export default {
   },
   computed: {},
   mounted() {
-    this.getData()
+    if (this.timer) {
+      clearInterval(this.timer)
+    } else {
+      this.timer = setInterval(() => {
+        this.getData()
+      }, 36000)
+    }
   },
+
   methods: {
+
     // 日期时间格式化
     formatterDate(row, column, cellValue) {
       if (cellValue !== null) {
