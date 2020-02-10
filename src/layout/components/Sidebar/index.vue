@@ -33,9 +33,12 @@ import routers from '@/router'
 export default {
   components: { Logo },
   data() {
+    debugger
+    const WEBURL = window.location.hostname + ':' + location.port + '/Overview/Overview.html'
+    const CAMERAURL = window.location.hostname + ':' + location.port + '/Overview/CameraIndex.html'
     return {
-      url: process.env.VUE_APP_WEBURL,
-      url1: process.env.VUE_APP_CAMERAURL,
+      url: WEBURL,
+      url1: CAMERAURL,
       routers: routers,
       roles: this.$cookie.get('roles')
     }

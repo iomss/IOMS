@@ -1,0 +1,341 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Agora Web Sample</title>
+	<meta charset="GB2312">
+  <script src="./Scripts/AgoraRTCSDK-2.9.0.js"></script> 
+  <script src="./Scripts/AgoraSig-1.4.0.js"></script>
+<script src="./Scripts/jquery-2.2.3.min.js"></script>
+<script src="./Scripts/jquery.cookie.min.js"></script>
+
+</head>
+<body>
+    <div class="row">
+        <div style=" width: 100%;">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <form id="addForm" method="post" class="form-horizontal">
+                        <div class="row">
+                            <div >
+                                    <label for="Wx_RepairerID" >现场工程师</label>
+                                    <select style=" border-radius:4px;" id="Wx_RepairerID" name="Wx_RepairerID" placeholder="派工"></select>
+                                    <button type="button" style=" border-radius:4px;height:28px;background:#009BD2; color:#FFF" id="call" style="">呼叫</button>
+                                    <button type="button" style=" border-radius:4px;height:28px;background:#009BD2; color:#FFF" id="leave">挂断</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="box-body">
+                    <div id="video" style="margin:0 auto;">
+                        <div id="agora_local" style="float:right;width:320px;height:240px;display:inline-block;"></div>
+                    </div>
+                </div>
+                </div>
+            </div>
+    </div>
+    <div id="div_join" class="panel panel-default" style="display:none;">
+        <div class="panel-body">
+            <input id="channel" type="hidden" value="1000" size="4" ></input>
+            <button id="join" class="btn btn-primary" onclick="join()">Join</button>
+            <button id="leave" class="btn btn-primary" onclick="leave()">Leave</button>
+            <button id="publish" class="btn btn-primary" onclick="publish()">Publish</button>
+            <button id="unpublish" class="btn btn-primary" onclick="unpublish()">Unpublish</button>
+            <button id="login" class="btn btn-primary" onclick="login()">login</button>
+            <button id="send" class="btn btn-primary" onclick="send()">send</button>
+        </div>
+    </div>
+    <!--style>
+    .video__box{width:910px; margin:0 auto; overflow:hidden;}
+    .video__main{ width:810px; height:607px;float:left }
+    .video__list{ width:200px; height:607px; float:left;}
+    .video__item{ width:200px; height:174px; hei background:url(/img/icon_live.png) center center no-repeat; }
+    </style>
+    <div class="video__main">
+    </div>
+    <div class="video__list">
+        <div class="video__item"></div>
+        <div id="video" class="video__item">
+            <div id="agora_local"></div>
+        </div>
+    </div-->
+	
+    <script language="javascript">
+       if (!AgoraRTC.checkSystemRequirements()) {
+          alert("Your browser does not support WebRTC!");
+        }
+        var appid = '9cf72e3b3fca4b98965887504fcd860c';
+        var signal, session;
+		 
+		  var localuser = $.cookie('ioms-id');
+        function login() {
+            //登录
+            signal = Signal('9cf72e3b3fca4b98965887504fcd860c');
+            session = signal.login(localuser, '_no_need_token');
+            session.onLoginSuccess = function (uid) {
+                session.onMessageInstantReceive = function (account, uid, msg) {
+                    //接收点对点消息回调设置
+                };
+            };
+            session.onLoginFailed = function (ecode) {
+                alert('信令登录失败 ' + ecode);
+            };
+            session.onError = function (evt) {
+                alert('信令登录出错 ' + evt);
+            };
+            session.onInviteReceived = function (call) {
+                var obj = eval('(' + call.extra + ')');
+                if (confirm('是否接受 ' + obj.nickName + ' 的视频邀请？')) {
+                    //接受频道邀请
+                    call.channelInviteAccept();
+                    $('#channel').val(call.channelName);
+                    join();
+                }
+                else {
+                    call.channelInviteRefuse();
+                }
+                //alert(call.channelName);
+                //session.channelJoin(call.channelName);
+            };
+
+        }
+        function send() {
+            session.messageInstantSend($('#senduserid').val(), '测试数据', function () { alert('发送成功'); });
+        }
+        function call() {
+            //channel1 = session.channelJoin($('#channel').val());
+            // ------------------ 邀请人加入频道
+            if (!$('#Wx_RepairerID').val()) {
+                alert('请选择工程师');
+                return;
+            }
+            var nickname= $.cookie('ioms-trueName');	
+           var call = session.channelInviteUser2(localuser , $('#Wx_RepairerID').val(), '{ "nickName":'+nickname+'}');
+            // 对方已收到呼叫邀请回调
+            call.onInviteReceivedByPeer = function () {
+            };
+            $('#channel').val("channel");
+                join();
+            // 对方接受邀请回调
+            call.onInviteAcceptedByPeer = function () {
+			 console(call.onInviteAcceptedByPeer);
+                alert('对方接受邀请');
+                //加入视频频道
+                $('#channel').val(localuser);
+                join();
+            };
+            // 对方拒绝邀请回调
+            call.onInviteRefusedByPeer = function () {
+                alert('对方拒绝邀请');
+                window.location.reload()
+            };
+            // 呼叫邀请失败回调
+            call.onInviteFailed = function () {
+                alert('呼叫邀请失败');
+            };
+            // 对方已结束呼叫回调
+            call.onInviteEndByPeer = function () {
+                alert('对方已结束呼叫');
+            };
+            // 本地已结束呼叫回调
+            call.onInviteEndByMyself = function () {
+                alert('本地已结束呼叫');
+            };
+        }
+        $(function () {
+		  var token =$.cookie('ioms-access_token');
+            login();
+            $('#call').click(function () {
+                call();
+            });
+            $('#leave').click(function () {
+                leave();
+            });
+			
+			
+            //获取派工人员
+           $.ajax({
+           type: 'GET',      
+	         url:'http://39.104.48.13:6018/api/User?Dispatch=true',	
+				  headers: {
+                       'Authorization':'Bearer' +' '+ token,
+                        },			
+         data: {},
+         dateType: 'json',
+         async: false,
+         success: function (res) {
+  
+             $('#Wx_RepairerID').empty();
+             $('#Wx_RepairerID').append($('<option></option>').val("").text("请选择"));
+				
+				
+        	for(var i =0;i<res.data.length;i++){
+             
+                $('#Wx_RepairerID').append($('<option></option>').val(res.data[i].id).text(res.data[i].trueName));
+                               
+                                     }
+			
+           }
+       });
+        });
+
+
+
+
+
+        /* select Log type */
+        // AgoraRTC.Logger.setLogLevel(AgoraRTC.Logger.NONE);
+        // AgoraRTC.Logger.setLogLevel(AgoraRTC.Logger.ERROR);
+        // AgoraRTC.Logger.setLogLevel(AgoraRTC.Logger.WARNING);
+        // AgoraRTC.Logger.setLogLevel(AgoraRTC.Logger.INFO);
+        // AgoraRTC.Logger.setLogLevel(AgoraRTC.Logger.DEBUG);
+
+        /* simulated data to proof setLogLevel() */
+        AgoraRTC.Logger.error('this is error');
+        AgoraRTC.Logger.warning('this is warning');
+        AgoraRTC.Logger.info('this is info');
+        AgoraRTC.Logger.debug('this is debug');
+
+        var client, localStream, camera, microphone;
+
+
+        function join() {
+            document.getElementById("join").disabled = true;
+            var channel_key = null;
+            console.log("Init AgoraRTC client with App ID: " + appid);
+            client = AgoraRTC.createClient({ mode: 'live' , codec: 'h264'});
+            client.init(appid, function () {
+                console.log("AgoraRTC client initialized");
+                client.join(channel_key, channel.value, null, function (uid) {
+                    console.log("User " + uid + " join channel successfully");
+
+
+                    localStream = AgoraRTC.createStream({ streamID: uid, audio: true, cameraId: camera, microphoneId: microphone, video: true, screen: false });
+                    //localStream = AgoraRTC.createStream({streamID: uid, audio: false, cameraId: camera, microphoneId: microphone, video: false, screen: true, extensionId: 'minllpmhdgpndnkomcoccfekfegnlikg'});
+
+                    localStream.setVideoProfile('720p_3');
+
+
+
+                    // The user has granted access to the camera and mic.
+                    localStream.on("accessAllowed", function () {
+                        console.log("accessAllowed");
+                    });
+
+                    // The user has denied access to the camera and mic.
+                    localStream.on("accessDenied", function () {
+                        console.log("accessDenied");
+                    });
+
+                    localStream.init(function () {
+                        console.log("getUserMedia successfully");
+                        localStream.play('agora_local');
+
+                        client.publish(localStream, function (err) {
+                            console.log("Publish local stream error: " + err);
+                        });
+
+                        client.on('stream-published', function (evt) {
+                            console.log("Publish local stream successfully");
+                        });
+                    }, function (err) {
+                        console.log("getUserMedia failed", err);
+                    });
+
+                }, function (err) {
+                    console.log("Join channel failed", err);
+                });
+            }, function (err) {
+                console.log("AgoraRTC client init failed", err);
+            });
+
+            channelKey = "";
+            client.on('error', function (err) {
+                console.log("Got error msg:", err.reason);
+                if (err.reason === 'DYNAMIC_KEY_TIMEOUT') {
+                    client.renewChannelKey(channelKey, function () {
+                        console.log("Renew channel key successfully");
+                    }, function (err) {
+                        console.log("Renew channel key failed: ", err);
+                    });
+                }
+            });
+
+            client.on('stream-added', function (evt) {
+                var stream = evt.stream;
+                console.log("New stream added: " + stream.getId());
+                console.log("Subscribe ", stream);
+                client.subscribe(stream, function (err) {
+                    console.log("Subscribe stream failed", err);
+                });
+            });
+
+            client.on('stream-subscribed', function (evt) {
+                var stream = evt.stream;
+                console.log("Subscribe remote stream successfully: " + stream.getId());
+                if ($('div#video #agora_remote' + stream.getId()).length === 0) {
+                    if ($('div#video').children().length>1) {
+                        $('div#video').append('<div id="agora_remote' + stream.getId() + '" style="float:right;width:320px;height:240px;display:inline-block;"></div>');
+                    }
+                    else {
+                        $('div#video').append('<div id="agora_remote' + stream.getId() + '" style="float:left; width:1580px;height:880px;display:inline-block;"></div>');
+                    }
+                }
+                stream.play('agora_remote' + stream.getId());
+            });
+
+            client.on('stream-removed', function (evt) {
+                var stream = evt.stream;
+                stream.stop();
+                $('#agora_remote' + stream.getId()).remove();
+                console.log("Remote stream is removed " + stream.getId());
+            });
+
+            client.on('peer-leave', function (evt) {
+                var stream = evt.stream;
+                if (stream) {
+                    stream.stop();
+                    $('#agora_remote' + stream.getId()).remove();
+                    console.log(evt.uid + " leaved from this channel");
+                }
+            });
+        }
+
+
+        function leave() {
+            client.leave(function () {
+window.location.reload();
+                console.log("Leavel channel successfully");
+
+            }, function (err) {
+                console.log("Leave channel failed");
+            });
+        }
+
+        
+        function getDevices() {
+            AgoraRTC.getDevices(function (devices) {
+                for (var i = 0; i !== devices.length; ++i) {
+                    var device = devices[i];
+                    var option = document.createElement('option');
+                    option.value = device.deviceId;
+                    if (device.kind === 'audioinput' && !microphone) {
+                        microphone = device.deviceId;
+                    } else if (device.kind === 'videoinput' && !camera) {
+                        camera = device.deviceId;
+                    } else {
+                        console.log('Some other kind of source/device: ', device);
+                    }
+                }
+            });
+        }
+
+        //audioSelect.onchange = getDevices;
+        //videoSelect.onchange = getDevices;
+        getDevices();
+    </script>
+</body>
+</html>
+

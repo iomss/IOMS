@@ -1,0 +1,1118 @@
+﻿<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>地图</title>
+
+    <link href="./Content/comon0.css" rel="stylesheet" type="text/css" />
+
+</head>
+<body>
+
+  <div class="row" style=" background-image: url('./Images/2X.png');background-size:cover" id="divshow">
+      <img id="enterFullScreen" src="Images/enterFullScreen.png" height="15" width="15" onclick="enterFullScreen()">
+      <img id="exitFullScreen" src="Images/exitFullScreen.png" height="15" width="15" onclick="exitFullScreen()" >
+      <div class="mainbox">
+          <ul class="clearfix">
+              <li>
+                  <div class="boxall" style="height:350px;">
+                      <div class="alltitle">设备资产使用状态</div>
+                      <div class="navboxall" id="lefttop"> </div>
+                  </div>
+                  <div class="boxall" style="height:350px;">
+                      <div class="alltitle">各单位设备报修次数排名 TOP10</div>
+                      <div class="navboxall" id="leftmid">
+
+                      </div>
+                  </div>
+              </li>
+              <li>
+                  <div class="boxall" style="height:100px">
+                      <div class="navboxall"><h1>青海省高速公路机电运维数据可视化分析</h1></div>
+                  </div>
+                  <div class="boxall" style="height:610px">
+                      <div align="center">
+                          <a style="color:#FFC100;font-size :18px" id="mes"></a>&nbsp;&nbsp;&nbsp;&nbsp;
+                          <a style="color:#FFC100;font-size :18px" id="time"></a>
+                          <input name="Maptype" type="radio" value="0" checked="checked"><label style="color:red">简略图 </label>
+                          <input name="Maptype" type="radio" value="1"> <label style="color:red">卫星图</label>&nbsp&nbsp&nbsp&nbsp
+                          <img id="reset" src="Images/reset.png" height="15" width="15">
+
+
+                      </div>
+                      <div class="navboxall" style="overflow: hidden;height: 100%">
+                          <div id="mapStoreClass" stytle="position: absolute;z-index: 9999;"></div>
+                          <div style="width: 120%; height: 120%; position: relative; left: -10%; top: -11%;" id="mid">
+
+                          </div>
+                      </div>
+                  </div>
+
+              </li>
+              <li>
+                  <div class="boxall" style="height:350px">
+                      <div class="alltitle">设备故障修复状态分析</div>
+                      <div class="navboxall" id="righttop">
+                      </div>
+                  </div>
+                  <div class="boxall" style="height:350px">
+                      <div class="alltitle">各类设备报修次数排名 TOP10</div>
+                      <div class="navboxall" id="rightmid">
+                      </div>
+                  </div>
+              </li>
+          </ul>
+          <ul class="clearfix">
+              <li style="width:60%">
+                  <div class="boxall" style="height:300px;">
+                      <div class="alltitle">上月各单位运维考核指标排名</div>
+                      <div class="navboxall " id="leftbottom">
+
+                      </div>
+                  </div>
+              </li>
+              <li style="width: 40%">
+
+                  <div class="boxall" style="height:300px">
+                      <div class="alltitle">全年报修工单量分析</div>
+                      <div class="navboxall" id="rightbottom"></div>
+                  </div>
+              </li>
+
+          </ul>
+
+      </div>
+  </div>
+
+</body>
+
+<script src="./Scripts/jquery-2.2.3.min.js"></script>
+<script src="./Scripts/jquery.cookie.min.js"></script>
+<script src="./Scripts/echarts.js"></script>
+<script src="./Scripts/china.js"></script>
+<script src="./Scripts/bmap.js"></script>
+<script src="http://api.map.baidu.com/api?v=2.0&ak=qSszXjCa6yDQzyeG6cIrkZzPCbAx06Cu"></script>
+<script type="text/javascript">
+
+
+
+    $(window).load(function () {
+        $(".loading").fadeOut()
+    })
+
+    var dataarray=[];
+    var token =$.cookie('ioms-access_token');
+    function enterFullScreen() {
+        
+        var de = document.getElementById('divshow');
+        if (de.requestFullscreen) {
+            de.requestFullscreen();
+        } else if (de.mozRequestFullScreen) {
+            de.mozRequestFullScreen();
+        } else if (de.webkitRequestFullScreen) {
+            de.webkitRequestFullScreen();
+        }
+        $('#enterFullScreen').hide();
+        $('#exitFullScreen').show();
+    }
+
+    //退出全屏
+    function exitFullScreen() {
+        var de = document;
+        if (de.exitFullscreen) {
+            de.exitFullscreen();
+        } else if (de.mozCancelFullScreen) {
+            de.mozCancelFullScreen();
+        } else if (de.webkitCancelFullScreen) {
+            de.webkitCancelFullScreen();
+        }
+        $('#enterFullScreen').show();
+        $('#exitFullScreen').hide();
+    }
+  
+
+    $(function () {
+	 
+        $('#exitFullScreen').hide();
+        Dataarray();
+        LeftTop();
+        RightTop();
+        LeftMid();
+        RightMid();
+        LeftBottom();
+        RightBottom();
+        time();
+
+        $(":radio").click(function () {
+            Dataarray();
+        });
+
+        $("#reset").click(function () {
+            Dataarray();
+        });
+        
+     
+        function time() {
+            var vWeek, vWeek_s, vDay;
+            vWeek = ["星期天", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+            var date = new Date();
+            year = date.getFullYear();
+            month = date.getMonth() + 1;
+            day = date.getDate();
+            hours = date.getHours();
+            minutes = date.getMinutes();
+            seconds = date.getSeconds();
+            vWeek_s = date.getDay();
+            $("#time").html(year + "年" + month + "月" + day + "日" + "\t" + vWeek[vWeek_s]);
+
+        };
+
+        function  formatData(num) {
+            num = String(Math.round(num));
+            var re = /(-?\d+)(\d{3})/;
+            while (re.test(num)) {
+                num = num.replace(re, "$1,$2");
+            }
+            return num;
+        };
+
+        function LeftTop() {
+            var incount;
+            var outcout;
+            var money;
+            var repaicount;
+
+            $.ajax({
+                type:'GET',
+                url:'http://39.104.48.13:6018/api/Assets/Summary',			 
+				  headers: {
+                          'Authorization':'Bearer' +' '+token
+                           },
+                data: {},
+                dateType:'json',
+                success: function (data) {
+				
+                            incount = data.inLiability;
+                      
+                            outcout = data.outLiability;
+                     
+                            money = formatData((data.assetsTotal));
+                      
+                            repaicount = formatData(data.repairOrderCount);
+                    
+                    var count = formatData( parseInt(data.assetsCount));
+
+                    var text1 ='总数量 ：' + count +'台    总金额：' + money +'万元';
+            var text = [
+                text1
+                    ];
+
+                    $("#mes").html('资产总数量：' + count +'    报修总数量：'+ repaicount);
+            var data = [
+                {
+                    value: incount, name:'使用期内设备',
+                    itemStyle: {
+                        normal: {
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                                offset: 0,
+                                color:'#1FA2FF'
+                            }])
+                        }
+                    }
+                },
+                {
+                    value: outcout, name:'超过使用期设备',
+                    itemStyle: {
+                        normal: {
+                            color:'#F0F084'
+                        }
+                    }
+                }
+            ];
+
+            var myChart = echarts.init(document.getElementById('lefttop'));
+
+            option = {
+                tooltip: {
+                    trigger:'item',
+                    formatter: "{a} <br/>{b}: {c} ({d}%)"
+                },
+                legend: {
+                    orient:'vertical',
+                    x:'right',
+                    data: [{ name:'使用期内设备', textStyle: { color: "#3999dd" } },
+                    {
+                        name:'超过使用期设备', textStyle: { color: "#F0F084" }
+                    }],
+
+                },
+                graphic: [
+                    {
+                        type:'group',
+                        left:'center',
+                        bottom: 8,
+                        children: [
+                            {
+                                type:'text',
+                                z: 100,
+                                left:'bottom',
+                                top:'middle',
+                                style: {
+                                    fill:'#ffffff',
+                                    text: text,
+                                    font:'14px Microsoft YaHei'
+                                }
+                            }
+                        ]
+                    }
+                ],
+                series: [
+                    {
+                        name:'',
+                        type:'pie',
+                        radius: ['50%','70%'],
+                        avoidLabelOverlap: false,
+
+                        data: data,
+                        label: {
+                            normal: {
+                                formatter:'{d}%',
+                                textStyle: {
+                                    fontWeight:'normal',
+                                    fontSize: 18,
+                                    color:'#FFFFFF'
+                                }
+                            }
+                        },
+                        lableLine: {
+                            normal: {
+                                show: true,
+                                formatter:'{b}:{c}: ({d}%)',
+
+                            }
+                        }
+                    }
+                ]
+            };
+
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+            window.addEventListener("resize", function () {
+                myChart.resize();
+                    });
+                }
+            });
+
+        }
+        function RightTop() {
+            var inrepair;
+            var finishrepair;
+               $.ajax({
+                type:'GET',
+                url:'http://39.104.48.13:6018/RepairDoneCounts',
+				  headers: {
+                          'Authorization':'Bearer' +' '+ token,
+                           },
+                data: {},
+                dateType:'json',
+                   success: function (data) {
+				  
+                     
+                               inrepair = data.undone;
+                        
+                               finishrepair = data.done;
+
+                     
+
+                       var sumcount = inrepair + finishrepair;
+                       var text1 ='故障总数 ：' + formatData(sumcount);
+                       var text = [
+                           text1
+                       ];
+
+
+                       var myChart = echarts.init(document.getElementById('righttop'));
+
+
+                       option = {
+                           title: {
+                               text:'',
+                               subtext:'',
+                               x:'center'
+                           },
+                           tooltip: {
+                               trigger:'item',
+                               formatter: "{a} <br/>{b} : {c} ({d}%)"
+                           },
+                           legend: {
+                               orient:'vertical',
+                               left:'right',
+                               data: [
+                                   { value: inrepair, name:'故障中', textStyle: { color: "#DD6B66" } },
+                                   { value: finishrepair, name:'已修复', textStyle: { color: "#73A373" } }
+
+                               ]
+                           },
+                           graphic: [
+                               {
+                                   type:'group',
+                                   left:'center',
+                                   bottom: 8,
+                                   children: [
+                                       {
+                                           type:'text',
+                                           z: 100,
+                                           left:'bottom',
+                                           top:'middle',
+                                           style: {
+                                               fill:'#ffffff',
+                                               text: text,
+                                               font:'14px Microsoft YaHei'
+                                           }
+                                       }
+                                   ]
+                               }
+                           ],
+                           series: [
+                               {
+                                   name:'',
+                                   type:'pie',
+                                   radius:'55%',
+                                   center: ['50%','60%'],
+                                   data: [
+                                       {
+                                           value: inrepair, name:'故障中',
+                                           itemStyle: {
+                                               normal: {
+                                                   color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                                                       offset: 0,
+                                                       color:'#DD6B66'
+                                                   }])
+                                               }
+                                           }
+                                       },
+                                       {
+                                           value: finishrepair, name:'已修复',
+                                           itemStyle: {
+                                               normal: {
+                                                   color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                                                       offset: 0,
+                                                       color:'#73A373'
+                                                   }])
+                                               }
+                                           }
+                                       }
+
+
+                                   ],
+                                   label: {
+                                       normal: {
+                                           formatter:'{d}%',
+                                           textStyle: {
+                                               fontWeight:'normal',
+                                               fontSize: 18,
+                                               color:'#FFFFFF'
+                                           }
+                                       }
+                                   },
+                                   lableLine: {
+                                       normal: {
+                                           show: true,
+                                           formatter:'{b}:{c}: ({d}%)',
+
+                                       }
+                                   },
+                                   itemStyle: {
+                                       emphasis: {
+                                           shadowBlur: 10,
+                                           shadowOffsetX: 0,
+                                           shadowColor:'3999dd'
+                                       }
+                                   }
+                               }
+                           ]
+                       };
+
+
+                       // 使用刚指定的配置项和数据显示图表。
+                       myChart.setOption(option);
+                       window.addEventListener("resize", function () {
+                           myChart.resize();
+                       });
+                   }
+                   });
+        }
+        function LeftMid() {
+
+            $.ajax({
+               async: false,
+                type:'GET',
+                url:'http://39.104.48.13:6018/UnitRepairCounts?month=13',
+				  headers: {
+                          'Authorization':'Bearer' +' '+token,
+                           },
+                data: {},
+                dateType:'json',
+                success: function (data) {
+
+                    var category = [];
+                    var barData = [];
+					var i= 10 ;
+                    $.each(data, function (i, item) {
+
+               if(i==10){
+                       return false;
+                         }
+                        category.push(item.name);
+                        barData.push(item.value);
+                    });
+					category.reverse();
+					barData.reverse();
+
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('leftmid'));
+
+            var option = {
+                tooltip: {
+                    trigger:'axis', axisPointer: { type:'shadow' }
+                },
+                grid: {
+                    left:'3%', right:'4%', bottom:'3%', containLabel: true
+                },
+                xAxis: {
+                    type:'value', axisLine: { show: false }, axisTick: { show: false }, axisLabel: {
+                        interval: 0,//横轴信息全部显示
+                        rotate: 0,//-30度角倾斜显示
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color:'#FFFFFF',
+                            width: 1,//这里是为了突出显示加上的
+                        }
+                    }
+                },
+                yAxis: {
+                    type:'category',
+                    data: category,
+                    splitLine: { show: false },
+                    axisLine: { show: false }, axisLabel: {
+                        interval: 0,//横轴信息全部显示
+                        rotate: 0,//-30度角倾斜显示
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color:'#FFFFFF',
+                            width: 1,//这里是为了突出显示加上的
+                        }
+                    },
+                    axisTick: { show: false },
+                    offset: 10,
+                    nameTextStyle: { fontSize: 15 }
+                },
+                series: [
+                    {
+                        name:'数量',
+                        type:'bar',
+                        data: barData,
+                        barWidth: 14,
+                        barGap: 10,
+                        smooth: true,
+                        label: {
+                            normal: {
+                                show: true, position:'right', offset: [5, -2], textStyle: { color:'#FFFFFF', fontSize: 13 }
+                            }
+                        },
+                        itemStyle: {
+                            emphasis: { barBorderRadius: 7 },
+                            normal: {
+                                barBorderRadius: 7,
+                                color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [{ offset: 0, color:'#EEDD78' }])
+                            }
+                        }
+                    }]
+            };
+
+
+            myChart.setOption(option);
+            window.addEventListener("resize", function () {
+                myChart.resize();
+                    });
+                }
+            });
+        }
+		
+
+        //设备故障次数排名top10
+        function RightMid() {
+               $.ajax({
+                type:'GET',
+                url:'http://39.104.48.13:6018/EquipmentRepairCounts',
+				headers: {
+                          'Authorization':'Bearer' +' '+ token,
+                           },
+                data: {},
+                dateType:'json',
+                   success: function (data) {
+                       var category = [];
+                       var barData = [];
+                       $.each(data, function (i, item) {
+
+                           category.push(item.name);
+                           barData.push(item.value);
+                       });
+                    category.reverse();
+					barData.reverse();
+                       var myChart = echarts.init(document.getElementById('rightmid'));
+
+                       var option = {
+                           tooltip: {
+                               trigger:'axis', axisPointer: { type:'shadow' }
+                           },
+                           grid: {
+                               left:'3%', right:'4%', bottom:'3%', containLabel: true
+                           },
+                           xAxis: {
+                               type:'value', axisLine: { show: false }, axisTick: { show: false }, axisLine: {
+                                   lineStyle: {
+                                       color:'#FFFFFF',
+                                       width: 1,//这里是为了突出显示加上的
+                                   }
+                               }
+                           },
+                           yAxis: {
+                               type:'category',
+                               data: category,
+                               splitLine: { show: false },
+                               axisLine: { show: false },
+                               axisTick: { show: false },
+                               axisLine: {
+                                   lineStyle: {
+                                       color:'#FFFFFF',
+                                       width: 1,//这里是为了突出显示加上的
+                                   }
+                               },
+                               offset: 10,
+                               nameTextStyle: { fontSize: 15 }
+                           },
+                           series: [
+                               {
+                                   name:'数量',
+                                   type:'bar',
+                                   data: barData,
+                                   barWidth: 14,
+                                   barGap: 10,
+                                   smooth: true,
+                                   label: {
+                                       normal: {
+                                           show: true, position:'right', offset: [5, -2], textStyle: { color:'#FFFFFF', fontSize: 13 }
+                                       }
+                                   },
+                                   itemStyle: {
+                                       emphasis: { barBorderRadius: 7 },
+                                       normal: {
+                                           barBorderRadius: 7,
+                                           color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [{ offset: 0, color:'#EA7E53' }])
+                                       }
+                                   }
+                               }]
+                       };
+
+
+                       myChart.setOption(option);
+                       window.addEventListener("resize", function () {
+                           myChart.resize();
+                       });
+                   }
+               });
+        }
+        function LeftBottom() {
+
+
+                $.ajax({
+                type:'GET',
+                url:'http://39.104.48.13:6018/UnitAssessmentTop',
+				  headers: {
+                          'Authorization':'Bearer' +' '+ token,
+                           },
+                data: {},
+                dateType:'json',
+                    success: function (data) {
+
+                        var xAxisData = [];
+                        var ydata = [];
+                        $.each(data, function (i, item) {
+                            xAxisData.push(item.name);
+                            ydata.push(item.value);
+                        });
+                        // 基于准备好的dom，初始化echarts实例
+                        var myChart = echarts.init(document.getElementById('leftbottom'));
+
+                           // 初始 option
+                        var option = {
+                            title: {
+                                text:''
+                            },
+                            tooltip: {
+                                trigger:'axis',
+                                borderColor:'#636F7F',
+                                borderWidth: 1,
+                                backgroundColor:'rgba(99,111,127,1)',
+                                textStyle: {
+                                    color:'#ffffff',
+                                    // fontWeight :'bold',
+                                    fontSize: 14,
+                                },
+                                transitionDuration: 0.6,
+                                formatter:'{b0}<br />{c0}',
+                                axisPointer: {
+                                    type:'line',
+                                    lineStyle: {
+                                        color:'#05F41E',
+                                        width: 1,
+                                        type:'solid',
+                                    },
+                                },
+                            },
+                            calculable: true,
+                            xAxis: {
+                                data: xAxisData.map(function (x) {
+                                    return x;
+                                }),
+
+                                axisLabel: {
+                                    interval: 0,
+                                    rotate: -45,
+                                formatter: function (value) {
+                                    return value.split("").join("\n");
+                                  },
+                                    textStyle: {
+                                        color:'#FFFFFF',
+                                        align:'center',
+                                        baseline:'top',
+                                          fontSize:10
+                                    },
+                                    margin: 15
+                                },
+                            },
+                            yAxis: {
+                                // 横向标线 默认为TRUE
+                                splitLine: {
+                                    show: true,
+                                },
+                                axisLabel: {
+                                    textStyle: {
+                                        color:'#FFFFFF'
+                                    }
+                                },
+                                type:'value',
+                                boundaryGap: false,
+                                // 分隔线线的类型
+                                splitLine: {
+                                    show: true,
+                                    lineStyle: {
+                                        color:'#EFF0F0',
+                                        type:'dashed',
+                                    }
+                                }
+                            },
+                            series: {
+                                type:'bar',
+                                data: ydata,
+                                barWidth: 15,
+                                itemStyle: {
+                                    normal: {
+                                        barBorderRadius: 20,
+                                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                            offset: 0,
+                                            color:'#37BBF8'
+                                        }]),
+                                        // shadowColor:'rgba(35,149,229,0.8)',
+                                        // shadowBlur: 20,
+                                        areaStyle: { type:'default' }
+                                    }
+                                }
+                            },
+                        };
+                        // 使用刚指定的配置项和数据显示图表。
+                        myChart.setOption(option);
+                        window.addEventListener("resize", function () {
+                            myChart.resize();
+                        });
+                    }
+                });
+        }
+
+        function RightBottom() {
+                $.ajax({
+                type:'GET',
+                url:'http://39.104.48.13:6018/YearRepairCounts?positionId=13',
+				 headers: {
+                          'Authorization':'Bearer' + ' '+token,
+                           },
+                data: {},
+                dateType:'json',
+                    success: function (data) {
+             
+                        var thisyear = data[1].months.map(y=>y.count);
+                        var lastyear = data[0].months.map(y=>y.count);
+				
+                   var lastmax = Math.max.apply(null, thisyear);
+                   var thismax = Math.max.apply(null, thisyear);
+                   var maxnum =Math.max(lastmax,thismax);
+                   var beishu= Math.ceil(maxnum /50);
+
+                        // 基于准备好的dom，初始化echarts实例
+
+                        var myChart = echarts.init(document.getElementById('rightbottom'));
+                        var option = {
+                            tooltip: {
+                                trigger:'axis'
+                            },
+                            legend: {
+                                data: ['本年度工单量','去年工单量'],
+                                textStyle: {
+                                    color:'white'  // 改变标示文字的颜色
+                                }
+                            },
+                            xAxis: [
+                                {
+                                    type:'category',
+                                    data: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月']
+                                }
+                            ],
+
+                            yAxis: [
+                                {
+                                    type:'value',
+                                    name:'',
+                                    min: 0,
+                                    max: parseInt(beishu*50),
+                                    interval:20 ,
+                                    axisLabel: {
+                                        formatter:'{value}'
+                                    },
+                                    axisLine: {
+                                        lineStyle: {
+                                            color:'#FFFFFF',
+                                            width: 1,//这里是为了突出显示加上的
+                                        }
+                                    }
+                                }
+                            ],
+                            series: [
+                                {
+                                    name:'去年工单量',
+                                    type:'line',
+                                    smooth: true,
+                                    itemStyle: {  /*设置折线颜色*/
+                                        normal: {
+                                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                                {
+                                                    offset: 0, color:'#F76B1C' // 0% 处的颜色
+                                                }]),
+                                        }
+                                    },
+                                    areaStyle: {},
+                                    data: lastyear
+                                },
+
+                                {
+                                    name:'本年度工单量',
+                                    type:'bar',
+                                    barWidth: 20,
+
+                                    /*设置柱状图颜色*/
+                                    itemStyle: {
+                                        normal: {
+                                            barBorderRadius: 20,
+                                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                                offset: 0,
+                                                color:'#C86DD7'
+                                            }, {
+                                                offset: 1,
+                                                color:'#3023AE'
+                                            }])
+                                        }
+                                    },
+                                    data: thisyear
+                                }
+
+                            ]
+                        };
+                        // 使用刚指定的配置项和数据显示图表。
+                        myChart.setOption(option);
+                        window.addEventListener("resize", function () {
+                            myChart.resize();
+                        });
+                    }
+                });
+        }
+        function Dataarray() {
+            var maptype = $("input[name='Maptype']:checked").val();
+
+               $.ajax({
+			    async: false,
+                type:'GET',            
+			    url:'http://39.104.48.13:6018/UnitRepairCounts?month=2',
+				 headers: {
+                          'Authorization':'Bearer' + ' '+token,
+                           },
+
+                success: function (data) {
+                    dataarray = data;
+
+                    Mid(dataarray,maptype);
+                }
+            });
+
+        }
+
+
+        function Mid(dataarray, maptype) {
+
+
+            var cityname = "青海";
+            var bdMap;
+            var blist = [];
+            var districtLoading = 0;
+
+            var geoCoordMap =[];
+            var data = dataarray;
+            $.ajax({
+                type:'GET',
+				  async: false,
+			    url:'http://39.104.48.13:6018/PositionPoint',
+				 headers: {
+                          'Authorization':'Bearer' + ' '+token,
+                           },
+
+                success: function (data) {
+
+                    geoCoordMap = data;
+                }
+            });
+
+            var convertData = function (data) {
+
+                var res = [];
+                for (var i = 0; i < data.length; i++) {
+                    var geoCoord = geoCoordMap[data[i].name];
+                    if (geoCoord) {
+                        res.push({
+                            name: data[i].name,
+                            value: geoCoord.concat(data[i].value)
+                        });
+                    }
+                }
+                return res;
+            };
+            var bmapChart = echarts.init(document.getElementById('mid')); //echart 对象
+            var mapOption = GetOption(cityname, cityname);
+            bmapChart.setOption(mapOption);
+            var ecModel = bmapChart._model;
+            ecModel.eachComponent('bmap', function (bmapModel) {
+                if (bdMap == null) {
+                    bdMap = bmapModel.__bmap;//由echart实例获取百度地图的实例
+                }
+            });
+           // bdMap.showZoomControls(true);
+            bdMap.setMapStyle({ style:'midnight' });
+          
+            if (maptype == 1) {
+                bdMap.setMapType(BMAP_HYBRID_MAP);
+            }
+            else {
+                bdMap.setMapType(BMAP_NORMAL_MAP);
+            }
+
+            bdMap.setMinZoom(7.3);
+            if (maptype = 0) {
+                bdMap.setMaxZoom(13);
+            }
+            else {
+                bdMap.setMaxZoom(19);
+            }
+
+
+            addDistrict(cityname);
+            function GetOption(na, city) {
+
+                var geoitemstyle = {
+                    normal: {
+                        areaColor:'#031525',
+                        borderColor:'#3B5077',
+                    },
+                    emphasis: {
+                        areaColor:'#FFFFFF',
+                    }
+                };
+                var opt = {
+                    bmap: {
+                        center: [95.936232, 36.05397],// 中心位置坐标
+                        zoom: 7.3,
+                        show: true,
+                        map: na,
+                        label: {
+                            normal: {
+                                show: true,
+                                color:'#FFC125',
+                                fontSize: 13.9,
+                            },
+                            emphasis: {
+                                color:'#FFC125',
+                                fontSize: 13.9,
+                                show: true,
+                            }
+                        },
+                        right: 300,
+                        roam: true,
+
+                    },
+                    tooltip: {
+                        trigger:'item',
+
+                        position: function (point, params, m) {
+                            var width = $(dom).width();     //获取tooltip原来的width
+                            var m = $("#mapStoreClass");    //获取我们自定义模拟的tooltip dom
+                            $(m).html(dom);                      //将更改好的dom放入我们模拟的tooltip dom
+                            $(m).css("position", "initial");
+                            $(m).css("left", point[0] + 20);
+                            $(m).css("top", point[1] + 20);         //设置模拟dom显示位置，此为鼠标位置
+                            $(m).css("width", width + 15);
+                        },
+                        formatter: function (param) {
+                            var value = param.value;
+                            var name = param.name;
+                            return'<div  style="border-bottom: 1px solid RGB( 255, 255, 255) ; font-size: 16px;padding-bottom: 7px;margin-bottom: 7px; color:RGB( 255, 255, 255);">' + name +':' + value[2] +
+                               '</div>';
+                        }
+                    },
+                    series: [
+                        {
+                            name:'工单数量',
+                            type:'scatter',
+                            coordinateSystem:'bmap',
+                            data: convertData(data),
+                            symbolSize: function (val) {
+                                if (val[2] < 50)
+                                {
+                                    return 10;
+                                }
+                                return val[2] / 5;
+                            },
+                            label: {
+                                normal: {
+                                    formatter:'{b}',
+                                    position:'right',
+                                    show: false
+                                },
+                                emphasis: {
+                                    show: true
+                                }
+                            },
+                            itemStyle: {
+                                normal: {
+                                    color:'#FFFF00'
+                                }
+                            }
+                        },
+                        {
+                            name:'Top 5',
+                            type:'effectScatter',
+                            coordinateSystem:'bmap',
+                            data: convertData(data.sort(function (a, b) {
+                                return b.value- a.value;
+                            }).slice(0, 6)),
+                            symbolSize: function (val) {
+                                return val[2] / 5;
+                            },
+                            showEffectOn:'render',
+                            rippleEffect: {
+                                brushType:'stroke'
+                            },
+                            hoverAnimation: true,
+                            label: {
+                                normal: {
+
+                                }
+                            },
+                            itemStyle: {
+                                normal: {
+                                    color:'#FFFF00',
+                                    shadowBlur: 10,
+                                    shadowColor:'#333'
+                                }
+                            },
+                            zlevel: 1
+                        }
+                    ]
+                }
+                return opt;
+            }
+
+            function addDistrict(districtName) {
+                //使用计数器来控制加载过程
+                districtLoading++;
+                var bdary = new BMap.Boundary();
+                bdary.get(districtName, function (rs) {       //获取行政区域
+                    var count = rs.boundaries.length; //行政区域的点有多少个
+                    if (count === 0) {
+                        alert('未能获取当前输入行政区域');
+                        return;
+                    }
+                    for (var i = 0; i < count; i++) {
+                        blist.push({ points: rs.boundaries[i], name: districtName });
+                    };
+                    //加载完成区域点后计数器-1
+                    districtLoading--;
+                    if (districtLoading == 0) {
+                        //全加载完成后画端点
+                        drawBoundary();
+                    }
+                });
+            }
+            function drawBoundary() {
+                //包含所有区域的点数组
+                var pointArray = [];
+
+                var pNW = { lat: 59.0, lng: 73.0 }
+                var pNE = { lat: 59.0, lng: 136.0 }
+                var pSE = { lat: 3.0, lng: 136.0 }
+                var pSW = { lat: 3.0, lng: 73.0 }
+                //向数组中添加一次闭合多边形，并将西北角再加一次作为之后画闭合区域的起点
+                var pArray = [];
+                pArray.push(pNW);
+                pArray.push(pSW);
+                pArray.push(pSE);
+                pArray.push(pNE);
+                pArray.push(pNW);
+                //循环添加各闭合区域
+                for (var i = 0; i < blist.length; i++) {
+                    //添加多边形层并显示
+                    var ply = new BMap.Polygon(blist[i].points, { strokeWeight: 3, strokeColor: "#EEAD0E", fillOpacity: 0.01, fillColor: " #ffffff", enableClicking: true }); //建立多边形覆盖物
+                    ply.name = blist[i].name;
+                    bdMap.addOverlay(ply);
+
+                    //将点增加到视野范围内
+                    var path = ply.getPath();
+                    pointArray = pointArray.concat(path);
+                    //将闭合区域加到遮蔽层上，每次添加完后要再加一次西北角作为下次添加的起点和最后一次的终点
+                    pArray = pArray.concat(path);
+                    pArray.push(pArray[0]);
+                }
+
+                //添加遮蔽层
+                var plyall = new BMap.Polygon(pArray, { strokeOpacity: 0.0000001, strokeColor: "#000000", strokeWeight: 0.00001, fillColor: "#05102C", fillOpacity: 1 }); //建立多边形覆盖物
+                bdMap.addOverlay(plyall);
+            }
+
+            }
+    });
+
+
+</script>
+</html>
