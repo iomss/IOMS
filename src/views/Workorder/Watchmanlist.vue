@@ -73,7 +73,7 @@
               </el-table-column>
 
               <el-table-column prop="position.crumbName" label="设备位置" width="200" />
-              <el-table-column prop="position.name" label="资产名称," />
+              <el-table-column prop="equipment.name" label="资产名称" />
               <!-- <el-table-column prop="equipment.equimentType.name" label="设备种类" /> -->
               <el-table-column prop="assetCode" label="设备编码" />
               <el-table-column prop="equipmentFault.name" label="故障类型" />

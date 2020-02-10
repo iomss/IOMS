@@ -128,12 +128,12 @@
               </el-table-column>
               <el-table-column prop="allocationQuantity" label="数量">
                 <template slot-scope="scope">
-                  <el-input-number v-model="scope.row.allocationQuantity" controls-position="right" type="number" :min="1" size="small" placeholder="请输入内容" style="width:100%;" />
+                  <el-input-number v-model="scope.row.allocationQuantity" controls-position="right" type="number" :min="1" size="small" placeholder="数量" style="width:110%;" />
                 </template>
               </el-table-column>
               <el-table-column prop="remark" label="备注">
                 <template slot-scope="scope">
-                  <el-input v-model="scope.row.remark " size="small" placeholder="请输入内容" />
+                  <el-input v-model="scope.row.remark " size="small" placeholder="备注" />
                 </template>
               </el-table-column>
             </el-table>
