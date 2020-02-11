@@ -34,7 +34,7 @@
                   <el-dropdown-item @click.native="assetsExport()">选择导出</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
-              <el-link type="primary" href="/fileDown" icon="el-icon-folder-opened" target="_blank" />
+              <!-- <el-link type="primary" href="/fileDown" icon="el-icon-folder-opened" target="_blank" /> -->
             </div>
             <div class="toolsrt">
               <el-input v-model="tableDataSearch.text" placeholder="资产名称" size="small" />
@@ -849,9 +849,23 @@ export default {
         this.showInfo = false
       })
     },
-    assetsExport(type) {
+    assetsExportTask(type) {
       this.$axios.get('/api/Assets', { params: { ...this.tableDataSearch, export: true }}).then(res => {
         this.$message.success('导出任务已生成,请前往任务列表查看')
+      })
+    },
+    assetsExport() {
+      this.$axios.post('/api/Assets/ExportExcel', this.tableDataSearch, { Accept: {
+        'Content-Type': 'application/json;application/octet-stream'
+      }, responseType: 'blob' }).then(res => {
+        const url = window.URL.createObjectURL(new Blob([res.data]))
+        const link = document.createElement('a')
+        const fileName = res.headers['content-disposition'].match(/filename=(.*)/)[1]
+        link.style.display = 'none'
+        link.href = url
+        link.setAttribute('download', decodeURI(fileName))
+        document.body.appendChild(link)
+        link.click()
       })
     },
     handleChange(file, fileList) {
