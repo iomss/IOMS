@@ -33,9 +33,8 @@ import routers from '@/router'
 export default {
   components: { Logo },
   data() {
-    debugger
-    const WEBURL = window.location.hostname + ':' + location.port + '/Overview/Overview.html'
-    const CAMERAURL = window.location.hostname + ':' + location.port + '/Overview/CameraIndex.html'
+    const WEBURL = 'http://' + window.location.hostname + ':' + location.port + '/Overview/Overview.html'
+    const CAMERAURL = 'http://' + window.location.hostname + ':' + location.port + '/Overview/CameraIndex.html'
     return {
       url: WEBURL,
       url1: CAMERAURL,
