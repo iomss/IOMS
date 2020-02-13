@@ -20,7 +20,7 @@
               <el-table-column prop="count" label="数量" />
               <el-table-column prop="remark" label="维护总价">
                 <template slot-scope="scope">
-                  {{ scope.row.levelCount*scope.row.levelPrice*scope.row.count }}
+                  {{ (scope.row.levelCount*scope.row.levelPrice*scope.row.count).toFixed(2) }}
                 </template>
               </el-table-column>
             </el-table>
@@ -52,7 +52,7 @@
                   <el-input v-model="updateForm.count" size="small" />
                 </el-form-item>
                 <el-form-item label="维护总价">
-                  {{ updateForm.levels[0].levelCount*rowData.levelPrice*updateForm.count }}
+                  {{ (updateForm.levels[0].levelCount*rowData.levelPrice*updateForm.count).toFixed(2) }}
                 </el-form-item>
               </el-form>
               <span slot="footer" class="dialog-footer">

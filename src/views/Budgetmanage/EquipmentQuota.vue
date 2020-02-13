@@ -219,7 +219,7 @@ export default {
     //   })
     // },
     getnormEquipmentData() {
-      this.$axios.get('/api/Meta/NormEquipment?pageSize=' + this.normEquipmentpage.pageSize + '&pageNumber=' + this.normEquipmentpage.pageNumber).then(res => {
+      this.$axios.get('/api/Meta/NormEquipment?type=0&pageSize=' + this.normEquipmentpage.pageSize + '&pageNumber=' + this.normEquipmentpage.pageNumber).then(res => {
         this.normEquipmentData = this.normEquipmentData.concat(res.data)
       })
     },
@@ -227,7 +227,7 @@ export default {
       this.loading = true
       let querytext = ''
       querytext = typeof (query) === 'string' ? query : ''
-      this.$axios.get('/api/Meta/NormEquipment?text=' + querytext).then(res => {
+      this.$axios.get('/api/Meta/NormEquipment?type=0&text=' + querytext).then(res => {
         this.loading = false
         this.normEquipmentData = res.data
       })
