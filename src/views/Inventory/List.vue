@@ -67,7 +67,7 @@
             <el-dialog title="生成新的设备清单" :visible.sync="changeActiveVisible" :close-on-press-escape="false" :close-on-click-modal="false" width="450px">
               <el-form ref="form" :model="tableDatanew" label-width="120px">
                 <el-form-item label="管理中心">
-                  <el-select v-model="tableDatanew.positionId" clearable placeholder="管理中心" size="small">
+                  <el-select v-model="tableDatanew.positionId" placeholder="请选择" filterable :filter-method="dataFilter" size="small">
                     <el-option v-for="item in positionTreeData" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
