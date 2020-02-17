@@ -138,7 +138,7 @@ export default {
     },
     getpositionData() {
       // 获取安装位置
-      this.$axios.get('/api/Meta/Position?secondThird=true').then(res => {
+      this.$axios.get('/api/Meta/Position?secondThird=true&pagesize=0').then(res => {
         this.positionTreeData = res.data
       })
     },

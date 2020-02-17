@@ -46,7 +46,11 @@
                 </template>
               </el-table-column>
               <el-table-column prop="quantity" label="数量" />
-              <el-table-column prop="unitPrice" label="单价" />
+              <el-table-column prop="unitPrice" label="单价">
+                <template slot-scope="scope">
+                  {{ (scope.row.unitPrice).toFixed(2) }}
+                </template>
+              </el-table-column>
               <el-table-column prop="totalPrice" label="总价" />
               <el-table-column prop="year" label="入库年份" />
               <el-table-column prop="comment" label="备注" />
