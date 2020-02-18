@@ -70,7 +70,7 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-import Logo from '@/assets/logo-bj.png'
+import Logo from '@/assets/logo_qh.png'
 
 export default {
   components: {

@@ -7,10 +7,10 @@
           <i class="fa fa-map" />
           <span slot="title"><a :href="url" target="_blank">运维平台概览展示</a></span>
         </el-menu-item>
-        <el-menu-item v-show="roles.includes('PlatformOverview')" index="/">
+        <!-- <el-menu-item v-show="roles.includes('PlatformOverview')" index="/">
           <i class="fa fa-map" />
           <span slot="title"><a :href="url1" target="_blank">运维平台视频协助</a></span>
-        </el-menu-item>
+        </el-menu-item> -->
         <el-submenu v-for="(item,index) in routers" v-show="!item.meta.hidden && isShowParentMenu(item.children)" :key="index" :index="item.meta.fullPath" :class="isCollapse? 'menu_shrink':''">
           <template slot="title">
             <i :class="item.meta.icon" />
