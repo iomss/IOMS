@@ -14,7 +14,7 @@
             <div class="toolsrt">
               <el-form ref="form" :inline="true" :model="formSearch">
                 <el-form-item style="margin-bottom:-20px;">
-                  <treeselect v-model="formSearch.unitId" :normalizer="normalizer" :options="UnitData" :load-options="loadOptions" placeholder="管理单位" no-results-text="未找到相关数据">
+                  <treeselect v-model="formSearch.unitId" :disable-branch-nodes="true" :normalizer="normalizer" :options="UnitData" :load-options="loadOptions" placeholder="管理单位" no-results-text="未找到相关数据">
                     <div slot="value-label" slot-scope="{ node }">{{ node.raw.crumbsName }}</div>
                   </treeselect>
                 </el-form-item>
@@ -291,7 +291,7 @@ export default {
     },
     // 获取单位数据
     getUnitData() {
-      this.$axios.get('/api/Tree/Unit').then(res => {
+      this.$axios.get('/api/Tree/Unit/All').then(res => {
         this.UnitData = res
       })
     },

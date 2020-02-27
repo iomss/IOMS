@@ -165,6 +165,7 @@ export default {
     changeUserInfo() {
       this.changeUserFormVisible = true
       this.UserForm.userName = this.$cookie.get('userName')
+      this.UserForm.trueName = this.$cookie.get('trueName')
       this.UserForm.contactNumber = this.$cookie.get('contactNumber')
     },
     changeUserFormClose() {
@@ -175,9 +176,25 @@ export default {
         if (valid) {
           this.$axios.put('/api/Account', this.UserForm).then(res => {
             this.$message.success('修改成功')
-            this.$cookie.set('userName', res.userName)
+            this.$cookie.set('trueName', res.trueName)
             this.$cookie.set('contactNumber', res.contactNumber)
+            this.userName = res.trueName
+            // this.UserForm.trueName = res.trueName
+            // this.UserForm = this.UserForm
             this.changeUserFormVisible = false
+            // this.$axios.get('/api/Account/LoginInfo').then(res => {
+            //   // cookie 中写入相关用户数据
+            //   for (const item in res) {
+            //     this.$cookie.set(item, res[item])
+            //   }
+            //   const roles = []
+            //   res.claims.forEach(item => {
+            //     roles.push(item.key)
+            //   })
+            //   roles.push('show')
+            //   this.$cookie.set('roles', roles.toString())
+            //   this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+            // })
           })
         }
       })
