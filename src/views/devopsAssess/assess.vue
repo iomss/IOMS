@@ -47,7 +47,7 @@
       <el-table-column label="指标名称" prop="assessmentWeight.name" align="center" />
       <el-table-column label="统计指标" prop="equipmentIntegrityRate" align="center">
         <template slot-scope="scope">
-          {{ scope.row.equipmentIntegrityRate?((scope.row.equipmentIntegrityRate * 100) +'%') : '-' }}
+          {{ scope.row.equipmentIntegrityRate?((scope.row.equipmentIntegrityRate.toFixed(4) * 100) +'%') : '-' }}
         </template>
       </el-table-column>
       <el-table-column label="指标得分" prop="rateScore" align="center" />

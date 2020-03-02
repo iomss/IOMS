@@ -45,7 +45,11 @@
       <el-table-column
         label="总评分"
         prop="avgScore"
-      />
+      >
+        <template slot-scope="scope">
+          {{ scope.row.avgScore?((scope.row.equipmentIntegrityRate.toFixed(2)) ) : '-' }}
+        </template>
+      </el-table-column>
       <el-table-column
         label="考评日期"
         prop="updateTime"
