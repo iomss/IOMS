@@ -8,7 +8,9 @@
         <div>
           <div style="height:175px;background:#2e8cff47;text-align:center;padding-top:40px;">
             <img :src="Logo" style="width:90px;height:90px;border-radius:50%;">
-            <!-- <h2 style="margin:0">{{ userName }}</h2> -->
+            <div style="text-align:center">
+              <a href="javascript:void(0)" @click="changeUpdate()">版本:1.1.0.1</a>
+            </div>  <!-- <h2 style="margin:0">{{ userName }}</h2> -->
           </div>
           <div style="padding:15px 0;display:flex;text-align:center">
             <div style="width:49%;padding:0 10px;">{{ userUnit.name }}</div>
@@ -60,6 +62,13 @@
       <span slot="footer" class="dialog-footer">
         <el-button type="" @click="changePassWordVisibale=false">关闭</el-button>
         <el-button type="primary" @click="submitChangePassWord()">提交</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="版本更新内容" :visible.sync="changeUpdateVisibale" :close-on-press-escape="false" :close-on-click-modal="false" width="450px">
+      <span style="white-space:pre-wrap;" class="dialog-footer">
+        本次更新内容：
+        添加版本号及版本更新内容。
+        <el-button type="" @click="changeUpdateVisibale=false">关闭</el-button>
       </span>
     </el-dialog>
   </div>
@@ -123,6 +132,7 @@ export default {
         }
       },
       changePassWordVisibale: false,
+      changeUpdateVisibale: false,
       changePassWord: {
         oldPassword: '',
         newPassword: '',
@@ -184,6 +194,9 @@ export default {
     },
     changePW() {
       this.changePassWordVisibale = true
+    },
+    changeUpdate() {
+      this.changeUpdateVisibale = true
     },
     submitChangePassWord() {
       this.$refs.changePassWord.validate(valid => {
