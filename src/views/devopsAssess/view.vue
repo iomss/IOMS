@@ -47,7 +47,7 @@
         prop="avgScore"
       >
         <template slot-scope="scope">
-          {{ scope.row.avgScore?((scope.row.equipmentIntegrityRate.toFixed(2)) ) : '-' }}
+          {{ scope.row.avgScore?((scope.row.avgScore.toFixed(2)) ) : '-' }}
         </template>
       </el-table-column>
       <el-table-column
