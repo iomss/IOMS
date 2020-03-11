@@ -66,9 +66,13 @@
     </el-dialog>
     <el-dialog title="版本更新内容" :visible.sync="changeUpdateVisibale" :close-on-press-escape="false" :close-on-click-modal="false" width="450px">
       <span style="white-space:pre-wrap;" class="dialog-footer">
+        最新版本号：1.1.0.1
         本次更新内容：
         添加版本号及版本更新内容。
-        <el-button type="" @click="changeUpdateVisibale=false">关闭</el-button>
+        添加备品备件统计分析页面
+        修改我的工作界面不刷新的bug
+        修改报修界面字段不对应的bug
+        修改统计界面显示的bug
       </span>
     </el-dialog>
   </div>
