@@ -414,6 +414,17 @@ export const asyncRoutes = [
         }
       },
       {
+        path: 'StockView',
+        name: 'StockViewList',
+        component: () => import('@/views/SparePart/StockView'),
+        meta: {
+          title: '备品备件概览展示',
+          icon: 'fa fa-th-large',
+          roles: ['SpareNameManage'],
+          fullPath: '/SparePart/StockView'
+        }
+      },
+      {
         path: 'StoreroomList',
         name: 'StoreroomListList',
         component: () => import('@/views/SparePart/StoreroomList'),

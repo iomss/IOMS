@@ -140,7 +140,7 @@ export default {
     // 显示百分比
     formatterPercentage(row, column, cellValue) {
       if (cellValue !== null) {
-        return cellValue * 100 + '%'
+        return cellValue.toFix(2) * 100 + '%'
       } else {
         return ''
       }

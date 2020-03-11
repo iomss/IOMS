@@ -131,6 +131,7 @@ export default {
   },
   computed: {},
   mounted() {
+    this.getData()
     if (this.timer) {
       clearInterval(this.timer)
     } else {

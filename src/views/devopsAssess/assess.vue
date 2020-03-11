@@ -150,7 +150,7 @@ export default {
       const sums = []
       columns.forEach((column, index) => {
         if (index === 0) {
-          sums[index] = '总价'
+          sums[index] = '总分'
           return
         }
         const values = data.map(item => Number(item[column.property]))

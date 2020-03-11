@@ -36,7 +36,6 @@
       style="width: 100%"
       size="small"
     >
-      <el-table-column type="selection" />
 
       <el-table-column
         label="运维管理单位"
