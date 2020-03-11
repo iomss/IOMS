@@ -291,7 +291,7 @@ export default {
     },
     // 获取单位数据
     getUnitData() {
-      this.$axios.get('/api/Tree/Unit').then(res => {
+      this.$axios.get('/api/Tree/Unit/All').then(res => {
         this.UnitData = res
       })
     },

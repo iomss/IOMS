@@ -45,10 +45,10 @@
     >
 
       <el-table-column label="指标名称" prop="assessmentWeight.name" align="center" />
-      <el-table-column label="统计指标" prop="equipmentIntegrityRate" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.equipmentIntegrityRate?((scope.row.equipmentIntegrityRate * 100) +'%') : '-' }}
-        </template>
+      <el-table-column label="统计指标" prop="equipmentIntegrityRate" align="center" :formatter="formatterPercentage">
+        <!-- <template slot-scope="scope">
+          {{ scope.row.equipmentIntegrityRate?((scope.row.equipmentIntegrityRate.toFixed(4) * 100) +'%') : '-' }}
+        </template> -->
       </el-table-column>
       <el-table-column label="指标得分" prop="rateScore" align="center" />
       <el-table-column label="权重" prop="weight" align="center" />
@@ -186,7 +186,14 @@ export default {
         this.$refs.editAssess.init(rows.id)
       })
     },
-
+    // 显示百分比
+    formatterPercentage(row, column, cellValue) {
+      if (cellValue !== null) {
+        return (cellValue * 100).toFixed(2) + '%'
+      } else {
+        return ''
+      }
+    },
     /**
      * 提交查询
      * @return {[type]} [description]

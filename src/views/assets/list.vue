@@ -31,7 +31,7 @@
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item @click.native="assetsExport()">导出全部</el-dropdown-item>
-                  <el-dropdown-item @click.native="assetsExport()">选择导出</el-dropdown-item>
+                  <el-dropdown-item @click.native="assetsExport(true)">选择导出</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
               <!-- <el-link type="primary" href="/fileDown" icon="el-icon-folder-opened" target="_blank" /> -->
@@ -854,8 +854,9 @@ export default {
         this.$message.success('导出任务已生成,请前往任务列表查看')
       })
     },
-    assetsExport() {
-      this.$axios.post('/api/Assets/ExportExcel', this.tableDataSearch, { Accept: {
+    assetsExport(exportSelect) {
+      const p = exportSelect === true ? { ...this.tableDataSearch, ids: this.multipleSelection.map(x => x.id) } : this.tableDataSearch
+      this.$axios.post('/api/Assets/ExportExcel', p, { Accept: {
         'Content-Type': 'application/json;application/octet-stream'
       }, responseType: 'blob' }).then(res => {
         const url = window.URL.createObjectURL(new Blob([res.data]))
