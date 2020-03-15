@@ -403,6 +403,17 @@ export const asyncRoutes = [
     redirect: '/SparePart/List',
     children: [
       {
+        path: 'StockView',
+        name: 'StockViewList',
+        component: () => import('@/views/SparePart/StockView'),
+        meta: {
+          title: '备品备件概览',
+          icon: 'fa fa-th-large',
+          roles: ['SpareNameManage'],
+          fullPath: '/SparePart/StockView'
+        }
+      },
+      {
         path: 'SparePartList',
         name: 'SparePartListList',
         component: () => import('@/views/SparePart/sparePartList'),
@@ -411,17 +422,6 @@ export const asyncRoutes = [
           icon: 'fa fa-th-large',
           roles: ['SpareNameManage'],
           fullPath: '/SparePart/sparePartList'
-        }
-      },
-      {
-        path: 'StockView',
-        name: 'StockViewList',
-        component: () => import('@/views/SparePart/StockView'),
-        meta: {
-          title: '备品备件概览展示',
-          icon: 'fa fa-th-large',
-          roles: ['SpareNameManage'],
-          fullPath: '/SparePart/StockView'
         }
       },
       {
