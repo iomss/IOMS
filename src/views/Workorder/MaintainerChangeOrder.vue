@@ -133,7 +133,7 @@
         </div>
         <div class="content">
           <!-- v-if="roles.indexOf('DispatchUpdate') >-1" -->
-          <el-button v-show="btshow" type="primary" size="small" @click="edit()">编辑</el-button>
+          <el-button v-show="btshow" v-if="roles.indexOf('DispatchUpdate') >-1" type="primary" size="small" @click="edit()">编辑</el-button>
           <el-button v-show="btedit" type="primary" size="small" @click="repartwork()">编辑并分配工单</el-button>
           <el-button v-show="btshow" type="primary" size="small" @click="partwork()">分配工单</el-button>
           <el-button type="primary" size="small" @click="processrecord()">过程记录</el-button>
