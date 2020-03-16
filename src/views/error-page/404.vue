@@ -24,7 +24,7 @@ export default {
   name: 'Page404',
   computed: {
     message() {
-      return '网管说这个页面你不能进......'
+      return '您所访问的页面不存在或已被删除，请联系管理员。'
     }
   }
 }
