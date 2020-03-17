@@ -763,7 +763,7 @@
                    var lastmax = Math.max.apply(null, thisyear);
                    var thismax = Math.max.apply(null, thisyear);
                    var maxnum =Math.max(lastmax,thismax);
-                   var beishu= Math.ceil(maxnum /50);
+                   var beishu= Math.ceil(maxnum /50)+1;
 
                         // 基于准备好的dom，初始化echarts实例
 
@@ -781,8 +781,15 @@
                             xAxis: [
                                 {
                                     type:'category',
-                                    data: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月']
+                                    data: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+									axisLine: {
+                                        lineStyle: {
+                                            color:'#FFFFFF',
+                                            width: 1,//这里是为了突出显示加上的
+                                        }
+                                    }
                                 }
+								
                             ],
 
                             yAxis: [
