@@ -41,6 +41,9 @@ export default {
   watch: {
     'reset': function(val) { // 这里监听父传过来的内容
       if (val) {
+        if (this.limit === 1) {
+          this.fileList = []
+        }
         this.fileList.push({
           name: '',
           url: process.env.VUE_APP_API + val
