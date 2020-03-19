@@ -353,7 +353,7 @@ export default {
       })
     },
     partwork() { // 分配工单
-      this.updateData.userId = this.formData.userId
+      this.updateData.userId = this.formData.repairUserId
       this.$axios.post('/api/RepairOrder/' + this.formData.id + '/Dispatch', this.updateData).then(res => {
         this.$message.success('工单分配成功')
         // 跳转个人工作页
