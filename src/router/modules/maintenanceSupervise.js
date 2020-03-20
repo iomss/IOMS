@@ -31,7 +31,7 @@ const integrityRateRoutes = {
       component: () => import('@/views/maintenanceSupervise/examinationInquire'),
       name: 'MaintenanceSuperviseExaminationInquire',
       meta: {
-        title: '内部工作考核查询',
+        title: '内部工作考核',
         icon: 'fa fa-circle-o',
         roles: ['ManageAsset'],
         fullPath: '/maintenanceSupervise/examinationInquire'
