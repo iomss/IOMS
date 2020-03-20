@@ -54,8 +54,8 @@
                     <el-button>说明</el-button>
                   </el-tooltip>
                 </el-form-item>
-                <el-form-item label="指定工程师" prop="repairUserId">
-                  <el-select v-model="formData.repairUserId" filterable remote :remote-method="remoteMethoduserId" :loading="loading" clearable placeholder="指定工程师" size="small" @focus="remoteMethoduserId">
+                <el-form-item label="派工" prop="repairUserId">
+                  <el-select v-model="formData.repairUserId" filterable remote :remote-method="remoteMethoduserId" :loading="loading" clearable placeholder="派工" size="small" @focus="remoteMethoduserId">
                     <el-option v-for="item in userData" :key="item.id" :label="item.trueName" :value="item.id" />
                   </el-select>
                 </el-form-item>
@@ -126,6 +126,8 @@ export default {
       levelData: [], // 故障级别数据
       userData: [], // 可指派人员数据
       formDatarules: {
+        // 代码分支 北京注释掉130行
+        repairUserId: [{ required: true, message: '指定工程师不可为空', trigger: 'change' }],
         failureTime: [{ type: 'date', required: true, message: '请选择故障时间', trigger: 'change' }],
         reportTime: [{ type: 'date', required: true, message: '请选择报修时间', trigger: 'change' }],
         equipmentFaultId: [{ required: true, message: '故障类型不可为空', trigger: 'change' }],
