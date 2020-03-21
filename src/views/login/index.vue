@@ -70,7 +70,9 @@
 </template>
 
 <script>
-import loginbjimg from '@/assets/login_qh.jpg'
+// 代码分支74是青海
+// import loginbjimg from '@/assets/login_qh.jpg'
+import loginbjimg from '@/assets/login_bj.jpg'
 export default {
   name: 'Login',
   data() {

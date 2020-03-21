@@ -83,7 +83,9 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-import Logo from '@/assets/logo_qh.png'
+// 代码分支87是青海
+// import Logo from '@/assets/logo_qh.png'
+import Logo from '@/assets/logo_bj.png'
 
 export default {
   components: {

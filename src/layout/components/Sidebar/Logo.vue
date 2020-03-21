@@ -14,7 +14,9 @@
 </template>
 
 <script>
-import logo from '@/assets/logo_qh.png'
+// 代码分支18是青海
+// import logo from '@/assets/logo_qh.png'
+import logo from '@/assets/logo_bj.png'
 export default {
   name: 'SidebarLogo',
   props: {
