@@ -25,8 +25,8 @@
               <el-button v-if="showForm!=='login'" class="register-button" type="text" @click="showForm='login'">
                 已有账号，登录
               </el-button>
-              <el-link type="primary">web版本号：1.1.0.1</el-link>
-              <el-link type="primary" href="file/qinghai_last.apk">安卓App下载</el-link>
+              <el-link type="primary">web版本号：1.1.0.2</el-link>
+              <el-link type="primary" href="file/ITOM_APP.apk">安卓App下载</el-link>
             </div>
           </el-form>
         </div>
@@ -71,8 +71,8 @@
 
 <script>
 // 代码分支74是青海
-// import loginbjimg from '@/assets/login_qh.jpg'
-import loginbjimg from '@/assets/login_bj.jpg'
+import loginbjimg from '@/assets/login_qh.jpg'
+// import loginbjimg from '@/assets/login_bj.jpg'
 export default {
   name: 'Login',
   data() {

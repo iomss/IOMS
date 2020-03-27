@@ -36,6 +36,17 @@ const integrityRateRoutes = {
         roles: ['ManageAsset'],
         fullPath: '/maintenanceSupervise/examinationInquire'
       }
+    },
+    {
+      path: 'JobSearch',
+      component: () => import('@/views/maintenanceSupervise/JobSearch'),
+      name: 'JobSearch',
+      meta: {
+        title: '工单查询',
+        icon: 'fa fa-circle-o',
+        roles: ['ManageAsset'],
+        fullPath: '/maintenanceSupervise/JobSearch'
+      }
     }
   ]
 }

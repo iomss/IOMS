@@ -32,7 +32,16 @@
                         {{ formData.equipment.name }}
                       </el-form-item>
                       <el-form-item v-show="btedit" label="资产名称" :disabled="showedit" prop="equipmentId">
-                        <el-select v-model="formData.assetId" filterable remote :remote-method="remoteMethodequipmentID" popper-class="optionsContent" :loading="loading" placeholder="设备种类" size="small" @change="changeEquipment" @focus="remoteMethodequipmentID">
+                        <el-select
+                          v-model="formData.assetId"
+                          popper-class="optionsContent"
+                          :loading="loading"
+                          filterable
+                          placeholder="设备种类"
+                          size="small"
+                          @change="changeEquipment"
+                          @focus="remoteMethodequipmentID"
+                        >
                           <el-option v-for="item in equipmentname" :key="item.alias" :label="item.alias" :value="item.id" :disabled="item.disabled">
                             <span style="float: left;width:150px;">{{ item.code }}</span>
                             <span style="float: left;display:none">{{ item.id }}</span>
@@ -79,7 +88,7 @@
                         {{ formData.equipmentFault.name }}
                       </el-form-item>
                       <el-form-item v-show="btedit" label="故障类型" class="showtishi" prop="equipmentFaultId">
-                        <el-select v-model="formData.equipmentFaultId" filterable remote :remote-method="remoteMethodefaultID" :loading="loading" placeholder="故障类型" :disabled="showedit" size="small" @focus="remoteMethodefaultID">
+                        <el-select v-model="formData.equipmentFaultId" :loading="loading" filterable placeholder="故障类型" :disabled="showedit" size="small" @focus="remoteMethodefaultID">
                           <el-option v-for="item in faultData" :key="item.id" :label="item.name" :value="item.id" />
                         </el-select>
                       </el-form-item>
@@ -89,7 +98,7 @@
                         {{ formData.repairLevel.name }}
                       </el-form-item>
                       <el-form-item v-show="btedit" label="报修级别" class="showtishi" prop="repairLevelId">
-                        <el-select v-model="formData.repairLevelId" filterable placeholder="故障级别" :disabled="showedit" size="small" @change="selectChange">
+                        <el-select v-model="formData.repairLevelId" filterable placeholder="报修级别" :disabled="showedit" size="small" @change="selectChange">
                           <el-option v-for="item in levelData" :key="item.id" :label="item.name" :value="item.id" />
                         </el-select>
                       </el-form-item>
@@ -236,6 +245,7 @@ export default {
       faultData: [], // 故障类型数据
       levelData: [], // 故障级别数据
       equipmentname: [],
+      copy: [],
       positionTreeData: [], // 安装位置数据
       faultpage: {
         // 故障类型分页
@@ -272,6 +282,8 @@ export default {
     this.getfaultData()
     this.getlevelData()
     this.getassetData()
+    debugger
+    this.copy = Object.assign(this.equipmentname)
   },
   methods: {
     formatterDate(row, column, cellValue) {
@@ -390,19 +402,7 @@ export default {
       })
     },
     selectChange(val) {
-      if (val) {
-        console.log('操作人选中项发生变化', val)
-        let obj = {}
-        obj = this.levelData.find(item => { // 这里的operateOption就是上面遍历的数据源
-          return item.id === val // 筛选出  匹配数据
-        })
-        this.$set(this.levelData, this.levelData.id, val.value)
-        this.levelData.lable = obj.name
-        console.log('修改操作人名称', obj.name, obj.id)
-      } else {
-        this.levelData.name = ''
-        this.$set(this.levelData, this.levelData.id, '')
-      }
+      this.$forceUpdate()
     },
     getpositionData() {
       // 获取安装位置

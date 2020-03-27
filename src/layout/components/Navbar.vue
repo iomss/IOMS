@@ -9,7 +9,7 @@
           <div style="height:175px;background:#2e8cff47;text-align:center;padding-top:40px;">
             <img :src="Logo" style="width:90px;height:90px;border-radius:50%;">
             <div style="text-align:center">
-              <a href="javascript:void(0)" @click="changeUpdate()">版本:1.1.0.1</a>
+              <a href="javascript:void(0)" @click="changeUpdate()">版本:1.1.0.2</a>
             </div>  <!-- <h2 style="margin:0">{{ userName }}</h2> -->
           </div>
           <div style="padding:15px 0;display:flex;text-align:center">
@@ -66,13 +66,17 @@
     </el-dialog>
     <el-dialog title="版本更新内容" :visible.sync="changeUpdateVisibale" :close-on-press-escape="false" :close-on-click-modal="false" width="450px">
       <span style="white-space:pre-wrap;" class="dialog-footer">
-        最新版本号：1.1.0.1
-        &nbsp;&nbsp;&nbsp;&nbsp;本次更新内容：
+        最新版本号：1.1.0.2
+        &nbsp;&nbsp;&nbsp;&nbsp;上次更新内容：
         1  添加版本号及版本更新内容。
         2  添加备品备件统计分析页面
         3  修改我的工作界面不刷新的bug
         4  修改报修界面字段不对应的bug
         5  修改统计界面显示的bug
+        &nbsp;&nbsp;&nbsp;&nbsp;本次更新内容：
+        1  添加工单查询界面。
+        2  添加工单修改界面。
+        3  修改工单修改界面bug。
       </span>
     </el-dialog>
   </div>
@@ -84,8 +88,8 @@ import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 // 代码分支87是青海
-// import Logo from '@/assets/logo_qh.png'
-import Logo from '@/assets/logo_bj.png'
+import Logo from '@/assets/logo_qh.png'
+// import Logo from '@/assets/logo_bj.png'
 
 export default {
   components: {
