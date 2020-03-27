@@ -18,7 +18,15 @@
                 <el-date-picker v-model="formSearch.beginTime" placeholder="报修开始时间" size="small" />
                 <el-date-picker v-model="formSearch.endTime" placeholder="报修结束时间" size="small" />
                 <div style="width:300px;display:inline-block;margin-right:20px;margin-bottom:-15px;">
-                  <treeselect v-model="formSearch.positionId" :normalizer="normalizer" :options="positionTreeData" :load-options="loadOptions" placeholder="设备位置" no-results-text="未找到相关数据" />
+                  <treeselect
+                    v-model="formSearch.positionId"
+                    :normalizer="normalizer"
+                    :options="positionTreeData"
+                    :load-options="loadOptions"
+                    filterable
+                    placeholder="设备位置"
+                    no-results-text="未找到相关数据"
+                  />
                 </div>
                 <el-button type="primary" plain size="small" @click="getData()">查询</el-button>
               </el-form>
@@ -68,7 +76,7 @@ const simulateAsyncOperation = fn => {
   setTimeout(fn, 500)
 }
 export default {
-  name: 'InstockListList',
+  name: 'JobSearch',
   components: {
     pagination,
     Treeselect
@@ -92,7 +100,7 @@ export default {
         beginTime: '', // 开始时间
         endTime: '', // 结束时间
         code: '', // 搜索文本
-        positionId: '', // 设备位置
+        positionId: null, // 设备位置
         equipmentname: '', // 设备名称
         pageSize: 10, // 展示条数
         pageNumber: 1 // 页码
